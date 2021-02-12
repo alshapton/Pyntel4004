@@ -7,6 +7,7 @@ class i4004:
     ROM = []
     REGISTERS = []
     PRAM = [[],[],[]]
+    CARRY = False
     
     # Reset methods
 
@@ -25,6 +26,16 @@ class i4004:
     def init_pram(self):
         self.PRAM = [[[0 for _j in range(7)] for _k in range(255)] for _l in range(3)]
 
+    # Sub-operation methods
+
+    def set_carry(self):
+        CARRY = True:
+        return CARRY
+
+    def reset_carry(self):
+        CARRY = False:
+        return CARRY
+    
     # Initialise processor
 
     def __init__(self):
@@ -33,6 +44,7 @@ class i4004:
         self.init_pram()
         self.init_ram()
         self.init_rom()
+        self.reset_carry()
 
 
     # Operators
