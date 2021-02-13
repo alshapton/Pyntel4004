@@ -1,5 +1,5 @@
 
-class i4004:
+class processor:
 
     MAX_4_BITS = 15
     
@@ -134,7 +134,7 @@ class i4004:
 
         self.REGISTERS[register] = self.REGISTERS[register] + 1
         if (self.REGISTERS[register] > self.MAX_4_BITS ):
-            self.REGISTERS = 0
+            self.REGISTERS[register] = 0
         return self.REGISTERS[register]
 
 
@@ -197,19 +197,23 @@ def run(program_name: str):
             eval('processor.'+x[0]+'('+x[1]+')')
     program.close()
     print()
-    return processor.read_accumulator()
+    return chip.read_accumulator()
 
 
-processor = i4004()
-
+chip = processor()
+if not sum(chip.read_all_rom()):
+    print('all zeroes')
+else:
+    print('non-zero')
+    
 """
-print('Registers [0-15]: ',processor.read_all_registers())
-print('Accumulator     : ',processor.read_accumulator())
-print('RAM             : ',processor.read_all_ram())
-print('ROM             : ',processor.read_all_rom())
-print('PRAM            : ',processor.read_all_pram())
+print('Registers [0-15]: ',chip.read_all_registers())
+print('Accumulator     : ',chip.read_accumulator())
+print('RAM             : ',chip.read_all_ram())
+print('ROM             : ',chip.read_all_rom())
+print('PRAM            : ',chip.read_all_pram())
 """
 
 
-print('Accumulator : ',run('addition.asm'))
-print(processor.read_carry())
+#print('Accumulator : ',run('addition.asm'))
+#print(chip.read_carry())
