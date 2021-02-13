@@ -1,6 +1,8 @@
 
 class i4004:
 
+    MAX_4_BITS = 15
+    
     ACCUMULATOR = 0
 
     RAM = []
@@ -101,17 +103,39 @@ class i4004:
         Assembled:      1000 <RRRR>
         Symbolic:       (RRRR) + (ACC) + (CY) --> ACC, CY
         Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-        Side-effects:   The carry/link is set to 1 if a sum greater than 15 was generated to indicate a carry out; 
+        Side-effects:   The carry/link is set to 1 if a sum greater than MAX_4_BITS was generated to indicate a carry out; 
                         otherwise, the carry/link is set to 0. The 4 bit content of the index register is unaffected.
         """
         self.ACCUMULATOR = self.ACCUMULATOR + self.REGISTERS[register]
         # Check for carry bit set/reset when an overflow is detected
-        # i.e. the result is more than a 4-bit number (15)
-        if (self.ACCUMULATOR > 15 ):
+        # i.e. the result is more than a 4-bit number (MAX_4_BITS)
+        if (self.ACCUMULATOR > self.MAX_4_BITS ):
+            self.ACCUMULATOR = self.MAX_4_BITS
             self.set_carry()
         else:
             self.reset_carry()
         return self.ACCUMULATOR, self.CARRY
+
+    def sub(self, register):
+        # TODO
+        return self.ACCUMULATOR, self.CARRY
+
+    def inc(self, register):
+        """
+        Name:           Increment index register
+        Function:       The 4 bit content of the designated index register is incremented by 1. 
+                        The index register is set to zero in case of overflow.
+        Syntax:         INC <register>
+        Assembled:      0110 <RRRR>
+        Symbolic:       (RRRR) +1 --> RRRR
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry bit is not affected.
+        """
+
+        self.REGISTERS[register] = self.REGISTERS[register] + 1
+        if (self.REGISTERS[register] > self.MAX_4_BITS ):
+            self.REGISTERS = 0
+        return self.REGISTERS[register]
 
 
     def xch(self, register):
@@ -149,6 +173,8 @@ class i4004:
     def read_accumulator(self):
         return(self.ACCUMULATOR)
 
+    def read_carry(self):
+        return(self.CARRY)
 
 # Mnemonic link: http://e4004.szyc.org/iset.html
 
@@ -186,3 +212,4 @@ print('PRAM            : ',processor.read_all_pram())
 
 
 print('Accumulator : ',run('addition.asm'))
+print(processor.read_carry())

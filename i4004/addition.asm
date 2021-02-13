@@ -1,5 +1,6 @@
-    ldm 9
+    ldm 11
     xch 4
-    ldm 3
+    inc 4
+    ldm 5
     add 4
 
