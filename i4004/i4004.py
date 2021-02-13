@@ -29,12 +29,12 @@ class i4004:
     # Sub-operation methods
 
     def set_carry(self):
-        CARRY = True:
-        return CARRY
+        self.CARRY = True
+        return self.CARRY
 
     def reset_carry(self):
-        CARRY = False:
-        return CARRY
+        self.CARRY = False
+        return self.CARRY
     
     # Initialise processor
 
@@ -92,6 +92,28 @@ class i4004:
         return self.ACCUMULATOR
 
 
+    def add(self, register):
+        """
+        Name:           Add index register to accumulator with carry
+        Function:       The 4 bit content of the designated index register is added to the content of the accumulator with carry.
+                        The result is stored in the accumulator. 
+        Syntax:         ADD <register>
+        Assembled:      1000 <RRRR>
+        Symbolic:       (RRRR) + (ACC) + (CY) --> ACC, CY
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry/link is set to 1 if a sum greater than 15 was generated to indicate a carry out; 
+                        otherwise, the carry/link is set to 0. The 4 bit content of the index register is unaffected.
+        """
+        self.ACCUMULATOR = self.ACCUMULATOR + self.REGISTERS[register]
+        # Check for carry bit set/reset when an overflow is detected
+        # i.e. the result is more than a 4-bit number (15)
+        if (self.ACCUMULATOR > 15 ):
+            self.set_carry()
+        else:
+            self.reset_carry()
+        return self.ACCUMULATOR, self.CARRY
+
+
     def xch(self, register):
         """
         Name:           Exchange index register and accumulator
@@ -107,11 +129,50 @@ class i4004:
         temporary_value = self.ACCUMULATOR
         self.ACCUMULATOR = self.REGISTERS[register]
         self.REGISTERS[register] = temporary_value
-
         return self.ACCUMULATOR, self.REGISTERS
 
 
+    # Output Methods
+
+    def read_all_registers(self):
+        return(self.REGISTERS)
+
+    def read_all_ram(self):
+        return(self.RAM)
+
+    def read_all_rom(self):
+        return(self.ROM)
+
+    def read_all_pram(self):
+        return(self.PRAM)
+
+    def read_accumulator(self):
+        return(self.ACCUMULATOR)
+
+
 # Mnemonic link: http://e4004.szyc.org/iset.html
+
+def run(program_name: str):
+    program = open(program_name, 'r')
+
+    print('Program Code')
+    print()
+    while True:
+    
+        line = program.readline()
+        # if line is empty
+        # end of file is reached
+        if not line:
+            break
+        line = line.strip()
+        x = line.split(' ')
+        if (len(line) > 0):
+            print('     ', x[0], "  ",x[1])
+            eval('processor.'+x[0]+'('+x[1]+')')
+    program.close()
+    print()
+    return processor.read_accumulator()
+
 
 processor = i4004()
 
@@ -123,10 +184,5 @@ print('ROM             : ',processor.read_all_rom())
 print('PRAM            : ',processor.read_all_pram())
 """
 
-print(processor.ldm(23))
 
-print(processor.xch(4))
-print(processor.ld(4))
-print(processor.ldm(92))
-print(processor.xch(8))
-print(processor.xch(8))
+print('Accumulator : ',run('addition.asm'))
