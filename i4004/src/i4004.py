@@ -94,8 +94,30 @@ class processor:
         self.__init_rom()
         self.reset_carry()
 
-
+    """
+                                          
+                .-.                                              
+               (._.)        ,--.      .-.      .-.        ,--.   
+                .-.        /   |    /    \   /    \      /   |   
+                | |       / .' |   |  .-. ; |  .-. ;    / .' |   
+                | |      / / | |   | |  | | | |  | |   / / | |   
+                | |     / /  | |   | |  | | | |  | |  / /  | |   
+                | |    /  `--' |-. | |  | | | |  | | /  `--' |-. 
+                | |    `-----| |-' | '  | | | '  | | `-----| |-' 
+                | |          | |   '  `-' / '  `-' /       | |   
+               (___)        (___)   `.__,'   `.__,'       (___)  
+        
+         _           _                   _   _                        _   
+        (_)_ __  ___| |_ _ __ _   _  ___| |_(_) ___  _ __    ___  ___| |_ 
+        | | '_ \/ __| __| '__| | | |/ __| __| |/ _ \| '_ \  / __|/ _ \ __|
+        | | | | \__ \ |_| |  | |_| | (__| |_| | (_) | | | | \__ \  __/ |_ 
+        |_|_| |_|___/\__|_|   \__,_|\___|\__|_|\___/|_| |_| |___/\___|\__|
+                                                                        
+    
+    """           
     # Operators
+
+    # One Word Machine Instructions
 
     def nop(self, operand):
         """
@@ -138,8 +160,26 @@ class processor:
 
         self.ACCUMULATOR = self.REGISTERS[register]
         return self.ACCUMULATOR
+   
+    
+    def xch(self, register):
+        """
+        Name:           Exchange index register and accumulator
+        Function:       The 4 bit content of designated index register is loaded into the accumulator.
+                        The prior content of the accumulator is loaded into the designed register.
+        Syntax:         XCH <register>
+        Assembled:      1011 <RRRR>
+        Symbolic:       (ACC) --> ACBR, (RRRR) --> ACC, (ACBR) --> RRRR
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry bit is not affected.
+        """
 
+        self.ACBR = self.ACCUMULATOR
+        self.ACCUMULATOR = self.REGISTERS[register]
+        self.REGISTERS[register] = self.ACBR
+        return self.ACCUMULATOR, self.REGISTERS
 
+  
     def add(self, register):
         """
         Name:           Add index register to accumulator with carry
@@ -189,6 +229,7 @@ class processor:
             self.reset_carry()
         return self.ACCUMULATOR, self.CARRY
 
+
     def inc(self, register):
         """
         Name:           Increment index register
@@ -207,22 +248,86 @@ class processor:
         return self.REGISTERS[register]
 
 
-    def xch(self, register):
+    def bbl(self):
+        return None
+
+
+    def jin(self):
+        return None
+
+
+    def src(self):
+        return None
+
+
+    def fin(self):
+        return None
+
+
+
+   # Accumulator Group Instructions
+
+    def clb(self):
         """
-        Name:           Exchange index register and accumulator
-        Function:       The 4 bit content of designated index register is loaded into the accumulator.
-                        The prior content of the accumulator is loaded into the designed register.
-        Syntax:         XCH <register>
-        Assembled:      1011 <RRRR>
-        Symbolic:       (ACC) --> ACBR, (RRRR) --> ACC, (ACBR) --> RRRR
+        Name:           Clear Both
+        Function:       Set accumulator and carry/link to 0.
+        Syntax:         CLB
+        Assembled:      1111 0000
+        Symbolic:       0 --> ACC, 0 --> CY
         Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-        Side-effects:   The carry bit is not affected.
+        Side-effects:   Not Applicable
         """
 
-        self.ACBR = self.ACCUMULATOR
-        self.ACCUMULATOR = self.REGISTERS[register]
-        self.REGISTERS[register] = self.ACBR
-        return self.ACCUMULATOR, self.REGISTERS
+        self.ACCUMULATOR = 0
+        self.reset_carry()
+        return self.ACCUMULATOR, self.CARRY
+
+
+    def clc(self):
+        """
+        Name:           Clear Carry
+        Function:       Set carry/link to 0.
+        Syntax:         CLC
+        Assembled:      1111 0001
+        Symbolic:       0 --> CY
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   Not Applicable
+        """
+
+        self.reset_carry()
+        return self.CARRY
+
+    def cmc(self):
+        """
+        Name:           Complement carry
+        Function:       The carry/link content is complemented.
+        Syntax:         CLC
+        Assembled:      1111 0011
+        Symbolic:       ~(CY) --> CY
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   Not Applicable
+        """
+
+        if (self.CARRY == 1):
+            self.reset_carry()
+        else:
+            self.set_carry()
+        return self.CARRY
+
+    def stc(self):
+        """
+        Name:           Set Carry
+        Function:       Set carry/link to 1.
+        Syntax:         STC
+        Assembled:      1111 1010
+        Symbolic:       1 --> CY
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   Not Applicable
+        """
+
+        self.set_carry()
+        return self.CARRY
+
 
 
     # Output Methods
@@ -284,3 +389,5 @@ print('PRAM            : ',chip.read_all_pram())
 #    print("binary of ",x, " is ", chip.ones_complement(x), "    ", chip.binary_to_decimal(chip.ones_complement(x)))
 print('Accumulator : ',run('addition.asm'))
 print(chip.read_carry())
+
+
