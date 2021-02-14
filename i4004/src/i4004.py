@@ -1,51 +1,97 @@
 
 class processor:
 
-    MAX_4_BITS = 15
+    # i4004 Processor characteristics
+    MAX_4_BITS = 15         #    Maximum value 4 bits can hold
     
-    ACCUMULATOR = 0
+    MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
+    MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
+    MEMORY_SIZE_PRAM = 4096     # Number of 4-bit words in PRAM
 
-    RAM = []
-    ROM = []
-    REGISTERS = []
-    PRAM = [[],[],[]]
-    CARRY = False
+    NO_REGISTERS = 16           # Number of registers
+
+    # Creation of processor internals
+
+    ACCUMULATOR = 0     # Initialise the accumulator
+    ACBR = 0            # Accumulator Buffer Register
+    CARRY = 0           # Reset the carry bit
+
+    RAM = []            # RAM
+    ROM = []            # ROM
+    REGISTERS = []      # Reegisters
+    PRAM = [[],[],[]]   # Program RAM
+
     
     # Reset methods
 
-    def init_ram(self):
-        for _i in range(4096):
+    def __init_ram(self):
+        for _i in range(self.MEMORY_SIZE_RAM - 1):
             self.RAM.append(0)
 
-    def init_registers(self):
-        for _i in range(15):
+    def __init_registers(self):
+        for _i in range(self.NO_REGISTERS - 1):
             self.REGISTERS.append(0)
 
-    def init_rom(self):
-        for _i in range(4096):
+    def __init_rom(self):
+        for _i in range(self.MEMORY_SIZE_ROM - 1):
             self.ROM.append(0)
 
-    def init_pram(self):
+    def __init_pram(self):
         self.PRAM = [[[0 for _j in range(7)] for _k in range(255)] for _l in range(3)]
 
     # Sub-operation methods
 
     def set_carry(self):
-        self.CARRY = True
+        # Set the carry bit
+        self.CARRY = 1
         return self.CARRY
 
     def reset_carry(self):
-        self.CARRY = False
+        # Reset the carry bit
+        self.CARRY = 0
         return self.CARRY
+
+    # Miscellaneous read/write operations
+
+    def read_complement_carry(self):
+        # Return the complement of the carry bit
+        return 1 if self.CARRY == 0 else 0
+
+    # Utility operations 
+
+    def ones_complement(self, value: str):
+        # Perform a one's complement
+        # i.e. invert all the bits
+        binary = bin(value)[2:].zfill(4)
+        ones = ''
+        for x in range(4):
+            if (binary[x] == '1'):
+                ones = ones + '0'
+            else:
+                ones = ones + '1'   
+        return ones
+
+    def decimal_to_binary(self, decimal: int):
+        # Convert decimal to binary
+        binary = bin(decimal)[2:].zfill(4)
+        return binary
     
+    def binary_to_decimal(self, binary: str):
+        # Convert binary to decinal
+        decimal = 0
+        for digit in binary:
+            decimal = decimal * 2 + int(digit)
+        return decimal
+
     # Initialise processor
 
     def __init__(self):
+        # Initialise all the internals of the processor
         self.ACCUMULATOR = 0
-        self.init_registers()
-        self.init_pram()
-        self.init_ram()
-        self.init_rom()
+        self.__init_registers()
+        self.__init_pram()
+        self.__init_ram()
+        self.__init_rom()
         self.reset_carry()
 
 
@@ -98,7 +144,7 @@ class processor:
         """
         Name:           Add index register to accumulator with carry
         Function:       The 4 bit content of the designated index register is added to the content of the accumulator with carry.
-                        The result is stored in the accumulator. 
+                        The result is stored in the accumulator. (Note this means the carry bit is also added)
         Syntax:         ADD <register>
         Assembled:      1000 <RRRR>
         Symbolic:       (RRRR) + (ACC) + (CY) --> ACC, CY
@@ -106,7 +152,8 @@ class processor:
         Side-effects:   The carry/link is set to 1 if a sum greater than MAX_4_BITS was generated to indicate a carry out; 
                         otherwise, the carry/link is set to 0. The 4 bit content of the index register is unaffected.
         """
-        self.ACCUMULATOR = self.ACCUMULATOR + self.REGISTERS[register]
+        
+        self.ACCUMULATOR = self.ACCUMULATOR + self.REGISTERS[register] + self.read_carry()
         # Check for carry bit set/reset when an overflow is detected
         # i.e. the result is more than a 4-bit number (MAX_4_BITS)
         if (self.ACCUMULATOR > self.MAX_4_BITS ):
@@ -116,8 +163,30 @@ class processor:
             self.reset_carry()
         return self.ACCUMULATOR, self.CARRY
 
+
     def sub(self, register):
-        # TODO
+        """
+        Name:           Subtract index register from accumulator with borrow    
+        Function:       The 4 bit content of the designated index register is complemented (ones complement) and 
+                        added to content of the accumulator with borrow and the result is stored in the accumulator.
+        Syntax:         SUB <register>
+        Assembled:      1001 <RRRR>
+        Symbolic:       (ACC) + ~(RRRR) + (CY) --> ACC, CY
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   If a borrow is generated, the carry bit is set to 0; otherwise, it is set to 1.
+                        The 4 bit content of the index register is unaffected.        
+        """
+
+        carry = self.read_complement_carry()
+        self.ACCUMULATOR = self.ACCUMULATOR + self.binary_to_decimal(self.ones_complement(self.REGISTERS[register])) + carry
+
+        # Check for carry bit set/reset when borrow (overflow) is detected
+        # i.e. the result is more than a 4-bit number (MAX_4_BITS)
+        if (self.ACCUMULATOR > self.MAX_4_BITS ):
+            self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS -1
+            self.set_carry()
+        else:
+            self.reset_carry()
         return self.ACCUMULATOR, self.CARRY
 
     def inc(self, register):
@@ -150,9 +219,9 @@ class processor:
         Side-effects:   The carry bit is not affected.
         """
 
-        temporary_value = self.ACCUMULATOR
+        self.ACBR = self.ACCUMULATOR
         self.ACCUMULATOR = self.REGISTERS[register]
-        self.REGISTERS[register] = temporary_value
+        self.REGISTERS[register] = self.ACBR
         return self.ACCUMULATOR, self.REGISTERS
 
 
@@ -194,18 +263,14 @@ def run(program_name: str):
         x = line.split(' ')
         if (len(line) > 0):
             print('     ', x[0], "  ",x[1])
-            eval('processor.'+x[0]+'('+x[1]+')')
+            eval('chip.'+x[0]+'('+x[1]+')')
     program.close()
     print()
     return chip.read_accumulator()
 
 
 chip = processor()
-if not sum(chip.read_all_rom()):
-    print('all zeroes')
-else:
-    print('non-zero')
-    
+
 """
 print('Registers [0-15]: ',chip.read_all_registers())
 print('Accumulator     : ',chip.read_accumulator())
@@ -215,5 +280,7 @@ print('PRAM            : ',chip.read_all_pram())
 """
 
 
-#print('Accumulator : ',run('addition.asm'))
-#print(chip.read_carry())
+#or x in range(16):
+#    print("binary of ",x, " is ", chip.ones_complement(x), "    ", chip.binary_to_decimal(chip.ones_complement(x)))
+print('Accumulator : ',run('addition.asm'))
+print(chip.read_carry())
