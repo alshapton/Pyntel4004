@@ -8,3 +8,6 @@
         rar
         stc
         tcc
+        stc
+        ldm 6
+        daa

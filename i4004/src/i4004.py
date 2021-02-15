@@ -203,7 +203,7 @@ class processor:
         # Check for carry bit set/reset when an overflow is detected
         # i.e. the result is more than a 4-bit number (MAX_4_BITS)
         if (self.ACCUMULATOR > self.MAX_4_BITS ):
-            self.ACCUMULATOR = self.MAX_4_BITS
+            self.ACCUMULATOR = self.MAX_4_BITS  - self.MAX_4_BITS - 1 
             self.set_carry()
         else:
             self.reset_carry()
@@ -229,7 +229,7 @@ class processor:
         # Check for carry bit set/reset when borrow (overflow) is detected
         # i.e. the result is more than a 4-bit number (MAX_4_BITS)
         if (self.ACCUMULATOR > self.MAX_4_BITS ):
-            self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS -1
+            self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
             self.set_carry()
         else:
             self.reset_carry()
@@ -459,6 +459,29 @@ class processor:
         self.ACCUMULATOR = 0
         self.ACCUMULATOR = self.read_carry()
         self.reset_carry()
+        return self.ACCUMULATOR, self.CARRY
+
+
+
+    def daa(self):
+        """
+        Name:           Decimal adjust accumulator
+        Function:       The accumulator is incremented by 6 if 
+                        either the carry/link is 1 or if the accumulator content is greater than 9.        
+        Syntax:         DAA
+        Assembled:      1111 1011
+        Symbolic:       (ACC) + (0000 or 0110) --> ACC
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry/link is set to a 1 if the result generates a carry, otherwise it is unaffected.
+        """
+
+        if (self.read_carry == 1 or self.ACCUMULATOR > 9):
+            self.ACCUMULATOR = self.ACCUMULATOR + 6
+            if (self.ACCUMULATOR > self.MAX_4_BITS ):
+                self.ACCUMULATOR = self.MAX_4_BITS  - self.MAX_4_BITS 
+            self.set_carry()
+        else:
+            self.reset_carry()
         return self.ACCUMULATOR, self.CARRY
 
 
