@@ -444,6 +444,24 @@ class processor:
         return self.ACCUMULATOR, self.CARRY
 
 
+    def tcc(self):
+        """
+        Name:           Transmit carry and clear
+        Function:       The accumulator is cleared. 
+                        The least significant position of the accumulator is set to the value of the carry/link.
+        Syntax:         TCC
+        Assembled:      111 0111
+        Symbolic:       0 --> ACC, (CY) --> a0, 0 --> CY
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry bit will be set to the 0.
+        """
+
+        self.ACCUMULATOR = 0
+        self.ACCUMULATOR = self.read_carry()
+        self.reset_carry()
+        return self.ACCUMULATOR, self.CARRY
+
+
     # Output Methods
 
     def read_all_registers(self):

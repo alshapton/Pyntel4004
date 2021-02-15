@@ -6,3 +6,5 @@
         iac
         stc
         rar
+        stc
+        tcc
