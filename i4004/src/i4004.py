@@ -462,7 +462,6 @@ class processor:
         return self.ACCUMULATOR, self.CARRY
 
 
-
     def daa(self):
         """
         Name:           Decimal adjust accumulator
@@ -483,6 +482,31 @@ class processor:
         else:
             self.reset_carry()
         return self.ACCUMULATOR, self.CARRY
+
+    def tcs(self):
+        """
+        Name:           Transfer Carry Subtract
+        Function:       The accumulator is set to 9 if the carry/link is 0.
+                        The accumulator is set to 10 if the carry/link is a 1.    
+        Syntax:         TCS
+        Assembled:      1111 1001
+        Symbolic:       1001 --> ACC if (CY) = 0
+                        1010 --> ACC if (CY) = 1
+                        0 --> CY
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry/link is set to 0.
+        """
+
+        if (self.read_carry() == 0 ):
+            self.ACCUMULATOR = 9
+        else:
+            self.ACCUMULATOR = 10
+        self.reset_carry()
+        return self.ACCUMULATOR, self.CARRY
+
+
+
+
 
 
     # Output Methods
