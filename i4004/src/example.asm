@@ -1,3 +1,4 @@
+ / Example program
         org     rom
         nop
         clc
@@ -9,5 +10,6 @@
         stc
         tcc
         stc
-        ldm 9
+        ldm 15
         kbp
+        dcl

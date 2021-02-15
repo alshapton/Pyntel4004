@@ -10,35 +10,43 @@ class processor:
     MEMORY_SIZE_PRAM = 4096     # Number of 4-bit words in PRAM
 
     NO_REGISTERS = 16           # Number of registers
+    NO_DRB = 8                  # Number of Data RAM Banks (0-7)
+    NO_COMMAND_REGISTERS = 4    # Number of command registers    
 
     # Creation of processor internals
 
-    ACCUMULATOR = 0     # Initialise the accumulator
-    ACBR = 0            # Accumulator Buffer Register
-    CARRY = 0           # Reset the carry bit
-
-    RAM = []            # RAM
-    ROM = []            # ROM
-    REGISTERS = []      # Reegisters
-    PRAM = [[],[],[]]   # Program RAM
+    ACCUMULATOR = 0         # Initialise the accumulator
+    ACBR = 0                # Accumulator Buffer Register
+    CARRY = 0               # Reset the carry bit
+    COMMAND_REGISTERS = []  # Command Register (Select RAM Bank)
+    CURRENT_RAM_BANK = 0    # Current RAM Bank
+    RAM = []                # RAM
+    ROM = []                # ROM
+    REGISTERS = []          # Registers
+    PRAM = [[],[],[]]       # Program RAM
 
     
     # Initialisation methods
 
     def __init_ram(self):
-        for _i in range(self.MEMORY_SIZE_RAM - 1):
+        for _i in range(self.MEMORY_SIZE_RAM):
             self.RAM.append(0)
 
+    def __init_command_registers(self):
+        for _i in range(self.NO_COMMAND_REGISTERS ):
+            self.COMMAND_REGISTERS.append(0)
+
     def __init_registers(self):
-        for _i in range(self.NO_REGISTERS - 1):
+        for _i in range(self.NO_REGISTERS):
             self.REGISTERS.append(0)
 
     def __init_rom(self):
-        for _i in range(self.MEMORY_SIZE_ROM - 1):
+        for _i in range(self.MEMORY_SIZE_ROM):
             self.ROM.append(0)
 
     def __init_pram(self):
         self.PRAM = [[[0 for _j in range(7)] for _k in range(255)] for _l in range(3)]
+
 
     # Sub-operation methods
 
@@ -52,6 +60,7 @@ class processor:
         self.CARRY = 0
         return self.CARRY
 
+        
     # Miscellaneous read/write operations
 
     def read_complement_carry(self):
@@ -94,33 +103,36 @@ class processor:
         # Initialise all the internals of the processor
         self.ACCUMULATOR = 0
         self.ACBR = 0
+        self.CURRENT_RAM_BANK = 0
+        self.__init_command_registers()
         self.__init_registers()
         self.__init_pram()
         self.__init_ram()
         self.__init_rom()
         self.reset_carry()
 
-    """
-                                  
-                .-.                                              
-               (._.)        ,--.      .-.      .-.        ,--.   
-                .-.        /   |    /    \   /    \      /   |   
-                | |       / .' |   |  .-. ; |  .-. ;    / .' |   
-                | |      / / | |   | |  | | | |  | |   / / | |   
-                | |     / /  | |   | |  | | | |  | |  / /  | |   
-                | |    /  `--' |-. | |  | | | |  | | /  `--' |-. 
-                | |    `-----| |-' | '  | | | '  | | `-----| |-' 
-                | |          | |   '  `-' / '  `-' /       | |   
-               (___)        (___)   `.__,'   `.__,'       (___)  
-        
-         _           _                   _   _                        _   
-        (_)_ __  ___| |_ _ __ _   _  ___| |_(_) ___  _ __    ___  ___| |_ 
-        | | '_ \/ __| __| '__| | | |/ __| __| |/ _ \| '_ \  / __|/ _ \ __|
-        | | | | \__ \ |_| |  | |_| | (__| |_| | (_) | | | | \__ \  __/ |_ 
-        |_|_| |_|___/\__|_|   \__,_|\___|\__|_|\___/|_| |_| |___/\___|\__|
-                                                                        
-    
-    """           
+
+    ############################################################################
+    #                                                                          #
+    #            .-.                                                           #
+    #           (._.)        ,--.      .-.      .-.        ,--.                #
+    #            .-.        /   |    /    \   /    \      /   |                #
+    #            | |       / .' |   |  .-. ; |  .-. ;    / .' |                #
+    #            | |     / /  | |   | |  | | | |  | |  / /  | |                #
+    #            | |      / / | |   | |  | | | |  | |   / / | |                #
+    #            | |    /  `--' |-. | |  | | | |  | | /  `--' |-.              #
+    #            | |    `-----| |-' | '  | | | '  | | `-----| |-'              #
+    #            | |          | |   '  `-' / '  `-' /       | |                #
+    #           (___)        (___)   `.__,'   `.__,'       (___)               #
+    #                                                                          #
+    #     _           _                   _   _                        _       #
+    #    (_)_ __  ___| |_ _ __ _   _  ___| |_(_) ___  _ __    ___  ___| |_     #
+    #    | | '_ \/ __| __| '__| | | |/ __| __| |/ _ \| '_ \  / __|/ _ \ __|    #
+    #    | | | | \__ \ |_| |  | |_| | (__| |_| | (_) | | | | \__ \  __/ |_     #
+    #    |_|_| |_|___/\__|_|   \__,_|\___|\__|_|\___/|_| |_| |___/\___|\__|    # 
+    #                                                                          #
+    ############################################################################
+
     # Operators
 
     # One Word Machine Instructions
@@ -553,6 +565,51 @@ class processor:
         return self.ACCUMULATOR
 
 
+    def dcl(self):
+        """
+        Name:           Designate command line
+        Function:       The content of the three least significant accumulator bits is transferred to the 
+                        comand control register within the CPU. This instruction provides RAM bank 
+                        selection when multiple RAM banks are used.
+                        (If no DCL instruction is sent out, RAM Bank number zero is automatically selected 
+                        after application of at least one RESET). See below for RAM Bank selection table.
+                        DCL remains latched until it is changed.
+        Syntax:         DCL
+        Assembled:      1111 1101
+        Symbolic:       a0 --> CM0, a1 --> CM1, a2 --> CM2
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   Not Applicable
+
+                        The selection is made according to the following table.
+                        (ACC)	CM-RAMi                     Enabled	Bank No.
+                        ----_	------------------------	------------
+                        X000	CM-RAM0	                    Bank 0
+                        X001	CM-RAM1	                    Bank 1
+                        X010	CM-RAM2	                    Bank 2
+                        X100	CM-RAM3	                    Bank 3
+                        X011	CM-RAM1, CM-RAM1	        Bank 4
+                        X101	CM-RAM1, CM-RAM3	        Bank 5
+                        X110	CM-RAM2, CM-RAM3	        Bank 6
+                        X111	CM-RAM1, CM-RAM2, CM-RAM3	Bank 7
+        """
+
+        ACC = self.ACCUMULATOR
+        if (ACC == 0):
+            self.COMMAND_REGISTERS[0] = 0
+            self.COMMAND_REGISTERS[1] = 0
+            self.COMMAND_REGISTERS[2] = 0
+            self.COMMAND_REGISTERS[3] = 0
+            self.CURRENT_RAM_BANK = 0
+            return self.COMMAND_REGISTERS, self.CURRENT_RAM_BANK
+        
+        self.COMMAND_REGISTERS[1] = ACC & 1
+        self.COMMAND_REGISTERS[2] = ACC & 2
+        self.COMMAND_REGISTERS[3] = ACC & 4
+        self.CURRENT_RAM_BANK = ACC & 7
+        return self.COMMAND_REGISTERS, self.CURRENT_RAM_BANK
+
+
+
 
 
 
@@ -572,6 +629,9 @@ class processor:
 
     def read_accumulator(self):
         return(self.ACCUMULATOR)
+    
+    def read_current_ram_bank(self):
+        return(self.CURRENT_RAM_BANK)
 
     def read_carry(self):
         return(self.CARRY)
@@ -592,8 +652,9 @@ def run(program_name: str):
 
     print('Program Code')
     print()
+    count = 0
+    ERR = False
     while True:
-        count = 0
         line = program.readline()
         # if line is empty
         # end of file is reached
@@ -601,29 +662,42 @@ def run(program_name: str):
             break
         line = line.strip()
         x = line.split()
-        if (len(line) > 0):
-            opcode = x[0]
-            u_opcode = opcode.upper()
-            if (opcode in ['org','end']) or ( u_opcode in OPCODES):
-                if (opcode in ['org','end']):
-                    pass
-                else:
-                    # Check for operand
-                    if (len(x) == 2):
-                        # Operator and operand
-                        print('     ', opcode, "  ",x[1])
-                        eval('chip.'+opcode+'('+x[1]+')')
+        if (line[0] == '/'):
+            print('{:>5} {}'.format(str(count),line))
+            pass
+        else:
+            if (len(line) > 0):
+                opcode = x[0]
+                u_opcode = opcode.upper()
+                if (opcode in ['org','end']) or ( u_opcode in OPCODES):
+                    if (opcode in ['org','end']):
+                        if (opcode == 'org'):
+                            print('{:>5}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                        if (opcode == 'end'):
+                            print('{:>5}      {:<3}'.format(str(count),opcode))
+
+                        pass
                     else:
-                        # Only operator
-                        eval('chip.'+opcode+'()')
-                        print('     ', opcode)
-                        
-            else:
-                print()
-                print("Invalid mnemonic '",opcode,"' at line: ", count)
-                break
+                        # Check for operand
+                        if (len(x) == 2):
+                            # Operator and operand
+                            print('{:>5}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                            eval('chip.'+opcode+'('+x[1]+')')
+                        else:
+                            # Only operator
+                            eval('chip.'+opcode+'()')
+                            print('{:>5}      {:<3}'.format(str(count),opcode))
+                            
+                else:
+                    print()
+                    print("Invalid mnemonic '",opcode,"' at line: ", count + 1)
+                    ERR = True
+                    break
         count = count + 1
+
     program.close()
+    if ERR:
+        print("Program halted")
     print()
     return chip.read_accumulator()
 
@@ -644,5 +718,5 @@ print('PRAM            : ',chip.read_all_pram())
 run('example.asm')
 print('Accumulator : ',chip.read_accumulator())
 print('              ', chip.decimal_to_binary(chip.read_accumulator()))
-print('              ', chip.read_carry())
+print('              ', chip.read_current_ram_bank())
 
