@@ -352,23 +352,44 @@ class processor:
 
 # Mnemonic link: http://e4004.szyc.org/iset.html
 
+
+
+# Valid Opcodes
+
+OPCODES = ['NOP', 'JCN', 'FIM', 'SRC', 'FIN', 'JIN', 'JUN', 'JMS',
+'INC', 'ISZ', 'ADD', 'SUB', 'LD', 'XCH', 'BBL', 'LDM', 'WRM',
+'WMP', 'WRR', 'WR0', 'WR1', 'WR2', 'WR3', 'SBM', 'RDM', 'RDR',
+'ADM', 'RD0', 'RD1', 'RD2', 'RD3', 'CLB', 'CLC', 'IAC', 'CMC',
+'CMA', 'RAL', 'RAR', 'TCC', 'DAC', 'TCS', 'STC', 'DAA','KBP', 'DCL']
+
 def run(program_name: str):
     program = open(program_name, 'r')
 
     print('Program Code')
     print()
     while True:
-    
+        count = 0
         line = program.readline()
         # if line is empty
         # end of file is reached
         if not line:
             break
         line = line.strip()
-        x = line.split(' ')
+        x = line.split()
         if (len(line) > 0):
-            print('     ', x[0], "  ",x[1])
-            eval('chip.'+x[0]+'('+x[1]+')')
+            opcode = x[0]
+            u_opcode = opcode.upper()
+            print('     ', opcode, "  ",x[1])
+            if (opcode in ['org','end']) or ( u_opcode in OPCODES):
+                if (opcode in ['org','end']):
+                    pass
+                else:
+                    eval('chip.'+opcode+'('+x[1]+')')
+            else:
+                print()
+                print("Invalid mnemonic '",opcode,"' at line: ", count)
+                break
+        count = count + 1
     program.close()
     print()
     return chip.read_accumulator()
@@ -389,5 +410,4 @@ print('PRAM            : ',chip.read_all_pram())
 #    print("binary of ",x, " is ", chip.ones_complement(x), "    ", chip.binary_to_decimal(chip.ones_complement(x)))
 print('Accumulator : ',run('addition.asm'))
 print(chip.read_carry())
-
 
