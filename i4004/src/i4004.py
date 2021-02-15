@@ -57,7 +57,9 @@ class processor:
         # Return the complement of the carry bit
         return 1 if self.CARRY == 0 else 0
 
+
     # Utility operations 
+
 
     def ones_complement(self, value: str):
         # Perform a one's complement
@@ -98,7 +100,7 @@ class processor:
         self.reset_carry()
 
     """
-                                          
+                                  
                 .-.                                              
                (._.)        ,--.      .-.      .-.        ,--.   
                 .-.        /   |    /    \   /    \      /   |   
@@ -247,7 +249,7 @@ class processor:
 
         self.REGISTERS[register] = self.REGISTERS[register] + 1
         if (self.REGISTERS[register] > self.MAX_4_BITS ):
-            self.REGISTERS[register] = 0
+            self.REGISTERS[register] = self.MAX_4_BITS - self.REGISTERS[register]
         return self.REGISTERS[register]
 
 
@@ -317,6 +319,7 @@ class processor:
             self.set_carry()
         return self.CARRY
 
+
     def stc(self):
         """
         Name:           Set Carry
@@ -346,6 +349,7 @@ class processor:
         self.ACCUMULATOR = self.ones_complement(self.ACCUMULATOR)
         return self.ACCUMULATOR
 
+
     def iac(self):
         """
         Name:           Increment accumulator
@@ -357,13 +361,62 @@ class processor:
         Side-effects:   No overflow sets the carry/link to 0; overflow sets the carry/link to a 1.
         """
 
-        self.ACCUMULATOR = self.ACCUMULATOR] + 1
+        self.ACCUMULATOR = self.ACCUMULATOR + 1
         if (self.ACCUMULATOR > self.MAX_4_BITS ):
-            self.ACCUMULATOR = self.MAX_4_BITS
-            self.setcarry()
+            self.ACCUMULATOR = self.MAX_4_BITS - self.ACCUMULATOR
+            self.set_carry()
         else:
             self.reset_carry()
-        return self.ACCUMULATOR
+        return self.ACCUMULATOR, self.CARRY
+
+
+    def dac(self):
+        """
+        Name:           Decrement accumulator
+        Function:       The content of the accumulator is decremented by 1.
+        Syntax:         DAC
+        Assembled:      1111 1000
+        Symbolic:       (ACC) -1 --> ACC
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   A borrow sets the carry/link to 0; no borrow sets the carry/link to a 1.
+        """
+
+        self.ACCUMULATOR = self.ACCUMULATOR + 15
+        if (self.ACCUMULATOR > self.MAX_4_BITS ):
+            self.ACCUMULATOR = self.MAX_4_BITS - self.ACCUMULATOR
+            self.set_carry()
+        else:
+            self.reset_carry()
+        return self.ACCUMULATOR, self.CARRY
+
+
+    def ral(self):
+        """
+        Name:           Rotate left
+        Function:       The content of the accumulator and carry/link are rotated left.
+        Syntax:         RAL
+        Assembled:      1111 0101
+        Symbolic:       C0 --> a0, a(i) --> a(i+1), a3 -->CY
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry bit will be set to the highest significant bit of the accumulator.
+        """
+
+
+        C0 = self.read_carry()
+
+        self.ACCUMULATOR = self.ACCUMULATOR * 2
+        if (self.ACCUMULATOR >= self.MAX_4_BITS):
+                self.set_carry()
+        else:
+            self.reset_carry()
+        if (self.ACCUMULATOR > self.MAX_4_BITS ):
+            self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
+        
+        self.ACCUMULATOR = self.ACCUMULATOR + C0
+        return self.ACCUMULATOR, self.CARRY
+
+
+
 
     # Output Methods
 
@@ -413,12 +466,20 @@ def run(program_name: str):
         if (len(line) > 0):
             opcode = x[0]
             u_opcode = opcode.upper()
-            print('     ', opcode, "  ",x[1])
             if (opcode in ['org','end']) or ( u_opcode in OPCODES):
                 if (opcode in ['org','end']):
                     pass
                 else:
-                    eval('chip.'+opcode+'('+x[1]+')')
+                    # Check for operand
+                    if (len(x) == 2):
+                        # Operator and operand
+                        print('     ', opcode, "  ",x[1])
+                        eval('chip.'+opcode+'('+x[1]+')')
+                    else:
+                        # Only operator
+                        eval('chip.'+opcode+'()')
+                        print('     ', opcode)
+                        
             else:
                 print()
                 print("Invalid mnemonic '",opcode,"' at line: ", count)
@@ -442,6 +503,8 @@ print('PRAM            : ',chip.read_all_pram())
 
 #or x in range(16):
 #    print("binary of ",x, " is ", chip.ones_complement(x), "    ", chip.binary_to_decimal(chip.ones_complement(x)))
-print('Accumulator : ',run('example.asm'))
-print(chip.read_carry())
+run('example.asm')
+print('Accumulator : ',chip.read_accumulator())
+print('              ', chip.decimal_to_binary(chip.read_accumulator()))
+print('              ', chip.read_carry())
 
