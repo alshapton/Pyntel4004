@@ -9,5 +9,5 @@
         stc
         tcc
         stc
-        ldm 6
-        daa
+        ldm 9
+        kbp

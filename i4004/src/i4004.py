@@ -504,6 +504,53 @@ class processor:
         self.reset_carry()
         return self.ACCUMULATOR, self.CARRY
 
+    def kbp(self):
+        """
+        Name:           Keyboard process
+        Function:       A code conversion is performed on the accumulator content, from 1 out of n to binary code. 
+                        If the accumulator content has more than one bit on, the accumulator will be set to 15 
+                        (to indicate error) - conversion table below
+        Syntax:         KBP
+        Assembled:      1111 1100
+        Symbolic:       (ACC) --> KBP, ROM --> ACC
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry/link is unaffected.
+
+
+                        (ACC)           (ACC)
+                        before          after
+                         KBP	  	     KBP
+                         0000	---->	0000
+                         0001	---->	0001
+                         0010	---->	0010
+                         0100	---->	0011
+                         1000	---->	0100
+                         0011	---->	1111    Error
+                         0101	---->	1111    Error
+                         0110	---->	1111    Error
+                         0111	---->	1111    Error
+                         1001	---->	1111    Error
+                         1010	---->	1111    Error
+                         1011	---->	1111    Error
+                         1100	---->	1111    Error
+                         1101	---->	1111    Error
+                         1110	---->	1111    Error
+                         1111	---->	1111    Error
+        """
+        if (self.ACCUMULATOR == 0 or self.ACCUMULATOR == 1 or self.ACCUMULATOR == 2):
+            return self.ACCUMULATOR
+        
+        if (self.ACCUMULATOR == 4):
+            self.ACCUMULATOR = 3
+            return self.ACCUMULATOR
+        
+        if (self.ACCUMULATOR == 8):
+            self.ACCUMULATOR = 4
+            return self.ACCUMULATOR
+        
+        # Error
+        self.ACCUMULATOR = 15 
+        return self.ACCUMULATOR
 
 
 
