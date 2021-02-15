@@ -3,6 +3,7 @@ class processor:
 
     # i4004 Processor characteristics
     MAX_4_BITS = 15         #    Maximum value 4 bits can hold
+    MSB = 8                 #    Most significant bit value (4-bit)
     
     MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
@@ -124,7 +125,7 @@ class processor:
 
     # One Word Machine Instructions
 
-    def nop(self, operand):
+    def nop(self):
         """
         Name:           No Operation
         Function:       No operation performed.
@@ -137,7 +138,7 @@ class processor:
 
         return self
 
-    def ldm(self, operand):
+    def ldm(self, operand:int):
         """
         Name:           Load Accumulator Immediate
         Function:       The 4 bits of immediate data are loaded into the accumulator.
@@ -151,7 +152,7 @@ class processor:
         self.ACCUMULATOR = operand
         return self.ACCUMULATOR
 
-    def ld(self, register):
+    def ld(self, register:int):
         """
         Name:           Load index register to Accumulator
         Function:       The 4 bit content of the designated index register (RRRR) is loaded into accumulator.
@@ -167,7 +168,7 @@ class processor:
         return self.ACCUMULATOR
    
     
-    def xch(self, register):
+    def xch(self, register:int):
         """
         Name:           Exchange index register and accumulator
         Function:       The 4 bit content of designated index register is loaded into the accumulator.
@@ -185,7 +186,7 @@ class processor:
         return self.ACCUMULATOR, self.REGISTERS
 
   
-    def add(self, register):
+    def add(self, register:int):
         """
         Name:           Add index register to accumulator with carry
         Function:       The 4 bit content of the designated index register is added to the content of the accumulator with carry.
@@ -209,7 +210,7 @@ class processor:
         return self.ACCUMULATOR, self.CARRY
 
 
-    def sub(self, register):
+    def sub(self, register:int):
         """
         Name:           Subtract index register from accumulator with borrow    
         Function:       The 4 bit content of the designated index register is complemented (ones complement) and 
@@ -235,7 +236,7 @@ class processor:
         return self.ACCUMULATOR, self.CARRY
 
 
-    def inc(self, register):
+    def inc(self, register:int):
         """
         Name:           Increment index register
         Function:       The 4 bit content of the designated index register is incremented by 1. 
@@ -401,21 +402,46 @@ class processor:
         Side-effects:   The carry bit will be set to the highest significant bit of the accumulator.
         """
 
-
+        # Store Carry bit
         C0 = self.read_carry()
-
+        # Shift left
         self.ACCUMULATOR = self.ACCUMULATOR * 2
+        # Set carry bit correctly
         if (self.ACCUMULATOR >= self.MAX_4_BITS):
                 self.set_carry()
         else:
             self.reset_carry()
+        # If necessary remove non-existent bit 5
         if (self.ACCUMULATOR > self.MAX_4_BITS ):
             self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
-        
+        # Add ooriginal carry bit
         self.ACCUMULATOR = self.ACCUMULATOR + C0
         return self.ACCUMULATOR, self.CARRY
 
 
+    def rar(self):
+        """
+        Name:           Rotate right
+        Function:       The content of the accumulator and carry/link are rotated right.
+        Syntax:         RAR
+        Assembled:      1111 0110
+        Symbolic:       a0 --> CY, a(i) --> a(i-1), C0 -->a3
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   The carry bit will be set to the lowest significant bit of the accumulator.
+        """
+
+        # Store Carry bit
+        C0 = self.read_carry()
+        # Set carry bit coorrectly
+        if (self.ACCUMULATOR % 2 == 0):
+            self.reset_carry()
+        else:
+            self.set_carry() 
+        # Shift right
+        self.ACCUMULATOR = self.ACCUMULATOR // 2 
+        # Add carry to high-order bit of accumulator
+        self.ACCUMULATOR = self.ACCUMULATOR + (C0 * self.MSB)
+        return self.ACCUMULATOR, self.CARRY
 
 
     # Output Methods

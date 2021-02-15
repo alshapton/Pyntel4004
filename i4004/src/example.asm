@@ -1,5 +1,8 @@
         org     rom
+        nop
         clc
+        ldm     4
+        iac
+        iac
         stc
-        ldm     8
-        ral
+        rar
