@@ -22,7 +22,7 @@ class processor:
     PRAM = [[],[],[]]   # Program RAM
 
     
-    # Reset methods
+    # Initialisation methods
 
     def __init_ram(self):
         for _i in range(self.MEMORY_SIZE_RAM - 1):
@@ -71,11 +71,13 @@ class processor:
                 ones = ones + '1'   
         return ones
 
+
     def decimal_to_binary(self, decimal: int):
         # Convert decimal to binary
         binary = bin(decimal)[2:].zfill(4)
         return binary
     
+
     def binary_to_decimal(self, binary: str):
         # Convert binary to decinal
         decimal = 0
@@ -88,6 +90,7 @@ class processor:
     def __init__(self):
         # Initialise all the internals of the processor
         self.ACCUMULATOR = 0
+        self.ACBR = 0
         self.__init_registers()
         self.__init_pram()
         self.__init_ram()
@@ -329,6 +332,38 @@ class processor:
         return self.CARRY
 
 
+    def cma(self):
+        """
+        Name:           Complement Accumulator
+        Function:       The content of the accumulator is complemented. The carry/link is unaffected.
+        Syntax:         CMA
+        Assembled:      1111 0100
+        Symbolic:       ~a3 ~a2 ~a1 ~a0 --> ACC
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   Not Applicable
+        """
+
+        self.ACCUMULATOR = self.ones_complement(self.ACCUMULATOR)
+        return self.ACCUMULATOR
+
+    def iac(self):
+        """
+        Name:           Increment accumulator
+        Function:       The content of the accumulator is incremented by 1.
+        Syntax:         IAC
+        Assembled:      1111 0010
+        Symbolic:       (ACC) +1 --> ACC
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   No overflow sets the carry/link to 0; overflow sets the carry/link to a 1.
+        """
+
+        self.ACCUMULATOR = self.ACCUMULATOR] + 1
+        if (self.ACCUMULATOR > self.MAX_4_BITS ):
+            self.ACCUMULATOR = self.MAX_4_BITS
+            self.setcarry()
+        else:
+            self.reset_carry()
+        return self.ACCUMULATOR
 
     # Output Methods
 
@@ -351,7 +386,6 @@ class processor:
         return(self.CARRY)
 
 # Mnemonic link: http://e4004.szyc.org/iset.html
-
 
 
 # Valid Opcodes
@@ -408,6 +442,6 @@ print('PRAM            : ',chip.read_all_pram())
 
 #or x in range(16):
 #    print("binary of ",x, " is ", chip.ones_complement(x), "    ", chip.binary_to_decimal(chip.ones_complement(x)))
-print('Accumulator : ',run('addition.asm'))
+print('Accumulator : ',run('example.asm'))
 print(chip.read_carry())
 
