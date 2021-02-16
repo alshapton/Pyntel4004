@@ -713,7 +713,30 @@ for inst in INSTRUCTIONS:
     OPCODES.append(inst['opcode'])
 
 
-def run(program_name: str, chip):
+
+def execute(chip, location, PC):
+    _TPS = []
+    if (location == 'rom'):
+        _TPS = chip.ROM
+    else:
+        _TPS = chip.RAM
+    TPS_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,chip.MEMORY_SIZE_RAM])
+    TPS_SIZE = 10
+   
+    while PC < TPS_SIZE:
+        OPCODE = _TPS[PC]
+        opcode_left = bin(OPCODE)[2:].zfill(8)[:4]
+        opcode_right = bin(OPCODE)[2:].zfill(8)[4:]
+        print(opcode_left,'    ',opcode_right)
+        bits = "['" + opcode_left + "','" + opcode_right + "']"
+        print(bits)
+        opcodeinfo  = next((item for item in INSTRUCTIONS if item["bits"] == bits), None)
+        print(opcodeinfo)
+        PC = PC + 1
+    return True
+
+
+def assemble(program_name: str, chip):
     # Reset temporary_program_store
     TPS = []
     TPS_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,chip.MEMORY_SIZE_RAM])
@@ -727,6 +750,7 @@ def run(program_name: str, chip):
     print()
     print('Address    Assembled   Dec   Line     Op/Operand')
     ORG_FOUND = False
+    location = ''
     count = 0
     ERR = False
     while True:
@@ -750,9 +774,8 @@ def run(program_name: str, chip):
                             ORG_FOUND = True
                             print('{:>32}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
                             if (x[1] == 'rom') or (x[1] == 'ram'):
-                                address = -1
-                            else:
-                                address = int(x[1]-1)
+                                location = x[1]
+                                address = 0
                         if (opcode == 'end'):
                             print('{:>32}      {:<3}'.format(str(count),opcode))
                         pass
@@ -770,12 +793,13 @@ def run(program_name: str, chip):
                                     bit2 = bin(int(x[1]))[2:].zfill(4) 
                                 bits = chip.binary_to_decimal(str(bit1) + str(bit2))
                                 print('{} {}  {} {}   {:>3} {:>5}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2,bits, str(count),opcode,str(x[1])))
-                                address = address + opcodeinfo['words']
                                 TPS[address] = bits
+                                address = address + opcodeinfo['words']
+
                                 eval('chip.'+opcode+'('+x[1]+')')
                             else:
                                 # Only operator
-                                eval('chip.'+opcode+'()')
+                                eval('chip.'+opcode +'()')
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
                                 bits = chip.binary_to_decimal(str(bit1) + str(bit2))
@@ -796,9 +820,16 @@ def run(program_name: str, chip):
 
     program.close()
     if ERR:
-        print("Program halted")
+        print("Program Assembly halted")
     print()
-    return TPS
+    
+    if (location == 'rom'):
+        chip.ROM = TPS
+    
+    if (location == 'ram'):
+        chip.RAM = TPS
+
+    return True
 
 
 chip = processor()
@@ -814,10 +845,11 @@ print('PRAM            : ',chip.read_all_pram())
 
 #or x in range(16):
 #    print("binary of ",x, " is ", chip.ones_complement(x), "    ", chip.binary_to_decimal(chip.ones_complement(x)))
-TPS = run('example.asm',chip)
+TPS = assemble('example.asm',chip)
 print('Accumulator : ',chip.read_accumulator())
 print('              ', chip.decimal_to_binary(chip.read_accumulator()))
 print('              ', chip.read_current_ram_bank())
 
-for i in range(10):
-    print(TPS[i])
+
+
+execute(chip, 'rom', 0)
