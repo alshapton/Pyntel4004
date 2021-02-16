@@ -12,7 +12,7 @@ class processor:
     NO_REGISTERS = 16           # Number of registers
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
     NO_COMMAND_REGISTERS = 4    # Number of command registers    
-    
+
     # Creation of processor internals
 
     ACCUMULATOR = 0         # Initialise the accumulator
@@ -506,7 +506,7 @@ class processor:
         Function:       The accumulator is cleared. 
                         The least significant position of the accumulator is set to the value of the carry/link.
         Syntax:         TCC
-        Assembled:      111 0111
+        Assembled:      1111 0111
         Symbolic:       0 --> ACC, (CY) --> a0, 0 --> CY
         Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
         Side-effects:   The carry bit will be set to the 0.
@@ -690,28 +690,42 @@ INSTRUCTIONS = [
                 {'opcode':'SUB', 'exe':10.8, 'bits':['1001','value'],'words':1},
                 {'opcode':'INC', 'exe':10.8, 'bits':['0110','value'],'words':1},
                 {'opcode':'CLB', 'exe':10.8, 'bits':['1111','0000'],'words':1},
+                {'opcode':'CLC', 'exe':10.8, 'bits':['1111','0001'],'words':1},
+                {'opcode':'CMC', 'exe':10.8, 'bits':['1111','0011'],'words':1},
+                {'opcode':'STC', 'exe':10.8, 'bits':['1111','1010'],'words':1},
+                {'opcode':'CMA', 'exe':10.8, 'bits':['1111','0100'],'words':1},
+                {'opcode':'IAC', 'exe':10.8, 'bits':['1111','0010'],'words':1},
+                {'opcode':'DAC', 'exe':10.8, 'bits':['1111','1000'],'words':1},
+                {'opcode':'RAL', 'exe':10.8, 'bits':['1111','0101'],'words':1},
+                {'opcode':'RAR', 'exe':10.8, 'bits':['1111','0110'],'words':1},
+                {'opcode':'TCC', 'exe':10.8, 'bits':['1111','0111'],'words':1},
+                {'opcode':'DAA', 'exe':10.8, 'bits':['1111','1011'],'words':1},
+                {'opcode':'TCS', 'exe':10.8, 'bits':['1111','1001'],'words':1},
+                {'opcode':'KBP', 'exe':10.8, 'bits':['1111','1100'],'words':1},
+                {'opcode':'DCL', 'exe':10.8, 'bits':['1111','1101'],'words':1},
                 ]
+
+
 
 # Set up list of valid opcodes
 OPCODES = []
 for inst in INSTRUCTIONS:
     OPCODES.append(inst['opcode'])
 
-"""
-OPCODES = ['NOP', 'JCN', 'FIM', 'SRC', 'FIN', 'JIN', 'JUN', 'JMS',
-'INC', 'ISZ', 'ADD', 'SUB', 'LD', 'XCH', 'BBL', 'LDM', 'WRM',
-'WMP', 'WRR', 'WR0', 'WR1', 'WR2', 'WR3', 'SBM', 'RDM', 'RDR',
-'ADM', 'RD0', 'RD1', 'RD2', 'RD3', 'CLB', 'CLC', 'IAC', 'CMC',
-'CMA', 'RAL', 'RAR', 'TCC', 'DAC', 'TCS', 'STC', 'DAA','KBP', 'DCL']
-"""
 
-def run(program_name: str):
+def run(program_name: str, chip):
+    # Reset temporary_program_store
+    TPS = []
+    TPS_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,chip.MEMORY_SIZE_RAM])
+    for _i in range(TPS_SIZE):
+        TPS.append(0)
+
     program = open(program_name, 'r')
     print()
     print()
     print('Program Code:', program_name)
     print()
-    print('Address    Assembled   Line     Op  Operand')
+    print('Address    Assembled   Dec   Line     Op/Operand')
     ORG_FOUND = False
     count = 0
     ERR = False
@@ -724,7 +738,7 @@ def run(program_name: str):
         line = line.strip()
         x = line.split()
         if (line[0] == '/'):
-            print('{:>26}  {}'.format(str(count),line))
+            print('{:>32}      {}'.format(str(count),line))
             pass
         else:
             if (len(line) > 0):
@@ -734,13 +748,13 @@ def run(program_name: str):
                     if (opcode in ['org','end']):
                         if (opcode == 'org'):
                             ORG_FOUND = True
-                            print('{:>26}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                            print('{:>32}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
                             if (x[1] == 'rom') or (x[1] == 'ram'):
-                                address = 0
+                                address = -1
                             else:
-                                address = int(x[1])
+                                address = int(x[1]-1)
                         if (opcode == 'end'):
-                            print('{:>26}      {:<3}'.format(str(count),opcode))
+                            print('{:>32}      {:<3}'.format(str(count),opcode))
                         pass
                     else:
                         if (ORG_FOUND is True):
@@ -754,15 +768,19 @@ def run(program_name: str):
                                 bit2 = opcodeinfo['bits'][1]
                                 if (bit2 == 'value'):
                                     bit2 = bin(int(x[1]))[2:].zfill(4) 
-                                print('{} {}  {} {} {:>5}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2, str(count),opcode,str(x[1])))
+                                bits = chip.binary_to_decimal(str(bit1) + str(bit2))
+                                print('{} {}  {} {}   {:>3} {:>5}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2,bits, str(count),opcode,str(x[1])))
                                 address = address + opcodeinfo['words']
+                                TPS[address] = bits
                                 eval('chip.'+opcode+'('+x[1]+')')
                             else:
                                 # Only operator
                                 eval('chip.'+opcode+'()')
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
-                                print('{} {}  {} {} {:>5}      {:<3}'.format(address_left, address_right,bit1,bit2,str(count),opcode))
+                                bits = chip.binary_to_decimal(str(bit1) + str(bit2))
+                                print('{} {}  {} {}   {:>3} {:>5}      {:<3}'.format(address_left, address_right,bit1,bit2,bits,str(count),opcode))
+                                TPS[address] = bits
                                 address = address + opcodeinfo['words']
                         else:
                             print()
@@ -780,7 +798,7 @@ def run(program_name: str):
     if ERR:
         print("Program halted")
     print()
-    return chip.read_accumulator()
+    return TPS
 
 
 chip = processor()
@@ -796,8 +814,10 @@ print('PRAM            : ',chip.read_all_pram())
 
 #or x in range(16):
 #    print("binary of ",x, " is ", chip.ones_complement(x), "    ", chip.binary_to_decimal(chip.ones_complement(x)))
-run('example.asm')
+TPS = run('example.asm',chip)
 print('Accumulator : ',chip.read_accumulator())
 print('              ', chip.decimal_to_binary(chip.read_accumulator()))
 print('              ', chip.read_current_ram_bank())
 
+for i in range(10):
+    print(TPS[i])
