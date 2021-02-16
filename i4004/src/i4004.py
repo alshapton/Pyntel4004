@@ -7,8 +7,8 @@ class processor:
     
     MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
-    MEMORY_SIZE_PRAM = 4096     # Number of 4-bit words in PRAM
-    STACK_SIZE = 3              # Number f 12-bit registers in the stack
+    MEMORY_SIZE_DRAM = 4096     # Number of 4-bit words in PRAM
+    STACK_SIZE = 3              # Number of 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
     NO_COMMAND_REGISTERS = 4    # Number of command registers    
@@ -18,15 +18,15 @@ class processor:
     ACCUMULATOR = 0         # Initialise the accumulator
     ACBR = 0                # Accumulator Buffer Register
     CARRY = 0               # Reset the carry bit
-    COMMAND_REGISTERS = []  # Command Register (Select RAM Bank)
-    CURRENT_RAM_BANK = 0    # Current RAM Bank
+    COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
+    CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
     PROGRAM_COUNTER = 0     # Program Counter
     RAM = []                # RAM
     ROM = []                # ROM
     REGISTERS = []          # Registers
     PRAM = [[],[],[]]       # Program RAM
     STACK = []              # The stack
-    STACK_POINTER = 0       # Stack Pointer
+    STACK_POINTER = 2       # Stack Pointer
     
     # Initialisation methods
 
@@ -50,7 +50,7 @@ class processor:
         for _i in range(self.MEMORY_SIZE_ROM):
             self.ROM.append(0)
 
-    def __init_pram(self):
+    def __init_dram(self):
         self.PRAM = [[[0 for _j in range(7)] for _k in range(255)] for _l in range(3)]
 
 
@@ -73,6 +73,41 @@ class processor:
         # Return the complement of the carry bit
         return 1 if self.CARRY == 0 else 0
 
+    def write_to_stack(self, value: int):
+        # Note that the stack pointer begins at 2, and then moves toward 0
+        #
+        #     After 2 writes            After 3 writes            After 3 writes
+        #     +------------+            +------------+            +------------+
+        #     |     a      |            |      a     |  <---SP    |      d     |
+        #     |     b      |            |      b     |            |      b     |  <---SP
+        #     |            |  <---SP    |      c     |            |      c     |
+        #     +------------+            +------------+            +------------+
+        # 
+        # Note that after 3 writes, address "a" is lost
+
+        self.STACK[self.STACK_POINTER] = value
+        self.STACK_POINTER = self.STACK_POINTER - 1 
+        if (self.STACK_POINTER == -1 ):
+            self.STACK_POINTER = 2
+        return None
+ 
+
+    def read_from_stack(self):
+        # Note that the stack pointer begins at 2, and then moves toward 0
+        #
+        #     First Read                Second Read               Third Read
+        #     +------------+            +------------+            +------------+
+        #     |     d      |  <---SP    |      d     |            |      d     |
+        #     |     b      |            |      b     |            |      b     |  <---SP
+        #     |     c      |            |      c     |  <---SP    |      c     |
+        #     +------------+            +------------+            +------------+
+        # 
+       
+        value = self.STACK[self.STACK_POINTER]
+        self.STACK_POINTER = self.STACK_POINTER + 1 
+        if (self.STACK_POINTER == 2 ):
+            self.STACK_POINTER = 0
+        return value
 
     # Utility operations 
 
@@ -115,7 +150,7 @@ class processor:
         self.__init_stack()
         self.__init_command_registers()
         self.__init_registers()
-        self.__init_pram()
+        self.__init_dram()
         self.__init_ram()
         self.__init_rom()
         self.reset_carry()
@@ -619,9 +654,6 @@ class processor:
 
 
 
-
-
-
     # Output Methods
 
     def read_all_registers(self):
@@ -649,17 +681,35 @@ class processor:
 
 
 # Valid Opcodes
+INSTRUCTIONS = [
+                {'opcode':'NOP', 'exe':10.8, 'bits':['0000','0000']},
+                {'opcode':'LD', 'exe':10.8, 'bits':['1010','value']},
+                {'opcode':'LDM', 'exe':10.8, 'bits':['1101','value']},
+                {'opcode':'XCH', 'exe':10.8, 'bits':['1011','value']},
+                {'opcode':'ADD', 'exe':10.8, 'bits':['1000','value']},
+                {'opcode':'SUB', 'exe':10.8, 'bits':['1001','value']},
+                {'opcode':'INC', 'exe':10.8, 'bits':['0110','value']},
+                {'opcode':'CLB', 'exe':10.8, 'bits':['1111','0000']},
+                ]
 
+# Set up list of valid opcodes
+OPCODES = []
+for inst in INSTRUCTIONS:
+    OPCODES.append(inst['opcode'])
+
+"""
 OPCODES = ['NOP', 'JCN', 'FIM', 'SRC', 'FIN', 'JIN', 'JUN', 'JMS',
 'INC', 'ISZ', 'ADD', 'SUB', 'LD', 'XCH', 'BBL', 'LDM', 'WRM',
 'WMP', 'WRR', 'WR0', 'WR1', 'WR2', 'WR3', 'SBM', 'RDM', 'RDR',
 'ADM', 'RD0', 'RD1', 'RD2', 'RD3', 'CLB', 'CLC', 'IAC', 'CMC',
 'CMA', 'RAL', 'RAR', 'TCC', 'DAC', 'TCS', 'STC', 'DAA','KBP', 'DCL']
+"""
 
 def run(program_name: str):
     program = open(program_name, 'r')
-
-    print('Program Code')
+    print()
+    print()
+    print('Program Code:', program_name)
     print()
     count = 0
     ERR = False
@@ -672,7 +722,7 @@ def run(program_name: str):
         line = line.strip()
         x = line.split()
         if (line[0] == '/'):
-            print('{:>5} {}'.format(str(count),line))
+            print('{:>15} {}'.format(str(count),line))
             pass
         else:
             if (len(line) > 0):
@@ -681,20 +731,27 @@ def run(program_name: str):
                 if (opcode in ['org','end']) or ( u_opcode in OPCODES):
                     if (opcode in ['org','end']):
                         if (opcode == 'org'):
-                            print('{:>5}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                            print('{:>15}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
                         if (opcode == 'end'):
-                            print('{:>5}      {:<3}'.format(str(count),opcode))
+                            print('{:>15}      {:<3}'.format(str(count),opcode))
                         pass
                     else:
                         # Check for operand
                         if (len(x) == 2):
+                            bit1 = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)['bits'][0]
+                            bit2 = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)['bits'][1]
+                            if (bit2 == 'value'):
+                                bit2 = bin(int(x[1]))[2:].zfill(4)   
                             # Operator and operand
-                            print('{:>5}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                            print('{} {} {:>5}      {:<3} {:<3}'.format(bit1, bit2, str(count),opcode,str(x[1])))
                             eval('chip.'+opcode+'('+x[1]+')')
                         else:
                             # Only operator
                             eval('chip.'+opcode+'()')
-                            print('{:>5}      {:<3}'.format(str(count),opcode))
+                            bit1 = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)['bits'][0]
+                            bit2 = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)['bits'][1]
+                           
+                            print('{} {} {:>5}      {:<3}'.format(bit1,bit2,str(count),opcode))
                             
                 else:
                     print()
