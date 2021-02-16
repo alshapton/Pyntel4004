@@ -8,11 +8,11 @@ class processor:
     MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
     MEMORY_SIZE_PRAM = 4096     # Number of 4-bit words in PRAM
-
+    STACK_SIZE = 3              # Number f 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
     NO_COMMAND_REGISTERS = 4    # Number of command registers    
-
+    
     # Creation of processor internals
 
     ACCUMULATOR = 0         # Initialise the accumulator
@@ -20,11 +20,13 @@ class processor:
     CARRY = 0               # Reset the carry bit
     COMMAND_REGISTERS = []  # Command Register (Select RAM Bank)
     CURRENT_RAM_BANK = 0    # Current RAM Bank
+    PROGRAM_COUNTER = 0     # Program Counter
     RAM = []                # RAM
     ROM = []                # ROM
     REGISTERS = []          # Registers
     PRAM = [[],[],[]]       # Program RAM
-
+    STACK = []              # The stack
+    STACK_POINTER = 0       # Stack Pointer
     
     # Initialisation methods
 
@@ -40,6 +42,10 @@ class processor:
         for _i in range(self.NO_REGISTERS):
             self.REGISTERS.append(0)
 
+    def __init_stack(self):
+        for _i in range(self.STACK_SIZE):
+            self.STACK.append(0)
+    
     def __init_rom(self):
         for _i in range(self.MEMORY_SIZE_ROM):
             self.ROM.append(0)
@@ -104,6 +110,9 @@ class processor:
         self.ACCUMULATOR = 0
         self.ACBR = 0
         self.CURRENT_RAM_BANK = 0
+        self.PROGRAM_COUNTER == 0
+        self.STACK_POINTER == 0
+        self.__init_stack()
         self.__init_command_registers()
         self.__init_registers()
         self.__init_pram()
@@ -582,7 +591,7 @@ class processor:
 
                         The selection is made according to the following table.
                         (ACC)	CM-RAMi                     Enabled	Bank No.
-                        ----_	------------------------	------------
+                        -----	------------------------	------------
                         X000	CM-RAM0	                    Bank 0
                         X001	CM-RAM1	                    Bank 1
                         X010	CM-RAM2	                    Bank 2
@@ -675,7 +684,6 @@ def run(program_name: str):
                             print('{:>5}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
                         if (opcode == 'end'):
                             print('{:>5}      {:<3}'.format(str(count),opcode))
-
                         pass
                     else:
                         # Check for operand
