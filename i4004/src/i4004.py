@@ -682,14 +682,14 @@ class processor:
 
 # Valid Opcodes
 INSTRUCTIONS = [
-                {'opcode':'NOP', 'exe':10.8, 'bits':['0000','0000']},
-                {'opcode':'LD', 'exe':10.8, 'bits':['1010','value']},
-                {'opcode':'LDM', 'exe':10.8, 'bits':['1101','value']},
-                {'opcode':'XCH', 'exe':10.8, 'bits':['1011','value']},
-                {'opcode':'ADD', 'exe':10.8, 'bits':['1000','value']},
-                {'opcode':'SUB', 'exe':10.8, 'bits':['1001','value']},
-                {'opcode':'INC', 'exe':10.8, 'bits':['0110','value']},
-                {'opcode':'CLB', 'exe':10.8, 'bits':['1111','0000']},
+                {'opcode':'NOP', 'exe':10.8, 'bits':['0000','0000'],'words':1},
+                {'opcode':'LD', 'exe':10.8, 'bits':['1010','value'],'words':1},
+                {'opcode':'LDM', 'exe':10.8, 'bits':['1101','value'],'words':1},
+                {'opcode':'XCH', 'exe':10.8, 'bits':['1011','value'],'words':1},
+                {'opcode':'ADD', 'exe':10.8, 'bits':['1000','value'],'words':1},
+                {'opcode':'SUB', 'exe':10.8, 'bits':['1001','value'],'words':1},
+                {'opcode':'INC', 'exe':10.8, 'bits':['0110','value'],'words':1},
+                {'opcode':'CLB', 'exe':10.8, 'bits':['1111','0000'],'words':1},
                 ]
 
 # Set up list of valid opcodes
@@ -711,6 +711,8 @@ def run(program_name: str):
     print()
     print('Program Code:', program_name)
     print()
+    print('Address    Assembled   Line     Op  Operand')
+    ORG_FOUND = False
     count = 0
     ERR = False
     while True:
@@ -722,7 +724,7 @@ def run(program_name: str):
         line = line.strip()
         x = line.split()
         if (line[0] == '/'):
-            print('{:>15} {}'.format(str(count),line))
+            print('{:>26}  {}'.format(str(count),line))
             pass
         else:
             if (len(line) > 0):
@@ -731,28 +733,42 @@ def run(program_name: str):
                 if (opcode in ['org','end']) or ( u_opcode in OPCODES):
                     if (opcode in ['org','end']):
                         if (opcode == 'org'):
-                            print('{:>15}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                            ORG_FOUND = True
+                            print('{:>26}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                            if (x[1] == 'rom') or (x[1] == 'ram'):
+                                address = 0
+                            else:
+                                address = int(x[1])
                         if (opcode == 'end'):
-                            print('{:>15}      {:<3}'.format(str(count),opcode))
+                            print('{:>26}      {:<3}'.format(str(count),opcode))
                         pass
                     else:
-                        # Check for operand
-                        if (len(x) == 2):
-                            bit1 = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)['bits'][0]
-                            bit2 = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)['bits'][1]
-                            if (bit2 == 'value'):
-                                bit2 = bin(int(x[1]))[2:].zfill(4)   
-                            # Operator and operand
-                            print('{} {} {:>5}      {:<3} {:<3}'.format(bit1, bit2, str(count),opcode,str(x[1])))
-                            eval('chip.'+opcode+'('+x[1]+')')
+                        if (ORG_FOUND is True):
+                            address_left = bin(address)[2:].zfill(8)[:4]
+                            address_right = bin(address)[2:].zfill(8)[4:]
+                            # Check for operand
+                            opcodeinfo  = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)
+                            if (len(x) == 2):
+                                # Operator and operand
+                                bit1 = opcodeinfo['bits'][0]
+                                bit2 = opcodeinfo['bits'][1]
+                                if (bit2 == 'value'):
+                                    bit2 = bin(int(x[1]))[2:].zfill(4) 
+                                print('{} {}  {} {} {:>5}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2, str(count),opcode,str(x[1])))
+                                address = address + opcodeinfo['words']
+                                eval('chip.'+opcode+'('+x[1]+')')
+                            else:
+                                # Only operator
+                                eval('chip.'+opcode+'()')
+                                bit1 = opcodeinfo['bits'][0]
+                                bit2 = opcodeinfo['bits'][1]
+                                print('{} {}  {} {} {:>5}      {:<3}'.format(address_left, address_right,bit1,bit2,str(count),opcode))
+                                address = address + opcodeinfo['words']
                         else:
-                            # Only operator
-                            eval('chip.'+opcode+'()')
-                            bit1 = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)['bits'][0]
-                            bit2 = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)['bits'][1]
-                           
-                            print('{} {} {:>5}      {:<3}'.format(bit1,bit2,str(count),opcode))
-                            
+                            print()
+                            print("No 'org' found at line: ", count + 1)
+                            ERR = True
+                            break    
                 else:
                     print()
                     print("Invalid mnemonic '",opcode,"' at line: ", count + 1)
