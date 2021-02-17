@@ -730,8 +730,11 @@ def execute(chip, location, PC):
         print(opcode_left,'    ',opcode_right)
         bits = "['" + opcode_left + "','" + opcode_right + "']"
         print(bits)
-        opcodeinfo  = next((item for item in INSTRUCTIONS if item["bits"] == bits), None)
-        print(opcodeinfo)
+        #opcodeinfo  = next((item for item in INSTRUCTIONS if item['bits'] == bits), None)
+        for _o in INSTRUCTIONS:
+            if (_o['bits'][0] == opcode_left) and (_o['bits'][1] == opcode_right):
+                print(_o['opcode'])
+        #print(opcodeinfo)
         PC = PC + 1
     return True
 
