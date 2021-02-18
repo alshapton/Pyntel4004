@@ -1,5 +1,5 @@
 
-from .opcodes import i4004
+from opcodes import i4004
 
 class processor:
 
@@ -683,31 +683,9 @@ class processor:
 
 
 # Valid Opcodes
-INSTRUCTIONS = [
-                {'opcode':'NOP', 'exe':10.8, 'bits':['0000','0000'],'words':1},
-                {'opcode':'LD', 'exe':10.8, 'bits':['1010','value'],'words':1},
-                {'opcode':'LDM', 'exe':10.8, 'bits':['1101','value'],'words':1},
-                {'opcode':'XCH', 'exe':10.8, 'bits':['1011','value'],'words':1},
-                {'opcode':'ADD', 'exe':10.8, 'bits':['1000','value'],'words':1},
-                {'opcode':'SUB', 'exe':10.8, 'bits':['1001','value'],'words':1},
-                {'opcode':'INC', 'exe':10.8, 'bits':['0110','value'],'words':1},
-                {'opcode':'CLB', 'exe':10.8, 'bits':['1111','0000'],'words':1},
-                {'opcode':'CLC', 'exe':10.8, 'bits':['1111','0001'],'words':1},
-                {'opcode':'CMC', 'exe':10.8, 'bits':['1111','0011'],'words':1},
-                {'opcode':'STC', 'exe':10.8, 'bits':['1111','1010'],'words':1},
-                {'opcode':'CMA', 'exe':10.8, 'bits':['1111','0100'],'words':1},
-                {'opcode':'IAC', 'exe':10.8, 'bits':['1111','0010'],'words':1},
-                {'opcode':'DAC', 'exe':10.8, 'bits':['1111','1000'],'words':1},
-                {'opcode':'RAL', 'exe':10.8, 'bits':['1111','0101'],'words':1},
-                {'opcode':'RAR', 'exe':10.8, 'bits':['1111','0110'],'words':1},
-                {'opcode':'TCC', 'exe':10.8, 'bits':['1111','0111'],'words':1},
-                {'opcode':'DAA', 'exe':10.8, 'bits':['1111','1011'],'words':1},
-                {'opcode':'TCS', 'exe':10.8, 'bits':['1111','1001'],'words':1},
-                {'opcode':'KBP', 'exe':10.8, 'bits':['1111','1100'],'words':1},
-                {'opcode':'DCL', 'exe':10.8, 'bits':['1111','1101'],'words':1},
-                ]
 
 
+INSTRUCTIONS = i4004.opcodes
 
 # Set up list of valid opcodes
 OPCODES = []
@@ -722,21 +700,20 @@ def execute(chip, location, PC):
         _TPS = chip.RAM
     TPS_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,chip.MEMORY_SIZE_RAM])
     TPS_SIZE = 10
-   
+    PC = 0
     while PC < TPS_SIZE:
         OPCODE = _TPS[PC]
+        opcodeinfo  = next((item for item in INSTRUCTIONS if item['opcode'] == OPCODE), None)
+        exe = opcodeinfo['mnemonic']
+        words = opcodeinfo['words']
+        if (exe[:3]=='ld '):
+            exe = exe[:2] + exe[3:]
+        print(OPCODE,'   ',exe)
+        exe = 'chip.' + exe
+        eval(exe)
 
-        opcode_left = bin(OPCODE)[2:].zfill(8)[:4]
-        opcode_right = bin(OPCODE)[2:].zfill(8)[4:]
-        print(opcode_left,'    ',opcode_right)
-        bits = "['" + opcode_left + "','" + opcode_right + "']"
-        print(bits)
-        #opcodeinfo  = next((item for item in INSTRUCTIONS if item['bits'] == bits), None)
-        for _o in INSTRUCTIONS:
-            if (_o['bits'][0] == opcode_left) and (_o['bits'][1] == opcode_right):
-                print(_o['opcode'])
-        #print(opcodeinfo)
-        PC = PC + 1
+        PC = PC + words
+
     return True
 
 
@@ -771,8 +748,8 @@ def assemble(program_name: str, chip):
         else:
             if (len(line) > 0):
                 opcode = x[0]
-                u_opcode = opcode.upper()
-                if (opcode in ['org','end']) or ( u_opcode in OPCODES):
+                opcodeinfo  = next((item for item in INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
+                if (opcode in ['org','end']) or ( opcode != None):
                     if (opcode in ['org','end']):
                         if (opcode == 'org'):
                             ORG_FOUND = True
@@ -788,27 +765,23 @@ def assemble(program_name: str, chip):
                             address_left = bin(address)[2:].zfill(8)[:4]
                             address_right = bin(address)[2:].zfill(8)[4:]
                             # Check for operand
-                            opcodeinfo  = next((item for item in INSTRUCTIONS if item["opcode"] == u_opcode), None)
                             if (len(x) == 2):
+                                if (opcode == 'ld'): # pad out for the only 2-character mnemonic
+                                    opcode = 'ld '
+                                fullopcode = opcode + '(' + x[1] + ')'
+                                opcodeinfo  = next((item for item in INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
                                 # Operator and operand
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
-                                if (bit2 == 'value'):
-                                    bit2 = bin(int(x[1]))[2:].zfill(4) 
-                                bits = chip.binary_to_decimal(str(bit1) + str(bit2))
-                                print('{} {}  {} {}   {:>3} {:>5}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2,bits, str(count),opcode,str(x[1])))
-                                TPS[address] = bits
+                                TPS[address] = opcodeinfo['opcode']
+                                print('{} {}  {} {}   {:>3} {:>5}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2,TPS[address], str(count),opcode,str(x[1])))
                                 address = address + opcodeinfo['words']
-
-                                eval('chip.'+opcode+'('+x[1]+')')
                             else:
                                 # Only operator
-                                eval('chip.'+opcode +'()')
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
-                                bits = chip.binary_to_decimal(str(bit1) + str(bit2))
-                                print('{} {}  {} {}   {:>3} {:>5}      {:<3}'.format(address_left, address_right,bit1,bit2,bits,str(count),opcode))
-                                TPS[address] = bits
+                                TPS[address] = opcodeinfo['opcode']
+                                print('{} {}  {} {}   {:>3} {:>5}      {:<3}'.format(address_left, address_right,bit1,bit2,TPS[address],str(count),opcode))
                                 address = address + opcodeinfo['words']
                         else:
                             print()
@@ -838,22 +811,13 @@ def assemble(program_name: str, chip):
 
 chip = processor()
 
-"""
-print('Registers [0-15]: ',chip.read_all_registers())
-print('Accumulator     : ',chip.read_accumulator())
-print('RAM             : ',chip.read_all_ram())
-print('ROM             : ',chip.read_all_rom())
-print('PRAM            : ',chip.read_all_pram())
-"""
-
-
-#or x in range(16):
-#    print("binary of ",x, " is ", chip.ones_complement(x), "    ", chip.binary_to_decimal(chip.ones_complement(x)))
 TPS = assemble('example.asm',chip)
+
+print('EXECUTING : ')
+print()
+execute(chip, 'rom', 0)
+print()
 print('Accumulator : ',chip.read_accumulator())
 print('              ', chip.decimal_to_binary(chip.read_accumulator()))
 print('              ', chip.read_current_ram_bank())
-
-
-
-execute(chip, 'rom', 0)
+print()

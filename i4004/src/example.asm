@@ -1,9 +1,8 @@
 / Example program
         org     rom
         ldm     7
+        xch     9
         ldm     4
+        add     9
 / Mid-program
-        xch     3
-        add     3
-        clb
         end

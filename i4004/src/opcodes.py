@@ -1,7 +1,6 @@
 class i4004:
-    opcodes = {
-    [
-    {"opcode":0,"mnemonic":"NOP", "exe":10.8, "bits":["0000","0000"],"words":1},
+    opcodes = [
+    {"opcode":0,"mnemonic":"nop", "exe":10.8, "bits":["0000","0000"],"words":1},
     {"opcode":1, "mnemonic":"-"},
     {"opcode":2, "mnemonic":"-"},
     {"opcode":3, "mnemonic":"-"},
@@ -161,22 +160,22 @@ class i4004:
     {"opcode":157, "mnemonic":"sub(13)","bits":["1001","1101"],"words":1},
     {"opcode":158, "mnemonic":"sub(14)","bits":["1001","1110"],"words":1},
     {"opcode":159, "mnemonic":"sub(15)","bits":["1001","1111"],"words":1},
-    {"opcode":160, "mnemonic":"ld(0)","exe":10.8, "bits":["1010","0000"],"words":1},
-    {"opcode":161, "mnemonic":"ld(1)","exe":10.8, "bits":["1010","0001"],"words":1},
-    {"opcode":162, "mnemonic":"ld(2)","exe":10.8, "bits":["1010","0010"],"words":1},
-    {"opcode":163, "mnemonic":"ld(3)","exe":10.8, "bits":["1010","0011"],"words":1},
-    {"opcode":164, "mnemonic":"ld(4)","exe":10.8, "bits":["1010","0100"],"words":1},
-    {"opcode":165, "mnemonic":"ld(5)","exe":10.8, "bits":["1010","0101"],"words":1},
-    {"opcode":166, "mnemonic":"ld(6)","exe":10.8, "bits":["1010","0110"],"words":1},
-    {"opcode":167, "mnemonic":"ld(7)","exe":10.8, "bits":["1010","0111"],"words":1},
-    {"opcode":168, "mnemonic":"ld(8)","exe":10.8, "bits":["1010","1000"],"words":1},
-    {"opcode":169, "mnemonic":"ld(9)","exe":10.8, "bits":["1010","1001"],"words":1},
-    {"opcode":170, "mnemonic":"ld(10)","exe":10.8, "bits":["1010","1010"],"words":1},
-    {"opcode":171, "mnemonic":"ld(11)","exe":10.8, "bits":["1010","1011"],"words":1},
-    {"opcode":172, "mnemonic":"ld(12)","exe":10.8, "bits":["1010","1100"],"words":1},
-    {"opcode":173, "mnemonic":"ld(13)","exe":10.8, "bits":["1010","1101"],"words":1},
-    {"opcode":174, "mnemonic":"ld(14)","exe":10.8, "bits":["1010","1110"],"words":1},
-    {"opcode":175, "mnemonic":"ld(15)","exe":10.8, "bits":["1010","1111"],"words":1},
+    {"opcode":160, "mnemonic":"ld (0)","exe":10.8, "bits":["1010","0000"],"words":1},
+    {"opcode":161, "mnemonic":"ld (1)","exe":10.8, "bits":["1010","0001"],"words":1},
+    {"opcode":162, "mnemonic":"ld (2)","exe":10.8, "bits":["1010","0010"],"words":1},
+    {"opcode":163, "mnemonic":"ld (3)","exe":10.8, "bits":["1010","0011"],"words":1},
+    {"opcode":164, "mnemonic":"ld (4)","exe":10.8, "bits":["1010","0100"],"words":1},
+    {"opcode":165, "mnemonic":"ld (5)","exe":10.8, "bits":["1010","0101"],"words":1},
+    {"opcode":166, "mnemonic":"ld (6)","exe":10.8, "bits":["1010","0110"],"words":1},
+    {"opcode":167, "mnemonic":"ld (7)","exe":10.8, "bits":["1010","0111"],"words":1},
+    {"opcode":168, "mnemonic":"ld (8)","exe":10.8, "bits":["1010","1000"],"words":1},
+    {"opcode":169, "mnemonic":"ld (9)","exe":10.8, "bits":["1010","1001"],"words":1},
+    {"opcode":170, "mnemonic":"ld (10)","exe":10.8, "bits":["1010","1010"],"words":1},
+    {"opcode":171, "mnemonic":"ld (11)","exe":10.8, "bits":["1010","1011"],"words":1},
+    {"opcode":172, "mnemonic":"ld (12)","exe":10.8, "bits":["1010","1100"],"words":1},
+    {"opcode":173, "mnemonic":"ld (13)","exe":10.8, "bits":["1010","1101"],"words":1},
+    {"opcode":174, "mnemonic":"ld (14)","exe":10.8, "bits":["1010","1110"],"words":1},
+    {"opcode":175, "mnemonic":"ld (15)","exe":10.8, "bits":["1010","1111"],"words":1},
     {"opcode":176, "mnemonic":"xch(0)","exe":10.8, "bits":["1010","0000"],"words":1},
     {"opcode":177, "mnemonic":"xch(1)","exe":10.8, "bits":["1010","0001"],"words":1},
     {"opcode":178, "mnemonic":"xch(2)","exe":10.8, "bits":["1010","0010"],"words":1},
@@ -258,4 +257,3 @@ class i4004:
     {"opcode":254, "mnemonic":"-"},
     {"opcode":255, "mnemonic":"-"}
     ]
-}
