@@ -692,7 +692,7 @@ OPCODES = []
 for inst in INSTRUCTIONS:
     OPCODES.append(inst['opcode'])
 
-def execute(chip, location, PC):
+def execute(chip, location, PC, monitor):
     _TPS = []
     if (location == 'rom'):
         _TPS = chip.ROM
@@ -706,13 +706,35 @@ def execute(chip, location, PC):
         opcodeinfo  = next((item for item in INSTRUCTIONS if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
         words = opcodeinfo['words']
+        # Only mnemonic with 2 characters - fix
         if (exe[:3]=='ld '):
             exe = exe[:2] + exe[3:]
         print(OPCODE,'   ',exe)
         exe = 'chip.' + exe
         eval(exe)
 
+        # Increment Program Counter by the correct number of words
         PC = PC + words
+        monitor_command = 'none'
+        if (monitor):
+            while (monitor_command != ''):
+                monitor_command = input('>> ').lower()
+                if (monitor_command == 'regs'):
+                    print('[0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15]')
+                    print('[----------------------------------------------]')
+                    print(chip.REGISTERS)
+                    continue
+                if (monitor_command == 'pc'):
+                    print('PC = ',PC)
+                if (monitor_command[:3] == 'reg'):
+                    register = int(monitor_command[3:])
+                    print('REG['+ monitor_command[3:].strip()+'] = ' + str(chip.REGISTERS[register]))
+                if (monitor_command == 'acc'):
+                    print('ACC =',chip.read_accumulator())
+                if (monitor_command == 'off'):
+                    monitor_command = ''
+                    monitor = False
+                
 
     return True
 
@@ -815,7 +837,7 @@ TPS = assemble('example.asm',chip)
 
 print('EXECUTING : ')
 print()
-execute(chip, 'rom', 0)
+execute(chip, 'rom', 0, True)
 print()
 print('Accumulator : ',chip.read_accumulator())
 print('              ', chip.decimal_to_binary(chip.read_accumulator()))
