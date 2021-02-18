@@ -1,9 +1,11 @@
 
+from .opcodes import i4004
+
 class processor:
 
     # i4004 Processor characteristics
-    MAX_4_BITS = 15         #    Maximum value 4 bits can hold
-    MSB = 8                 #    Most significant bit value (4-bit)
+    MAX_4_BITS = 15             #    Maximum value 4 bits can hold
+    MSB = 8                     #    Most significant bit value (4-bit)
     
     MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
@@ -712,8 +714,6 @@ OPCODES = []
 for inst in INSTRUCTIONS:
     OPCODES.append(inst['opcode'])
 
-
-
 def execute(chip, location, PC):
     _TPS = []
     if (location == 'rom'):
@@ -725,6 +725,7 @@ def execute(chip, location, PC):
    
     while PC < TPS_SIZE:
         OPCODE = _TPS[PC]
+
         opcode_left = bin(OPCODE)[2:].zfill(8)[:4]
         opcode_right = bin(OPCODE)[2:].zfill(8)[4:]
         print(opcode_left,'    ',opcode_right)
