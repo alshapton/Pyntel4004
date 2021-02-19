@@ -30,6 +30,9 @@ class processor:
     STACK = []              # The stack
     STACK_POINTER = 2       # Stack Pointer
     
+    # Instruction table
+    INSTRUCTIONS = i4004.opcodes
+
     # Initialisation methods
 
     def __init_ram(self):
@@ -156,6 +159,7 @@ class processor:
         self.__init_ram()
         self.__init_rom()
         self.reset_carry()
+
 
 
     ############################################################################
@@ -682,16 +686,6 @@ class processor:
 # Mnemonic link: http://e4004.szyc.org/iset.html
 
 
-# Valid Opcodes
-
-
-INSTRUCTIONS = i4004.opcodes
-
-# Set up list of valid opcodes
-OPCODES = []
-for inst in INSTRUCTIONS:
-    OPCODES.append(inst['opcode'])
-
 def execute(chip, location, PC, monitor):
     _TPS = []
     if (location == 'rom'):
@@ -703,7 +697,7 @@ def execute(chip, location, PC, monitor):
     PC = 0
     while PC < TPS_SIZE:
         OPCODE = _TPS[PC]
-        opcodeinfo  = next((item for item in INSTRUCTIONS if item['opcode'] == OPCODE), None)
+        opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
         words = opcodeinfo['words']
         # Only mnemonic with 2 characters - fix
@@ -735,7 +729,6 @@ def execute(chip, location, PC, monitor):
                     monitor_command = ''
                     monitor = False
                 
-
     return True
 
 
@@ -770,7 +763,7 @@ def assemble(program_name: str, chip):
         else:
             if (len(line) > 0):
                 opcode = x[0]
-                opcodeinfo  = next((item for item in INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
+                opcodeinfo  = next((item for item in chip.INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
                 if (opcode in ['org','end']) or ( opcode != None):
                     if (opcode in ['org','end']):
                         if (opcode == 'org'):
@@ -791,7 +784,7 @@ def assemble(program_name: str, chip):
                                 if (opcode == 'ld'): # pad out for the only 2-character mnemonic
                                     opcode = 'ld '
                                 fullopcode = opcode + '(' + x[1] + ')'
-                                opcodeinfo  = next((item for item in INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
                                 # Operator and operand
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
@@ -832,9 +825,7 @@ def assemble(program_name: str, chip):
 
 
 chip = processor()
-
 TPS = assemble('example.asm',chip)
-
 print('EXECUTING : ')
 print()
 execute(chip, 'rom', 0, True)
