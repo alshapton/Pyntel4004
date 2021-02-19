@@ -331,9 +331,26 @@ class processor:
     def fin(self):
         return None
 
+    # 2-word Instructions
 
+    def fim(self, registerpair:int, value:int):
+        """
+        Name:           Fetched immediate from ROM
+        Function:       The 2nd word represents 8-bits of data 
+                        which are loaded into the designated index register pair.
+        Syntax:         FIM
+        Assembled:      0010 RRR0
+                        DDDD2  DDDD1
+        Symbolic:       DDDD --> RRR0, DDDD1 --> RRR1
+        Execution:      2 words, 16-bit code and an execution time of 21.6 usec..
+        Side-effects:   Not Applicable
+        """
 
-   # Accumulator Group Instructions
+        self.REGISTERS[registerpair] = (value >> 4 )  & 15
+        self.REGISTERS[registerpair + 1] = value & 15
+        return self.REGISTERS
+
+    # Accumulator Group Instructions
 
     def clb(self):
         """
@@ -704,6 +721,11 @@ def execute(chip, location, PC, monitor):
         if (exe[:3]=='ld '):
             exe = exe[:2] + exe[3:]
         print(OPCODE,'   ',exe)
+
+        # Ensure that the correct arguments are passed to the operations
+        if (exe[:6]=='fim(rp'):
+            exe = exe.replace('rp','').replace('data8)','')
+            exe = exe + str(_TPS[PC+1 ]) + ')'
         exe = 'chip.' + exe
         eval(exe)
 
@@ -744,7 +766,7 @@ def assemble(program_name: str, chip):
     print()
     print('Program Code:', program_name)
     print()
-    print('Address    Assembled   Dec   Line     Op/Operand')
+    print('Address    Assembled             Dec        Line     Op/Operand')
     ORG_FOUND = False
     location = ''
     count = 0
@@ -758,7 +780,7 @@ def assemble(program_name: str, chip):
         line = line.strip()
         x = line.split()
         if (line[0] == '/'):
-            print('{:>32}      {}'.format(str(count),line))
+            print('{:>47}      {}'.format(str(count),line))
             pass
         else:
             if (len(line) > 0):
@@ -768,36 +790,52 @@ def assemble(program_name: str, chip):
                     if (opcode in ['org','end']):
                         if (opcode == 'org'):
                             ORG_FOUND = True
-                            print('{:>32}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                            print('{:>47}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
                             if (x[1] == 'rom') or (x[1] == 'ram'):
                                 location = x[1]
                                 address = 0
                         if (opcode == 'end'):
-                            print('{:>32}      {:<3}'.format(str(count),opcode))
+                            print('{:>47}      {:<14}'.format(str(count),opcode))
                         pass
                     else:
                         if (ORG_FOUND is True):
                             address_left = bin(address)[2:].zfill(8)[:4]
                             address_right = bin(address)[2:].zfill(8)[4:]
-                            # Check for operand
+                            # Check for operand(s)
                             if (len(x) == 2):
+                                # Operator and operand
                                 if (opcode == 'ld'): # pad out for the only 2-character mnemonic
                                     opcode = 'ld '
                                 fullopcode = opcode + '(' + x[1] + ')'
                                 opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
-                                # Operator and operand
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
                                 TPS[address] = opcodeinfo['opcode']
-                                print('{} {}  {} {}   {:>3} {:>5}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2,TPS[address], str(count),opcode,str(x[1])))
+                                print('{} {}  {} {}   {:>13} {:>10}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2,TPS[address], str(count),opcode,str(x[1])))
                                 address = address + opcodeinfo['words']
-                            else:
+                            if (len(x) == 1):
                                 # Only operator
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
                                 TPS[address] = opcodeinfo['opcode']
-                                print('{} {}  {} {}   {:>3} {:>5}      {:<3}'.format(address_left, address_right,bit1,bit2,TPS[address],str(count),opcode))
+                                print('{} {}  {} {}   {:>18} {:>5}      {:<3}'.format(address_left, address_right,bit1,bit2,TPS[address],str(count),opcode))
                                 address = address + opcodeinfo['words']
+                            if (len(x) == 3):
+                                # Operator and 2 operands
+                                d_type = ''
+
+                                if (int(x[2]) <= 256):
+                                    d_type = 'data8'
+                                val_left = bin(int(x[2]))[2:].zfill(8)[:4]
+                                val_right = bin(int(x[2]))[2:].zfill(8)[4:]
+                                fullopcode = opcode + "(" + x[1] + "," + d_type +  ")"
+                                opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                bit1 = opcodeinfo['bits'][0]
+                                bit2 = opcodeinfo['bits'][1]
+                                TPS[address] = opcodeinfo['opcode']
+                                TPS[address+1]=int(x[2])
+                                print('{} {}  {} {}  {} {}   {:>3} {:>5}      {:<3} {:<3} {:<3}'.format(address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
+                                address = address + opcodeinfo['words']    
                         else:
                             print()
                             print("No 'org' found at line: ", count + 1)
@@ -825,6 +863,8 @@ def assemble(program_name: str, chip):
 
 
 chip = processor()
+chip.RAM[128]=28
+
 TPS = assemble('example.asm',chip)
 print('EXECUTING : ')
 print()
