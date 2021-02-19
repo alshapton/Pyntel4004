@@ -183,6 +183,26 @@ class processor:
     #                                                                          #
     ############################################################################
 
+    """
+    Abbreviations used in the descriptions of each instruction's actions:
+
+            (    )	    the content of
+            -->	        is transferred to
+            ACC	        Accumulator (4-bit)
+            CY	        Carry/link Flip-Flop
+            ACBR	    Accumulator Buffer Register (4-bit)
+            RRRR	    Index register address
+            RRR	        Index register pair address
+            PL	        Low order program counter Field (4-bit)
+            PM	        Middle order program counter Field (4-bit)
+            PH	        High order program counter Field (4-bit)
+            ai	        Order i content of the accumulator
+            CMi	        Order i content of the command register
+            M	        RAM main character location
+            MSi	        RAM status character i
+            DB (T)	    Data bus content at time T
+            Stack	    The 3 registers in the address register other than the program counter
+    """
     # Operators
 
     # One Word Machine Instructions
@@ -328,8 +348,38 @@ class processor:
         return None
 
 
-    def fin(self):
-        return None
+    def fin(self, registerpair:int):
+        """
+        Name:           Fetch indirect from ROM
+        Function:       The 8 bit content of the 0 index register pair (0000) (0001)
+                        is sent out as an address in the same page where the FIN 
+                        instruction is located. The 8 bit word at that location is 
+                        loaded into the designated index register pair.
+                        The program counter is unaffected; after FIN has been executed 
+                        the next instruction in sequence will be addressed. 
+                        The content of the 0 index register pair is unaltered unless 
+                        index register 0 was designated.
+        Syntax:         FIN
+        Assembled:      0011 RRRO
+        Symbolic:       (PH) (0000) (0001) --> ROM address
+                        (OPR) --> RRRO
+                        (OPA) --> RRR1
+        Execution:      1 word, 16-bit code and an execution time of 21.6 usec..
+        Side-effects:   Not Applicable
+        Exceptions:     a) Although FIN is a 1-word instruction, its execution requires 
+                            two memory cycles (21.6 psec).
+                        b) When FIN is located at address (PH) 1111 1111 data will 
+                            be fetched from the next page(ROM) in sequence and not 
+                            from the same page(ROM) where the FIN instruction is 
+                            located. That is, next address is (PH + 1) (0000) (0001) 
+                            and not (PH) (0000) (0001).
+        """
+
+        ##### NEED TO IMPLEMENT EXCEPTION B #####
+        value = self.RAM[self.REGISTERS[1] + (self.REGISTERS[0] << 4)]
+        self.REGISTERS[registerpair] = (value >> 4 )  & 15
+        self.REGISTERS[registerpair+1] = value & 15
+        return self.REGISTERS[registerpair], self.REGISTERS[registerpair+1]
 
     # 2-word Instructions
 
@@ -347,7 +397,7 @@ class processor:
         """
 
         self.REGISTERS[registerpair] = (value >> 4 )  & 15
-        self.REGISTERS[registerpair + 1] = value & 15
+        self.REGISTERS[registerpair+1] = value & 15
         return self.REGISTERS
 
     # Accumulator Group Instructions
@@ -713,22 +763,35 @@ def execute(chip, location, PC, monitor):
     TPS_SIZE = 10
     PC = 0
     while PC < TPS_SIZE:
+        custom_opcode = False
         OPCODE = _TPS[PC]
         opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
         words = opcodeinfo['words']
+        if (words == 2):
+            next_word = str(_TPS[PC+1 ])
+            OPCODE = str(OPCODE) + ',' + next_word
+        
         # Only mnemonic with 2 characters - fix
         if (exe[:3]=='ld '):
             exe = exe[:2] + exe[3:]
-        print(OPCODE,'   ',exe)
-
+        
         # Ensure that the correct arguments are passed to the operations
         if (exe[:6]=='fim(rp'):
+            custom_opcode = True
+            value = str(_TPS[PC+1 ])
+            cop = exe.replace('data8',value)
             exe = exe.replace('rp','').replace('data8)','')
-            exe = exe + str(_TPS[PC+1 ]) + ')'
+            exe = exe + value + ')'
+
+        if (custom_opcode):
+            custom_opcode = False
+            print(OPCODE,'   ',cop)
+        else:
+            print(OPCODE,'   ',exe)
+
         exe = 'chip.' + exe
         eval(exe)
-
         # Increment Program Counter by the correct number of words
         PC = PC + words
         monitor_command = 'none'
@@ -863,7 +926,7 @@ def assemble(program_name: str, chip):
 
 
 chip = processor()
-chip.RAM[128]=28
+chip.RAM[173]=28
 
 TPS = assemble('example.asm',chip)
 print('EXECUTING : ')
