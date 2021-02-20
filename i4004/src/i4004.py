@@ -765,7 +765,7 @@ def execute(chip, location, PC, monitor):
         custom_opcode = False
         OPCODE = _TPS[PC]
         if (OPCODE == 255): # pseudo-opcode (directive "end" - stop program)
-            print('        end')
+            print('           end')
             break
         opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
@@ -788,9 +788,9 @@ def execute(chip, location, PC, monitor):
 
         if (custom_opcode):
             custom_opcode = False
-            print(OPCODE,'   ',cop)
+            print('  {:>7}  {:<10}'.format(OPCODE,cop))
         else:
-            print(OPCODE,'   ',exe)
+            print('  {:>7}  {:<10}'.format(OPCODE,exe))
 
         exe = 'chip.' + exe
         eval(exe)
@@ -818,8 +818,25 @@ def execute(chip, location, PC, monitor):
                 
     return True
 
+def match_label(_L,label: str, address):
+    for _i in range(len(_L)):
+        if (_L[_i]['label']==label):
+            _L[_i]['address'] = address
+    return _L
+
+def add_label(_L,label: str):
+    label_exists  = next((item for item in _L if str(item["label"]) == label), None)
+    if not label_exists:
+        _L.append({'label':label,'address':-1})
+    else:
+        return (-1)
+    print(_L)
+    return _L
 
 def assemble(program_name: str, chip):
+    # Reset label table for this program
+    _LABELS=[]
+
     # Reset temporary_program_store
     TPS = []
     TPS_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,chip.MEMORY_SIZE_RAM])
@@ -831,7 +848,7 @@ def assemble(program_name: str, chip):
     print()
     print('Program Code:', program_name)
     print()
-    print('Address    Assembled             Dec        Line     Op/Operand')
+    print('Label      Address    Assembled             Dec        Line     Op/Operand')
     ORG_FOUND = False
     location = ''
     count = 0
@@ -850,20 +867,31 @@ def assemble(program_name: str, chip):
         if not line:
             break
         else:
+            x = line.split()
+            if (x[0][-1] == ','):
+                success = add_label(_LABELS,x[0])
+                if success == -1:
+                    print()
+                    print('FATAL: Pass 1: Duplicate label: ' + x[0] + ' at line '+ str(p_line+1))
+                    ERR = True
+                    break
             line = line.strip()
             TFILE[p_line] = line
             p_line = p_line + 1
     program.close()
-    
+    if ERR:
+        print("Program Assembly halted")
+        print()
+        return False
     count=0
     while True:
         line = TFILE[count].strip()
         if (len(line)==0):
             break
         x = line.split()
-
+        label = ''
         if (line[0] == '/'):
-            print('{:>47}      {}'.format(str(count),line))
+            print('{:<10} {:>47}      {}'.format(label,str(count),line))
             pass
         else:
             if (len(line) > 0):
@@ -873,17 +901,24 @@ def assemble(program_name: str, chip):
                     if (opcode in ['org','end']):
                         if (opcode == 'org'):
                             ORG_FOUND = True
-                            print('{:>47}      {:<3} {:<3}'.format(str(count),opcode,str(x[1])))
+                            print('{:<10} {:>47}      {:<3} {:<3}'.format(label,str(count),opcode,str(x[1])))
                             if (x[1] == 'rom') or (x[1] == 'ram'):
                                 location = x[1]
                                 address = 0
                         if (opcode == 'end'):
-                            print('{:>47}      {:<14}'.format(str(count),opcode))
+                            print('{:<10} {:>47}      {:<14}'.format(label,str(count),opcode))
                             TPS[address] = 255 # pseudo-opcode (directive "end")
                             break
                         pass
                     else:
                         if (ORG_FOUND is True):
+                            if (x[0][-1] == ','):
+                                label = x[0]
+                                match_label(_LABELS,label,address)
+                                for _i in range(len([x])-1):
+                                    x[_i] = x[_i + 1]
+                                x.pop(len([x])-1)
+                            opcode = x[0]
                             address_left = bin(address)[2:].zfill(8)[:4]
                             address_right = bin(address)[2:].zfill(8)[4:]
                             # Check for operand(s)
@@ -896,19 +931,18 @@ def assemble(program_name: str, chip):
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
                                 TPS[address] = opcodeinfo['opcode']
-                                print('{} {}  {} {}   {:>13} {:>10}      {:<3} {:<3}'.format(address_left,address_right,bit1, bit2,TPS[address], str(count),opcode,str(x[1])))
+                                print('{:<10} {} {}  {} {}   {:>13} {:>10}      {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2,TPS[address], str(count),opcode,str(x[1])))
                                 address = address + opcodeinfo['words']
                             if (len(x) == 1):
                                 # Only operator
                                 bit1 = opcodeinfo['bits'][0]
                                 bit2 = opcodeinfo['bits'][1]
                                 TPS[address] = opcodeinfo['opcode']
-                                print('{} {}  {} {}   {:>18} {:>5}      {:<3}'.format(address_left, address_right,bit1,bit2,TPS[address],str(count),opcode))
+                                print('{:<10} {} {}  {} {}   {:>18} {:>5}      {:<3}'.format(label,address_left, address_right,bit1,bit2,TPS[address],str(count),opcode))
                                 address = address + opcodeinfo['words']
                             if (len(x) == 3):
                                 # Operator and 2 operands
                                 d_type = ''
-
                                 if (int(x[2]) <= 256):
                                     d_type = 'data8'
                                 val_left = bin(int(x[2]))[2:].zfill(8)[:4]
@@ -919,22 +953,23 @@ def assemble(program_name: str, chip):
                                 bit2 = opcodeinfo['bits'][1]
                                 TPS[address] = opcodeinfo['opcode']
                                 TPS[address+1]=int(x[2])
-                                print('{} {}  {} {}  {} {}   {:>3} {:>5}      {:<3} {:<3} {:<3}'.format(address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
+                                print('{:<10} {} {}  {} {}  {} {}   {:>3} {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
                                 address = address + opcodeinfo['words']    
                         else:
                             print()
-                            print("No 'org' found at line: ", count + 1)
+                            print("FATAL: Pass 2:  No 'org' found at line: ", count + 1)
                             ERR = True
                             break    
                 else:
                     print()
-                    print("Invalid mnemonic '",opcode,"' at line: ", count + 1)
+                    print("'FATAL: Pass 2:  Invalid mnemonic '",opcode,"' at line: ", count + 1)
                     ERR = True
                     break
         count = count + 1
 
     if ERR:
         print("Program Assembly halted")
+        return False
     print()
     
     if (location == 'rom'):
@@ -943,18 +978,23 @@ def assemble(program_name: str, chip):
     if (location == 'ram'):
         chip.RAM = TPS
 
+    print('Labels:')
+    print('Address   Label')
+    for _i in range(len(_LABELS)):
+        print('{:>5}     {}'.format(_LABELS[_i]['address'],_LABELS[_i]['label']))
     return True
 
 
 chip = processor()
 chip.RAM[173]=28
 
-TPS = assemble('example.asm',chip)
-print('EXECUTING : ')
-print()
-execute(chip, 'rom', 0, True)
-print()
-print('Accumulator : ',chip.read_accumulator())
-print('              ', chip.decimal_to_binary(chip.read_accumulator()))
-print('              ', chip.read_current_ram_bank())
-print()
+result = assemble('example.asm',chip)
+if result:
+    print('EXECUTING : ')
+    print()
+    execute(chip, 'rom', 0, True)
+    print()
+    print('Accumulator : ',chip.read_accumulator())
+    print('              ', chip.decimal_to_binary(chip.read_accumulator()))
+    print('              ', chip.read_current_ram_bank())
+    print()
