@@ -378,7 +378,7 @@ class processor:
         ##### NEED TO IMPLEMENT EXCEPTION B #####
         value = self.RAM[self.REGISTERS[1] + (self.REGISTERS[0] << 4)]
         self.REGISTERS[registerpair] = (value >> 4 )  & 15
-        self.REGISTERS[registerpair+1] = value & 15
+        self.REGISTERS[registerpair + 1] = value & 15
         return self.REGISTERS[registerpair], self.REGISTERS[registerpair+1]
 
     # 2-word Instructions
@@ -759,12 +759,14 @@ def execute(chip, location, PC, monitor):
         _TPS = chip.ROM
     else:
         _TPS = chip.RAM
-    TPS_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,chip.MEMORY_SIZE_RAM])
-    TPS_SIZE = 10
     PC = 0
-    while PC < TPS_SIZE:
+    opcode = 0
+    while opcode != 255:  # pseudo-opcode (directive) for "end"
         custom_opcode = False
         OPCODE = _TPS[PC]
+        if (OPCODE == 255): # pseudo-opcode (directive "end" - stop program)
+            print('        end')
+            break
         opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
         words = opcodeinfo['words']
@@ -834,14 +836,32 @@ def assemble(program_name: str, chip):
     location = ''
     count = 0
     ERR = False
+    
+    TFILE = []
+    TFILE_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,chip.MEMORY_SIZE_RAM])
+    for _i in range(TFILE_SIZE):
+        TFILE.append('')
+
+    p_line = 0
     while True:
         line = program.readline()
         # if line is empty
         # end of file is reached
         if not line:
             break
-        line = line.strip()
+        else:
+            line = line.strip()
+            TFILE[p_line] = line
+            p_line = p_line + 1
+    program.close()
+    
+    count=0
+    while True:
+        line = TFILE[count].strip()
+        if (len(line)==0):
+            break
         x = line.split()
+
         if (line[0] == '/'):
             print('{:>47}      {}'.format(str(count),line))
             pass
@@ -859,6 +879,8 @@ def assemble(program_name: str, chip):
                                 address = 0
                         if (opcode == 'end'):
                             print('{:>47}      {:<14}'.format(str(count),opcode))
+                            TPS[address] = 255 # pseudo-opcode (directive "end")
+                            break
                         pass
                     else:
                         if (ORG_FOUND is True):
@@ -911,7 +933,6 @@ def assemble(program_name: str, chip):
                     break
         count = count + 1
 
-    program.close()
     if ERR:
         print("Program Assembly halted")
     print()

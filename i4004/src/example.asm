@@ -4,7 +4,9 @@
         xch     9
         fim     rp0     173
         ldm     2
-        fin     2
-        add     9
 / Mid-program
+        fin     2
+        fin     2
+        fin     3
+        add     9 
         end
