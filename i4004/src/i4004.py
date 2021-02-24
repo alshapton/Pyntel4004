@@ -383,6 +383,25 @@ class processor:
 
     # 2-word Instructions
 
+    def jun(self, address:int):
+        """
+        Name:           Jump unconditional
+        Function:       Program control is unconditionally 
+                        transferred to the instruction located 
+                        at the address AAAA3, AAAA2, AAAA1.
+        Syntax:         JUN
+        Assembled:      0100 AAAA3
+                        AAAA2 AAAA1
+        Symbolic:       AAAA1 --> PL,
+                        AAAA2 --> PM,
+                        AAAA3 --> PH
+        Execution:      2 words, 16-bit code and an execution time of 21.6 usec..
+        Side-effects:   Not Applicable
+        """
+        self.PROGRAM_COUNTER = address
+        return self.PROGRAM_COUNTER
+
+
     def fim(self, registerpair:int, value:int):
         """
         Name:           Fetched immediate from ROM
@@ -759,11 +778,11 @@ def execute(chip, location, PC, monitor):
         _TPS = chip.ROM
     else:
         _TPS = chip.RAM
-    PC = 0
+    chip.PROGRAM_COUNTER = 0
     opcode = 0
     while opcode != 255:  # pseudo-opcode (directive) for "end"
         custom_opcode = False
-        OPCODE = _TPS[PC]
+        OPCODE = _TPS[chip.PROGRAM_COUNTER]
         if (OPCODE == 255): # pseudo-opcode (directive "end" - stop program)
             print('           end')
             break
@@ -771,7 +790,7 @@ def execute(chip, location, PC, monitor):
         exe = opcodeinfo['mnemonic']
         words = opcodeinfo['words']
         if (words == 2):
-            next_word = str(_TPS[PC+1 ])
+            next_word = str(_TPS[chip.PROGRAM_COUNTER+1 ])
             OPCODE = str(OPCODE) + ',' + next_word
         
         # Only mnemonic with 2 characters - fix
@@ -781,10 +800,24 @@ def execute(chip, location, PC, monitor):
         # Ensure that the correct arguments are passed to the operations
         if (exe[:6]=='fim(rp'):
             custom_opcode = True
-            value = str(_TPS[PC+1 ])
+            value = str(_TPS[chip.PROGRAM_COUNTER+1 ])
             cop = exe.replace('data8',value)
             exe = exe.replace('rp','').replace('data8)','')
             exe = exe + value + ')'
+        
+        if (exe[:4]=='jun('):
+            custom_opcode = True
+            print("here")
+            lvalue = str(_TPS[chip.PROGRAM_COUNTER+1 ])
+            hvalue = str(_TPS[chip.PROGRAM_COUNTER ])
+            hvalue = bin(_TPS[chip.PROGRAM_COUNTER] & 0xffff0000)[2:].zfill(8)[:4] # Remove opcode from 1st byte
+            print(hvalue)
+            
+            lvalue = bin(_TPS[chip.PROGRAM_COUNTER+1] )[2:].zfill(8)
+            whole_value = hvalue + lvalue
+            print('whole-value',whole_value)
+            cop = exe.replace('address12','')
+            exe = 'jun(' + str(int(whole_value,2)) + ')'
 
         if (custom_opcode):
             custom_opcode = False
@@ -792,10 +825,13 @@ def execute(chip, location, PC, monitor):
         else:
             print('  {:>7}  {:<10}'.format(OPCODE,exe))
 
+        print(exe)
         exe = 'chip.' + exe
-        eval(exe)
         # Increment Program Counter by the correct number of words
-        PC = PC + words
+        chip.PROGRAM_COUNTER = chip.PROGRAM_COUNTER + words
+        
+        # Evaluate the command (some commands may change the PROGRAM_COUNTER here)
+        eval(exe)
         monitor_command = 'none'
         if (monitor):
             while (monitor_command != ''):
@@ -806,7 +842,7 @@ def execute(chip, location, PC, monitor):
                     print(chip.REGISTERS)
                     continue
                 if (monitor_command == 'pc'):
-                    print('PC = ',PC)
+                    print('PC = ',chip.PROGRAM_COUNTER)
                 if (monitor_command[:3] == 'reg'):
                     register = int(monitor_command[3:])
                     print('REG['+ monitor_command[3:].strip()+'] = ' + str(chip.REGISTERS[register]))
@@ -818,20 +854,22 @@ def execute(chip, location, PC, monitor):
                 
     return True
 
-def match_label(_L,label: str, address):
-    for _i in range(len(_L)):
-        if (_L[_i]['label']==label):
-            _L[_i]['address'] = address
-    return _L
-
 def add_label(_L,label: str):
     label_exists  = next((item for item in _L if str(item["label"]) == label), None)
     if not label_exists:
         _L.append({'label':label,'address':-1})
     else:
         return (-1)
-    print(_L)
     return _L
+
+def match_label(_L,label: str, address):
+    matched = False
+    for _i in range(len(_L)):
+        if (_L[_i]['label']==label):
+            _L[_i]['address'] = address
+            matched == True
+    return _L
+
 
 def assemble(program_name: str, chip):
     # Reset label table for this program
@@ -860,6 +898,7 @@ def assemble(program_name: str, chip):
         TFILE.append('')
 
     p_line = 0
+    address = 0
     while True:
         line = program.readline()
         # if line is empty
@@ -875,14 +914,29 @@ def assemble(program_name: str, chip):
                     print('FATAL: Pass 1: Duplicate label: ' + x[0] + ' at line '+ str(p_line+1))
                     ERR = True
                     break
+                match_label(_LABELS,x[0],address)
+                opcode = x[1][:3]
+            else:
+                opcode = x[0][:3]
+            if (opcode == 'ld()'):
+                opcode = 'ld '
+            if not (opcode in ('org','/','end')):
+                opcodeinfo  = next((item for item in chip.INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
+                address = address + opcodeinfo['words']
             line = line.strip()
             TFILE[p_line] = line
             p_line = p_line + 1
+
     program.close()
     if ERR:
         print("Program Assembly halted")
         print()
         return False
+
+
+
+    # Running the program
+
     count=0
     while True:
         line = TFILE[count].strip()
@@ -919,7 +973,7 @@ def assemble(program_name: str, chip):
                                     x[_i] = x[_i + 1]
                                 x.pop(len([x])-1)
                             opcode = x[0]
-                            address_left = bin(address)[2:].zfill(8)[:4]
+                            address_left =  bin(address)[2:].zfill(8)[:4]
                             address_right = bin(address)[2:].zfill(8)[4:]
                             # Check for operand(s)
                             if (len(x) == 2):
@@ -927,12 +981,28 @@ def assemble(program_name: str, chip):
                                 if (opcode == 'ld'): # pad out for the only 2-character mnemonic
                                     opcode = 'ld '
                                 fullopcode = opcode + '(' + x[1] + ')'
-                                opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
-                                bit1 = opcodeinfo['bits'][0]
-                                bit2 = opcodeinfo['bits'][1]
-                                TPS[address] = opcodeinfo['opcode']
-                                print('{:<10} {} {}  {} {}   {:>13} {:>10}      {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2,TPS[address], str(count),opcode,str(x[1])))
-                                address = address + opcodeinfo['words']
+                                if (opcode == 'jun'):
+                                    fullopcode = 'jun(address12)'
+                                    opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                    
+                                    dest_label = x[1] 
+                                    for _i in _LABELS:
+                                        if (_i['label'] == dest_label + ','):
+                                            label_address = _i['address']
+                                    label_address12 = str(bin(64)[2:].zfill(8)[:4]) + str(bin(label_address)[2:].zfill(12))
+                                    bit1 = label_address12[:8]
+                                    bit2 = label_address12[8:]
+                                    TPS[address] = int(str(bit1),2)
+                                    TPS[address+1] = int(str(bit2),2)
+                                    print('{:<10} {} {}  {} {}  {} {}  {:>6} {:>7}      {:<3} {:<8}'.format(label,address_left,address_right,bit1[:4], bit1[4:],bit2[4:],bit2[4:],str(TPS[address]) + ', ' + str(TPS[address + 1]), str(count),opcode,str(x[1])))
+                                    address = address + opcodeinfo['words']
+                                else:    
+                                    opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                    bit1 = opcodeinfo['bits'][0]
+                                    bit2 = opcodeinfo['bits'][1]
+                                    TPS[address] = opcodeinfo['opcode']
+                                    print('{:<10} {} {}  {} {}   {:>13} {:>10}      {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2,TPS[address], str(count),opcode,str(x[1])))
+                                    address = address + opcodeinfo['words']
                             if (len(x) == 1):
                                 # Only operator
                                 bit1 = opcodeinfo['bits'][0]

@@ -3,11 +3,11 @@
         ldm     7
         xch     9
 bob,    fim     rp0     173
-        ldm     2
+        jun     abc
 / Mid-program
         fin     2
         jun     bob
-abc,    fin     2
+abc,    jun     pig
         fin     3
 pig,    add     9 
         end

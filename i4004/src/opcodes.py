@@ -103,7 +103,7 @@ class i4004:
     {"opcode":100, "mnemonic":"inc(4)","exe":10.8, "bits":["0110","0100"],"words":1},
     {"opcode":101, "mnemonic":"inc(5)","exe":10.8, "bits":["0110","0101"],"words":1},
     {"opcode":102, "mnemonic":"inc(6)","exe":10.8, "bits":["0110","0110"],"words":1},
-    {"opcode":103, "mnemonic":"inc(7)","exe":10.8, "exe":10.8,"bits":["0110","0111"],"words":1},
+    {"opcode":103, "mnemonic":"inc(7)","exe":10.8,"bits":["0110","0111"],"words":1},
     {"opcode":104, "mnemonic":"inc(8)","exe":10.8, "bits":["0110","1000"],"words":1},
     {"opcode":105, "mnemonic":"inc(9)","exe":10.8, "bits":["0110","1001"],"words":1},
     {"opcode":106, "mnemonic":"inc(10)", "exe":10.8,"bits":["0110","1010"],"words":1},
