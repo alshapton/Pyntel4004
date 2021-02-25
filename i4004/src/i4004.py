@@ -22,12 +22,12 @@ class processor:
     CARRY = 0               # Reset the carry bit
     COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
     CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
-    PROGRAM_COUNTER = 0     # Program Counter
+    PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
     RAM = []                # RAM
     ROM = []                # ROM
     REGISTERS = []          # Registers
     PRAM = [[],[],[]]       # Program RAM
-    STACK = []              # The stack
+    STACK = []              # The stack - 3 x 12-bit registers
     STACK_POINTER = 2       # Stack Pointer
     
     # Instruction table
@@ -107,11 +107,13 @@ class processor:
         #     |     c      |            |      c     |  <---SP    |      c     |
         #     +------------+            +------------+            +------------+
         # 
-       
-        value = self.STACK[self.STACK_POINTER]
-        self.STACK_POINTER = self.STACK_POINTER + 1 
+              
         if (self.STACK_POINTER == 2 ):
             self.STACK_POINTER = 0
+        else:
+            self.STACK_POINTER = self.STACK_POINTER + 1  
+        value = self.STACK[self.STACK_POINTER]
+
         return value
 
     # Utility operations 
@@ -336,8 +338,26 @@ class processor:
         return self.REGISTERS[register]
 
 
-    def bbl(self):
-        return None
+    def bbl(self,accumulator:int):
+        """
+        Name:           Branch back and load data to the accumulator
+        Function:       The program counter (address stack) is pushed down one level. 
+                        Program control transfers to the next instruction following 
+                        the last jump to subroutine (JMS) instruction. 
+                        The 4 bits of data DDDD stored in the OPA portion of the 
+                        instruction are loaded to the accumulator.
+                        BBL is used to return from subroutine to main program.
+        Syntax:         BBL
+        Assembled:      0110 DDDD   
+        Symbolic:       (Stack) --> PL, PM, PH
+                        DDDD --> ACC
+        Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+        Side-effects:   Not Applicable
+        """
+        address = self.read_from_stack()
+        self.PROGRAM_COUNTER = address
+        self.ACCUMULATOR = accumulator
+        return self.PROGRAM_COUNTER, self.ACCUMULATOR
 
 
     def jin(self):
@@ -398,6 +418,35 @@ class processor:
         Execution:      2 words, 16-bit code and an execution time of 21.6 usec..
         Side-effects:   Not Applicable
         """
+        self.PROGRAM_COUNTER = address
+        return self.PROGRAM_COUNTER
+
+    def jms(self, address:int):
+        """
+        Name:           Jump to Subroutine
+        Function:       The address of the next instruction in sequence following 
+                        JMS (return address) is saved in the push down stack. 
+                        Program control is transferred to the instruction located 
+                        at the 12 bit address (AAAA3,AAAA2,AAAA1). Execution of a 
+                        return instruction (BBL) will cause the saved address to 
+                        be pulled out of the stack, therefore, program control 
+                        is transferred to the next sequential instruction after 
+                        the last JMS.
+                        The push down stack has 4 registers. One of them is used 
+                        as the program counter, therefore nesting of JMS can occur 
+                        up to 3 levels.
+        Syntax:         JMS
+        Assembled:      0101 AAAA3
+                        AAAA2 AAAA1
+        Symbolic:       AAAA1 --> PL,
+                        AAAA2 --> PM,
+                        AAAA3 --> PH
+        Execution:      2 words, 16-bit code and an execution time of 21.6 usec..
+        Side-effects:   Not Applicable
+
+        
+        """
+        self.write_to_stack(self.PROGRAM_COUNTER)
         self.PROGRAM_COUNTER = address
         return self.PROGRAM_COUNTER
 
@@ -805,19 +854,13 @@ def execute(chip, location, PC, monitor):
             exe = exe.replace('rp','').replace('data8)','')
             exe = exe + value + ')'
         
-        if (exe[:4]=='jun('):
+        if (exe[:4] in ('jun(','jms(')):
             custom_opcode = True
-            print("here")
-            lvalue = str(_TPS[chip.PROGRAM_COUNTER+1 ])
-            hvalue = str(_TPS[chip.PROGRAM_COUNTER ])
-            hvalue = bin(_TPS[chip.PROGRAM_COUNTER] & 0xffff0000)[2:].zfill(8)[:4] # Remove opcode from 1st byte
-            print(hvalue)
-            
+            hvalue = bin(_TPS[chip.PROGRAM_COUNTER] & 0xffff0000)[2:].zfill(8)[:4] # Remove opcode from 1st byte            
             lvalue = bin(_TPS[chip.PROGRAM_COUNTER+1] )[2:].zfill(8)
             whole_value = hvalue + lvalue
-            print('whole-value',whole_value)
-            cop = exe.replace('address12','')
-            exe = 'jun(' + str(int(whole_value,2)) + ')'
+            cop = exe.replace('address12',str(int(whole_value,2)))
+            exe = exe[:4] + str(int(whole_value,2)) + ')'
 
         if (custom_opcode):
             custom_opcode = False
@@ -825,7 +868,6 @@ def execute(chip, location, PC, monitor):
         else:
             print('  {:>7}  {:<10}'.format(OPCODE,exe))
 
-        print(exe)
         exe = 'chip.' + exe
         # Increment Program Counter by the correct number of words
         chip.PROGRAM_COUNTER = chip.PROGRAM_COUNTER + words
@@ -837,10 +879,14 @@ def execute(chip, location, PC, monitor):
             while (monitor_command != ''):
                 monitor_command = input('>> ').lower()
                 if (monitor_command == 'regs'):
-                    print('[0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15]')
-                    print('[----------------------------------------------]')
-                    print(chip.REGISTERS)
-                    continue
+                    print('0-> ' + str(chip.REGISTERS) + ' <-15')
+                if (monitor_command == 'stack'):
+                    for _i in range(chip.STACK_SIZE-1,-1,-1):
+                        if (_i == chip.STACK_POINTER):
+                            pointer = '==>'
+                        else:
+                            pointer = '-->'
+                        print("[ " + str(_i) + "] " + pointer + "[ " + str(chip.STACK[_i]) + ' ]') 
                 if (monitor_command == 'pc'):
                     print('PC = ',chip.PROGRAM_COUNTER)
                 if (monitor_command[:3] == 'reg'):
@@ -851,6 +897,10 @@ def execute(chip, location, PC, monitor):
                 if (monitor_command == 'off'):
                     monitor_command = ''
                     monitor = False
+                if (monitor_command == 'q'):
+                    monitor = False
+                    opcode = 255
+                    break
                 
     return True
 
@@ -880,6 +930,8 @@ def assemble(program_name: str, chip):
     TPS_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,chip.MEMORY_SIZE_RAM])
     for _i in range(TPS_SIZE):
         TPS.append(0)
+
+    # Pass 1
 
     program = open(program_name, 'r')
     print()
@@ -929,13 +981,13 @@ def assemble(program_name: str, chip):
 
     program.close()
     if ERR:
-        print("Program Assembly halted")
+        print("Program Assembly halted @ Pass 1")
         print()
         return False
 
 
 
-    # Running the program
+    # Pass 2
 
     count=0
     while True:
@@ -962,7 +1014,7 @@ def assemble(program_name: str, chip):
                         if (opcode == 'end'):
                             print('{:<10} {:>47}      {:<14}'.format(label,str(count),opcode))
                             TPS[address] = 255 # pseudo-opcode (directive "end")
-                            break
+                            #break
                         pass
                     else:
                         if (ORG_FOUND is True):
@@ -976,20 +1028,26 @@ def assemble(program_name: str, chip):
                             address_left =  bin(address)[2:].zfill(8)[:4]
                             address_right = bin(address)[2:].zfill(8)[4:]
                             # Check for operand(s)
+
                             if (len(x) == 2):
                                 # Operator and operand
                                 if (opcode == 'ld'): # pad out for the only 2-character mnemonic
                                     opcode = 'ld '
                                 fullopcode = opcode + '(' + x[1] + ')'
-                                if (opcode == 'jun'):
-                                    fullopcode = 'jun(address12)'
+                                if (opcode in ('jun','jms')):
+                                    if (opcode == 'jun'):
+                                        decimal_code = 64
+                                    if (opcode == 'jms'):
+                                        decimal_code = 80
+                                        
+                                    fullopcode = opcode + '(address12)'     
                                     opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
                                     
                                     dest_label = x[1] 
                                     for _i in _LABELS:
                                         if (_i['label'] == dest_label + ','):
                                             label_address = _i['address']
-                                    label_address12 = str(bin(64)[2:].zfill(8)[:4]) + str(bin(label_address)[2:].zfill(12))
+                                    label_address12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + str(bin(label_address)[2:].zfill(12))
                                     bit1 = label_address12[:8]
                                     bit2 = label_address12[8:]
                                     TPS[address] = int(str(bit1),2)
