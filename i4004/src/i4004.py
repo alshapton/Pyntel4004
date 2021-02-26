@@ -880,6 +880,7 @@ def execute(chip, location, PC, monitor):
                 monitor_command = input('>> ').lower()
                 if (monitor_command == 'regs'):
                     print('0-> ' + str(chip.REGISTERS) + ' <-15')
+                    continue
                 if (monitor_command == 'stack'):
                     for _i in range(chip.STACK_SIZE-1,-1,-1):
                         if (_i == chip.STACK_POINTER):

@@ -16,11 +16,13 @@ A Python software implementation of the Intel 4004 processor.
 
 - [ ] Construct a fully-working i4004 chip which can use the generated object code from the compiler (possibly using micro-python or circuit python on an Ardiuno Board).
 
+## Example
+![Assemble and Run](./images/assemble-run.png)
 
 ## Monitor Commands
 
 | Command | Example | Meaning |
-|---------|---------|---------|
+| :-:| :-:| :-|
 | "Enter" | "Enter" | Execute the current instruction and move to the next |
 |  acc   |   acc    | Show the current contents of the Accumulator |
 |  off    |  off    | Continue to execute the program with no trace |

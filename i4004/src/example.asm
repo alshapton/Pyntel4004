@@ -2,13 +2,13 @@
         org     rom
         ldm     7
         xch     9
-bob,    fim     rp0     173
-        jms     abc
-/ Mid-program
+        fim     rp0     173
+        jms     lbl
         fin     2
-        jms     abc
-pig,    add     9 
+        jms     lbl
+        add     9 
         end
-abc,    ldm     6
+/ Sub-routine
+lbl,    ldm     6
         fin     3
         bbl     6
