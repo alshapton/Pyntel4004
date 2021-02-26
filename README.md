@@ -32,7 +32,7 @@ A Python software implementation of the Intel 4004 processor.
 
 
 ### Credits:
-Intel 4004 Design Team
-Logo: [LouBeLou Print Shop](Www.psloubelou.com)
+- Intel 4004 Design Team
+- Logo: [LouBeLou Print Shop](Www.psloubelou.com)
 
 ![Pyntel 4004 Logo](./images/Pyntel4001_chip.png)
