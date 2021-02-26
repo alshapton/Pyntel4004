@@ -205,6 +205,10 @@ class processor:
             MSi	        RAM status character i
             DB (T)	    Data bus content at time T
             Stack	    The 3 registers in the address register other than the program counter
+
+    Additional Abbreviations:
+            ~           Inverse (1's complement)
+            .           logical OR
     """
     # Operators
 
@@ -454,6 +458,48 @@ class processor:
         self.write_to_stack(self.PROGRAM_COUNTER)
         self.PROGRAM_COUNTER = address
         return self.PROGRAM_COUNTER
+
+    def jcn(self, address:int):
+        """
+        Name:           Jump conditional
+        Function:       If the designated condition code is true, program control is 
+                        transferred to the instruction located at the 8 bit address 
+                        AAAA2, AAAA1 on the same page (ROM) where JCN is located.
+                        If the condition is not true the next instruction in sequence 
+                        after JCN is executed.
+                        The condition bits are assigned as follows:
+                        C1 = 0 Do not invert jump condition
+                        C1 = 1 Invert jump condition
+                        C2 = 1 Jump if the accumulator content is zero
+                        C3 = 1 Jump if the carry/link content is 1
+                        C4 = 1 Jump if test signal (pin 10 on 4004) is zero.
+        Syntax:         JCN
+        Assembled:      0001 C1C2C3C4
+                        AAAA2 AAAA1
+        Symbolic:       If C1C2C3C4 is true, A2A2A2A2 --> PM
+                        A1A1A1A1 --> PL, PH unchanged
+                        if C1C2C3C4 is false,
+                        (PH) --> PH, (PM) --> PM, (PL + 2) --> PL
+        Execution:      2 words, 16-bit code and an execution time of 21.6 usec.
+        Example:        
+        OPR     OPA
+        ----    ----
+        0001    0110  Jump if accumulator is zero or carry = 1
+
+        Several conditions can be tested simutaneously.
+        The logic equation describing the condition for a jump is give below:
+        JUMP = ~C1 . ((ACC = 0) . C2 + (CY = 1) . C3 +
+                    ~TEST . C4) + C1 . ~((ACC = 0) . C2 +
+                    (CY = 1) . C3 + ~TEST . C4)
+        
+        Side-effects:   Not Applicable
+        """
+        
+        """
+        Info about signal/test pin 10 on intel4004
+        https://tams.informatik.uni-hamburg.de/applets/hades/webdemos/80-mcs4/jmp/jmp_test.html
+        """
+        return None
 
 
     def fim(self, registerpair:int, value:int):
