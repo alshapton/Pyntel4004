@@ -10,6 +10,7 @@ class processor:
     MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
     MEMORY_SIZE_DRAM = 4096     # Number of 4-bit words in PRAM
+    PAGE_SIZE = 16              # Number of 8-bit words in a memory page
     STACK_SIZE = 3              # Number of 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
@@ -395,8 +396,12 @@ class processor:
                             and not (PH) (0000) (0001).
         """
 
-        ##### NEED TO IMPLEMENT EXCEPTION B #####
-        value = self.RAM[self.REGISTERS[1] + (self.REGISTERS[0] << 4)]
+        ##### EXCEPTION (b) - fin instruction is located at page boundary ##### 
+        if (self.PROGRAM_COUNTER % self.PAGE_SIZE == 255 ):
+            page_shift = 1
+        else:
+            page_shift = 0
+        value = self.RAM[(self.REGISTERS[1] + (self.REGISTERS[0] << 4)) + (self.PAGE_SIZE * page_shift)] 
         self.REGISTERS[registerpair] = (value >> 4 )  & 15
         self.REGISTERS[registerpair + 1] = value & 15
         return self.REGISTERS[registerpair], self.REGISTERS[registerpair+1]
