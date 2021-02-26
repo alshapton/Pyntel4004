@@ -6,15 +6,15 @@ A Python software implementation of the Intel 4004 processor.
 - Monitor facility to step through code and examine registers, memory etc
 
 ## Design goals
-[ ] As much of the internals as possible should be carried out using binary arithmetic and operations.
+- [ ] As much of the internals as possible should be carried out using binary arithmetic and operations.
 
-[ ] No external libraries to be used (i.e. pure Python).
+- [ ] No external libraries to be used (i.e. pure Python).
 
-[ ] Build a fully-working i4004 opcode emulator.
+- [ ] Build a fully-working i4004 opcode emulator.
 
-[ ] Build a fully-working assembler which generates correct op-codes.
+- [ ] Build a fully-working assembler which generates correct op-codes.
 
-[ ] Construct a fully-working i4004 chip which can use the generated object code from the compiler (possibly using micro-python or circuit python on an Ardiuno Board).
+- [ ] Construct a fully-working i4004 chip which can use the generated object code from the compiler (possibly using micro-python or circuit python on an Ardiuno Board).
 
 
 ## Monitor Commands
