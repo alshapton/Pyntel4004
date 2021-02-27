@@ -459,7 +459,7 @@ class processor:
         self.PROGRAM_COUNTER = address
         return self.PROGRAM_COUNTER
 
-    def jcn(self, address:int):
+    def jcn(self, condition:int, address:int):
         """
         Name:           Jump conditional
         Function:       If the designated condition code is true, program control is 
@@ -468,8 +468,8 @@ class processor:
                         If the condition is not true the next instruction in sequence 
                         after JCN is executed.
                         The condition bits are assigned as follows:
-                        C1 = 0 Do not invert jump condition
-                        C1 = 1 Invert jump condition
+                        C1 = 0 Do not invert jump condition }
+                        C1 = 1 Invert jump condition        }
                         C2 = 1 Jump if the accumulator content is zero
                         C3 = 1 Jump if the carry/link content is 1
                         C4 = 1 Jump if test signal (pin 10 on 4004) is zero.
@@ -494,10 +494,21 @@ class processor:
         
         Side-effects:   Not Applicable
         """
-        
+
         """
         Info about signal/test pin 10 on intel4004
         https://tams.informatik.uni-hamburg.de/applets/hades/webdemos/80-mcs4/jmp/jmp_test.html
+
+        Assembler:
+                jcn     IACT    lbl
+
+        I - Invert other conditions
+        A - Accumulator = 0
+        C - Carry Bit set (i.e. = 1)
+        T - Test Signal on Intel4004 Pin 10 = 0
+
+        Question - do I need a directive to set the test pin during the program ?
+        Question - do I need to start the execution with a test pin value ?
         """
         return None
 
@@ -1022,6 +1033,7 @@ def assemble(program_name: str, chip):
                 opcode = x[1][:3]
             else:
                 opcode = x[0][:3]
+            
             if (opcode == 'ld()'):
                 opcode = 'ld '
             if not (opcode in ('org','/','end')):
@@ -1122,19 +1134,46 @@ def assemble(program_name: str, chip):
                                 address = address + opcodeinfo['words']
                             if (len(x) == 3):
                                 # Operator and 2 operands
-                                d_type = ''
-                                if (int(x[2]) <= 256):
-                                    d_type = 'data8'
-                                val_left = bin(int(x[2]))[2:].zfill(8)[:4]
-                                val_right = bin(int(x[2]))[2:].zfill(8)[4:]
-                                fullopcode = opcode + "(" + x[1] + "," + d_type +  ")"
-                                opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
-                                bit1 = opcodeinfo['bits'][0]
-                                bit2 = opcodeinfo['bits'][1]
-                                TPS[address] = opcodeinfo['opcode']
-                                TPS[address+1]=int(x[2])
-                                print('{:<10} {} {}  {} {}  {} {}   {:>3} {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
-                                address = address + opcodeinfo['words']    
+                                if (opcode =='jcn'):
+                                    conditions = x[1]
+                                    dest_label = x[2]
+                                    bin_conditions = 0
+                                    if ('I' in conditions.upper()):
+                                        bin_conditions = 8
+                                    if ('A' in conditions.upper()):
+                                        bin_conditions = bin_conditions + 4
+                                    if ('C' in conditions.upper()):
+                                        bin_conditions = bin_conditions + 2
+                                    if ('T' in conditions.upper()):
+                                        bin_conditions = bin_conditions + 1
+                                    fullopcode = 'jcn('+str(bin_conditions) + ',address8)'
+                                    opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                    for _i in _LABELS:
+                                        if (_i['label'] == dest_label + ','):
+                                            label_address = _i['address']
+                                    val_left = bin(int(label_address))[2:].zfill(8)[:4]
+                                    val_right = bin(int(label_address))[2:].zfill(8)[4:]
+                                    bit1 = opcodeinfo['bits'][0]
+                                    bit2 = opcodeinfo['bits'][1]
+                                    TPS[address] = opcodeinfo['opcode']
+                                    TPS[address+1]=label_address
+                                    print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
+                                    address = address + opcodeinfo['words']    
+
+                                else:
+                                    d_type = ''
+                                    if (int(x[2]) <= 256):
+                                        d_type = 'data8'
+                                    val_left = bin(int(x[2]))[2:].zfill(8)[:4]
+                                    val_right = bin(int(x[2]))[2:].zfill(8)[4:]
+                                    fullopcode = opcode + "(" + x[1] + "," + d_type +  ")"
+                                    opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                    bit1 = opcodeinfo['bits'][0]
+                                    bit2 = opcodeinfo['bits'][1]
+                                    TPS[address] = opcodeinfo['opcode']
+                                    TPS[address+1]=int(x[2])
+                                    print('{:<10} {} {}  {} {}  {} {}   {:>3} {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
+                                    address = address + opcodeinfo['words']    
                         else:
                             print()
                             print("FATAL: Pass 2:  No 'org' found at line: ", count + 1)

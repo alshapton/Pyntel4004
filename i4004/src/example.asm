@@ -6,6 +6,7 @@
         jms     lbl
         fin     2
         jms     lbl
+        jcn     ICT   lbl
         add     9 
         end
 / Sub-routine
