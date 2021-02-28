@@ -31,6 +31,11 @@ class processor:
     STACK = []              # The stack - 3 x 12-bit registers
     STACK_POINTER = 2       # Stack Pointer
     
+    # Creation of processor simulated hardware
+
+    PIN_10_SIGNAL_TEST = 0  # Pin 10 on the physical chip is the "test" pin and can
+                            # be read by the JCN instruction
+      
     # Instruction table
     INSTRUCTIONS = i4004.opcodes
 
@@ -58,6 +63,32 @@ class processor:
 
     def __init_dram(self):
         self.PRAM = [[[0 for _j in range(7)] for _k in range(255)] for _l in range(3)]
+    
+    # Read Processor Methods
+
+    def read_all_registers(self):
+        return(self.REGISTERS)
+
+    def read_all_ram(self):
+        return(self.RAM)
+
+    def read_all_rom(self):
+        return(self.ROM)
+
+    def read_all_pram(self):
+        return(self.PRAM)
+
+    def read_accumulator(self):
+        return(self.ACCUMULATOR)
+    
+    def read_current_ram_bank(self):
+        return(self.CURRENT_RAM_BANK)
+
+    def read_carry(self):
+        return(self.CARRY)
+
+    def read_pin10(self):
+        return(self.PIN_10_SIGNAL_TEST)
 
 
     # Sub-operation methods
@@ -72,6 +103,12 @@ class processor:
         self.CARRY = 0
         return self.CARRY
 
+    def write_pin10(self, value:int):
+        if (value == 0 or value == 1):
+            self.PIN_10_SIGNAL_TEST = value
+            return True
+        else:
+            return False
         
     # Miscellaneous read/write operations
 
@@ -225,6 +262,7 @@ class processor:
         Side-effects:   Not Applicable
         """
 
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self
 
     def ldm(self, operand:int):
@@ -239,6 +277,7 @@ class processor:
         """
 
         self.ACCUMULATOR = operand
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR
 
     def ld(self, register:int):
@@ -254,6 +293,7 @@ class processor:
         """
 
         self.ACCUMULATOR = self.REGISTERS[register]
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR
    
     
@@ -272,6 +312,7 @@ class processor:
         self.ACBR = self.ACCUMULATOR
         self.ACCUMULATOR = self.REGISTERS[register]
         self.REGISTERS[register] = self.ACBR
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.REGISTERS
 
   
@@ -296,6 +337,7 @@ class processor:
             self.set_carry()
         else:
             self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
 
@@ -322,6 +364,7 @@ class processor:
             self.set_carry()
         else:
             self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
 
@@ -340,6 +383,7 @@ class processor:
         self.REGISTERS[register] = self.REGISTERS[register] + 1
         if (self.REGISTERS[register] > self.MAX_4_BITS ):
             self.REGISTERS[register] = self.MAX_4_BITS - self.REGISTERS[register]
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.REGISTERS[register]
 
 
@@ -362,6 +406,7 @@ class processor:
         address = self.read_from_stack()
         self.PROGRAM_COUNTER = address
         self.ACCUMULATOR = accumulator
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.PROGRAM_COUNTER, self.ACCUMULATOR
 
 
@@ -408,6 +453,7 @@ class processor:
         value = self.RAM[(self.REGISTERS[1] + (self.REGISTERS[0] << 4)) + (self.PAGE_SIZE * page_shift)] 
         self.REGISTERS[registerpair] = (value >> 4 )  & 15
         self.REGISTERS[registerpair + 1] = value & 15
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.REGISTERS[registerpair], self.REGISTERS[registerpair+1]
 
     # 2-word Instructions
@@ -459,7 +505,7 @@ class processor:
         self.PROGRAM_COUNTER = address
         return self.PROGRAM_COUNTER
 
-    def jcn(self, condition:int, address:int):
+    def jcn(self, conditions:int, address:int):
         """
         Name:           Jump conditional
         Function:       If the designated condition code is true, program control is 
@@ -493,9 +539,7 @@ class processor:
                     (CY = 1) . C3 + ~TEST . C4)
         
         Side-effects:   Not Applicable
-        """
 
-        """
         Info about signal/test pin 10 on intel4004
         https://tams.informatik.uni-hamburg.de/applets/hades/webdemos/80-mcs4/jmp/jmp_test.html
 
@@ -507,10 +551,28 @@ class processor:
         C - Carry Bit set (i.e. = 1)
         T - Test Signal on Intel4004 Pin 10 = 0
 
-        Question - do I need a directive to set the test pin during the program ?
-        Question - do I need to start the execution with a test pin value ?
+        Question - do I need a directive to set the test pin during the program ? YES
+        Question - do I need to start the execution with a test pin value ? - POSSIBLY
+        Need to do "if JCN at end of page" code
         """
-        return None
+
+        i = int((conditions & 8 ) / 8)
+
+        carry = self.read_carry()            
+        accumulator = self.read_accumulator()
+        pin10 = self.read_pin10()
+
+        if (i == 0):
+            if (carry == 1) or (accumulator == 0) or (pin10 == 0):
+                self.PROGRAM_COUNTER = address
+                return self.PROGRAM_COUNTER
+        if (i == 1):
+            if (carry == 1) or (accumulator != 0) or (pin10 == 1):
+                self.PROGRAM_COUNTER = address
+                return self.PROGRAM_COUNTER
+        
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2        
+        return self.PROGRAM_COUNTER
 
 
     def fim(self, registerpair:int, value:int):
@@ -528,6 +590,7 @@ class processor:
 
         self.REGISTERS[registerpair] = (value >> 4 )  & 15
         self.REGISTERS[registerpair+1] = value & 15
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2        
         return self.REGISTERS
 
     # Accumulator Group Instructions
@@ -545,6 +608,7 @@ class processor:
 
         self.ACCUMULATOR = 0
         self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
 
@@ -560,6 +624,7 @@ class processor:
         """
 
         self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.CARRY
 
     def cmc(self):
@@ -577,6 +642,7 @@ class processor:
             self.reset_carry()
         else:
             self.set_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.CARRY
 
 
@@ -592,6 +658,7 @@ class processor:
         """
 
         self.set_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.CARRY
 
 
@@ -607,6 +674,7 @@ class processor:
         """
 
         self.ACCUMULATOR = self.ones_complement(self.ACCUMULATOR)
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR
 
 
@@ -627,6 +695,7 @@ class processor:
             self.set_carry()
         else:
             self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
 
@@ -647,6 +716,7 @@ class processor:
             self.set_carry()
         else:
             self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
 
@@ -675,6 +745,7 @@ class processor:
             self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
         # Add ooriginal carry bit
         self.ACCUMULATOR = self.ACCUMULATOR + C0
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
 
@@ -700,6 +771,7 @@ class processor:
         self.ACCUMULATOR = self.ACCUMULATOR // 2 
         # Add carry to high-order bit of accumulator
         self.ACCUMULATOR = self.ACCUMULATOR + (C0 * self.MSB)
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
 
@@ -718,6 +790,7 @@ class processor:
         self.ACCUMULATOR = 0
         self.ACCUMULATOR = self.read_carry()
         self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
 
@@ -740,6 +813,7 @@ class processor:
             self.set_carry()
         else:
             self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
     def tcs(self):
@@ -761,6 +835,7 @@ class processor:
         else:
             self.ACCUMULATOR = 10
         self.reset_carry()
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR, self.CARRY
 
     def kbp(self):
@@ -809,6 +884,7 @@ class processor:
         
         # Error
         self.ACCUMULATOR = 15 
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.ACCUMULATOR
 
 
@@ -853,32 +929,9 @@ class processor:
         self.COMMAND_REGISTERS[2] = ACC & 2
         self.COMMAND_REGISTERS[3] = ACC & 4
         self.CURRENT_RAM_BANK = ACC & 7
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.COMMAND_REGISTERS, self.CURRENT_RAM_BANK
 
-
-
-    # Output Methods
-
-    def read_all_registers(self):
-        return(self.REGISTERS)
-
-    def read_all_ram(self):
-        return(self.RAM)
-
-    def read_all_rom(self):
-        return(self.ROM)
-
-    def read_all_pram(self):
-        return(self.PRAM)
-
-    def read_accumulator(self):
-        return(self.ACCUMULATOR)
-    
-    def read_current_ram_bank(self):
-        return(self.CURRENT_RAM_BANK)
-
-    def read_carry(self):
-        return(self.CARRY)
 
 # Mnemonic link: http://e4004.szyc.org/iset.html
 
@@ -916,6 +969,15 @@ def execute(chip, location, PC, monitor):
             exe = exe.replace('rp','').replace('data8)','')
             exe = exe + value + ')'
         
+        if (exe[:4] == 'jcn('):
+            custom_opcode = True
+            address = _TPS[chip.PROGRAM_COUNTER+1]
+            conditions=(bin(_TPS[chip.PROGRAM_COUNTER] )[2:].zfill(8)[4:])
+            print(int(conditions,2))
+            b10address=str(address)
+            cop = exe.replace('address8',b10address)
+            exe = exe[:4] + str(int(conditions,2))+','+b10address + ')'
+
         if (exe[:4] in ('jun(','jms(')):
             custom_opcode = True
             hvalue = bin(_TPS[chip.PROGRAM_COUNTER] & 0xffff0000)[2:].zfill(8)[:4] # Remove opcode from 1st byte            
@@ -931,9 +993,7 @@ def execute(chip, location, PC, monitor):
             print('  {:>7}  {:<10}'.format(OPCODE,exe))
 
         exe = 'chip.' + exe
-        # Increment Program Counter by the correct number of words
-        chip.PROGRAM_COUNTER = chip.PROGRAM_COUNTER + words
-        
+
         # Evaluate the command (some commands may change the PROGRAM_COUNTER here)
         eval(exe)
         monitor_command = 'none'
@@ -957,6 +1017,8 @@ def execute(chip, location, PC, monitor):
                     print('REG['+ monitor_command[3:].strip()+'] = ' + str(chip.REGISTERS[register]))
                 if (monitor_command == 'acc'):
                     print('ACC =',chip.read_accumulator())
+                if (monitor_command == 'pin10'):
+                    print('PIN10 = ',chip.read_pin10())
                 if (monitor_command == 'off'):
                     monitor_command = ''
                     monitor = False
@@ -1036,7 +1098,7 @@ def assemble(program_name: str, chip):
             
             if (opcode == 'ld()'):
                 opcode = 'ld '
-            if not (opcode in ('org','/','end')):
+            if not (opcode in ('org','/','end','pin')):
                 opcodeinfo  = next((item for item in chip.INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
                 address = address + opcodeinfo['words']
             line = line.strip()
@@ -1067,8 +1129,8 @@ def assemble(program_name: str, chip):
             if (len(line) > 0):
                 opcode = x[0]
                 opcodeinfo  = next((item for item in chip.INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
-                if (opcode in ['org','end']) or ( opcode != None):
-                    if (opcode in ['org','end']):
+                if (opcode in ['org','end','pin']) or ( opcode != None):
+                    if (opcode in ['org','end','pin']):
                         if (opcode == 'org'):
                             ORG_FOUND = True
                             print('{:<10} {:>47}      {:<3} {:<3}'.format(label,str(count),opcode,str(x[1])))
@@ -1079,6 +1141,15 @@ def assemble(program_name: str, chip):
                             print('{:<10} {:>47}      {:<14}'.format(label,str(count),opcode))
                             TPS[address] = 255 # pseudo-opcode (directive "end")
                             #break
+                        if (opcode == 'pin'):
+                            print(x[1])
+                            result = chip.write_pin10(int(x[1]))
+                            if (result == False):
+                                print()
+                                print("FATAL: Pass 2:  Invalid value for TEST PIN 10 at line ", count)
+                                ERR = True
+                            print('{:<10} {:>47}      {:<3} {:<3}'.format(label,str(count),opcode,str(x[1])))
+
                         pass
                     else:
                         if (ORG_FOUND is True):
@@ -1156,7 +1227,7 @@ def assemble(program_name: str, chip):
                                     bit1 = opcodeinfo['bits'][0]
                                     bit2 = opcodeinfo['bits'][1]
                                     TPS[address] = opcodeinfo['opcode']
-                                    TPS[address+1]=label_address
+                                    TPS[address + 1] = label_address
                                     print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
                                     address = address + opcodeinfo['words']    
 
@@ -1203,9 +1274,8 @@ def assemble(program_name: str, chip):
         print('{:>5}     {}'.format(_LABELS[_i]['address'],_LABELS[_i]['label']))
     return True
 
-
+# Create new instance of a processor
 chip = processor()
-chip.RAM[173]=28
 
 result = assemble('example.asm',chip)
 if result:

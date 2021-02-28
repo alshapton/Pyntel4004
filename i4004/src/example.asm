@@ -2,6 +2,7 @@
         org     rom
         ldm     7
         xch     9
+        pin     1
         fim     rp0     173
         jms     lbl
         fin     2

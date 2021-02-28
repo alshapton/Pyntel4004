@@ -17,6 +17,21 @@ A Python software implementation of the Intel 4004 processor.
 - [ ] Construct a fully-working i4004 chip which can use the generated object code from the compiler (possibly using micro-python or circuit python on an Ardiuno Board).
 
 ## Example
+
+##### Assembler Directives and other additions
+Assembler directives are not part of the proogram itself, but can control things like starting address, and various environmental settings.
+
+| Directive | Example | Meaning |
+| :-:| :-:| :-|
+| end | end | Indicating end of program, but not necessarily end of code |
+| org | org 100 | Assemble and place object code commencing at address 100 |
+| pin | pin 1 | Value of i4004's Pin 10 (test pin) |
+|  / | / Author: ALS | A comment |
+| label,| loop,| A label can be referred to in various control transfer statements. It MUST end in a comma (,)
+
+
+
+
 ![Assemble and Run](./images/assemble-run.png)
 
 ## Monitor Commands
@@ -27,6 +42,7 @@ A Python software implementation of the Intel 4004 processor.
 |  acc   |   acc    | Show the current contents of the Accumulator |
 |  off    |  off    | Continue to execute the program with no trace |
 |   pc    |   pc    | Show the Program Counter |
+| pin10   | pin10   | Show the status of PIN10 on the i4004 chip (test pin)
 |    q    |    q    | Quit the monitor without executing any further commands |
 |  reg *n*  |  reg 7  | Show content of a specified register |
 |  regs   |  regs   | Show all 16 registers |
