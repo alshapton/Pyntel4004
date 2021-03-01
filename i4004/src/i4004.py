@@ -156,7 +156,6 @@ class processor:
 
     # Utility operations 
 
-
     def ones_complement(self, value: str):
         # Perform a one's complement
         # i.e. invert all the bits
@@ -573,6 +572,30 @@ class processor:
         
         self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2        
         return self.PROGRAM_COUNTER
+
+
+    def isz(self, address:int):
+        """
+        Name:           Increment index register skip if zero
+        Function:       The content of the designated index register is incremented by 1. 
+                        The accumulator and carry/link are unaffected. 
+                        If the result is zero, the next instruction after ISZ is executed. 
+                        If the result is different from 0, program control is transferred 
+                        to the instruction located at the 8 bit address AAAA2, AAAA1 on the 
+                        same page (ROM) where the ISZ instruction is located.
+        Syntax:         ISZ
+        Assembled:      0111 RRRR
+                        AAAA2 AAAA1
+        Symbolic:       (RRRR) + 1 --> RRRR, 
+                        if result = 0 (PH) --> PH, (PM) --> PM, (PL + 2) --> PL
+                        if result <> 0  (PH) --> PH, AAAA2 --> PM, `AAAA1 --> PL
+        Execution:      2 words, 16-bit code and an execution time of 21.6 usec..
+        Side-effects:   Not Applicable
+
+        
+        """
+
+        return None
 
 
     def fim(self, registerpair:int, value:int):

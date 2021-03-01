@@ -3,6 +3,7 @@
         ldm     7
         xch     9
         pin     1
+        isz     9       lbl
         fim     rp0     173
         jms     lbl
         fin     2
