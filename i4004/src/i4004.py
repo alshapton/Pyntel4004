@@ -405,7 +405,6 @@ class processor:
         address = self.read_from_stack()
         self.PROGRAM_COUNTER = address
         self.ACCUMULATOR = accumulator
-        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.PROGRAM_COUNTER, self.ACCUMULATOR
 
 
@@ -500,7 +499,7 @@ class processor:
 
         
         """
-        self.write_to_stack(self.PROGRAM_COUNTER)
+        self.write_to_stack(self.PROGRAM_COUNTER + 2) # Add number of words so return address is correct
         self.PROGRAM_COUNTER = address
         return self.PROGRAM_COUNTER
 
@@ -550,8 +549,8 @@ class processor:
         C - Carry Bit set (i.e. = 1)
         T - Test Signal on Intel4004 Pin 10 = 0
 
-        Question - do I need a directive to set the test pin during the program ? YES
-        Question - do I need to start the execution with a test pin value ? - POSSIBLY
+        Question - do I need a directive to set the test pin during the program ? YES DONE
+        Question - do I need to start the execution with a test pin value ? - NO
         Need to do "if JCN at end of page" code
         """
 
@@ -560,17 +559,13 @@ class processor:
         carry = self.read_carry()            
         accumulator = self.read_accumulator()
         pin10 = self.read_pin10()
-
         if (i == 0):
             if (carry == 1) or (accumulator == 0) or (pin10 == 0):
                 self.PROGRAM_COUNTER = address
-                return self.PROGRAM_COUNTER
         if (i == 1):
             if (carry == 1) or (accumulator != 0) or (pin10 == 1):
-                self.PROGRAM_COUNTER = address
-                return self.PROGRAM_COUNTER
+                self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2        
         
-        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2        
         return self.PROGRAM_COUNTER
 
 
@@ -975,6 +970,7 @@ def execute(chip, location, PC, monitor):
             break
         opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
+        print(OPCODE)
         words = opcodeinfo['words']
         if (words == 2):
             next_word = str(_TPS[chip.PROGRAM_COUNTER+1 ])
@@ -1035,6 +1031,12 @@ def execute(chip, location, PC, monitor):
                         print("[ " + str(_i) + "] " + pointer + "[ " + str(chip.STACK[_i]) + ' ]') 
                 if (monitor_command == 'pc'):
                     print('PC = ',chip.PROGRAM_COUNTER)
+                if (monitor_command == 'carry'):
+                    print('CARRY = ',chip.read_carry())
+                if (monitor_command == 'ram'):
+                    print('RAM = ',chip.RAM)
+                if (monitor_command == 'rom'):
+                    print('ROM = ',chip.ROM)
                 if (monitor_command[:3] == 'reg'):
                     register = int(monitor_command[3:])
                     print('REG['+ monitor_command[3:].strip()+'] = ' + str(chip.REGISTERS[register]))
@@ -1069,6 +1071,18 @@ def match_label(_L,label: str, address):
     return _L
 
 
+def get_bits(opcodeinfo):
+    # Return an opcoode's 2x 4-bit nibbles
+    bit1 = opcodeinfo['bits'][0]
+    bit2 = opcodeinfo['bits'][1]
+    return bit1,bit2
+
+def do_assembly_error(message: str):
+    # Print Assembly error
+    print()
+    print(message)
+    return True
+
 def assemble(program_name: str, chip):
     # Reset label table for this program
     _LABELS=[]
@@ -1101,56 +1115,66 @@ def assemble(program_name: str, chip):
     address = 0
     while True:
         line = program.readline()
-        # if line is empty
-        # end of file is reached
+        # if line is empty, end of file is reached
         if not line:
             break
         else:
+            # Work with a line of assembly code
             x = line.split()
             if (x[0][-1] == ','):
-                success = add_label(_LABELS,x[0])
-                if success == -1:
-                    print()
-                    print('FATAL: Pass 1: Duplicate label: ' + x[0] + ' at line '+ str(p_line+1))
-                    ERR = True
+                # Found a label, now add it to the label table                
+                if add_label(_LABELS,x[0]) == -1:
+                    ERR = ('FATAL: Pass 1: Duplicate label: ' + x[0] + ' at line '+ str(p_line+1))
                     break
+                # Attach value to a label
                 match_label(_LABELS,x[0],address)
+                # Set opcode
                 opcode = x[1][:3]
             else:
+                # Set opcode
                 opcode = x[0][:3]
             
+            # Custom opcode
             if (opcode == 'ld()'):
                 opcode = 'ld '
             if not (opcode in ('org','/','end','pin')):
                 opcodeinfo  = next((item for item in chip.INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
                 address = address + opcodeinfo['words']
-            line = line.strip()
-            TFILE[p_line] = line
+            TFILE[p_line] = line.strip()
             p_line = p_line + 1
-
+    # Completed reading program into memory
     program.close()
+
     if ERR:
         print("Program Assembly halted @ Pass 1")
         print()
         return False
 
 
-
     # Pass 2
 
+    # Program Line Count
     count=0
     while True:
         line = TFILE[count].strip()
         if (len(line)==0):
-            break
+            break # End of code
+
         x = line.split()
         label = ''
+
+        # Check for initial comments
         if (line[0] == '/'):
             print('{:<10} {:>47}      {}'.format(label,str(count),line))
             pass
         else:
             if (len(line) > 0):
-                opcode = x[0]
+                if (x[0][-1] == ','):
+                    label = x[0] 
+                    opcode = x[1]
+                else: 
+                     opcode = x[0]
+                print(opcode)
                 opcodeinfo  = next((item for item in chip.INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
                 if (opcode in ['org','end','pin']) or ( opcode != None):
                     if (opcode in ['org','end','pin']):
@@ -1160,19 +1184,18 @@ def assemble(program_name: str, chip):
                             if (x[1] == 'rom') or (x[1] == 'ram'):
                                 location = x[1]
                                 address = 0
+                            else:
+                                location = 'ram'
+                                address = int(str(x[1]))
                         if (opcode == 'end'):
                             print('{:<10} {:>47}      {:<14}'.format(label,str(count),opcode))
                             TPS[address] = 255 # pseudo-opcode (directive "end")
                             #break
                         if (opcode == 'pin'):
-                            print(x[1])
                             result = chip.write_pin10(int(x[1]))
                             if (result == False):
-                                print()
-                                print("FATAL: Pass 2:  Invalid value for TEST PIN 10 at line ", count)
-                                ERR = True
+                                ERR = do_assembly_error("FATAL: Pass 2:  Invalid value for TEST PIN 10 at line " + count)
                             print('{:<10} {:>47}      {:<3} {:<3}'.format(label,str(count),opcode,str(x[1])))
-
                         pass
                     else:
                         if (ORG_FOUND is True):
@@ -1185,6 +1208,7 @@ def assemble(program_name: str, chip):
                             opcode = x[0]
                             address_left =  bin(address)[2:].zfill(8)[:4]
                             address_right = bin(address)[2:].zfill(8)[4:]
+
                             # Check for operand(s)
 
                             if (len(x) == 2):
@@ -1214,32 +1238,31 @@ def assemble(program_name: str, chip):
                                     address = address + opcodeinfo['words']
                                 else:    
                                     opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
-                                    bit1 = opcodeinfo['bits'][0]
-                                    bit2 = opcodeinfo['bits'][1]
+                                    bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     print('{:<10} {} {}  {} {}   {:>13} {:>10}      {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2,TPS[address], str(count),opcode,str(x[1])))
                                     address = address + opcodeinfo['words']
                             if (len(x) == 1):
-                                # Only operator
-                                bit1 = opcodeinfo['bits'][0]
-                                bit2 = opcodeinfo['bits'][1]
+                                # Only operator, no operand
+                                bit1, bit2 = get_bits(opcodeinfo)
                                 TPS[address] = opcodeinfo['opcode']
                                 print('{:<10} {} {}  {} {}   {:>18} {:>5}      {:<3}'.format(label,address_left, address_right,bit1,bit2,TPS[address],str(count),opcode))
                                 address = address + opcodeinfo['words']
                             if (len(x) == 3):
                                 # Operator and 2 operands
                                 if (opcode =='jcn'):
-                                    conditions = x[1]
+                                    conditions = x[1].upper()
                                     dest_label = x[2]
                                     bin_conditions = 0
-                                    if ('I' in conditions.upper()):
+                                    if ('I' in conditions):
                                         bin_conditions = 8
-                                    if ('A' in conditions.upper()):
+                                    if ('A' in conditions):
                                         bin_conditions = bin_conditions + 4
-                                    if ('C' in conditions.upper()):
+                                    if ('C' in conditions):
                                         bin_conditions = bin_conditions + 2
-                                    if ('T' in conditions.upper()):
+                                    if ('T' in conditions):
                                         bin_conditions = bin_conditions + 1
+                                    print("B",bin_conditions)
                                     fullopcode = 'jcn('+str(bin_conditions) + ',address8)'
                                     opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
                                     for _i in _LABELS:
@@ -1247,13 +1270,11 @@ def assemble(program_name: str, chip):
                                             label_address = _i['address']
                                     val_left = bin(int(label_address))[2:].zfill(8)[:4]
                                     val_right = bin(int(label_address))[2:].zfill(8)[4:]
-                                    bit1 = opcodeinfo['bits'][0]
-                                    bit2 = opcodeinfo['bits'][1]
+                                    bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address + 1] = label_address
                                     print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
                                     address = address + opcodeinfo['words']    
-
                                 else:
                                     d_type = ''
                                     if (int(x[2]) <= 256):
@@ -1262,21 +1283,16 @@ def assemble(program_name: str, chip):
                                     val_right = bin(int(x[2]))[2:].zfill(8)[4:]
                                     fullopcode = opcode + "(" + x[1] + "," + d_type +  ")"
                                     opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
-                                    bit1 = opcodeinfo['bits'][0]
-                                    bit2 = opcodeinfo['bits'][1]
+                                    bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address+1]=int(x[2])
                                     print('{:<10} {} {}  {} {}  {} {}   {:>3} {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
                                     address = address + opcodeinfo['words']    
                         else:
-                            print()
-                            print("FATAL: Pass 2:  No 'org' found at line: ", count + 1)
-                            ERR = True
+                            ERR = do_assembly_error("FATAL: Pass 2:  No 'org' found at line: " + count + 1)
                             break    
                 else:
-                    print()
-                    print("'FATAL: Pass 2:  Invalid mnemonic '",opcode,"' at line: ", count + 1)
-                    ERR = True
+                    ERR = do_assembly_error("'FATAL: Pass 2:  Invalid mnemonic '" + opcode +"' at line: "+ count + 1)
                     break
         count = count + 1
 
