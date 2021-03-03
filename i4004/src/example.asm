@@ -1,13 +1,13 @@
 / Example program
         org     rom
-        ldm     7
+        ldm     14
         xch     9
         pin     1
         fim     rp0     173
         jms     lbl
         stc
-        jcn     IC  end
-/        isz     9       end
+        jcn     IC      lbl
+        isz     9       end 
         add     9 
 end,    fin     2
         jun     last

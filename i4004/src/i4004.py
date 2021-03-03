@@ -103,6 +103,12 @@ class processor:
         self.CARRY = 0
         return self.CARRY
 
+    def increment_register(self,register: int):
+        self.REGISTERS[register] = self.REGISTERS[register] + 1
+        if (self.REGISTERS[register] > self.MAX_4_BITS ):
+            self.REGISTERS[register] = 0
+        return None
+
     def write_pin10(self, value:int):
         if (value == 0 or value == 1):
             self.PIN_10_SIGNAL_TEST = value
@@ -379,9 +385,7 @@ class processor:
         Side-effects:   The carry bit is not affected.
         """
 
-        self.REGISTERS[register] = self.REGISTERS[register] + 1
-        if (self.REGISTERS[register] > self.MAX_4_BITS ):
-            self.REGISTERS[register] = self.MAX_4_BITS - self.REGISTERS[register]
+        self.increment_register(register)
         self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
         return self.REGISTERS[register]
 
@@ -569,7 +573,7 @@ class processor:
         return self.PROGRAM_COUNTER
 
 
-    def isz(self, address:int):
+    def isz(self, register:int, address:int):
         """
         Name:           Increment index register skip if zero
         Function:       The content of the designated index register is incremented by 1. 
@@ -589,6 +593,11 @@ class processor:
 
         
         """
+        self.increment_register(register)
+        if (self.REGISTERS[register] == 0):
+            self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2
+        else:
+            self.PROGRAM_COUNTER = address
 
         return None
 
@@ -951,10 +960,18 @@ class processor:
         return self.COMMAND_REGISTERS, self.CURRENT_RAM_BANK
 
 
-# Mnemonic link: http://e4004.szyc.org/iset.html
+"""
+             _ _  _    ___   ___  _  _     ______                 _       _             
+            (_) || |  / _ \ / _ \| || |   |  ____|               | |     | |            
+             _| || |_| | | | | | | || |_  | |__   _ __ ___  _   _| | __ _| |_ ___  _ __ 
+            | |__   _| | | | | | |__   _| |  __| | '_ ` _ \| | | | |/ _` | __/ _ \| '__|
+            | |  | | | |_| | |_| |  | |   | |____| | | | | | |_| | | (_| | || (_) | |   
+            |_|  |_|  \___/ \___/   |_|   |______|_| |_| |_|\__,_|_|\__,_|\__\___/|_| 
 
+"""
 
 def execute(chip, location, PC, monitor):
+    # breakpoint()
     _TPS = []
     if (location == 'rom'):
         _TPS = chip.ROM
@@ -970,7 +987,6 @@ def execute(chip, location, PC, monitor):
             break
         opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
-        print(OPCODE)
         words = opcodeinfo['words']
         if (words == 2):
             next_word = str(_TPS[chip.PROGRAM_COUNTER+1 ])
@@ -987,12 +1003,17 @@ def execute(chip, location, PC, monitor):
             cop = exe.replace('data8',value)
             exe = exe.replace('rp','').replace('data8)','')
             exe = exe + value + ')'
-        
+
+        if (exe[:3]=='isz'):
+            # Remove opcode from 1st byte to get register
+            register = bin(_TPS[chip.PROGRAM_COUNTER] & 0xffff)[2:].zfill(8)[4:]             
+            address = str(_TPS[chip.PROGRAM_COUNTER+1 ])
+            exe = 'isz(' + str(int(register,2)) + ',' + str(address) + ')'    
+    
         if (exe[:4] == 'jcn('):
             custom_opcode = True
             address = _TPS[chip.PROGRAM_COUNTER+1]
             conditions=(bin(_TPS[chip.PROGRAM_COUNTER] )[2:].zfill(8)[4:])
-            print(int(conditions,2))
             b10address=str(address)
             cop = exe.replace('address8',b10address)
             exe = exe[:4] + str(int(conditions,2))+','+b10address + ')'
@@ -1054,6 +1075,20 @@ def execute(chip, location, PC, monitor):
                 
     return True
 
+
+"""
+
+
+          _ _  _    ___   ___  _  _                                     _     _           
+         (_) || |  / _ \ / _ \| || |       /\                          | |   | |          
+          _| || |_| | | | | | | || |_     /  \   ___ ___  ___ _ __ ___ | |__ | | ___ _ __ 
+         | |__   _| | | | | | |__   _|   / /\ \ / __/ __|/ _ \ '_ ` _ \| '_ \| |/ _ \ '__|
+         | |  | | | |_| | |_| |  | |    / ____ \\__ \__ \  __/ | | | | | |_) | |  __/ |   
+         |_|  |_|  \___/ \___/   |_|   /_/    \_\___/___/\___|_| |_| |_|_.__/|_|\___|_|  
+
+"""
+
+
 def add_label(_L,label: str):
     label_exists  = next((item for item in _L if str(item["label"]) == label), None)
     if not label_exists:
@@ -1070,6 +1105,12 @@ def match_label(_L,label: str, address):
             matched == True
     return _L
 
+def get_addr_for_label(_L, label:str):
+    label_address = -1
+    for _i in _L:
+        if (_i['label'] == label + ','):
+            label_address = _i['address']
+    return label_address
 
 def get_bits(opcodeinfo):
     # Return an opcoode's 2x 4-bit nibbles
@@ -1120,21 +1161,21 @@ def assemble(program_name: str, chip):
             break
         else:
             # Work with a line of assembly code
-            x = line.split()
-            if (x[0][-1] == ','):
+            parts = line.split()
+            if (parts[0][-1] == ','):
                 # Found a label, now add it to the label table                
-                if add_label(_LABELS,x[0]) == -1:
-                    ERR = ('FATAL: Pass 1: Duplicate label: ' + x[0] + ' at line '+ str(p_line+1))
+                if add_label(_LABELS,parts[0]) == -1:
+                    ERR = ('FATAL: Pass 1: Duplicate label: ' + parts[0] + ' at line '+ str(p_line+1))
                     break
                 # Attach value to a label
-                match_label(_LABELS,x[0],address)
+                match_label(_LABELS,parts[0],address)
                 # Set opcode
-                opcode = x[1][:3]
+                opcode = parts[1][:3]
             else:
                 # Set opcode
-                opcode = x[0][:3]
+                opcode = parts[0][:3]
             
-            # Custom opcode
+            # Custom opcodes
             if (opcode == 'ld()'):
                 opcode = 'ld '
             if not (opcode in ('org','/','end','pin')):
@@ -1174,7 +1215,6 @@ def assemble(program_name: str, chip):
                     opcode = x[1]
                 else: 
                      opcode = x[0]
-                print(opcode)
                 opcodeinfo  = next((item for item in chip.INSTRUCTIONS if str(item["mnemonic"])[:3] == opcode), None)
                 if (opcode in ['org','end','pin']) or ( opcode != None):
                     if (opcode in ['org','end','pin']):
@@ -1206,11 +1246,10 @@ def assemble(program_name: str, chip):
                                     x[_i] = x[_i + 1]
                                 x.pop(len([x])-1)
                             opcode = x[0]
-                            address_left =  bin(address)[2:].zfill(8)[:4]
+                            address_left = bin(address)[2:].zfill(8)[:4]
                             address_right = bin(address)[2:].zfill(8)[4:]
 
                             # Check for operand(s)
-
                             if (len(x) == 2):
                                 # Operator and operand
                                 if (opcode == 'ld'): # pad out for the only 2-character mnemonic
@@ -1224,11 +1263,8 @@ def assemble(program_name: str, chip):
                                         
                                     fullopcode = opcode + '(address12)'     
                                     opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
-                                    
                                     dest_label = x[1] 
-                                    for _i in _LABELS:
-                                        if (_i['label'] == dest_label + ','):
-                                            label_address = _i['address']
+                                    label_address = get_addr_for_label(_LABELS,dest_label)
                                     label_address12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + str(bin(label_address)[2:].zfill(12))
                                     bit1 = label_address12[:8]
                                     bit2 = label_address12[8:]
@@ -1249,6 +1285,7 @@ def assemble(program_name: str, chip):
                                 print('{:<10} {} {}  {} {}   {:>18} {:>5}      {:<3}'.format(label,address_left, address_right,bit1,bit2,TPS[address],str(count),opcode))
                                 address = address + opcodeinfo['words']
                             if (len(x) == 3):
+                                opcode = x[0]
                                 # Operator and 2 operands
                                 if (opcode =='jcn'):
                                     conditions = x[1].upper()
@@ -1262,12 +1299,9 @@ def assemble(program_name: str, chip):
                                         bin_conditions = bin_conditions + 2
                                     if ('T' in conditions):
                                         bin_conditions = bin_conditions + 1
-                                    print("B",bin_conditions)
                                     fullopcode = 'jcn('+str(bin_conditions) + ',address8)'
                                     opcodeinfo  = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
-                                    for _i in _LABELS:
-                                        if (_i['label'] == dest_label + ','):
-                                            label_address = _i['address']
+                                    label_address = get_addr_for_label(_LABELS,dest_label)
                                     val_left = bin(int(label_address))[2:].zfill(8)[:4]
                                     val_right = bin(int(label_address))[2:].zfill(8)[4:]
                                     bit1, bit2 = get_bits(opcodeinfo)
@@ -1275,7 +1309,20 @@ def assemble(program_name: str, chip):
                                     TPS[address + 1] = label_address
                                     print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
                                     address = address + opcodeinfo['words']    
-                                else:
+                                if (opcode == 'isz'):
+                                    register = x[1]
+                                    dest_label = x[2]
+                                    base_opcode = 112 # First opcode of the isz group
+                                    opcodeinfo = next((item for item in chip.INSTRUCTIONS if item["opcode"] == base_opcode + int(register)), None)
+                                    bit1, bit2 = get_bits(opcodeinfo)
+                                    label_address = get_addr_for_label(_LABELS,dest_label)
+                                    val_left = bin(int(label_address))[2:].zfill(8)[:4]
+                                    val_right = bin(int(label_address))[2:].zfill(8)[4:]
+                                    TPS[address] = opcodeinfo['opcode']
+                                    TPS[address + 1] = label_address
+                                    print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label,address_left,address_right,bit1, bit2, val_left,val_right, str(TPS[address]) + ", " + str(TPS[address+1]), str(count),opcode,str(x[1]), str(x[2])))
+                                    address = address + opcodeinfo['words']    
+                                if (opcode not in ('jcn','isz')):
                                     d_type = ''
                                     if (int(x[2]) <= 256):
                                         d_type = 'data8'
@@ -1318,11 +1365,11 @@ chip = processor()
 
 result = assemble('example.asm',chip)
 if result:
+    print()
     print('EXECUTING : ')
     print()
     execute(chip, 'rom', 0, True)
     print()
-    print('Accumulator : ',chip.read_accumulator())
-    print('              ', chip.decimal_to_binary(chip.read_accumulator()))
-    print('              ', chip.read_current_ram_bank())
+    print('Accumulator : '+ str(chip.read_accumulator()) + '  (0b ' + str(chip.decimal_to_binary(chip.read_accumulator())) + ')')
+    print('Carry       :', chip.read_carry())
     print()
