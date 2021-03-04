@@ -1,5 +1,5 @@
 
-from .opcodes import i4004
+from . processor.opcodes import opcodes
 
 class processor:
 
@@ -37,7 +37,7 @@ class processor:
                             # be read by the JCN instruction
       
     # Instruction table
-    INSTRUCTIONS = i4004.opcodes
+    INSTRUCTIONS = opcodes
 
     # Initialisation methods
 

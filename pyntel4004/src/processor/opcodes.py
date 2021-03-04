@@ -1,4 +1,4 @@
-class i4004:
+class opcodes:
     opcodes = [
     {"opcode":0,"mnemonic":"nop", "exe":10.8, "bits":["0000","0000"],"words":1},
     {"opcode":1, "mnemonic":"-"},
