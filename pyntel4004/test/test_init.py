@@ -1,5 +1,6 @@
 # Using pytest
-from i4004.src.i4004 import processor
+from src.processor.opcodes import opcodes
+from src.i4004 import processor
 
 def test_init():
     assert(chip.read_accumulator() == 0)
