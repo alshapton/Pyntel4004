@@ -119,8 +119,7 @@ def execute(chip, location, PC, monitor):
             custom_opcode = True
             value = str(_TPS[chip.PROGRAM_COUNTER + 1])
             cop = exe.replace('data8', value)
-            exe = exe.replace('rp', '').replace('data8)', '')
-            exe = exe + value + ')'
+            exe = exe.replace('rp', '').replace('data8)', '') + value + ')'
 
         if (exe[:3] == 'isz'):
             # Remove opcode from 1st byte to get register
@@ -248,17 +247,45 @@ def do_assembly_error(message: str):
     return True
 
 
+def get_opcodeinfo(ls: str, mnemonic: str):
+    if (ls.upper() == 'S'):
+        return next((item for item in chip.INSTRUCTIONS
+                    if str(item["mnemonic"][:3]) == mnemonic), None)
+    else:
+        return next((item for item in chip.INSTRUCTIONS
+                    if str(item["mnemonic"]) == mnemonic), None)
+
+
+def assemble_isz(register, label, dest_label, _LABELS):
+    n_opcode = 112 + int(register)
+    opcodeinfo = next((item for item in chip.INSTRUCTIONS
+                      if item["opcode"] == n_opcode), None)
+    bit1, bit2 = get_bits(opcodeinfo)
+    label_address = get_addr_for_label(_LABELS, dest_label)
+    val_left = bin(int(label_address))[2:].zfill(8)[:4]
+    val_right = bin(int(label_address))[2:].zfill(8)[4:]
+    return n_opcode, label_address, opcodeinfo['words'], val_left, val_right, \
+        bit1, bit2
+
+
 def assemble(program_name: str, chip):
     # Reset label table for this program
     _LABELS = []
 
-    # Reset temporary_program_store
-    TPS = []
+    # Maximum size of program memory
     TPS_SIZE = max([chip.MEMORY_SIZE_ROM,
                     chip.MEMORY_SIZE_RAM, chip.MEMORY_SIZE_RAM])
+  
+    # Reset temporary_program_store
+    TPS = []
     for _i in range(TPS_SIZE):
         TPS.append(0)
-
+    
+    # Initialise assembly language line store to
+    # twice the size of the potential program size.
+    TFILE = []
+    for _i in range(TPS_SIZE * 2):
+        TFILE.append('')
     # Pass 1
 
     program = open(program_name, 'r')
@@ -272,15 +299,9 @@ def assemble(program_name: str, chip):
     location = ''
     count = 0
     ERR = False
-
-    TFILE = []
-    TFILE_SIZE = max([chip.MEMORY_SIZE_ROM, chip.MEMORY_SIZE_RAM,
-                      chip.MEMORY_SIZE_RAM])
-    for _i in range(TFILE_SIZE):
-        TFILE.append('')
-
     p_line = 0
     address = 0
+    
     while True:
         line = program.readline()
         # if line is empty, end of file is reached
@@ -306,9 +327,7 @@ def assemble(program_name: str, chip):
             if (opcode == 'ld()'):
                 opcode = 'ld '
             if not (opcode in ('org', '/', 'end', 'pin')):
-                opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                                   if str(item["mnemonic"])[:3] == opcode),
-                                  None)
+                opcodeinfo = get_opcodeinfo('S', opcode)
                 address = address + opcodeinfo['words']
             TFILE[p_line] = line.strip()
             p_line = p_line + 1
@@ -343,9 +362,7 @@ def assemble(program_name: str, chip):
                     opcode = x[1]
                 else:
                     opcode = x[0]
-                opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                                  if str(item["mnemonic"])[:3] == opcode),
-                                  None)
+                opcodeinfo = get_opcodeinfo('S', opcode)
                 if (opcode in ['org', 'end', 'pin']) or (opcode is not None):
                     if (opcode in ['org', 'end', 'pin']):
                         if (opcode == 'org'):
@@ -399,22 +416,18 @@ def assemble(program_name: str, chip):
                                     if (opcode == 'jms'):
                                         decimal_code = 80
                                     fullopcode = opcode + '(address12)'
-                                    opcodeinfo = next((item
-                                                       for item in
-                                                       chip.INSTRUCTIONS
-                                                       if item["mnemonic"] ==
-                                                       fullopcode), None)
+                                    opcodeinfo = get_opcodeinfo('L', fullopcode)                                    
                                     dest_label = x[1]
-                                    label_address = get_addr_for_label(_LABELS, dest_label)
-                                    label_address12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + str(bin(label_address)[2:].zfill(12))
-                                    bit1 = label_address12[:8]
-                                    bit2 = label_address12[8:]
+                                    label_addr = get_addr_for_label(_LABELS, dest_label)
+                                    label_addr12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + str(bin(label_addr)[2:].zfill(12))
+                                    bit1 = label_addr12[:8]
+                                    bit2 = label_addr12[8:]
                                     TPS[address] = int(str(bit1), 2)
                                     TPS[address+1] = int(str(bit2), 2)
                                     print('{:<10} {} {}  {} {}  {} {}  {:>6} {:>7}      {:<3} {:<8}'.format(label, address_left, address_right, bit1[:4], bit1[4:], bit2[4:], bit2[4:], str(TPS[address]) + ', ' + str(TPS[address + 1]), str(count), opcode, str(x[1])))
                                     address = address + opcodeinfo['words']
                                 else:
-                                    opcodeinfo = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                    opcodeinfo = get_opcodeinfo('L', fullopcode)
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     print('{:<10} {} {}  {} {}   {:>13} {:>10}      {:<3} {:<3}'.format(label, address_left, address_right, bit1, bit2, TPS[address], str(count), opcode, str(x[1])))
@@ -441,7 +454,7 @@ def assemble(program_name: str, chip):
                                     if ('T' in conditions):
                                         bin_conditions = bin_conditions + 1
                                     fullopcode = 'jcn(' + str(bin_conditions) + ',address8)'
-                                    opcodeinfo = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                    opcodeinfo = get_opcodeinfo('L', fullopcode)
                                     label_address = get_addr_for_label(_LABELS, dest_label)
                                     val_left = bin(int(label_address))[2:].zfill(8)[:4]
                                     val_right = bin(int(label_address))[2:].zfill(8)[4:]
@@ -453,16 +466,15 @@ def assemble(program_name: str, chip):
                                 if (opcode == 'isz'):
                                     register = x[1]
                                     dest_label = x[2]
-                                    base_opcode = 112 # First opcode of the isz group
-                                    opcodeinfo = next((item for item in chip.INSTRUCTIONS if item["opcode"] == base_opcode + int(register)), None)
-                                    bit1, bit2 = get_bits(opcodeinfo)
-                                    label_address = get_addr_for_label(_LABELS, dest_label)
-                                    val_left = bin(int(label_address))[2:].zfill(8)[:4]
-                                    val_right = bin(int(label_address))[2:].zfill(8)[4:]
-                                    TPS[address] = opcodeinfo['opcode']
+                                    n_opcode, label_addr, words, \
+                                        addr_left, addr_right, \
+                                        bit1, bit2 = \
+                                        assemble_isz(register, label,
+                                                     dest_label, _LABELS)
+                                    TPS[address] = n_opcode
                                     TPS[address + 1] = label_address
-                                    print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label, address_left, address_right, bit1, bit2, val_left, val_right, str(TPS[address]) + ", " + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2])))
-                                    address = address + opcodeinfo['words']
+                                    print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label, addr_left, addr_right, bit1, bit2, val_left, val_right, str(TPS[address]) + ", " + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2])))
+                                    address = address + words
                                 if (opcode not in ('jcn', 'isz')):
                                     d_type = ''
                                     if (int(x[2]) <= 256):
@@ -470,7 +482,7 @@ def assemble(program_name: str, chip):
                                     val_left = bin(int(x[2]))[2:].zfill(8)[:4]
                                     val_right = bin(int(x[2]))[2:].zfill(8)[4:]
                                     fullopcode = opcode + "(" + x[1] + "," + d_type + ")"
-                                    opcodeinfo = next((item for item in chip.INSTRUCTIONS if item["mnemonic"] == fullopcode), None)
+                                    opcodeinfo = get_opcodeinfo('L', fullopcode)
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address+1] = int(x[2])
