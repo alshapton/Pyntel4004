@@ -1,5 +1,3 @@
-
-
 class processor:
 
     # Import processor internals
@@ -268,6 +266,13 @@ def assemble_isz(register, label, dest_label, _LABELS):
         bit1, bit2
 
 
+def print_ln(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15):
+    fmt = '{:<10} {} {}  {} {}  {} {}  {:>6} {:>7}     {:<3} {:<8}{:<3} '
+    fmt = fmt + '{:>3} {:<3} {:<3}'
+    print(fmt.format(f1, f2, f3, f4, f5, f6, f7, f8,
+                     f9, f10, f11, f12, f13, f14, f15))
+
+
 def assemble(program_name: str, chip):
     # Reset label table for this program
     _LABELS = []
@@ -353,7 +358,8 @@ def assemble(program_name: str, chip):
 
         # Check for initial comments
         if (line[0] == '/'):
-            print('{:<10} {:>47}      {}'.format(label, str(count), line))
+            print_ln(label, '', '', '', '', '', '', '', '', '', '', '',
+                     str(count), line, '')
             pass
         else:
             if (len(line) > 0):
@@ -367,8 +373,8 @@ def assemble(program_name: str, chip):
                     if (opcode in ['org', 'end', 'pin']):
                         if (opcode == 'org'):
                             ORG_FOUND = True
-                            print('{:<10} {:>47}      {:<3} {:<3}'.format(
-                                label, str(count), opcode, str(x[1])))
+                            print_ln(label, '', '', '', '', '', '', '', '', '',
+                                     '', '', str(count), opcode, str(x[1]))
                             if (x[1] == 'rom') or (x[1] == 'ram'):
                                 location = x[1]
                                 address = 0
@@ -376,8 +382,8 @@ def assemble(program_name: str, chip):
                                 location = 'ram'
                                 address = int(str(x[1]))
                         if (opcode == 'end'):
-                            print('{:<10} {:>47}      {:<14}'.format(
-                                label, str(count), opcode))
+                            print_ln(label, '', '', '', '', '', '', '', '', '',
+                                     '', '', str(count), opcode, '')
                             # pseudo-opcode (directive "end")
                             TPS[address] = 255
                             # break
@@ -387,8 +393,8 @@ def assemble(program_name: str, chip):
                                 ERR = do_assembly_error(
                                     "FATAL: Pass 2:  Invalid value for "
                                     + "TEST PIN 10 at line " + count)
-                            print('{:<10} {:>47}      {:<3} {:<3}'.format(
-                                    label, str(count), opcode, str(x[1])))
+                            print_ln(label, '', '', '', '', '', '', '', '', '',
+                                     '', '', str(count), opcode, str(x[1]))
                         pass
                     else:
                         if (ORG_FOUND is True):
@@ -416,7 +422,7 @@ def assemble(program_name: str, chip):
                                     if (opcode == 'jms'):
                                         decimal_code = 80
                                     fullopcode = opcode + '(address12)'
-                                    opcodeinfo = get_opcodeinfo('L', fullopcode)                                    
+                                    opcodeinfo = get_opcodeinfo('L', fullopcode)
                                     dest_label = x[1]
                                     label_addr = get_addr_for_label(_LABELS, dest_label)
                                     label_addr12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + str(bin(label_addr)[2:].zfill(12))
@@ -424,19 +430,19 @@ def assemble(program_name: str, chip):
                                     bit2 = label_addr12[8:]
                                     TPS[address] = int(str(bit1), 2)
                                     TPS[address+1] = int(str(bit2), 2)
-                                    print('{:<10} {} {}  {} {}  {} {}  {:>6} {:>7}      {:<3} {:<8}'.format(label, address_left, address_right, bit1[:4], bit1[4:], bit2[4:], bit2[4:], str(TPS[address]) + ', ' + str(TPS[address + 1]), str(count), opcode, str(x[1])))
+                                    print_ln(label, address_left, address_right, bit1[:4], bit1[4:], bit2[4:], bit2[4:], str(TPS[address]) + ', ' + str(TPS[address + 1]), str(count), opcode, str(x[1]),'' ,'','','')
                                     address = address + opcodeinfo['words']
                                 else:
                                     opcodeinfo = get_opcodeinfo('L', fullopcode)
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
-                                    print('{:<10} {} {}  {} {}   {:>13} {:>10}      {:<3} {:<3}'.format(label, address_left, address_right, bit1, bit2, TPS[address], str(count), opcode, str(x[1])))
+                                    print_ln(label, address_left, address_right, bit1, bit2,'', '','', TPS[address],str(count), '',opcode, str(x[1]),'','')
                                     address = address + opcodeinfo['words']
                             if (len(x) == 1):
                                 # Only operator, no operand
                                 bit1, bit2 = get_bits(opcodeinfo)
                                 TPS[address] = opcodeinfo['opcode']
-                                print('{:<10} {} {}  {} {}   {:>18} {:>5}      {:<3}'.format(label, address_left, address_right, bit1, bit2, TPS[address], str(count), opcode))
+                                print_ln(label, address_left, address_right, bit1, bit2, '','','',TPS[address], '',str(count), opcode,'','','')
                                 address = address + opcodeinfo['words']
                             if (len(x) == 3):
                                 opcode = x[0]
@@ -461,7 +467,7 @@ def assemble(program_name: str, chip):
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address + 1] = label_address
-                                    print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label, address_left, address_right, bit1, bit2, val_left, val_right, str(TPS[address]) + ", " + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2])))
+                                    print_ln(label, address_left, address_right, bit1, bit2, val_left, val_right, str(TPS[address]) + ", " + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2]),'','','')
                                     address = address + opcodeinfo['words']
                                 if (opcode == 'isz'):
                                     register = x[1]
@@ -473,7 +479,7 @@ def assemble(program_name: str, chip):
                                                      dest_label, _LABELS)
                                     TPS[address] = n_opcode
                                     TPS[address + 1] = label_address
-                                    print('{:<10} {} {}  {} {}  {} {}  {:>3}   {:>5}      {:<3} {:<3} {:<3}'.format(label, addr_left, addr_right, bit1, bit2, val_left, val_right, str(TPS[address]) + ", " + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2])))
+                                    print_ln(label, addr_left, addr_right, bit1, bit2, val_left, val_right, str(TPS[address]) + ", " + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2]),'','','')
                                     address = address + words
                                 if (opcode not in ('jcn', 'isz')):
                                     d_type = ''
@@ -486,7 +492,7 @@ def assemble(program_name: str, chip):
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address+1] = int(x[2])
-                                    print('{:<10} {} {}  {} {}  {} {}   {:>3} {:>5}      {:<3} {:<3} {:<3}'.format(label, address_left, address_right, bit1, bit2, val_left, val_right, str(TPS[address]) + ", " + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2])))
+                                    print_ln(label, address_left, address_right, bit1, bit2, val_left, val_right, str(TPS[address]) + ", " + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2]),'','','')
                                     address = address + opcodeinfo['words']
                         else:
                             ERR = do_assembly_error("FATAL: Pass 2:  No 'org' found at line: " + count + 1)
