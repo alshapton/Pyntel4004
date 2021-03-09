@@ -7,7 +7,7 @@
         jms     lbl
         stc
         jcn     IC      lbl
-        isz     9       end 
+/        isz     9       end 
         add     9 
 end,    fin     2
         jun     last
