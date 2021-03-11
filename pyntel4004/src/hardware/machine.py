@@ -114,7 +114,7 @@ def xch(self, register: int):
 
     self.ACBR = self.ACCUMULATOR
     self.ACCUMULATOR = self.REGISTERS[register]
-    self.REGISTERS[register] = self.ACBR
+    self.insert_register(register, self.ACBR)
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR, self.REGISTERS
 
@@ -228,7 +228,7 @@ def jin(self):
     return None
 
 
-def src(self,):
+def src(self, register: int):
     """
     Name:           Send register control
     Function:       The 8 bit content of the designated index register pair
@@ -252,7 +252,7 @@ def src(self,):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec..
     Side-effects:   Not Applicable
     """
-
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return None
 
 

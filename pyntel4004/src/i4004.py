@@ -10,7 +10,7 @@ class processor:
     from hardware.suboperation import set_carry, reset_carry,  \
         increment_register, write_pin10, read_complement_carry, \
         write_to_stack, read_from_stack, ones_complement, \
-        decimal_to_binary, binary_to_decimal
+        decimal_to_binary, binary_to_decimal, insert_register
 
     # Operations to read the processor components
     # Some used internally,
@@ -131,6 +131,9 @@ def execute(chip, location, PC, monitor):
             b10address = str(address)
             cop = exe.replace('address8', b10address)
             exe = exe[:4] + str(int(conditions, 2)) + ',' + b10address + ')'
+
+        # if (exe[:4] in ('src(')):
+        #    custom_opcode = True
 
         if (exe[:4] in ('jun(', 'jms(')):
             custom_opcode = True
@@ -275,11 +278,13 @@ def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
 
 def assemble_2(x, opcode, address, TPS, _LABELS, address_left,
                address_right, label, count):
+   
     # pad out for the only 2-character mnemonic
     if (opcode == 'ld'):
         opcode = 'ld '
     fullopcode = opcode + '(' + x[1] + ')'
     if (opcode in ('jun', 'jms')):
+ 
         # Special case for JUN and JMS
         if (opcode == 'jun'):
             decimal_code = 64
@@ -301,12 +306,22 @@ def assemble_2(x, opcode, address, TPS, _LABELS, address_left,
                  '', '', '', '', '')
         address = address + opcodeinfo['words']
     else:
-        opcodeinfo = get_opcodeinfo('L', fullopcode)
-        bit1, bit2 = get_bits(opcodeinfo)
-        TPS[address] = opcodeinfo['opcode']
-        print_ln(address, label, address_left, address_right, bit1, bit2, '',
-                 '', '', '', '', str(count), opcode, str(x[1]), '', '', '')
-        address = address + opcodeinfo['words']
+        if (opcode == 'src'):
+            register = x[1]
+            fullopcode = 'src(' + register + ')'
+            opcodeinfo = get_opcodeinfo('L', fullopcode)
+            bit1, bit2 = get_bits(opcodeinfo)
+            TPS[address] = opcodeinfo['opcode']
+            print_ln(address, label, address_left, address_right, bit1, bit2, '',
+                    '', '', '', '', str(count), opcode, str(x[1]), '', '', '')
+            address = address + opcodeinfo['words']
+        else:
+            opcodeinfo = get_opcodeinfo('L', fullopcode)
+            bit1, bit2 = get_bits(opcodeinfo)
+            TPS[address] = opcodeinfo['opcode']
+            print_ln(address, label, address_left, address_right, bit1, bit2, '',
+                    '', '', '', '', str(count), opcode, str(x[1]), '', '', '')
+            address = address + opcodeinfo['words']
     return address, TPS, _LABELS
 
 
@@ -461,7 +476,7 @@ def assemble(program_name: str, chip):
                                 # Only operator, no operand
                                 bit1, bit2 = get_bits(opcodeinfo)
                                 TPS[address] = opcodeinfo['opcode']
-                                print_ln(address,label, address_left, address_right, bit1, bit2, '','','',TPS[address],'',str(count), opcode, '','','', '')
+                                print_ln(address, label, address_left, address_right, bit1, bit2, '','','',TPS[address],'',str(count), opcode, '','','', '')
                                 address = address + opcodeinfo['words']
                             
                             if (len(x) == 3):
@@ -509,7 +524,7 @@ def assemble(program_name: str, chip):
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address+1] = int(x[2])
-                                    print_ln(address,label, address_left, address_right, bit1, bit2, val_left, val_right, str(TPS[address]) + "," + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2]),'','','', '')
+                                    print_ln(address, label, address_left, address_right, bit1, bit2, val_left, val_right, str(TPS[address]) + "," + str(TPS[address + 1]), str(count), opcode, str(x[1]), str(x[2]),'','','', '')
                                     address = address + opcodeinfo['words']
                         else:
                             ERR = do_assembly_error("FATAL: Pass 2:  No 'org' found at line: " + count + 1)

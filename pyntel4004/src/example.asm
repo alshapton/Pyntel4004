@@ -3,6 +3,7 @@
         ldm     14
         xch     9
         pin     1
+        src     6
         fim     rp0     173
         jms     lbl
         stc

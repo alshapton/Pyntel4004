@@ -1,4 +1,6 @@
 # Sub-operation methods
+from .exceptions import ValueTooLargeForRegister
+
 
 def set_carry(self):
     # Set the carry bit
@@ -10,6 +12,14 @@ def reset_carry(self):
     # Reset the carry bit
     self.CARRY = 0
     return self.CARRY
+
+
+def insert_register(self, register: int, value: int):
+    if (value > 15):
+        raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value))
+    else:
+        self.REGISTERS[register] = value
+    return value
 
 
 def increment_register(self, register: int):
