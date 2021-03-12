@@ -252,6 +252,7 @@ def src(self, register: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec..
     Side-effects:   Not Applicable
     """
+
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return None
 
@@ -292,8 +293,7 @@ def fin(self, registerpair: int):
         page_shift = 0
     value = self.RAM[(self.REGISTERS[1] + (self.REGISTERS[0] << 4)) +
                      (self.PAGE_SIZE * page_shift)]
-    self.REGISTERS[registerpair] = (value >> 4) & 15
-    self.REGISTERS[registerpair + 1] = value & 15
+    self.insert_registerpair(registerpair, value)
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.REGISTERS[registerpair], self.REGISTERS[registerpair+1]
 
@@ -449,7 +449,7 @@ def isz(self, register: int, address: int):
 def fim(self, registerpair: int, value: int):
     """
     Name:           Fetched immediate from ROM
-    Function:       The 2nd word represents 8-bits of dat
+    Function:       The 2nd word represents 8-bits of data
                     which are loaded into the designated index register pair.
     Syntax:         FIM
     Assembled:      0010 RRR0
@@ -459,8 +459,7 @@ def fim(self, registerpair: int, value: int):
     Side-effects:   Not Applicable
     """
 
-    self.REGISTERS[registerpair] = (value >> 4) & 15
-    self.REGISTERS[registerpair + 1] = value & 15
+    self.insert_registerpair(registerpair, value)
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2
     return self.REGISTERS
 

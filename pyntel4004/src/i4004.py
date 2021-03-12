@@ -10,7 +10,8 @@ class processor:
     from hardware.suboperation import set_carry, reset_carry,  \
         increment_register, write_pin10, read_complement_carry, \
         write_to_stack, read_from_stack, ones_complement, \
-        decimal_to_binary, binary_to_decimal, insert_register
+        decimal_to_binary, binary_to_decimal, insert_register, \
+        is_end_of_page, inc_pc_by_page
 
     # Operations to read the processor components
     # Some used internally,
@@ -25,7 +26,7 @@ class processor:
     MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
     MEMORY_SIZE_DRAM = 4096     # Number of 4-bit words in PRAM
-    PAGE_SIZE = 16              # Number of 8-bit words in a memory page
+    PAGE_SIZE = 256             # Number of 4-bit words in a memory page
     STACK_SIZE = 3              # Number of 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
@@ -313,7 +314,7 @@ def assemble_2(x, opcode, address, TPS, _LABELS, address_left,
             bit1, bit2 = get_bits(opcodeinfo)
             TPS[address] = opcodeinfo['opcode']
             print_ln(address, label, address_left, address_right, bit1, bit2, '',
-                    '', '', '', '', str(count), opcode, str(x[1]), '', '', '')
+                     '', '', '', '', str(count), opcode, str(x[1]), '', '', '')
             address = address + opcodeinfo['words']
         else:
             opcodeinfo = get_opcodeinfo('L', fullopcode)

@@ -1,5 +1,6 @@
-# Sub-operation methods
-from .exceptions import ValueTooLargeForRegister
+#  Sub-operation methods
+
+from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage
 
 
 def set_carry(self):
@@ -16,10 +17,44 @@ def reset_carry(self):
 
 def insert_register(self, register: int, value: int):
     if (value > 15):
-        raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value))
+        raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value)) # noqa
     else:
         self.REGISTERS[register] = value
     return value
+
+
+def insert_registerpair(self, registerpair: int, value: int):
+    if (value > 256):
+        raise ValueTooLargeForRegister('Register Pair: ' + str(registerpair) + ',Value: ' + str(value)) # noqa
+    else:
+        self.insert_register(registerpair, (value >> 4) & 15)
+        self.insert_register(registerpair + 1, value & 15)
+    return value
+
+
+# TO FINISH
+ def insert_ram_rom(self, address: int, value: int):
+    page = address // self.PAGE_SIZE
+    location = address - (page  * self.PAGE_SIZE)
+    print(page, location)
+    return None
+
+
+def inc_pc_by_page(self, pc: int):
+    pc = pc + self.PAGE_SIZE
+    return pc
+
+
+ def is_end_of_page(self, address: int, word: int):
+    page = address // self.PAGE_SIZE
+    location = address - (page  * self.PAGE_SIZE)
+    word = word -1
+    if ((location - word) == self.PAGE_SIZE - 1):
+        return True
+    else:
+        return False
+    raise InvalidEndOfPage ('Address:' + str(address))
+    return None
 
 
 def increment_register(self, register: int):
