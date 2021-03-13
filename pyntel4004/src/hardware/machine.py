@@ -19,6 +19,8 @@
 #                                                                         #
 ###########################################################################
 
+from .exceptions import InvalidRamBank
+
 """
 Abbreviations used in the descriptions of each instruction's actions:
 
@@ -228,7 +230,7 @@ def jin(self):
     return None
 
 
-def src(self, register: int):
+def src(self, registerpair: int):
     """
     Name:           Send register control
     Function:       The 8 bit content of the designated index register pair
@@ -239,6 +241,7 @@ def src(self, register: int):
                     1 out of 4 registers within the chip;
                     the last 4 bits designate 1 out of 16 4-bit main memory
                     characters within the register.
+
                     This command is also used to designate a ROM for a
                     subsequent ROM I/O port operation. The first 4 bits
                     designate the ROM chip number to be selected. The address
@@ -254,6 +257,8 @@ def src(self, register: int):
     """
 
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    content = self.read_registerpair(registerpair)
+    self.COMMAND_REGISTERS[self.read_current_ram_bank()] = content
     return None
 
 
@@ -287,7 +292,8 @@ def fin(self, registerpair: int):
     """
 
     # EXCEPTION (b) - fin instruction is located at page boundary #
-    if (self.PROGRAM_COUNTER % self.PAGE_SIZE == 255):
+    eop = self.is_end_of_page(self.PROGRAM_COUNTER, 1)
+    if (eop is True):
         page_shift = 1
     else:
         page_shift = 0
@@ -780,7 +786,7 @@ def dcl(self):
     """
     Name:           Designate command line
     Function:       The content of the three least significant accumulator
-                    bits is transferred to the  command control register
+                    bits is transferred to the command control register
                     within the CPU. This instruction provides RAM bank
                     selection when multiple RAM banks are used.
                     (If no DCL instruction is sent out, RAM Bank number
@@ -807,17 +813,9 @@ def dcl(self):
     """
 
     ACC = self.ACCUMULATOR
-    if (ACC == 0):
-        self.COMMAND_REGISTERS[0] = 0
-        self.COMMAND_REGISTERS[1] = 0
-        self.COMMAND_REGISTERS[2] = 0
-        self.COMMAND_REGISTERS[3] = 0
-        self.CURRENT_RAM_BANK = 0
-        return self.COMMAND_REGISTERS, self.CURRENT_RAM_BANK
+    if (ACC > 7):
+        raise InvalidRamBank('RAM bank : ' + str(ACC))
 
-    self.COMMAND_REGISTERS[1] = ACC & 1
-    self.COMMAND_REGISTERS[2] = ACC & 2
-    self.COMMAND_REGISTERS[3] = ACC & 4
-    self.CURRENT_RAM_BANK = ACC & 7
+    self.CURRENT_RAM_BANK = ACC
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
-    return self.COMMAND_REGISTERS, self.CURRENT_RAM_BANK
+    return self.CURRENT_RAM_BANK

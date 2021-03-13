@@ -1,6 +1,7 @@
 #  Sub-operation methods
 
-from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage
+from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage, \
+    ProgramCounterOutOfBounds, InvalidPin10Value
 
 
 def set_carry(self):
@@ -23,37 +24,42 @@ def insert_register(self, register: int, value: int):
     return value
 
 
+def read_register(self, register: int):
+    return self.REGISTERS[register]
+
+
 def insert_registerpair(self, registerpair: int, value: int):
     if (value > 256):
         raise ValueTooLargeForRegister('Register Pair: ' + str(registerpair) + ',Value: ' + str(value)) # noqa
     else:
-        self.insert_register(registerpair, (value >> 4) & 15)
+        self.insert_register(registerpair, (value >> 4) & 15)   # Bit-shift right and remove low bits
         self.insert_register(registerpair + 1, value & 15)
     return value
 
 
-# TO FINISH
- def insert_ram_rom(self, address: int, value: int):
-    page = address // self.PAGE_SIZE
-    location = address - (page  * self.PAGE_SIZE)
-    print(page, location)
-    return None
+def read_registerpair(self, registerpair: int):
+    hi = self.read_register(registerpair)       # High 4-bits
+    lo = self.read_register(registerpair + 1)   # Low 4-bits
+    return (hi << 4) + lo   # Bit-shift left high value and add low value
 
 
 def inc_pc_by_page(self, pc: int):
+    # Point the program counter to 1 page on
     pc = pc + self.PAGE_SIZE
+    if (pc > self.MEMORY_SIZE_RAM):
+        raise ProgramCounterOutOfBounds('Program counter attempted to be set to ' + str(pc))
     return pc
 
 
- def is_end_of_page(self, address: int, word: int):
+def is_end_of_page(self, address: int, word: int):
     page = address // self.PAGE_SIZE
-    location = address - (page  * self.PAGE_SIZE)
-    word = word -1
+    location = address - (page * self.PAGE_SIZE)
+    word = word - 1
     if ((location - word) == self.PAGE_SIZE - 1):
         return True
     else:
         return False
-    raise InvalidEndOfPage ('Address:' + str(address))
+    raise InvalidEndOfPage('Address:' + str(address))
     return None
 
 
@@ -69,7 +75,7 @@ def write_pin10(self, value: int):
         self.PIN_10_SIGNAL_TEST = value
         return True
     else:
-        return False
+        raise InvalidPin10Value('PIN 10 attempted to be set to ' + str(value))
 
 # Miscellaneous read/write operations
 
@@ -141,7 +147,4 @@ def decimal_to_binary(self, decimal: int):
 
 def binary_to_decimal(self, binary: str):
     # Convert binary to decimal
-    decimal = 0
-    for digit in binary:
-        decimal = decimal * 2 + int(digit)
-    return decimal
+    return int(binary, 2)

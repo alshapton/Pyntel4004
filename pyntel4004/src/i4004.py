@@ -11,7 +11,8 @@ class processor:
         increment_register, write_pin10, read_complement_carry, \
         write_to_stack, read_from_stack, ones_complement, \
         decimal_to_binary, binary_to_decimal, insert_register, \
-        is_end_of_page, inc_pc_by_page
+        is_end_of_page, inc_pc_by_page, insert_registerpair, \
+        read_registerpair
 
     # Operations to read the processor components
     # Some used internally,
@@ -30,7 +31,7 @@ class processor:
     STACK_SIZE = 3              # Number of 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
-    NO_COMMAND_REGISTERS = 4    # Number of command registers
+    NO_COMMAND_REGISTERS = 8    # Number of command registers
 
     # Creation of processor internals
 
@@ -42,7 +43,7 @@ class processor:
     PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
     RAM = []                # RAM
     ROM = []                # ROM
-    REGISTERS = []          # Registers
+    REGISTERS = []          # Registers (4-bit)
     PRAM = [[], [], []]     # Program RAM
     STACK = []              # The stack - 3 x 12-bit registers
     STACK_POINTER = 2       # Stack Pointer
@@ -188,6 +189,8 @@ def execute(chip, location, PC, monitor):
                     print('ACC =', chip.read_accumulator())
                 if (monitor_command == 'pin10'):
                     print('PIN10 = ', chip.read_pin10())
+                if (monitor_command == 'crb'):
+                    print('CURRENT RAM BANK = ', chip.read_current_ram_bank())
                 if (monitor_command == 'off'):
                     monitor_command = ''
                     monitor = False

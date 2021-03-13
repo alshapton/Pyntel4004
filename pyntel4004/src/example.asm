@@ -1,6 +1,9 @@
 / Example program
         org     rom
-        ldm     14
+        ldm     4
+        dcl
+        fim     rp0     180
+        jun     last
         xch     9
         pin     1
         src     6

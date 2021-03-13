@@ -41,6 +41,7 @@ Assembler directives are not part of the proogram itself, but can control things
 | "Enter" | "Enter" | Execute the current instruction and move to the next |
 |  acc   |   acc    | Show the current contents of the Accumulator |
 |  carry |  carry    | Show the current contents of the Carry Bit |
+|  crb    |  crb    | Show the currently selected RAM Bank |
 |  off    |  off    | Continue to execute the program with no trace |
 |   pc    |   pc    | Show the Program Counter |
 | pin10   | pin10   | Show the status of PIN10 on the i4004 chip (test pin)
