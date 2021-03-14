@@ -6,13 +6,13 @@ class processor:
         init_ram, init_rom, init_dram, init_registers
     from hardware.machine import nop, ldm, ld, xch, add, sub, inc, \
         bbl, jin, src, fin, jun, jms, jcn, isz, fim, clb, clc, cmc, \
-        stc, cma, iac, dac, ral, rar, tcc, daa, tcs, kbp, dcl
+        stc, cma, iac, dac, ral, rar, tcc, daa, tcs, kbp, dcl, wrm
     from hardware.suboperation import set_carry, reset_carry,  \
         increment_register, write_pin10, read_complement_carry, \
         write_to_stack, read_from_stack, ones_complement, \
         decimal_to_binary, binary_to_decimal, insert_register, \
         is_end_of_page, inc_pc_by_page, insert_registerpair, \
-        read_registerpair
+        read_registerpair, read_register
 
     # Operations to read the processor components
     # Some used internally,
@@ -311,7 +311,7 @@ def assemble_2(x, opcode, address, TPS, _LABELS, address_left,
         address = address + opcodeinfo['words']
     else:
         if (opcode == 'src'):
-            register = x[1]
+            register = x[1].lower().replace('p', '').replace('r', '')
             fullopcode = 'src(' + register + ')'
             opcodeinfo = get_opcodeinfo('L', fullopcode)
             bit1, bit2 = get_bits(opcodeinfo)
@@ -347,7 +347,7 @@ def assemble(program_name: str, chip):
     TFILE = []
     for _i in range(TPS_SIZE * 2):
         TFILE.append('')
-    
+
     # Pass 1
 
     program = open(program_name, 'r')

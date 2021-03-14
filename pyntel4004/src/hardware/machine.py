@@ -257,8 +257,8 @@ def src(self, registerpair: int):
     """
 
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
-    content = self.read_registerpair(registerpair)
-    self.COMMAND_REGISTERS[self.read_current_ram_bank()] = content
+    address = self.read_registerpair(registerpair)
+    self.COMMAND_REGISTERS[self.read_current_ram_bank()] = address
     return None
 
 
@@ -819,3 +819,24 @@ def dcl(self):
     self.CURRENT_RAM_BANK = ACC
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.CURRENT_RAM_BANK
+
+
+def wrm(self):
+    """
+    Name:           Write accumulator into RAM character
+    Function:       The accumulator content is written into the previously
+                    selected RAM main memory character location.
+                    The accumulator and carry/link are unaffected.
+    Syntax:         WRM
+    Assembled:      1110 0000
+    Symbolic:       (ACC) --> M
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   Not Applicable
+    """
+    value = self.ACCUMULATOR
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    final_address = (crb * self.PAGE_SIZE) + address
+    self._TPS[final_address] = value
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self._TPS

@@ -33,7 +33,7 @@ def insert_registerpair(self, registerpair: int, value: int):
         raise ValueTooLargeForRegister('Register Pair: ' + str(registerpair) + ',Value: ' + str(value)) # noqa
     else:
         self.insert_register(registerpair, (value >> 4) & 15)   # Bit-shift right and remove low bits
-        self.insert_register(registerpair + 1, value & 15)
+        self.insert_register(registerpair + 1, value & 15)      # Remove low bits
     return value
 
 
