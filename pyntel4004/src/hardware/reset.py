@@ -26,6 +26,5 @@ def init_rom(self):
 
 
 def init_dram(self):
-    self.PRAM = [[[0 for _j in range(7)]
-                 for _k in range(255)]
-                 for _l in range(3)]
+    for _i in range(self.MEMORY_SIZE_PRAM):
+        self.PRAM.append(0)

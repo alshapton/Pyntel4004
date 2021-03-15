@@ -837,6 +837,6 @@ def wrm(self):
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
     final_address = (crb * self.PAGE_SIZE) + address
-    self._TPS[final_address] = value
+    self.RAM[final_address] = value
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
-    return self._TPS
+    return self.PROGRAM_COUNTER

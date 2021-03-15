@@ -26,7 +26,7 @@ class processor:
 
     MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
-    MEMORY_SIZE_DRAM = 4096     # Number of 4-bit words in PRAM
+    MEMORY_SIZE_PRAM = 4096     # Number of 4-bit words in PRAM
     PAGE_SIZE = 256             # Number of 4-bit words in a memory page
     STACK_SIZE = 3              # Number of 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
@@ -43,8 +43,8 @@ class processor:
     PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
     RAM = []                # RAM
     ROM = []                # ROM
+    PRAM = []               # Program RAM
     REGISTERS = []          # Registers (4-bit)
-    PRAM = [[], [], []]     # Program RAM
     STACK = []              # The stack - 3 x 12-bit registers
     STACK_POINTER = 2       # Stack Pointer
 
@@ -86,13 +86,13 @@ class processor:
 #                                                                            #
 ##############################################################################
 
-
 def execute(chip, location, PC, monitor):
     _TPS = []
     if (location == 'rom'):
         _TPS = chip.ROM
     else:
-        _TPS = chip.RAM
+        _TPS = chip.PRAM
+
     chip.PROGRAM_COUNTER = 0
     opcode = 0
     while opcode != 255:  # pseudo-opcode (directive) for "end"
@@ -179,6 +179,8 @@ def execute(chip, location, PC, monitor):
                     print('CARRY = ', chip.read_carry())
                 if (monitor_command == 'ram'):
                     print('RAM = ', chip.RAM)
+                if (monitor_command == 'pram'):
+                    print('PRAM = ', chip.PRAM)
                 if (monitor_command == 'rom'):
                     print('ROM = ', chip.ROM)
                 if (monitor_command[:3] == 'reg'):
@@ -335,7 +337,7 @@ def assemble(program_name: str, chip):
 
     # Maximum size of program memory
     TPS_SIZE = max([chip.MEMORY_SIZE_ROM,
-                    chip.MEMORY_SIZE_RAM, chip.MEMORY_SIZE_RAM])
+                    chip.MEMORY_SIZE_PRAM, chip.MEMORY_SIZE_RAM])
 
     # Reset temporary_program_store
     TPS = []
@@ -433,7 +435,7 @@ def assemble(program_name: str, chip):
                         if (opcode == 'org'):
                             ORG_FOUND = True
                             print_ln('', label,  '', '', '', '', '', '', '',
-                                     '', '', '','','', str(count), opcode, str(x[1]))
+                                     '', '', '', '', '', str(count), opcode, str(x[1]))
                             if (x[1] == 'rom') or (x[1] == 'ram'):
                                 location = x[1]
                                 address = 0
@@ -548,7 +550,7 @@ def assemble(program_name: str, chip):
         chip.ROM = TPS
 
     if (location == 'ram'):
-        chip.RAM = TPS
+        chip.PRAM = TPS
 
     print('Labels:')
     print('Address   Label')
