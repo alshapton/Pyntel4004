@@ -1,0 +1,88 @@
+Intel 4004 Op-Codes
+*******************
+
+.. list-table:: Op-Codes
+   :widths: 20 20 20 20 20
+   :header-rows: 0
+
+   * - Instruction
+     - Mnemonic 
+     - 1st byte	
+     - 2nd byte  
+     - Modifiers
+   * - No Operation
+     - NOP	
+     - 00000000
+     -
+     - none
+   * - Jump Conditional
+     - JCN
+     - 0001CCCC
+     - AAAAAAAA
+     - condition, address
+   * - Fetch Immediate
+     - FIM
+     - 0010RRR0
+     - DDDDDDDD
+     - register pair, data
+   * - Send Register Control
+     - SRC
+     - 0010RRR1
+     - 
+     - register pair
+   * - Fetch Indirect
+     - FIN
+     - 0011RRR0
+     -
+     - register pair
+   * - Jump Indirect
+     - JIN
+     - 0011RRR1
+     - 
+     - register pair
+   * - Jump Unconditional
+     - JUN
+     - 0100AAAA
+     - AAAAAAAA
+     - address
+
+
+Jump to Subroutine	      JMS	0101AAAA	AAAAAAAA  address
+Increment	                  INC	0110RRRR	    -	    register
+Increment and Skip	      ISZ	0111RRRR	AAAAAAAA  register, address
+Add	                        ADD	1000RRRR	    -	    register
+Subtract	                  SUB	1001RRRR	    -	    register
+Load	                        LD	1010RRRR	    -	    register
+Exchange	                  XCH	1011RRRR	    -	    register
+Branch Back and Load	      BBL	1100DDDD	    -	    data
+Load Immediate	            LDM	1101DDDD	    -	    data
+Write Main Memory	            WRM	11100000	    -	    none
+Write RAM Port	            WMP	11100001	    -	    none
+Write ROM Port	            WRR	11100010	    -     none
+Write Status Char 0	      WR0	11100100	    -	    none
+Write Status Char 1	      WR1	11100101	    -	    none
+Write Status Char 2	      WR2	11100110	    -	    none
+Write Status Char 3	      WR3	11100111	    -	    none
+Subtract Main Memory	      SBM	11101000	    -     none
+Read Main Memory	            RDM	11101001	    -	    none
+Read ROM Port	            RDR	11101010	    -	    none
+Add Main Memory	            ADM	11101011	    -	    none
+Read Status Char 0	      RD0	11101100	    -	    none
+Read Status Char 1  	      RD1	11101101	    -	    none
+Read Status Char 2  	      RD2	11101110	    -	    none
+Read Status Char 3  	      RD3	11101111	    -	    none
+Clear Both	                  CLB	11110000	    -	    none
+Clear Carry	                  CLC	11110001	    -	    none
+Increment Accumulator	      IAC	11110010	    -	    none
+Complement Carry	            CMC	11110011	    -	    none
+Complement	                  CMA	11110100	    -     none
+Rotate Left	                  RAL	11110101	    -     none
+Rotate Right	            RAR	11110110	    -     none
+Transfer Carry and Clear	TCC	11110111	    -     none
+Decrement Accumulator	      DAC	11111000	    -	    none
+Transfer Carry Subtract	      TCS	11111001	    -	    none
+Set Carry	                  STC	11111010	    -	    none
+Decimal Adjust Accumulator	DAA	11111011	    -	    none
+Keybord Process	            KBP	11111100	    -	    none
+Designate Command Line	      DCL	11111101	    -	    none
+

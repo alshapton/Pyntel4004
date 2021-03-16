@@ -1,14 +1,15 @@
-.. Pyntel4004 documentation master file, created by
+.. Pyntel4004 documentation index file
 
 
 Pyntel4004 Documentation
 ========================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Contents:
    :glob:
 
+   intro/opcodes.rst 
    hardware/machine/*
 
 Indices and tables
