@@ -102,7 +102,8 @@ def ld(self, register: int):
 
 
 def xch(self, register: int):
-    """
+
+    '''
     Name:           Exchange index register and accumulator
     Function:       The 4 bit content of designated index register is
                     loaded into the accumulator. The prior content of the
@@ -112,7 +113,8 @@ def xch(self, register: int):
     Symbolic:       (ACC) --> ACBR, (RRRR) --> ACC, (ACBR) --> RRRR
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   The carry bit is not affected.
-    """
+
+    '''
 
     self.ACBR = self.ACCUMULATOR
     self.ACCUMULATOR = self.REGISTERS[register]
@@ -833,6 +835,49 @@ def wrm(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
+    
+    value = self.ACCUMULATOR
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    final_address = (crb * self.PAGE_SIZE) + address
+    self.RAM[final_address] = value
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.PROGRAM_COUNTER
+
+
+def wr0(self):
+    """
+    Name:           Write accumulator into RAM status character 0
+    Function:       The content of the accumulator is written into the
+                    RAM status character 0 of the previously selected
+                    RAM register.
+                    The accumulator and the carry/link are unaffected.
+    Syntax:         WR0
+    Assembled:      1110 0100
+    Symbolic:       (ACC) --> MS0
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   Not Applicable
+    """
+
+    '''
+    OK - there are 4 status registers for each DATA RAM REGISTER (64 4-bit words)
+         for each RAM BANK there are 4 chips (0-3)
+         there are 8 RAM BANKS (0-7)
+         therefore there are 7*4*4 = 112 status registers ?????
+
+    An address set by the previous SRC instruction is interpreted as follows:
+
+    (Bits in this order : 12345678)
+
+    Bits 1 + 2 = 1 of 4 DATA RAM CHIPS within the DATA RAM BANK previously
+                 selected by a DCL instruction
+
+    Bits 2 + 4 = 1 of 4 registers within the DATA RAM CHIP
+
+    Bits 5-8   = Not relevant
+
+    '''
+
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
