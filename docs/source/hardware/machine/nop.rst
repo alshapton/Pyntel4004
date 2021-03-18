@@ -1,5 +1,7 @@
-No Operation
-************
+.. _hardware-machine-nop:
+
+NOP
+===
 
 .. list-table:: Information
    :widths: 25 75
@@ -29,8 +31,8 @@ No Operation
    * - Implemented
      - `machine`_
 
-Example program
-***************
+.. rubric:: Example program
+
 ::
 
     / Example program
@@ -40,8 +42,8 @@ Example program
 
 The program does nothing, since the NOP operation is the only operator in the program.
 
-Notes
-******
+.. rubric:: Notes
+
 
 The NOP instruction is useful for padding out memory positions for those operators that function differently at the page boundary, such that they do not end at a page boundary. 
 

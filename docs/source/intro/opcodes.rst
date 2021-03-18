@@ -1,88 +1,246 @@
 Intel 4004 Op-Codes
-*******************
+-------------------
 
-.. list-table:: Op-Codes
-   :widths: 20 20 20 20 20
-   :header-rows: 0
+.. list-table:: Intel 4004 processor Op-Codes
+   :header-rows: 1
 
    * - Instruction
-     - Mnemonic 
-     - 1st byte	
-     - 2nd byte  
+     - Mnemonic
+     - 1st byte
+     - 2nd byte
      - Modifiers
    * - No Operation
-     - NOP	
+     - :ref:`hardware-machine-nop`
      - 00000000
      -
-     - none
+     -
    * - Jump Conditional
      - JCN
      - 0001CCCC
      - AAAAAAAA
-     - condition, address
+     - C, A
    * - Fetch Immediate
      - FIM
      - 0010RRR0
      - DDDDDDDD
-     - register pair, data
+     - RP, D
    * - Send Register Control
      - SRC
      - 0010RRR1
-     - 
-     - register pair
+     -
+     - RP
    * - Fetch Indirect
      - FIN
      - 0011RRR0
      -
-     - register pair
+     - RP
    * - Jump Indirect
      - JIN
      - 0011RRR1
-     - 
-     - register pair
+     -
+     - RP
    * - Jump Unconditional
      - JUN
      - 0100AAAA
      - AAAAAAAA
-     - address
+     - A
+   * - Jump to Subroutine
+     - JMS
+     - 0101AAAA
+     - AAAAAAAA
+     - A
+   * - Increment
+     - INC
+     - 0110RRRR
+     -
+     - R
+   * - Increment and Skip
+     - ISZ
+     - 0111RRRR
+     - AAAAAAAA
+     - R, A
+   * - Add
+     - ADD
+     - 1000RRRR
+     -
+     - R
+   * - Subtract
+     - SUB
+     - 1001RRRR
+     -
+     - R
+   * - Load
+     - LD
+     - 1010RRRR
+     -
+     - R
+   * - Exchange
+     - XCH
+     - 1011RRRR
+     -
+     - R
+   * - Branch Back and Load
+     - BBL
+     - 1100DDDD
+     -
+     - D
+   * - Load Immediate
+     - LDM
+     - 1101DDDD
+     -
+     - D
+   * - Write Main Memory
+     - WRM
+     - 11100000
+     -
+     -
+   * - Write RAM Port
+     - WMP
+     - 11100001
+     -
+     -
+   * - Write ROM Port
+     - WRR
+     - 11100010
+     -
+     -
+   * - Write Status Char 0
+     - WR0
+     - 11100100
+     -
+     -
+   * - Write Status Char 1
+     - WR1
+     - 11100101
+     -
+     -
+   * - Write Status Char 2
+     - WR2
+     - 11100110
+     -
+     -
+   * - Write Status Char 3
+     - WR3
+     - 11100111
+     -
+     -
+   * - Subtract Main Memory
+     - SBM
+     - 11101000
+     -
+     -
+   * - Read Main Memory
+     - RDM
+     - 11101001
+     -
+     -
+   * - Read ROM Port
+     - RDR
+     - 11101010
+     -
+     -
+   * - Add Main Memory
+     - ADM
+     - 11101011
+     -
+     -
+   * - Read Status Char 0
+     - RD0
+     - 11101100
+     -
+     -
+   * - Read Status Char 1
+     - RD1
+     - 11101101
+     -
+     -
+   * - Read Status Char 2
+     - RD2
+     - 11101110
+     -
+     -
+   * - Read Status Char 3
+     - RD3
+     - 11101111
+     -
+     -
+   * - Clear Both
+     - CLB
+     - 11110000
+     -
+     -
+   * - Clear Carry
+     - CLC
+     - 11110001
+     -
+     -
+   * - Increment Accumulator
+     - IAC
+     - 11110010
+     -
+     -
+   * - Complement Carry
+     - CMC
+     - 11110011
+     - 
+     -
+   * - Complement
+     - CMA
+     - 11110100
+     -
+     -
+   * - Rotate Left
+     - RAL
+     - 11110101
+     -
+     -
+   * - Rotate Right
+     - RAR
+     - 11110110
+     -
+     -
+   * - Transfer Carry and Clear
+     - TCC
+     - 11110111
+     -
+     -
+   * - Decrement Accumulator
+     - DAC
+     - 11111000
+     -
+     -
+   * - Transfer Carry Subtract
+     - TCS
+     - 11111001
+     -
+     -
+   * - Set Carry
+     - STC
+     - 11111010
+     -
+     -
+   * - Decimal Adjust Accumulator
+     - DAA
+     - 11111011
+     -
+     -
+   * - Keyboard Process
+     - KBP
+     - 11111100
+     -
+     -
+   * - Designate Command Line
+     - DCL
+     - 11111101
+     -
+     -
 
 
-Jump to Subroutine	      JMS	0101AAAA	AAAAAAAA  address
-Increment	                  INC	0110RRRR	    -	    register
-Increment and Skip	      ISZ	0111RRRR	AAAAAAAA  register, address
-Add	                        ADD	1000RRRR	    -	    register
-Subtract	                  SUB	1001RRRR	    -	    register
-Load	                        LD	1010RRRR	    -	    register
-Exchange	                  XCH	1011RRRR	    -	    register
-Branch Back and Load	      BBL	1100DDDD	    -	    data
-Load Immediate	            LDM	1101DDDD	    -	    data
-Write Main Memory	            WRM	11100000	    -	    none
-Write RAM Port	            WMP	11100001	    -	    none
-Write ROM Port	            WRR	11100010	    -     none
-Write Status Char 0	      WR0	11100100	    -	    none
-Write Status Char 1	      WR1	11100101	    -	    none
-Write Status Char 2	      WR2	11100110	    -	    none
-Write Status Char 3	      WR3	11100111	    -	    none
-Subtract Main Memory	      SBM	11101000	    -     none
-Read Main Memory	            RDM	11101001	    -	    none
-Read ROM Port	            RDR	11101010	    -	    none
-Add Main Memory	            ADM	11101011	    -	    none
-Read Status Char 0	      RD0	11101100	    -	    none
-Read Status Char 1  	      RD1	11101101	    -	    none
-Read Status Char 2  	      RD2	11101110	    -	    none
-Read Status Char 3  	      RD3	11101111	    -	    none
-Clear Both	                  CLB	11110000	    -	    none
-Clear Carry	                  CLC	11110001	    -	    none
-Increment Accumulator	      IAC	11110010	    -	    none
-Complement Carry	            CMC	11110011	    -	    none
-Complement	                  CMA	11110100	    -     none
-Rotate Left	                  RAL	11110101	    -     none
-Rotate Right	            RAR	11110110	    -     none
-Transfer Carry and Clear	TCC	11110111	    -     none
-Decrement Accumulator	      DAC	11111000	    -	    none
-Transfer Carry Subtract	      TCS	11111001	    -	    none
-Set Carry	                  STC	11111010	    -	    none
-Decimal Adjust Accumulator	DAA	11111011	    -	    none
-Keybord Process	            KBP	11111100	    -	    none
-Designate Command Line	      DCL	11111101	    -	    none
+.. note:: Modifiers
+
+   - A =  Address
+   - C =  Condition
+   - D =  Data
+   - R =  Register
+   - RP = Register Pair  
 

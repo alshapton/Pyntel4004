@@ -5,7 +5,8 @@ Pyntel4004 Documentation
 ========================
 
 .. toctree::
-   :maxdepth: 2
+   :hidden:
+   :maxdepth: 1
    :caption: Contents:
    :glob:
 

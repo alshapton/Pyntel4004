@@ -58,3 +58,6 @@ html_static_path = ['_static']
 
 # Pygments style for code syntax highlighting
 pygments_style = 'sphinx'
+
+# Hide the "Show Source" link
+html_show_sourcelink = False
