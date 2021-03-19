@@ -1,0 +1,51 @@
+.. _hardware-machine-jcn:
+
+JCN
+===
+
+.. list-table:: Information
+   :widths: 25 75
+   :header-rows: 0
+
+
+   * - Name
+     - Jump Conditional
+   * - Function
+     - Jump if satisfying a set of conditions
+   * - Syntax
+     - JCN
+   * - Assembled
+     - 
+   * - Binary
+     - 0001 CCCC AAAAAAAA
+   * - Decimal
+     - 0
+   * - Hexadecimal
+     - 0x00 
+   * - Symbolic
+     - Not Applicable
+   * - Execution
+     - 1 word, 8-bit code and an execution time of 10.8 |mu| sec
+   * - Side-effects
+     - Not Applicable
+   * - Implemented
+     - `machine`_
+
+.. rubric:: Example program
+
+::
+
+    / Example program
+            org    ram
+            nop
+            end
+
+The program does nothing, since the NOP operation is the only operator in the program.
+
+.. rubric:: Notes
+
+
+The NOP instruction is useful for padding out memory positions for those operators that function differently at the page boundary, such that they do not end at a page boundary. 
+
+.. |mu| replace:: :math:`{\mu}`
+.. _machine: https://github.com/alshapton/Pyntel4004/blob/main/pyntel4004/src/hardware/machine.py

@@ -860,7 +860,7 @@ def wr0(self):
     """
 
     '''
-    OK - there are 4 status registers for each DATA RAM REGISTER (64 4-bit words)
+    OK - 4 status registers for each DATA RAM REGISTER (64 4-bit words)
          for each RAM BANK there are 4 chips (0-3)
          there are 8 RAM BANKS (0-7)
          therefore there are 7*4*4 = 112 status registers ?????

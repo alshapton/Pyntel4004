@@ -15,7 +15,7 @@ Intel 4004 Op-Codes
      -
      -
    * - Jump Conditional
-     - JCN
+     - :ref:`hardware-machine-jcn`
      - 0001CCCC
      - AAAAAAAA
      - C, A
