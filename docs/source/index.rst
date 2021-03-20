@@ -13,6 +13,7 @@ Pyntel4004 Documentation
    intro/opcodes.rst 
    hardware/machine/*
 
+.. autofunction:: hardware.machine.nop
 
 Indices and tables
 ==================

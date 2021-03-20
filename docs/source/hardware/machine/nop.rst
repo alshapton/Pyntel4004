@@ -3,7 +3,7 @@
 NOP
 ===
 
-.. list-table:: Information
+.. list-table:: 
    :widths: 25 75
    :header-rows: 0
 
@@ -29,7 +29,12 @@ NOP
    * - Side-effects
      - Not Applicable
    * - Implemented
-     - `machine`_
+     - imp_
+
+.. rubric:: Description
+
+No operation is performed. 
+The program counter is incremented by one and execution continues with the next sequential instruction.
 
 .. rubric:: Example program
 
@@ -48,4 +53,5 @@ The program does nothing, since the NOP operation is the only operator in the pr
 The NOP instruction is useful for padding out memory positions for those operators that function differently at the page boundary, such that they do not end at a page boundary. 
 
 .. |mu| replace:: :math:`{\mu}`
-.. _machine: https://github.com/alshapton/Pyntel4004/blob/main/pyntel4004/src/hardware/machine.py
+
+.. _imp: https://github.com/alshapton/Pyntel4004/blob/4ed95ca321cd0e9f19a89ef0ebea2b0ebe52952c/pyntel4004/src/hardware/machine.py#L54
