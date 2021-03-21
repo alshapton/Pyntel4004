@@ -298,8 +298,7 @@ def assemble_2(x, opcode, address, TPS, _LABELS, address_left,
             decimal_code = 80
         fullopcode = opcode + '(address12)'
         opcodeinfo = get_opcodeinfo('L', fullopcode)
-        dest_label = x[1]
-        label_addr = get_addr_for_label(_LABELS, dest_label)
+        label_addr = get_addr_for_label(_LABELS, x[1])
         label_addr12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + \
             str(bin(label_addr)[2:].zfill(12))
         bit1 = label_addr12[:8]
@@ -557,6 +556,15 @@ def assemble(program_name: str, chip):
     print('Address   Label')
     for _i in range(len(_LABELS)):
         print('{:>5}     {}'.format(_LABELS[_i]['address'], _LABELS[_i]['label']))
+    
+    write_program_to_file(TPS, program_name)
+    return True
+
+
+def write_program_to_file(program, filename):
+    with open(filename + '.obj', "w") as output:
+        for location in program:
+            output.write(str(hex(location)[2:]))
     return True
 
 
