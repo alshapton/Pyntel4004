@@ -77,6 +77,16 @@ def write_pin10(self, value: int):
     else:
         raise InvalidPin10Value('PIN 10 attempted to be set to ' + str(value))
 
+
+def write_ram_status(char: int):
+    value = self.ACCUMULATOR
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    self.STATUS_CHARACTERS[crb][chip][register][char] = value
+    return True
+
 # Miscellaneous read/write operations
 
 

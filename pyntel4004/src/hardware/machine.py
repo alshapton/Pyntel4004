@@ -857,31 +857,120 @@ def wr0(self):
     Symbolic:       (ACC) --> MS0
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
-    """
-
-    '''
-    OK - 4 status registers for each DATA RAM REGISTER (64 4-bit words)
-         for each RAM BANK there are 4 chips (0-3)
-         there are 8 RAM BANKS (0-7)
-         therefore there are 7*4*4 = 112 status registers ?????
 
     An address set by the previous SRC instruction is interpreted as follows:
 
     (Bits in this order : 12345678)
-
     Bits 1 + 2 = 1 of 4 DATA RAM CHIPS within the DATA RAM BANK previously
                  selected by a DCL instruction
-
-    Bits 2 + 4 = 1 of 4 registers within the DATA RAM CHIP
-
+    Bits 3 + 4 = 1 of 4 registers within the DATA RAM CHIP
     Bits 5-8   = Not relevant
 
-    '''
+    """
 
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
-    final_address = (crb * self.PAGE_SIZE) + address
-    self.RAM[final_address] = value
+    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    self.STATUS_CHARACTERS[crb][chip][register][0] = value
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.PROGRAM_COUNTER
+
+
+def wr1(self):
+    """
+    Name:           Write accumulator into RAM status character 1
+    Function:       The content of the accumulator is written into the
+                    RAM status character 1 of the previously selected
+                    RAM register.
+                    The accumulator and the carry/link are unaffected.
+    Syntax:         WR0
+    Assembled:      1110 0101
+    Symbolic:       (ACC) --> MS1
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   Not Applicable
+
+    An address set by the previous SRC instruction is interpreted as follows:
+
+    (Bits in this order : 12345678)
+    Bits 1 + 2 = 1 of 4 DATA RAM CHIPS within the DATA RAM BANK previously
+                 selected by a DCL instruction
+    Bits 3 + 4 = 1 of 4 registers within the DATA RAM CHIP
+    Bits 5-8   = Not relevant
+
+    """
+
+    value = self.ACCUMULATOR
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    self.STATUS_CHARACTERS[crb][chip][register][1] = value
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.PROGRAM_COUNTER
+
+
+def wr2(self):
+    """
+    Name:           Write accumulator into RAM status character 2
+    Function:       The content of the accumulator is written into the
+                    RAM status character 2 of the previously selected
+                    RAM register.
+                    The accumulator and the carry/link are unaffected.
+    Syntax:         WR0
+    Assembled:      1110 0110
+    Symbolic:       (ACC) --> MS2
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   Not Applicable
+
+    An address set by the previous SRC instruction is interpreted as follows:
+
+    (Bits in this order : 12345678)
+    Bits 1 + 2 = 1 of 4 DATA RAM CHIPS within the DATA RAM BANK previously
+                 selected by a DCL instruction
+    Bits 3 + 4 = 1 of 4 registers within the DATA RAM CHIP
+    Bits 5-8   = Not relevant
+
+    """
+
+    value = self.ACCUMULATOR
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    self.STATUS_CHARACTERS[crb][chip][register][2] = value
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.PROGRAM_COUNTER    
+
+def wr3(self):
+        """
+    Name:           Write accumulator into RAM status character 3
+    Function:       The content of the accumulator is written into the
+                    RAM status character 3 of the previously selected
+                    RAM register.
+                    The accumulator and the carry/link are unaffected.
+    Syntax:         WR0
+    Assembled:      1110 0111
+    Symbolic:       (ACC) --> MS3
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   Not Applicable
+
+    An address set by the previous SRC instruction is interpreted as follows:
+
+    (Bits in this order : 12345678)
+    Bits 1 + 2 = 1 of 4 DATA RAM CHIPS within the DATA RAM BANK previously
+                 selected by a DCL instruction
+    Bits 3 + 4 = 1 of 4 registers within the DATA RAM CHIP
+    Bits 5-8   = Not relevant
+
+    """
+
+    value = self.ACCUMULATOR
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    self.STATUS_CHARACTERS[crb][chip][register][3] = value
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.PROGRAM_COUNTER    

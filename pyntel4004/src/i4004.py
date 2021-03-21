@@ -6,7 +6,8 @@ class processor:
         init_ram, init_rom, init_dram, init_registers
     from hardware.machine import nop, ldm, ld, xch, add, sub, inc, \
         bbl, jin, src, fin, jun, jms, jcn, isz, fim, clb, clc, cmc, \
-        stc, cma, iac, dac, ral, rar, tcc, daa, tcs, kbp, dcl, wrm
+        stc, cma, iac, dac, ral, rar, tcc, daa, tcs, kbp, dcl, wrm, wr0, \
+        wr1, wr2, wr3
     from hardware.suboperation import set_carry, reset_carry,  \
         increment_register, write_pin10, read_complement_carry, \
         write_to_stack, read_from_stack, ones_complement, \
@@ -30,8 +31,11 @@ class processor:
     PAGE_SIZE = 256             # Number of 4-bit words in a memory page
     STACK_SIZE = 3              # Number of 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
+    NO_CHIPS_PER_BANK = 4       # Number of memory chips per Data RAM Bank
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
     NO_COMMAND_REGISTERS = 8    # Number of command registers
+    NO_STATUS_REGISTERS = 4     # Number of Status registers per memory chip
+    NO_STATUS_CHARACTERS = 4    # Number of Status characters per status register
 
     # Creation of processor internals
 
@@ -47,7 +51,11 @@ class processor:
     REGISTERS = []          # Registers (4-bit)
     STACK = []              # The stack - 3 x 12-bit registers
     STACK_POINTER = 2       # Stack Pointer
-
+    STATUS_CHARACTERS = [[[[0 for _char in range(4)]
+                         for _reg in range(4)]
+                         for _chip in range(4)] 
+                         for _bank in range(8)]
+    
     # Creation of processor simulated hardware
 
     # Pin 10 on the physical chip is the "test" pin
@@ -85,6 +93,7 @@ class processor:
 # |_|  |_|  \___/ \___/   |_|   |______|_| |_| |_|\__,_|_|\__,_|\__\___/|_|  #
 #                                                                            #
 ##############################################################################
+
 
 def execute(chip, location, PC, monitor):
     _TPS = []
