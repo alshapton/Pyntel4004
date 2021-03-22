@@ -232,7 +232,7 @@ class instructions:
                 {"opcode": 227, "mnemonic": "wpm()"},
                 {"opcode": 228, "mnemonic": "wr0()", "exe": 10.8, "bits": ["1110", "0100"], "words": 1},
                 {"opcode": 229, "mnemonic": "wr1()", "exe": 10.8, "bits": ["1110", "0101"], "words": 1},
-                {"opcode": 230, "mnemonic": "wr2()"," exe": 10.8, "bits": ["1110", "0110"], "words": 1},,
+                {"opcode": 230, "mnemonic": "wr2()"," exe": 10.8, "bits": ["1110", "0110"], "words": 1},
                 {"opcode": 231, "mnemonic": "wr3()"," exe": 10.8, "bits": ["1110", "0111"], "words": 1},
                 {"opcode": 232, "mnemonic": "sbm()"},
                 {"opcode": 233, "mnemonic": "rdm()"},

@@ -113,6 +113,8 @@ def execute(chip, location, PC, monitor):
         opcodeinfo = next((item for item in chip.INSTRUCTIONS
                           if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
+        if (exe == '-'):
+            break
         words = opcodeinfo['words']
         if (words == 2):
             next_word = str(_TPS[chip.PROGRAM_COUNTER+1])
@@ -293,7 +295,6 @@ def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
 
 def assemble_2(x, opcode, address, TPS, _LABELS, address_left,
                address_right, label, count):
-   
     # pad out for the only 2-character mnemonic
     if (opcode == 'ld'):
         opcode = 'ld '
@@ -378,6 +379,7 @@ def assemble(program_name: str, chip):
 
     while True:
         line = program.readline()
+        constant = False
         # if line is empty, end of file is reached
         if not line:
             break
@@ -391,18 +393,23 @@ def assemble(program_name: str, chip):
                            ' at line ' + str(p_line + 1))
                     break
                 # Attach value to a label
-                match_label(_LABELS, parts[0], address)
+                if ('0' <= str(parts[1])[:1] <= '9'):
+                    constant = True
+                    match_label(_LABELS, parts[0], parts[1])
+                else:
+                    match_label(_LABELS, parts[0], address)
                 # Set opcode
                 opcode = parts[1][:3]
             else:
                 # Set opcode
                 opcode = parts[0][:3]
             # Custom opcodes
-            if (opcode == 'ld()'):
-                opcode = 'ld '
-            if not (opcode in ('org', '/', 'end', 'pin')):
-                opcodeinfo = get_opcodeinfo('S', opcode)
-                address = address + opcodeinfo['words']
+            if not constant:
+                if (opcode == 'ld()'):
+                    opcode = 'ld '
+                if not (opcode in ('org', '/', 'end', 'pin')):
+                    opcodeinfo = get_opcodeinfo('S', opcode)
+                    address = address + opcodeinfo['words']
             TFILE[p_line] = line.strip()
             p_line = p_line + 1
     # Completed reading program into memory
@@ -435,8 +442,16 @@ def assemble(program_name: str, chip):
                 if (x[0][-1] == ','):
                     label = x[0]
                     opcode = x[1]
+                    # Check to see if we are assembling a label
+                    if ('0' <= str(x[1])[:1] <= '9'):
+                        TPS[address] = int(x[1])
+                        print_ln('', '',  '', '', '', '', '', '', '',
+                                     '', '', str(count), label, str(x[1]), '', '', '',)
+                            
+                        break
                 else:
                     opcode = x[0]
+               
                 opcodeinfo = get_opcodeinfo('S', opcode)
                 if (opcode in ['org', 'end', 'pin']) or (opcode is not None):
                     if (opcode in ['org', 'end', 'pin']):
