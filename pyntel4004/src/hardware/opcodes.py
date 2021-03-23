@@ -227,7 +227,7 @@ class instructions:
                 {"opcode": 222, "mnemonic": "ldm(14)", "exe": 10.8, "bits": ["1101", "1110"], "words": 1},
                 {"opcode": 223, "mnemonic": "ldm(15)", "exe": 10.8, "bits": ["1101", "1111"], "words": 1},
                 {"opcode": 224, "mnemonic": "wrm()" ,"exe": 10.8, "bits": ["1110", "0000"], "words": 1},
-                {"opcode": 225, "mnemonic": "wrp()"},
+                {"opcode": 225, "mnemonic": "wmp()", "exe": 10.8, "bits": ["1110", "0001"], "words": 1},
                 {"opcode": 226, "mnemonic": "wrr()"},
                 {"opcode": 227, "mnemonic": "wpm()"},
                 {"opcode": 228, "mnemonic": "wr0()", "exe": 10.8, "bits": ["1110", "0100"], "words": 1},

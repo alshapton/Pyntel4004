@@ -1072,6 +1072,7 @@ def rd2(self):
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR
 
+
 def rd3(self):
     """
     Name:           Read RAM status character 3
@@ -1103,3 +1104,36 @@ def rd3(self):
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR
 
+
+def wmp(self):
+    """
+    Name:           Write memory port
+    Function:       The content of the accumulator is transferred to the
+                    RAM output port of the previously selected RAM chip.
+                    The data is available on the output pins until a new
+                    WMP is executed on the same RAM chip.
+                    The content of the ACC and the carry/link are unaffected.
+    Syntax:         WMP
+    Assembled:      1110 0001
+    Symbolic:       (ACC) --> RAM output register
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   Not Applicable
+
+    There is a 4-bit register on each DATA RAM Chip -  on the base MCS-4
+    system (one i4004 CPU, 32 * i4002, and ? * i4001 ) - additonally, a i4003 shift register
+
+    Therefore - 4 chips per bank, 8 banks = 32 addressable memory ports.
+
+    An address set by the previous SRC instruction is interpreted as follows:
+
+    (Bits in this order : 12345678)
+    
+    """
+
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][3]
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.ACCUMULATOR
