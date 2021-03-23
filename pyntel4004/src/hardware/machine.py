@@ -1117,10 +1117,11 @@ def wmp(self):
     Assembled:      1110 0001
     Symbolic:       (ACC) --> RAM output register
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   Not Applicable
+    Side-effects:   The LSB bit of the accumulator appears on I/O 0, Pin 16,
+                    of the 4002 RAM chip until it is changed.
 
     There is a 4-bit register on each DATA RAM Chip -  on the base MCS-4
-    system (one i4004 CPU, 32 * i4002, and ? * i4001 ) - additonally, a i4003 shift register
+    system (one i4004 CPU, 32 * i4002, and ? * i4001 ) - additionally, a i4003 shift register
 
     Therefore - 4 chips per bank, 8 banks = 32 addressable memory ports.
 
@@ -1128,12 +1129,47 @@ def wmp(self):
 
     (Bits in this order : 12345678)
     
+    Bits 1 + 4 = The port associated with 1 of 4 DATA RAM
+                 chips within the DATA RAM bank previously
+                 selected by a DCL instruction
+    Bits 3 - 8 = Not relevant
     """
 
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][3]
+    chip = int(bin(int(self.COMMAND_REGISTERS[self.read_current_ram_bank()]))[2:].zfill(8)[:2], 2)
+    self.RAM_PORT[crb][chip] = self.ACCUMULATOR
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.ACCUMULATOR
+
+
+def wrr(self):
+    """
+    Name:           Write ROM port
+    Function:       The content of the accumulator is transferred to the ROM
+                    output port of the previously selected ROM chip.
+                    The data is available on the output pins until a new WRR
+                    is executed on the same chip.
+                    The content of the ACC and the carry/link are unaffected.
+    Syntax:         WRR
+    Assembled:      1110 0010
+    Symbolic:       (ACC) --> ROM output lines
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   The LSB bit of the accumulator appears on I/O 0, Pin 16,
+                    of the 4001 ROM chip until it is changed.
+    Notes:          No operation is performed on I/O lines coded as inputs.
+
+    4 chips per bank, 8 banks = 32 addressable ROM ports.
+
+    An address set by the previous SRC instruction is interpreted as follows:
+
+    (Bits in this order : 12345678)
+
+    Bits 1 - 4 = The ROM chip targetted
+    Bits 5 - 8 = Not relevant
+    """
+
+    crb = self.read_current_ram_bank()
+    rom = int(bin(int(self.COMMAND_REGISTERS[crb]))[2:].zfill(8)[:4], 2)
+    self.ROM_PORT[rom] = self.ACCUMULATOR
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR

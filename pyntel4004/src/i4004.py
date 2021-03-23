@@ -7,7 +7,7 @@ class processor:
     from hardware.machine import nop, ldm, ld, xch, add, sub, inc, \
         bbl, jin, src, fin, jun, jms, jcn, isz, fim, clb, clc, cmc, \
         stc, cma, iac, dac, ral, rar, tcc, daa, tcs, kbp, dcl, wrm, wr0, \
-        wr1, wr2, wr3
+        wr1, wr2, wr3, wmp, wrr
     from hardware.suboperation import set_carry, reset_carry,  \
         increment_register, write_pin10, read_complement_carry, \
         write_to_stack, read_from_stack, ones_complement, \
@@ -31,6 +31,7 @@ class processor:
     PAGE_SIZE = 256             # Number of 4-bit words in a memory page
     STACK_SIZE = 3              # Number of 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
+    NO_ROM_PORTS = 32           # Number of ROM output ports
     NO_CHIPS_PER_BANK = 4       # Number of memory chips per Data RAM Bank
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
     NO_COMMAND_REGISTERS = 8    # Number of command registers
@@ -46,16 +47,21 @@ class processor:
     CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
     PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
     RAM = []                # RAM
+    # Set up RAM Ports
+    RAM_PORT = [[0 for _bank in range(8)]
+                for _chip in range(4)]
     ROM = []                # ROM
+    ROM_PORT = [0 for _bank in range(16)] # ROM ports
     PRAM = []               # Program RAM
     REGISTERS = []          # Registers (4-bit)
     STACK = []              # The stack - 3 x 12-bit registers
     STACK_POINTER = 2       # Stack Pointer
+    # Set up RAM status characters
     STATUS_CHARACTERS = [[[[0 for _char in range(4)]
                          for _reg in range(4)]
-                         for _chip in range(4)] 
+                         for _chip in range(4)]
                          for _bank in range(8)]
-    
+
     # Creation of processor simulated hardware
 
     # Pin 10 on the physical chip is the "test" pin
