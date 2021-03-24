@@ -4,9 +4,9 @@
 #           (._.)        ,--.      .-.      .-.        ,--.               #
 #            .-.        /   |    /    \   /    \      /   |               #
 #            | |       / .' |   |  .-. ; |  .-. ;    / .' |               #
-#            | |     / /  | |   | |  | | | |  | |  / /  | |               #
-#            | |      / / | |   | |  | | | |  | |   / / | |               #
-#            | |    /  `--' |-. | |  | | | |  | | /  `--' |-.             #
+#            | |     / /  | |   | |  | | | |  | |   / / | |               #
+#            | |    / /   | |   | |  | | | |  | |  / /  | |               #
+#            | |   /  `--'  |-. | |  | | | |  | | /  `--' |-.             #
 #            | |    `-----| |-' | '  | | | '  | | `-----| |-'             #
 #            | |          | |   '  `-' / '  `-' /       | |               #
 #           (___)        (___)   `.__,'   `.__,'       (___)              #
@@ -1173,3 +1173,27 @@ def wrr(self):
     self.ROM_PORT[rom] = self.ACCUMULATOR
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR
+
+
+def wpm(self):
+    """
+    Name:           Write ROM port
+    Function:       The content of the accumulator is transferred to the ROM
+                    output port of the previously selected ROM chip.
+                    The data is available on the output pins until a new WRR
+                    is executed on the same chip.
+                    The content of the ACC and the carry/link are unaffected.
+    Syntax:         WRR
+    Assembled:      1110 0010
+    Symbolic:       (ACC) --> ROM output lines
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   The LSB bit of the accumulator appears on I/O 0, Pin 16,
+                    of the 4001 ROM chip until it is changed.
+    Notes:          No operation is performed on I/O lines coded as inputs.
+
+    
+    """
+
+    # TODO
+
+    return True
