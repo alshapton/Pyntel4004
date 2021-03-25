@@ -19,7 +19,8 @@ class processor:
     # Some used internally,
     from hardware.reads import read_all_registers, read_all_ram, \
         read_all_rom, read_all_pram, read_accumulator, \
-        read_current_ram_bank, read_carry, read_pin10
+        read_current_ram_bank, read_carry, read_pin10, read_all_stack, \
+        read_all_command_registers
 
     # i4004 Processor characteristics
     MAX_4_BITS = 15             # Maximum value 4 bits can hold
@@ -79,7 +80,6 @@ class processor:
         self.ACBR = 0
         self.CURRENT_RAM_BANK = 0
         self.PROGRAM_COUNTER == 0
-        self.STACK_POINTER == 0
         self.init_stack()
         self.init_command_registers()
         self.init_registers()

@@ -4,6 +4,10 @@ def read_all_registers(self):
     return(self.REGISTERS)
 
 
+def read_all_command_registers(self):
+    return(self.COMMAND_REGISTERS)
+
+
 def read_all_ram(self):
     return(self.RAM)
 
@@ -14,6 +18,10 @@ def read_all_rom(self):
 
 def read_all_pram(self):
     return(self.PRAM)
+
+
+def read_all_stack(self):
+    return(self.STACK)
 
 
 def read_accumulator(self):
