@@ -63,7 +63,7 @@ def nop(self):
     """
 
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
-    return self
+    return self.PROGRAM_COUNTER
 
 
 def ldm(self, operand: int):
@@ -77,7 +77,7 @@ def ldm(self, operand: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   The carry bit is not affected.
     """
-
+    
     self.ACCUMULATOR = operand
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR

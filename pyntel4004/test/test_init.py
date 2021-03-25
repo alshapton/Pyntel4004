@@ -6,9 +6,6 @@ sys.path.insert(1, '../src')
 
 from src.i4004 import processor  # noqa
 
-# from src.hardware.opcodes import opcodes
-
-
 def test_init_accumulator():
     assert(chip.read_accumulator() == 0)
 

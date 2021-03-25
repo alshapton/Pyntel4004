@@ -2,7 +2,7 @@
 # Ignore format and style issues
 class instructions:
     opcodes = [
-                {"opcode": 0, "mnemonic": "nop", "exe": 10.8, "bits": ["0000", "0000"], "words": 1},
+                {"opcode": 0, "mnemonic": "nop()", "exe": 10.8, "bits": ["0000", "0000"], "words": 1},
                 {"opcode": 1, "mnemonic": "-"},
                 {"opcode": 2, "mnemonic": "-"},
                 {"opcode": 3, "mnemonic": "-"},
