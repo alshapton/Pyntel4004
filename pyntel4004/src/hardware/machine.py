@@ -51,19 +51,6 @@ Additional Abbreviations:
 # One Word Machine Instructions
 
 
-def nop(self):
-    """
-    Name:           No Operation
-    Function:       No operation performed.
-    Syntax:         NOP
-    Assembled:      0000 0000
-    Symbolic:       Not applicable
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   Not Applicable
-    """
-
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
-    return self.PROGRAM_COUNTER
 
 
 def ldm(self, operand: int):
@@ -184,24 +171,6 @@ def sub(self, register: int):
         self.reset_carry()
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR, self.CARRY
-
-
-def inc(self, register: int):
-    """
-    Name:           Increment index register
-    Function:       The 4 bit content of the designated index register is
-                    incremented by 1.
-                    The index register is set to zero in case of overflow.
-    Syntax:         INC <register>
-    Assembled:      0110 <RRRR>
-    Symbolic:       (RRRR) +1 --> RRRR
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   The carry bit is not affected.
-    """
-
-    self.increment_register(register)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
-    return self.REGISTERS[register]
 
 
 def bbl(self, accumulator: int):

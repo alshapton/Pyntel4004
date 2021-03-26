@@ -246,16 +246,28 @@ def assemble_2(x, opcode, address, TPS, _LABELS, address_left,
             bit1, bit2 = get_bits(opcodeinfo)
             TPS[address] = opcodeinfo['opcode']
             print_ln(address, label, address_left, address_right, bit1, bit2, '',
-                     '', TPS[address] , '','', str(count), opcode, str(x[1]), '', '', '')
+                     '', TPS[address], '', '', str(count), opcode, str(x[1]), '', '', '')
             address = address + opcodeinfo['words']
         else:
             opcodeinfo = get_opcodeinfo('L', fullopcode)
             bit1, bit2 = get_bits(opcodeinfo)
             TPS[address] = opcodeinfo['opcode']
             print_ln(address, label, address_left, address_right, bit1, bit2, '',
-                    '', TPS[address] , '','', str(count), opcode, str(x[1]), '', '', '')
+                     '', TPS[address], '', '', str(count), opcode, str(x[1]), '', '', '')
             address = address + opcodeinfo['words']
     return address, TPS, _LABELS
+
+
+def validate_inc(parts, line):
+    if (len(parts) == 1):
+        if (parts[0] == 'inc'):
+            return do_assembly_error('No register value at line ' + str(line))
+    if (len(parts) == 2):
+        if ((parts[1] == 'inc') and (parts[0][-1])):
+            return do_assembly_error('No register value at line ' + str(line))
+        if ((parts[0] == 'inc') and ((int(parts[1]) > 15) or (int(parts[1]) < 0) )):
+            return do_assembly_error('Invalid register value (' + parts[1] + ') at line ' + str(line))
+    return False
 
 
 def assemble(program_name: str, chip):
@@ -284,10 +296,6 @@ def assemble(program_name: str, chip):
     print()
     print('Program Code:', program_name)
     print()
-    print('Address  Label   Address        Assembled                    ' +
-          '  Line     Op/Operand')
-    print(' (Dec)            (Bin)           (Bin)          (Dec)')
-    print('                            Word 1     Word 2')
     ORG_FOUND = False
     location = ''
     count = 0
@@ -321,6 +329,10 @@ def assemble(program_name: str, chip):
             else:
                 # Set opcode
                 opcode = parts[0][:3]
+            if (opcode[:3] == 'inc'):
+                ERR = validate_inc(parts, p_line + 1)
+                if ERR:
+                    break
             # Custom opcodes
             if not constant:
                 if (opcode == 'ld()'):
@@ -339,7 +351,11 @@ def assemble(program_name: str, chip):
         return False
 
     # Pass 2
-
+    print('Address  Label   Address        Assembled                    ' +
+          '  Line     Op/Operand')
+    print(' (Dec)            (Bin)           (Bin)          (Dec)')
+    print('                            Word 1     Word 2')
+   
     # Program Line Count
     count = 0
     while True:
@@ -365,11 +381,11 @@ def assemble(program_name: str, chip):
                         TPS[address] = int(x[1])
                         print_ln('', '',  '', '', '', '', '', '', '',
                                      '', '', str(count), label, str(x[1]), '', '', '',)
-                            
+
                         break
                 else:
                     opcode = x[0]
-               
+
                 opcodeinfo = get_opcodeinfo('S', opcode)
                 if (opcode in ['org', 'end', 'pin']) or (opcode is not None):
                     if (opcode in ['org', 'end', 'pin']):
