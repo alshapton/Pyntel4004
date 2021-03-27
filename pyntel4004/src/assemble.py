@@ -78,9 +78,9 @@ def execute(chip, location, PC, monitor):
 
         if (custom_opcode):
             custom_opcode = False
-            print('  {:>7}  {:<10}'.format(OPCODE, cop))
+            print('  {:>7}  {:<10}'.format(OPCODE, cop.replace('()','')))
         else:
-            print('  {:>7}  {:<10}'.format(OPCODE, exe))
+            print('  {:>7}  {:<10}'.format(OPCODE, exe.replace('()','')))
 
         exe = 'chip.' + exe
 

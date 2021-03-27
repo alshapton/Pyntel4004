@@ -1,7 +1,7 @@
 / Example program
         org     rom
         ldm     2
-        inc     16
+        inc     1
         nop
         fim     rp0     180
         src     rp0

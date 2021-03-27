@@ -5,9 +5,9 @@ class processor:
     from hardware.reset import init_stack, init_command_registers, \
         init_ram, init_rom, init_dram, init_registers
     from hardware.instructions.nop import nop
-    from hardware.instructions.idx import inc
+    from hardware.instructions.idx import inc, fin
     from hardware.machine import ldm, ld, xch, add, sub, \
-        bbl, jin, src, fin, jun, jms, jcn, isz, fim, clb, clc, cmc, \
+        bbl, jin, src, jun, jms, jcn, isz, fim, clb, clc, cmc, \
         stc, cma, iac, dac, ral, rar, tcc, daa, tcs, kbp, dcl, wrm, wr0, \
         wr1, wr2, wr3, wmp, wrr
     from hardware.suboperation import set_carry, reset_carry,  \
