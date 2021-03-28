@@ -8,6 +8,7 @@
 #                                                         #
 ###########################################################
 
+
 def inc(self, register: int):
     """
     Name:           Increment index register

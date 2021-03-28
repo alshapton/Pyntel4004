@@ -1,15 +1,18 @@
 class processor:
-    
+
     # Import processor internals
     import hardware.opcodes
     from hardware.reset import init_stack, init_command_registers, \
         init_ram, init_rom, init_dram, init_registers
+
     from hardware.instructions.nop import nop
     from hardware.instructions.idx import inc, fin
+    from hardware.instructions.accumulator import clb, clc, iac, cmc, \
+        cma, ral, rar, tcc, dac, tcs, stc, daa, kbp
+
     from hardware.machine import ldm, ld, xch, add, sub, \
-        bbl, jin, src, jun, jms, jcn, isz, fim, clb, clc, cmc, \
-        stc, cma, iac, dac, ral, rar, tcc, daa, tcs, kbp, dcl, wrm, wr0, \
-        wr1, wr2, wr3, wmp, wrr
+        bbl, jin, src, jun, jms, jcn, isz, fim, \
+        dcl, wrm, wr0, wr1, wr2, wr3, wmp, wrr
     from hardware.suboperation import set_carry, reset_carry,  \
         increment_register, write_pin10, read_complement_carry, \
         write_to_stack, read_from_stack, ones_complement, \
@@ -39,7 +42,7 @@ class processor:
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
     NO_COMMAND_REGISTERS = 8    # Number of command registers
     NO_STATUS_REGISTERS = 4     # Number of Status registers per memory chip
-    NO_STATUS_CHARACTERS = 4    # Number of Status characters per status register
+    NO_STATUS_CHARACTERS = 4    # Number of Status chars per status register
 
     # Creation of processor internals
 
@@ -54,7 +57,7 @@ class processor:
     RAM_PORT = [[0 for _bank in range(8)]
                 for _chip in range(4)]
     ROM = []                # ROM
-    ROM_PORT = [0 for _bank in range(16)] # ROM ports
+    ROM_PORT = [0 for _bank in range(16)]  # ROM ports
     PRAM = []               # Program RAM
     REGISTERS = []          # Registers (4-bit)
     STACK = []              # The stack - 3 x 12-bit registers
