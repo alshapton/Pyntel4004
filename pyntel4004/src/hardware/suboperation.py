@@ -30,7 +30,10 @@ def read_register(self, register: int):
 
 def insert_registerpair(self, registerpair: int, value: int):
     if (value > 256):
-        raise ValueTooLargeForRegister('Register Pair: ' + str(registerpair) + ',Value: ' + str(value)) # noqa
+        raise ValueTooLargeForRegister('Register Pair: ' +
+                                       str(registerpair) +
+                                       ',Value: ' +
+                                       str(value))
     else:
         self.insert_register(registerpair, (value >> 4) & 15)   # Bit-shift right and remove low bits
         self.insert_register(registerpair + 1, value & 15)      # Remove low bits
@@ -47,7 +50,8 @@ def inc_pc_by_page(self, pc: int):
     # Point the program counter to 1 page on
     pc = pc + self.PAGE_SIZE
     if (pc > self.MEMORY_SIZE_RAM):
-        raise ProgramCounterOutOfBounds('Program counter attempted to be set to ' + str(pc))
+        raise ProgramCounterOutOfBounds('Program counter attempted to be' +
+                                        ' set to ' + str(pc))
     return pc
 
 
@@ -158,3 +162,10 @@ def decimal_to_binary(self, decimal: int):
 def binary_to_decimal(self, binary: str):
     # Convert binary to decimal
     return int(binary, 2)
+
+
+def flip_wpm_counter(self):
+    if (self.WPM_COUNTER == 'LEFT'):
+        self.WPM_COUNTER = 'RIGHT'
+    else:
+        self.WPM_COUNTER = 'LEFT'

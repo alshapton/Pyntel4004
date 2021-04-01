@@ -38,3 +38,7 @@ def read_carry(self):
 
 def read_pin10(self):
     return(self.PIN_10_SIGNAL_TEST)
+
+
+def read_wpm_counter(self):
+    return(self.WPM_COUNTER)

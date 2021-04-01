@@ -3,7 +3,7 @@ class processor:
     # Import processor internals
     import hardware.opcodes
     from hardware.reset import init_stack, init_command_registers, \
-        init_ram, init_rom, init_dram, init_registers
+        init_ram, init_rom, init_dram, init_registers, init_wpm_counter
 
     from hardware.instructions.nop import nop
     from hardware.instructions.idx import inc, fin
@@ -67,6 +67,7 @@ class processor:
                          for _reg in range(4)]
                          for _chip in range(4)]
                          for _bank in range(8)]
+    WPM_COUNTER = ''        # WPM Counter (Left/Right flip)
 
     # Creation of processor simulated hardware
 
@@ -92,5 +93,6 @@ class processor:
         self.init_ram()
         self.init_rom()
         self.reset_carry()
+        self.init_wpm_counter()
 
 #  END OF PROCESSOR DEFINITION

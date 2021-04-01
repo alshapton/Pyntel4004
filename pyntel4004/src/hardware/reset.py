@@ -28,3 +28,7 @@ def init_rom(self):
 def init_dram(self):
     for _i in range(self.MEMORY_SIZE_PRAM):
         self.PRAM.append(0)
+
+
+def init_wpm_counter(self):
+    self.WPM_COUNTER = 'LEFT'

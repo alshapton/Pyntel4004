@@ -20,6 +20,7 @@
 ###########################################################################
 
 from .exceptions import InvalidRamBank
+
 from hardware.instructions.nop import nop  # noqa
 from hardware.instructions.idx import inc, fin  # noqa
 from hardware.instructions.accumulator import clb, clc, iac, cmc, \
@@ -193,6 +194,7 @@ def bbl(self, accumulator: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
+
     address = self.read_from_stack()
     self.PROGRAM_COUNTER = address
     self.ACCUMULATOR = accumulator
@@ -797,23 +799,58 @@ def wrr(self):
 
 def wpm(self):
     """
-    Name:           Write ROM port
-    Function:       The content of the accumulator is transferred to the ROM
-                    output port of the previously selected ROM chip.
-                    The data is available on the output pins until a new WRR
-                    is executed on the same chip.
-                    The content of the ACC and the carry/link are unaffected.
-    Syntax:         WRR
-    Assembled:      1110 0010
-    Symbolic:       (ACC) --> ROM output lines
+    Name:           Write program RAM
+    Function:       This is a special instruction which may be used to write
+                    the contents of the accumulator into a half byte of
+                    program RAM, or read the contents of a half byte of program
+                    RAM into a ROM input port where it can be accessed by a
+                    program.
+                    The Carry bit is unaffected.
+    Syntax:         WPM
+    Assembled:      1110 0011
+    Symbolic:       (A) --> (PRAM)
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   The LSB bit of the accumulator appears on I/O 0, Pin 16,
-                    of the 4001 ROM chip until it is changed.
-    Notes:          No operation is performed on I/O lines coded as inputs.
+
+    Notes:  1       Two WPM instructions must always appear in close
+                    succession; that is, each time one WPM instruction
+                    references a half byte of program RAM as indicated by an
+                    SRC address, another WPM must access the other half byte
+                    before the SRC address is altered. An internal counter
+                    keeps track of which half-byte is being accessed. If only
+                    one WPM occurs, this counter will be out of sync with the
+                    program and errors will occur. In this situation, a RESET
+                    pulse must be used to re-initialize the machine.
+
+            2       A WPM instruction requires an SRC address to access program
+                    RAM. Whenever a WPM is executed, the DATA RAM which happens
+                    to correspond to this SRC address will also be written.
+                    If data needed later in the program is being held in such
+                    a DATA RAM, the programmer must save it elsewhere before
+                    executing the WPM instruction.
 
 
     """
 
-    # TODO
+    from suboperation import flip_wpm_counter
+    from reads import read_wpm_counter
 
+
+    # self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    # address = self.read_registerpair(registerpair)
+    # self.COMMAND_REGISTERS[self.read_current_ram_bank()] = address
+
+
+    # TODO
+    # Get the value of the WPM Counter
+    wpm_counter = read_wpm_counter()
+
+    if (wpm_counter == 'LEFT'):
+        pass
+    if (wpm_counter == 'RIGHT'):
+        pass
+    if (wpm_counter not in ['LEFT', 'RIGHT']):
+        pass  # raise error
+
+    # Finally, flip the WPM Counter
+    flip_wpm_counter()
     return True
