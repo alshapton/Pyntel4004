@@ -834,13 +834,18 @@ def wpm(self):
     from suboperation import flip_wpm_counter
     from reads import read_wpm_counter
 
-
-    # self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     # address = self.read_registerpair(registerpair)
     # self.COMMAND_REGISTERS[self.read_current_ram_bank()] = address
 
-
     # TODO
+    if (self.ROM_PORT[14] == 1):
+        # Write enabled
+        pass
+
+    if (self.ROM_PORT[14] == 0):
+        # read
+        pass
+
     # Get the value of the WPM Counter
     wpm_counter = read_wpm_counter()
 
@@ -853,4 +858,6 @@ def wpm(self):
 
     # Finally, flip the WPM Counter
     flip_wpm_counter()
+
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return True

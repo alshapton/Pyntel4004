@@ -27,8 +27,8 @@ class MainWindow(npyscreen.FormWithMenus):
         self.show_aty = 0
         self.keypress_timeout = 10
         # Bounding boxes
-        box_core = self.add(Box, name="", editable=False, relx=1, rely=1,
-                            max_width=20, max_height=5)
+        _box_core = self.add(Box, name="", editable=False, relx=1, rely=1,
+                             max_width=20, max_height=5)
 
         self.accumulator = self.add(npyscreen.TitleFixedText, relx=2, rely=2,
                                     use_two_lines=False, begin_entry_at=4,
@@ -80,7 +80,6 @@ class MainWindow(npyscreen.FormWithMenus):
         ])
 
     def exit_application(self):
-        curses.beep()
         self.parentApp.setNextForm(None)
         self.editing = False
         self.parentApp.switchFormNow()

@@ -132,3 +132,5 @@ dmypy.json
 .pyre/
 
 *.obj
+
+pyntel4004/docs/~$resources.pptx
