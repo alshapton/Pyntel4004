@@ -309,6 +309,7 @@ def assemble(program_name: str, chip):
 
     while True:
         line = program.readline()
+        print(line)
         constant = False
         # if line is empty, end of file is reached
         if not line:
@@ -338,11 +339,16 @@ def assemble(program_name: str, chip):
                 if ERR:
                     break
             # Custom opcodes
+            print(len(opcode))
+            print(opcode)
             if not constant:
-                if (opcode == 'ld()'):
+                if (opcode == 'ld()' or opcode[:2] == 'ld'):
                     opcode = 'ld '
+                print(opcode)
                 if not (opcode in ('org', '/', 'end', 'pin')):
+                    print('opcode=', opcode)
                     opcodeinfo = get_opcodeinfo('S', opcode)
+                    print(opcodeinfo)
                     address = address + opcodeinfo['words']
             TFILE[p_line] = line.strip()
             p_line = p_line + 1

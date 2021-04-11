@@ -1,3 +1,4 @@
+
 ###########################################################################
 #                                                                         #
 #            .-.                                                          #
@@ -834,30 +835,60 @@ def wpm(self):
     from suboperation import flip_wpm_counter
     from reads import read_wpm_counter
 
-    # address = self.read_registerpair(registerpair)
-    # self.COMMAND_REGISTERS[self.read_current_ram_bank()] = address
-
-    # TODO
-    if (self.ROM_PORT[14] == 1):
-        # Write enabled
-        pass
-
-    if (self.ROM_PORT[14] == 0):
-        # read
-        pass
+    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
 
     # Get the value of the WPM Counter
     wpm_counter = read_wpm_counter()
 
-    if (wpm_counter == 'LEFT'):
-        pass
-    if (wpm_counter == 'RIGHT'):
-        pass
-    if (wpm_counter not in ['LEFT', 'RIGHT']):
-        pass  # raise error
+    if (self.ROM_PORT[14] == 1):
+        # Write enabled, so store
+        value = self.ACCUMULATOR
+        if (wpm_counter == 'LEFT'):
+            value = self.ACCUMULATOR << 4
+            self.PRAM[address] = value
+        if (wpm_counter == 'RIGHT'):
+            value = self.ACCUMULATOR
+            self.PRAM[address] = self.PRAM[address] + value
+        flip_wpm_counter()
 
-    # Finally, flip the WPM Counter
+    if (self.ROM_PORT[14] != 1):
+        # read
+        if (wpm_counter == 'LEFT'):
+            self.ROM_PORT[14] = self.PRAM[address] >> 4 << 4
+        if (wpm_counter == 'RIGHT'):
+            value = self.ACCUMULATOR
+            self.ROM_PORT[14] = self.PRAM[address] << 4 >> 4
+
     flip_wpm_counter()
 
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2
     return True
+
+
+def rdr(self):
+    """
+    Name:           Read ROM Port
+    Function:       The ROM port specified by the last SRC instruction is read.
+                    When using the 4001 ROM,each of the 4 lines of the port may
+                    be an input or an output line; the data on the input lines
+                    is transferred to the corresponding bits of the
+                    accumulator.
+                    Any output lines cause either a 0 or a 1 to be transferred
+                    to the corresponding bits of the accumulator.
+                    Whether a 0 or a 1 is transferred is a function of the
+                    hardware, not under control of the programmer.
+                    The Carry bit is unaffected.
+    Syntax:         RDR
+    Assembled:      1110 1010
+    Symbolic:       (ROM input lines) --> ACC
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+
+    Notes:  1       The 4001 chip has a 256-byte ROM (256 8-bit program
+                    instructions), and one built-in 4-bit I/O port.
+
+            2       On the INTELLEC 4, a ROM port may be used for either
+                    input or output. If programs tested on the INTELLEC 4 are
+                    to be run later with a 4001 ROM I must be careful not to
+                    use one port for both functions.
+    """
+    return
