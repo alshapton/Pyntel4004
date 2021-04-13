@@ -52,12 +52,15 @@ class processor:
     COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
     CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
     PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
-    RAM = []                # RAM
-    # Set up RAM Ports
-    RAM_PORT = [[0 for _bank in range(8)]
+    
+    # Set up RAM
+    RAM = []                                # RAM
+    RAM_PORT = [[0 for _bank in range(8)]   # RAM Ports
                 for _chip in range(4)]
-    ROM = []                # ROM
-    ROM_PORT = [0 for _bank in range(16)]  # ROM ports
+    # Set up ROM
+    ROM = []                                # ROM
+    ROM_PORT = [0 for _bank in range(16)]   # ROM ports
+
     PRAM = []               # Program RAM
     REGISTERS = []          # Registers (4-bit)
     STACK = []              # The stack - 3 x 12-bit registers

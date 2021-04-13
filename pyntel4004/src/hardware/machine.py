@@ -791,7 +791,6 @@ def wrr(self):
     Bits 5 - 8 = Not relevant
     """
 
-    crb = self.read_current_ram_bank()
     rom = int(bin(int(self.COMMAND_REGISTER))[2:].zfill(8)[:4], 2)
     self.ROM_PORT[rom] = self.ACCUMULATOR
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
@@ -876,7 +875,7 @@ def rdr(self):
                     Any output lines cause either a 0 or a 1 to be transferred
                     to the corresponding bits of the accumulator.
                     Whether a 0 or a 1 is transferred is a function of the
-                    hardware, not under control of the programmer.
+                    hardware, not under control of the programmer. (See Note 3)
                     The Carry bit is unaffected.
     Syntax:         RDR
     Assembled:      1110 1010
@@ -891,8 +890,16 @@ def rdr(self):
                     input or output. If programs tested on the INTELLEC 4 are
                     to be run later with a 4001 ROM I must be careful not to
                     use one port for both functions.
+
+            3       On the physical devices, if the leftmost I/O line is an
+                    output line and the remaining I/O lines are input lines
+                    containing 010B, the accumulator will contain either
+                    1010B or O010B.
+                    This software implementation of the i4004 will ALWAYS
+                    return the values of the output lines as-is.
     """
 
     rom = self.COMMAND_REGISTER >> 4
-    
-    return
+    self.ACCUMULATOR = self.ROM_PORT[rom]
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.ACCUMULATOR
