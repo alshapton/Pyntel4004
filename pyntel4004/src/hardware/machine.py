@@ -234,7 +234,7 @@ def src(self, registerpair: int):
 
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     address = self.read_registerpair(registerpair)
-    self.COMMAND_REGISTERS[self.read_current_ram_bank()] = address
+    self.COMMAND_REGISTER = address
     return None
 
 
@@ -459,7 +459,7 @@ def wrm(self):
 
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     final_address = (crb * self.PAGE_SIZE) + address
     self.RAM[final_address] = value
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
@@ -491,7 +491,7 @@ def wr0(self):
 
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][0] = value
@@ -524,7 +524,7 @@ def wr1(self):
 
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][1] = value
@@ -557,7 +557,7 @@ def wr2(self):
 
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][2] = value
@@ -590,7 +590,7 @@ def wr3(self):
 
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][3] = value
@@ -622,7 +622,7 @@ def rd0(self):
     """
 
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][0]
@@ -654,7 +654,7 @@ def rd1(self):
     """
 
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][1]
@@ -686,7 +686,7 @@ def rd2(self):
     """
 
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][2]
@@ -718,7 +718,7 @@ def rd3(self):
     """
 
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][3]
@@ -758,7 +758,7 @@ def wmp(self):
     """
 
     crb = self.read_current_ram_bank()
-    chip = int(bin(int(self.COMMAND_REGISTERS[self.read_current_ram_bank()]))
+    chip = int(bin(int(self.COMMAND_REGISTER))
                [2:].zfill(8)[:2], 2)
     self.RAM_PORT[crb][chip] = self.ACCUMULATOR
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
@@ -792,7 +792,7 @@ def wrr(self):
     """
 
     crb = self.read_current_ram_bank()
-    rom = int(bin(int(self.COMMAND_REGISTERS[crb]))[2:].zfill(8)[:4], 2)
+    rom = int(bin(int(self.COMMAND_REGISTER))[2:].zfill(8)[:4], 2)
     self.ROM_PORT[rom] = self.ACCUMULATOR
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR
@@ -835,7 +835,7 @@ def wpm(self):
     from suboperation import flip_wpm_counter
     from reads import read_wpm_counter
 
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTER
 
     # Get the value of the WPM Counter
     wpm_counter = read_wpm_counter()
@@ -883,12 +883,16 @@ def rdr(self):
     Symbolic:       (ROM input lines) --> ACC
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
 
-    Notes:  1       The 4001 chip has a 256-byte ROM (256 8-bit program
+    Notes:  1       The i4001 chip has a 256-byte ROM (256 8-bit program
                     instructions), and one built-in 4-bit I/O port.
+                    The MCS-4 has 16 i4001 ROM chips.
 
             2       On the INTELLEC 4, a ROM port may be used for either
                     input or output. If programs tested on the INTELLEC 4 are
                     to be run later with a 4001 ROM I must be careful not to
                     use one port for both functions.
     """
+
+    rom = self.COMMAND_REGISTER >> 4
+    
     return
