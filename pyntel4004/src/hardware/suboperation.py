@@ -169,3 +169,4 @@ def flip_wpm_counter(self):
         self.WPM_COUNTER = 'RIGHT'
     else:
         self.WPM_COUNTER = 'LEFT'
+    return self.WPM_COUNTER

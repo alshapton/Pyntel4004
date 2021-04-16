@@ -10,6 +10,7 @@ Pyntel4004 Documentation
    :caption: Contents:
    :glob:
 
+   global.rst 
    intro/opcodes.rst 
    hardware/machine/*
 

@@ -12,7 +12,8 @@ class processor:
 
     from hardware.machine import ldm, ld, xch, add, sub, \
         bbl, jin, src, jun, jms, jcn, isz, fim, \
-        dcl, wrm, wr0, wr1, wr2, wr3, wmp, wrr
+        dcl, wrm, wr0, wr1, wr2, wr3, wmp, wrr, rd0, rd1, \
+        rd2, rd3, wpm
     from hardware.suboperation import set_carry, reset_carry,  \
         increment_register, write_pin10, read_complement_carry, \
         write_to_stack, read_from_stack, ones_complement, \
@@ -39,6 +40,9 @@ class processor:
     NO_REGISTERS = 16           # Number of registers
     NO_ROM_PORTS = 32           # Number of ROM output ports
     NO_CHIPS_PER_BANK = 4       # Number of memory chips per Data RAM Bank
+    RAM_BANK_SIZE = 256         # Size in 4-bit addresses of a Data RAM Bank
+    RAM_CHIP_SIZE = 64          # Size in 4-bit addresses of a single RAM chip
+    RAM_REGISTER_SIZE = 16      # Number of 4-bit registers in a RAM chip
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
     NO_COMMAND_REGISTERS = 8    # Number of command registers
     NO_STATUS_REGISTERS = 4     # Number of Status registers per memory chip
@@ -52,7 +56,7 @@ class processor:
     COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
     CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
     PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
-    
+
     # Set up RAM
     RAM = []                                # RAM
     RAM_PORT = [[0 for _bank in range(8)]   # RAM Ports

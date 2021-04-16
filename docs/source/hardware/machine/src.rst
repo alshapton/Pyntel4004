@@ -1,5 +1,7 @@
 .. _hardware-machine-src:
 
+.. include:: ../../global.rst
+
 SRC
 ===
 
@@ -11,16 +13,16 @@ SRC
    * - Name
      - Send Register Control
    * - Function
-     - The 8 bits contained in the register pair specified by RP are used
-       as an address. This address may designate a particular DATA RAM
-       data character, a DATA RAM status character, a RAM output port, or
+     - The 8 bits contained in the register pair specified by RP are used |br|
+       as an address. This address may designate a particular DATA RAM |br|
+       data character, a DATA RAM status character, a RAM output port, or |br|
        a ROM input/output port.
    * - Syntax
      - SRC(RPp)
    * - Assembled
      -
    * - Binary
-     - 0010RPx1
+     - 0010RPp1
    * - Decimal
      - 33, then incrementing by 2 until 47 (1st word)
    * - Hexadecimal
@@ -50,7 +52,11 @@ The only DATA RAM bank which receives the SRC address is the one selected by the
 
 The 8 bits of the address sent by the SRC are interpreted as follows:
 
-.. image:: images/fim.png
+.. image:: images/src.png
+   :scale: 50%
+   :align: center
+
+.. image:: images/src-dataram-char.png
    :scale: 50%
    :align: center
 
@@ -60,10 +66,10 @@ The 8 bits of the address sent by the SRC are interpreted as follows:
 
     / Example program
             org    ram
-            fim    2  254
+            fim    1p  180
+            src    1p
             end
 
 
-.. |mu| replace:: :math:`{\mu}`
 
-.. _src: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L389
+.. _src: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208

@@ -23,6 +23,7 @@ def execute(chip, location, PC, monitor):
     chip.PROGRAM_COUNTER = 0
     opcode = 0
     while opcode != 255:  # pseudo-opcode (directive) for "end"
+
         custom_opcode = False
         OPCODE = _TPS[chip.PROGRAM_COUNTER]
         if (OPCODE == 255):  # pseudo-opcode (directive "end" - stop program)
@@ -31,24 +32,27 @@ def execute(chip, location, PC, monitor):
         opcodeinfo = next((item for item in chip.INSTRUCTIONS
                           if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
+        print("exe=",exe)
         if (exe == '-'):
             break
+        print("!")
         words = opcodeinfo['words']
         if (words == 2):
             next_word = str(_TPS[chip.PROGRAM_COUNTER+1])
-            OPCODE = str(OPCODE) + ',' + next_word
+            OPCODE3 = str(OPCODE) + ',' + next_word
 
         # Only mnemonic with 2 characters - fix
         if (exe[:3] == 'ld '):
             exe = exe[:2] + exe[3:]
 
         # Ensure that the correct arguments are passed to the operations
-        if (exe[:6] == 'fim(rp'):
+        print("exe3",exe[:3])
+        if (exe[:3] == 'fim'):
             custom_opcode = True
             value = str(_TPS[chip.PROGRAM_COUNTER + 1])
             cop = exe.replace('data8', value)
-            exe = exe.replace('rp', '').replace('data8)', '') + value + ')'
-
+            exe = exe.replace('p', '').replace('data8)', '') + value + ')'
+            print("EXY=",exe)
         if (exe[:3] == 'isz'):
             # Remove opcode from 1st byte to get register
             register = bin(_TPS[chip.PROGRAM_COUNTER] & 15)[2:].zfill(8)[4:]
@@ -487,6 +491,20 @@ def assemble(program_name: str, chip):
                                              str(count), opcode, str(x[1]),
                                              str(x[2]), '')
                                     address = address + opcodeinfo['words']
+                                if (opcode[:3] == 'fim'):
+                                    f_opcode = x[0] + '(' + x[1] + ',data8)'
+                                    opcodeinfo = get_opcodeinfo('L', f_opcode)
+                                    print(opcodeinfo)
+                                    TPS[address] = opcodeinfo['opcode']
+                                    TPS[address + 1] = int(x[2])
+                                    bit1, bit2 = get_bits(opcodeinfo)
+                                    print_ln(address, label, '' '',
+                                             '', bit1, bit2, '',
+                                             '',  str(TPS[address]) +
+                                             "," + str(TPS[address + 1]),
+                                             str(count), opcode, str(x[1]),
+                                             str(x[2]), '', '', '', '')
+                                    address = address + opcodeinfo['words']
                                 if (opcode == 'isz'):
                                     n_opcode, label_addr, words, \
                                         addr_left, addr_right, \
@@ -502,7 +520,7 @@ def assemble(program_name: str, chip):
                                              str(count), opcode, str(x[1]),
                                              str(x[2]), '', '', '', '')
                                     address = address + words
-                                if (opcode not in ('jcn', 'isz')):
+                                if (opcode not in ('jcn', 'fim', 'isz')):
                                     d_type = ''
                                     if (int(x[2]) <= 256):
                                         d_type = 'data8'
@@ -524,11 +542,11 @@ def assemble(program_name: str, chip):
                                     address = address + opcodeinfo['words']
                         else:
                             ERR = do_error("FATAL: Pass 2: No 'org'" +
-                                           " found at line: " + count + 1)
+                                           " found at line: " + str(count + 1))
                             break
                 else:
                     ERR = do_error("'FATAL: Pass 2:  Invalid mnemonic '" +
-                                   opcode + "' at line: " + count + 1)
+                                   opcode + "' at line: " + str(count + 1))
                     break
         count = count + 1
 

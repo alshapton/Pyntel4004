@@ -831,13 +831,13 @@ def wpm(self):
 
     """
 
-    from suboperation import flip_wpm_counter
-    from reads import read_wpm_counter
+    from hardware.suboperation import flip_wpm_counter
+    from hardware.reads import read_wpm_counter
 
     address = self.COMMAND_REGISTER
 
     # Get the value of the WPM Counter
-    wpm_counter = read_wpm_counter()
+    wpm_counter = read_wpm_counter(self)
 
     if (self.ROM_PORT[14] == 1):
         # Write enabled, so store
@@ -848,7 +848,6 @@ def wpm(self):
         if (wpm_counter == 'RIGHT'):
             value = self.ACCUMULATOR
             self.PRAM[address] = self.PRAM[address] + value
-        flip_wpm_counter()
 
     if (self.ROM_PORT[14] != 1):
         # read
@@ -858,7 +857,7 @@ def wpm(self):
             value = self.ACCUMULATOR
             self.ROM_PORT[14] = self.PRAM[address] << 4 >> 4
 
-    flip_wpm_counter()
+    flip_wpm_counter(self)
 
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2
     return True
@@ -901,5 +900,29 @@ def rdr(self):
 
     rom = self.COMMAND_REGISTER >> 4
     self.ACCUMULATOR = self.ROM_PORT[rom]
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.ACCUMULATOR
+
+
+def rdm(self):
+    """
+    Name:           Read Data RAM data character
+    Function:       The content of the previously selected RAM main memory
+                    character is transferred to the accumulator
+                    The carry/link is unaffected.
+                    The 4-bit data in memory is unaffected.
+    Syntax:         RDM
+    Assembled:      1110 1001
+    Symbolic:       (M) --> ACC
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    """
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTER
+    chip = int(bin(int(address))
+               [2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    absolute_address = (crb * self.RAM_BANK_SIZE) + (chip * self.RAM_CHIP_SIZE) \
+                       (register * self.RAM_REGISTER_SIZE) + address
+    self.ACCUMULATOR = self.RAM[absolute_address]
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR

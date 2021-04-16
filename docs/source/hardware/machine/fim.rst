@@ -1,5 +1,7 @@
 .. _hardware-machine-fim:
 
+.. include:: ../../global.rst
+
 FIM
 ===
 
@@ -63,7 +65,5 @@ with register 3 containing the lower 4 bits i.e. 15 and 14 respectively.
 This is because decimal 254 is represented as 0xFE, so register 2 will contain 0xF (decimal 15),
 while register 3 will contain 0xE (decimal 14).
 
-
-.. |mu| replace:: :math:`{\mu}`
 
 .. _fim: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L389

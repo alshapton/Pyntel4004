@@ -1,5 +1,7 @@
 .. _hardware-machine-nop:
 
+.. include:: ../../global.rst
+
 NOP
 ===
 
@@ -52,6 +54,5 @@ The program does nothing, since the NOP operation is the only operator in the pr
 
 The NOP instruction is useful for padding out memory positions for those operators that function differently at the page boundary, such that they do not end at a page boundary. 
 
-.. |mu| replace:: :math:`{\mu}`
 
 .. _imp: https://github.com/alshapton/Pyntel4004/blob/4ed95ca321cd0e9f19a89ef0ebea2b0ebe52952c/pyntel4004/src/hardware/machine.py#L54
