@@ -46,17 +46,41 @@ However, the address designates all of these simultaneously; it is up to
 the programmer to then write the correct I/O or RAM instruction to access 
 the proper entity.
 
-The address sent by the SRC remains in effect until changed by a subsequent SRC.
-
-The only DATA RAM bank which receives the SRC address is the one selected by the last previous DCL instruction.
-
-The 8 bits of the address sent by the SRC are interpreted as follows:
+The disassembly of the instruction below shows how the register pair are 
+represented in the opcode.
 
 .. image:: images/src.png
    :scale: 50%
    :align: center
 
+The address sent by the SRC remains in effect until changed by a subsequent SRC.
+
+The only DATA RAM bank which receives the SRC address is the one selected by the last previous DCL instruction.
+
+The 8 bits of the address sent by the SRC are interpreted in one of four ways,
+depending on the context as follows:
+
+.. rubric:: When referring to a DATA RAM Character
+
 .. image:: images/src-dataram-char.png
+   :scale: 50%
+   :align: center
+
+.. rubric:: When referring to a DATA RAM Status Character
+
+.. image:: images/src-dataram-status.png
+   :scale: 50%
+   :align: center
+
+.. rubric:: When referring to a DATA RAM Output Port
+
+.. image:: images/src-dataram-output.png
+   :scale: 50%
+   :align: center
+
+.. rubric:: When referring to a ROM I/O Port
+
+.. image:: images/src-rom-io.png
    :scale: 50%
    :align: center
 
