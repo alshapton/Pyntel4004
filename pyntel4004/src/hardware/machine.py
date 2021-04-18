@@ -202,10 +202,6 @@ def bbl(self, accumulator: int):
     return self.PROGRAM_COUNTER, self.ACCUMULATOR
 
 
-def jin(self):
-    return None
-
-
 def src(self, registerpair: int):
     """
     Name:           Send register control
@@ -287,6 +283,37 @@ def jms(self, address: int):
     # Add number of words so return address is correct
     self.write_to_stack(self.PROGRAM_COUNTER + 2)
     self.PROGRAM_COUNTER = address
+    return self.PROGRAM_COUNTER
+
+
+def jin(self, registerpair: int):
+    """
+    Name:           Jump Indirect
+    Function:       The 8 bit content of the designated index register pair
+                    is loaded into the low order 8 positions of the program
+                    counter.
+                    Program control is transferred to the instruction at
+                    that address on the same page (same ROM) where the JIN
+                    instruction is located.
+                    The 8 bit content of the index register is unaffected.
+    Syntax:         JIN
+    Assembled:      0011 RRR1
+    Symbolic:       (RRRO) --> PM
+                    (RRR1) --> PL
+                    PH unchanged
+    Execution:      1 words, 16-bit code and an execution time of 10.8 usec.
+    """
+
+    address = self.read_registerpair(registerpair)
+
+    # Increment PROGRAM_COUNTER by a page if the instruction is at
+    # the last position in a page.
+    if (self.is_end_of_page(self.PROGRAM_COUNTER, 1) is True):
+        self.PROGRAM_COUNTER = self.inc_pc_by_page(self, self.PROGRAM_COUNTER)
+
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER >> 8
+    self.PROGRAM_COUNTER = (self.PROGRAM_COUNTER << 8) + address
+
     return self.PROGRAM_COUNTER
 
 
