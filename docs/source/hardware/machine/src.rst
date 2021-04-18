@@ -1,9 +1,8 @@
 .. _hardware-machine-src:
 
-.. include:: ../../global.rst
-
 SRC
 ===
+.. include:: ../../global.rst
 
 .. list-table:: 
    :widths: 25 75

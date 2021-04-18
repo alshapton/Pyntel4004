@@ -1,6 +1,4 @@
-
-.
-=
+.. :orphan:
 
 .. |mu| replace:: :math:`{\mu}`
 .. |br| raw:: html

@@ -1,5 +1,14 @@
+.. _intel_4004_opcodes:
+
 Intel 4004 Op-Codes
 -------------------
+.. toctree::
+   :hidden:
+
+   ../hardware/machine/fim
+   ../hardware/machine/nop
+   ../hardware/machine/jcn
+   ../hardware/machine/src
 
 .. list-table:: Intel 4004 processor Op-Codes
    :header-rows: 1
@@ -20,12 +29,12 @@ Intel 4004 Op-Codes
      - AAAAAAAA
      - C, A
    * - Fetch Immediate
-     - FIM
+     - :ref:`hardware-machine-fim`
      - 0010RRR0
      - DDDDDDDD
      - RP, D
    * - Send Register Control
-     - SRC
+     - :ref:`hardware-machine-src`
      - 0010RRR1
      -
      - RP
@@ -182,7 +191,7 @@ Intel 4004 Op-Codes
    * - Complement Carry
      - CMC
      - 11110011
-     - 
+     -
      -
    * - Complement
      - CMA

@@ -1,9 +1,8 @@
 .. _hardware-machine-nop:
 
-.. include:: ../../global.rst
-
 NOP
 ===
+.. include:: ../../global.rst
 
 .. list-table:: 
    :widths: 25 75

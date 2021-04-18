@@ -1,12 +1,9 @@
 .. _hardware-machine-fim:
 
-.. include:: ../../global.rst
 
 FIM
 ===
-
-:func:`fn`
-
+.. include:: ../../global.rst
 
 .. list-table:: 
    :widths: 25 75

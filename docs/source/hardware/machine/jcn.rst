@@ -1,9 +1,8 @@
 .. _hardware-machine-jcn:
 
-.. include:: ../../global.rst
-
 JCN
 ===
+.. include:: ../../global.rst
 
 :func:`fn`
 

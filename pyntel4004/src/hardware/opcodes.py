@@ -237,7 +237,7 @@ class instructions:
                 {"opcode": 232, "mnemonic": "sbm()"},
                 {"opcode": 233, "mnemonic": "rdm()"," exe": 10.8, "bits": ["1110", "1001"], "words": 1},
                 {"opcode": 234, "mnemonic": "rdr()"," exe": 10.8, "bits": ["1110", "1010"], "words": 1},
-                {"opcode": 235, "mnemonic": "adm()"},
+                {"opcode": 235, "mnemonic": "adm()"," exe": 10.8, "bits": ["1110", "1000"], "words": 1},
                 {"opcode": 236, "mnemonic": "rd0()"," exe": 10.8, "bits": ["1110", "1100"], "words": 1},
                 {"opcode": 237, "mnemonic": "rd1()"," exe": 10.8, "bits": ["1110", "1101"], "words": 1},
                 {"opcode": 238, "mnemonic": "rd2()"," exe": 10.8, "bits": ["1110", "1110"], "words": 1},

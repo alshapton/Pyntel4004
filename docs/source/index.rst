@@ -4,17 +4,12 @@
 Pyntel4004 Documentation
 ========================
 
+
 .. toctree::
-   :hidden:
    :maxdepth: 1
-   :caption: Contents:
-   :glob:
+ 
 
-   global.rst 
-   intro/opcodes.rst 
-   hardware/machine/*
-
-.. autofunction:: hardware.machine.nop
+   OpCodes <intro/opcodes>
 
 Indices and tables
 ==================

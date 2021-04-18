@@ -921,8 +921,48 @@ def rdm(self):
     chip = int(bin(int(address))
                [2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    absolute_address = (crb * self.RAM_BANK_SIZE) + (chip * self.RAM_CHIP_SIZE) \
+    absolute_address = (crb * self.RAM_BANK_SIZE) + \
+                       (chip * self.RAM_CHIP_SIZE) + \
                        (register * self.RAM_REGISTER_SIZE) + address
     self.ACCUMULATOR = self.RAM[absolute_address]
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR
+
+
+def adm(self, register: int):
+    """
+    Name:           Add from memory with carry
+    Function:       The DATA RAM data character specified by the
+                    last SRC instruction, plus the carry bit, are
+                    added to the accumulator.
+                    The data character is unaffected.
+    Syntax:         ADD
+    Assembled:      1110 1000
+    Symbolic:       (M) + (ACC) + (CY) --> ACC, CY
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   The carry/link is set to 1 if a sum greater than
+                    MAX_4_BITS was generated to indicate a carry out;
+                    otherwise, the carry/link is set to 0.
+    """
+
+    # Get value
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTER
+    chip = int(bin(int(address))
+               [2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    absolute_address = (crb * self.RAM_BANK_SIZE) + \
+                       (chip * self.RAM_CHIP_SIZE) + \
+                       (register * self.RAM_REGISTER_SIZE) + address
+    # Perform addition
+    self.ACCUMULATOR = (self.ACCUMULATOR + self.RAM[absolute_address] +
+                        self.read_carry())
+    # Check for carry bit set/reset when an overflow is detected
+    # i.e. the result is more than a 4-bit number (MAX_4_BITS)
+    if (self.ACCUMULATOR > self.MAX_4_BITS):
+        self.ACCUMULATOR = self.MAX_4_BITS - self.MAX_4_BITS - 1
+        self.set_carry()
+    else:
+        self.reset_carry()
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.ACCUMULATOR, self.CARRY
