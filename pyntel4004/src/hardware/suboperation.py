@@ -141,6 +141,7 @@ def read_from_stack(self):
 
 
 def ones_complement(self, value: str):
+    # ones = str(~ int(value))[2:].zfill(4)   # Maybe simplify with this ?
     # Perform a one's complement
     # i.e. invert all the bits
     binary = bin(value)[2:].zfill(4)
@@ -170,3 +171,41 @@ def flip_wpm_counter(self):
     else:
         self.WPM_COUNTER = 'LEFT'
     return self.WPM_COUNTER
+
+
+def check_overflow(self):
+    """
+    Check for an overflow is detected
+    i.e. the result is more than a 4-bit number (MAX_4_BITS)
+
+    If there is an overflow detected, set the carry bit,
+    otherwise reset the carry bit.
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    self.ACCUMULATOR
+        The value of the accumulator after adjusting for overflow
+    self.CARRY
+        The carry bit
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+
+    if (self.ACCUMULATOR > self.MAX_4_BITS):
+        self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS + 1
+        self.set_carry()
+    else:
+        self.reset_carry()
+    return self.ACCUMULATOR, self.CARRY

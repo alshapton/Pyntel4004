@@ -27,7 +27,7 @@
         bbl 0
 com,    fim 0p 0
         src 0
-        rd1
+        rd1     
         xch 10
         rd2
         xch 11

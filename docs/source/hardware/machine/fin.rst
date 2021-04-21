@@ -1,13 +1,14 @@
-.. _hardware-machine-fim:
+.. _hardware-machine-fin:
 
 
-FIM
+FIN
 ===
 .. include:: ../../global.rst
 
 .. toctree::
    :hidden:
 
+TO COMPLETE
 
 .. list-table:: 
    :widths: 25 75
@@ -15,7 +16,7 @@ FIM
 
 
    * - Name
-     - Fetch Immediate
+     - Fetch Indirect
    * - Function
      - 8 bits of immediate data are loaded into the register pair specified by RP.
    * - Syntax
@@ -36,7 +37,7 @@ FIM
    * - Side-effects
      - Not Applicable
    * - Implemented
-     - fim_
+     - fin_
 
 .. rubric:: Detailed Description
 
@@ -67,4 +68,4 @@ This is because decimal 254 is represented as 0xFE, so register 2 will contain 0
 while register 3 will contain 0xE (decimal 14).
 
 
-.. _fim: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L389
+.. _fin: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L389

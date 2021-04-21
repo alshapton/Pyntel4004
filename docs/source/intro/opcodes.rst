@@ -1,13 +1,14 @@
 .. _intel_4004_opcodes:
 
 Intel 4004 Op-Codes
--------------------
+===================
 .. toctree::
    :hidden:
 
    ../hardware/machine/fim
-   ../hardware/machine/nop
+   ../hardware/machine/fin
    ../hardware/machine/jcn
+   ../hardware/machine/nop
    ../hardware/machine/src
 
 .. list-table:: Intel 4004 processor Op-Codes
@@ -39,7 +40,7 @@ Intel 4004 Op-Codes
      -
      - RP
    * - Fetch Indirect
-     - FIN
+     - :ref:`hardware-machine-fin`
      - 0011RRR0
      -
      - RP

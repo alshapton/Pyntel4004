@@ -4,6 +4,9 @@ SRC
 ===
 .. include:: ../../global.rst
 
+.. toctree::
+   :hidden:
+
 .. list-table:: 
    :widths: 25 75
    :header-rows: 0

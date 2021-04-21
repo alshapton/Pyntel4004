@@ -13,7 +13,15 @@ from hardware.processor import processor
 ##############################################################################
 
 
+def is_breakpoint(BREAKPOINTS, PC):
+    for i in BREAKPOINTS:
+        if (i == PC):
+            return True
+    return False
+
+
 def execute(chip, location, PC, monitor):
+    BREAKPOINTS = []
     _TPS = []
     if (location == 'rom'):
         _TPS = chip.ROM
@@ -32,13 +40,9 @@ def execute(chip, location, PC, monitor):
         opcodeinfo = next((item for item in chip.INSTRUCTIONS
                           if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
-        print("exe=",exe)
+        print("exe=", exe)
         if (exe == '-'):
             break
-        words = opcodeinfo['words']
-        if (words == 2):
-            next_word = str(_TPS[chip.PROGRAM_COUNTER+1])
-            OPCODE3 = str(OPCODE) + ',' + next_word
 
         # Only mnemonic with 2 characters - fix
         if (exe[:3] == 'ld '):
@@ -89,9 +93,16 @@ def execute(chip, location, PC, monitor):
         # Evaluate the command (some commands may change
         # the PROGRAM_COUNTER here)
         eval(exe)
+
         monitor_command = 'none'
+
+        if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
+            monitor_command = 'none'
         if (monitor):
             while (monitor_command != ''):
+
+                if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
+                    monitor_command = 'none'
                 monitor_command = input('>> ').lower()
                 if (monitor_command == 'regs'):
                     print('0-> ' + str(chip.REGISTERS) + ' <-15')
@@ -124,6 +135,9 @@ def execute(chip, location, PC, monitor):
                     print('PIN10 = ', chip.read_pin10())
                 if (monitor_command == 'crb'):
                     print('CURRENT RAM BANK = ', chip.read_current_ram_bank())
+                if (monitor_command[:1] == 'b'):
+                    bp = monitor_command.split()[1]
+                    BREAKPOINTS.append(bp)
                 if (monitor_command == 'off'):
                     monitor_command = ''
                     monitor = False

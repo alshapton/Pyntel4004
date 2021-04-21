@@ -9,7 +9,7 @@ Pyntel4004 Documentation
    :maxdepth: 1
  
 
-   OpCodes <intro/opcodes>
+   Intel 4004 OpCodes <intro/opcodes>
 
 Indices and tables
 ==================

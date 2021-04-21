@@ -74,7 +74,7 @@ class processor:
                          for _reg in range(4)]
                          for _chip in range(4)]
                          for _bank in range(8)]
-    WPM_COUNTER = ''        # WPM Counter (Left/Right flip)
+    WPM_COUNTER = 'LEFT'    # WPM Counter (Left/Right flip)
 
     # Creation of processor simulated hardware
 

@@ -130,16 +130,13 @@ def add(self, register: int):
                     otherwise, the carry/link is set to 0. The 4 bit
                     content of the index register is unaffected.
     """
+    from hardware.suboperation import check_overflow
 
     self.ACCUMULATOR = (self.ACCUMULATOR + self.REGISTERS[register] +
                         self.read_carry())
     # Check for carry bit set/reset when an overflow is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
-    if (self.ACCUMULATOR > self.MAX_4_BITS):
-        self.ACCUMULATOR = self.MAX_4_BITS - self.MAX_4_BITS - 1
-        self.set_carry()
-    else:
-        self.reset_carry()
+    check_overflow(self)
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR, self.CARRY
 
@@ -159,6 +156,7 @@ def sub(self, register: int):
                     otherwise, it is set to 1.
                     The 4 bit content of the index register is unaffected.
     """
+    from hardware.suboperation import check_overflow
 
     carry = self.read_complement_carry()
     self.ACCUMULATOR = (self.ACCUMULATOR +
@@ -168,11 +166,7 @@ def sub(self, register: int):
 
     # Check for carry bit set/reset when borrow (overflow) is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
-    if (self.ACCUMULATOR > self.MAX_4_BITS):
-        self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
-        self.set_carry()
-    else:
-        self.reset_carry()
+    check_overflow(self)
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR, self.CARRY
 
@@ -963,7 +957,7 @@ def adm(self, register: int):
                     last SRC instruction, plus the carry bit, are
                     added to the accumulator.
                     The data character is unaffected.
-    Syntax:         ADD
+    Syntax:         ADM
     Assembled:      1110 1000
     Symbolic:       (M) + (ACC) + (CY) --> ACC, CY
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
@@ -971,6 +965,7 @@ def adm(self, register: int):
                     MAX_4_BITS was generated to indicate a carry out;
                     otherwise, the carry/link is set to 0.
     """
+    from hardware.suboperation import check_overflow
 
     # Get value
     crb = self.read_current_ram_bank()
@@ -986,10 +981,64 @@ def adm(self, register: int):
                         self.read_carry())
     # Check for carry bit set/reset when an overflow is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
-    if (self.ACCUMULATOR > self.MAX_4_BITS):
-        self.ACCUMULATOR = self.MAX_4_BITS - self.MAX_4_BITS - 1
-        self.set_carry()
-    else:
-        self.reset_carry()
+    check_overflow(self)
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    return self.ACCUMULATOR, self.CARRY
+
+
+def sbm(self, register: int):
+    """
+    Name:           Subtract DATA RAM from memory with borrow
+    Function:       The value of the DATA RAM character specified
+                    by the last SRC instruction is subtracted from
+                    the accumulator with borrow.
+                    The data character is unaffected.
+    Syntax:         SDM
+    Assembled:      1110 1000
+    Symbolic:       (M) + (ACC) + (CY) --> ACC, CY
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   This instruction sets the carry bit if the result
+                    generates no borrow, and resets the carry bit if
+                    the result generates a borrow.
+    Notes:  1       A borrow from the previous subtraction is indicated
+                    by the carry bit being equal to one at the beginning
+                    of this instruction.
+
+            2       No borrow from the previous subtraction is indicated
+                    by the carry bit being equal to zero at the beginning
+                    of this instruction.
+
+            3       The subtract with borrow operation is actually
+                    performed by complementing each bit of the data
+                    character and adding the resulting value plus
+                    the complement of the carry bit to the accumulator.
+
+            4       When this instruction is used to subtract numbers
+                    greater than 4 bits in lengthJ the carry bit must
+                    be complemented by the program between each required
+                    subtraction operation.
+    """
+    from hardware.suboperation import check_overflow
+
+    # Get value
+    crb = self.read_current_ram_bank()
+    address = self.COMMAND_REGISTER
+    chip = int(bin(int(address))
+               [2:].zfill(8)[:2], 2)
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    absolute_address = (crb * self.RAM_BANK_SIZE) + \
+                       (chip * self.RAM_CHIP_SIZE) + \
+                       (register * self.RAM_REGISTER_SIZE) + address
+    value = self.RAM[absolute_address]
+
+    # Perform addition
+    value_complement = int(self.ones_complement(value), 2)
+    carry_complement = self.read_complement_carry()
+
+    self.ACCUMULATOR = (self.ACCUMULATOR + value_complement +
+                        carry_complement)
+    # Check for carry bit set/reset when an overflow is detected
+    # i.e. the result is more than a 4-bit number (MAX_4_BITS)
+    check_overflow(self)
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
     return self.ACCUMULATOR, self.CARRY

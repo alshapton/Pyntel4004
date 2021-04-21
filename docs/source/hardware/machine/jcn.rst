@@ -4,7 +4,8 @@ JCN
 ===
 .. include:: ../../global.rst
 
-:func:`fn`
+.. toctree::
+   :hidden:
 
 
 .. list-table:: 
