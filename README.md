@@ -1,11 +1,16 @@
+# Pyntel4004
+
 ![Pyntel 4004 Logo](./images/pyntel4004.svg)
+
 A Python software implementation of the Intel 4004 processor.
 
 ## General Information
+
 - Two pass assembler using the original mnemonics, directives and comments syntax
 - Monitor facility to step through code and examine registers, memory etc
 
 ## Design goals
+
 - [ ] As much of the internals as possible should be carried out using binary arithmetic and operations.
 
 - [ ] No external libraries to be used (i.e. pure Python).
@@ -16,10 +21,16 @@ A Python software implementation of the Intel 4004 processor.
 
 - [ ] Construct a fully-working i4004 chip which can use the generated object code from the compiler (possibly using micro-python or circuit python on an Ardiuno Board).
 
+## Status
+
+21-APR-2021:    Instruction Set functionally complete
+                Entering Testing Phase
+
 ## Example
 
-##### Assembler Directives and other additions
-Assembler directives are not part of the proogram itself, but can control things like starting address, and various environmental settings.
+### Assembler Directives and other additions
+
+Assembler directives are not part of the program itself, but can control things like starting address, and various environmental settings.
 
 | Directive | Example | Meaning |
 | :-:| :-:| :-|
@@ -28,9 +39,6 @@ Assembler directives are not part of the proogram itself, but can control things
 | pin | pin 1 | Value of i4004's Pin 10 (test pin) |
 |  / | / Author: ALS | A comment |
 | label,| loop,| A label can be referred to in various control transfer statements. It MUST end in a comma (,)
-
-
-
 
 ![Assemble and Run](./images/assemble-run.png)
 
@@ -52,8 +60,8 @@ Assembler directives are not part of the proogram itself, but can control things
 |  rom   |   rom     | Show the complete contents of ROM |
 | stack   |  stack   | Show the stack and the location of the stack pointer |
 
+### Credits
 
-### Credits:
 - Intel 4004 Design Team
 - Logo: [LouBeLou Print Shop](Www.psloubelou.com)
 

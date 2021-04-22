@@ -276,7 +276,7 @@ def jms(self, address: int):
     """
     # Add number of words so return address is correct
     self.write_to_stack(self.PROGRAM_COUNTER + 2)
-    self.PROGRAM_COUNTER = address
+    self.PROGRAM_COUNTER = address - 1
     return self.PROGRAM_COUNTER
 
 
