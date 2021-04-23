@@ -17,9 +17,70 @@ import getopt
 
 def is_breakpoint(BREAKPOINTS, PC):
     for i in BREAKPOINTS:
-        if (i == PC):
+        if (str(i) == str(PC)):
             return True
     return False
+
+
+def deal_with_monitor_command(chip: processor, monitor_command: str,
+                              BREAKPOINTS, monitor: bool, opcode: str):
+    print(monitor_command)
+    if (monitor_command == ''):
+        return True, monitor, monitor_command, opcode
+
+    if (monitor_command == 'regs'):
+        print('0-> ' + str(chip.REGISTERS) + ' <-15')
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'stack'):
+        for _i in range(chip.STACK_SIZE-1, -1, -1):
+            if (_i == chip.STACK_POINTER):
+                pointer = '==>'
+            else:
+                pointer = '-->'
+            print("[ " + str(_i) + "] " + pointer + "[ " +
+                  str(chip.STACK[_i]) + ' ]')
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'pc'):
+        print('PC = ', chip.PROGRAM_COUNTER)
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'carry'):
+        print('CARRY = ', chip.read_carry())
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'ram'):
+        print('RAM = ', chip.RAM)
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'pram'):
+        print('PRAM = ', chip.PRAM)
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'rom'):
+        print('ROM = ', chip.ROM)
+        return True, monitor, monitor_command, opcode
+    if (monitor_command[:3] == 'reg'):
+        register = int(monitor_command[3:])
+        print('REG[' + monitor_command[3:].strip()+'] = ' +
+              str(chip.REGISTERS[register]))
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'acc'):
+        print('ACC =', chip.read_accumulator())
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'pin10'):
+        print('PIN10 = ', chip.read_pin10())
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'crb'):
+        print('CURRENT RAM BANK = ', chip.read_current_ram_bank())
+        return True, monitor, monitor_command, opcode
+    if (monitor_command[:1] == 'b'):
+        bp = monitor_command.split()[1]
+        BREAKPOINTS.append(bp)
+        return True, monitor, monitor_command, opcode
+    if (monitor_command == 'off'):
+        monitor_command = ''
+        monitor = False
+        return False, monitor, monitor_command, opcode
+    if (monitor_command == 'q'):
+        monitor = False  # noqa
+        opcode = 255     # noqa
+        return False, monitor, monitor_command, opcode
 
 
 def execute(chip: processor, inputfile: str, location, PC, monitor):
@@ -33,7 +94,26 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
     chip.PROGRAM_COUNTER = 0
     opcode = 0
     while opcode != 255:  # pseudo-opcode (directive) for "end"
+        monitor_command = 'none'
+        print(is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER))
+        print(chip.PROGRAM_COUNTER)
+        print(monitor_command)
+        print(BREAKPOINTS)
+        #if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
+        #    monitor_command = 'none'
+        print('monitor = ', monitor)
+        if (monitor is True):
+            while (monitor_command != ''):
+                # if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
+                #    monitor = False
+                monitor_command = input('>> ').lower()
+                result, monitor, monitor_command, opcode = \
+                    deal_with_monitor_command(chip, monitor_command,
+                                              BREAKPOINTS, monitor, opcode)
 
+                if (result is False):
+                    break
+        
         custom_opcode = False
         OPCODE = _TPS[chip.PROGRAM_COUNTER]
         if (OPCODE == 255):  # pseudo-opcode (directive "end" - stop program)
@@ -95,58 +175,6 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
         # Evaluate the command (some commands may change
         # the PROGRAM_COUNTER here)
         eval(exe)
-
-        monitor_command = 'none'
-
-        if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
-            monitor_command = 'none'
-        if (monitor):
-            while (monitor_command != ''):
-
-                if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
-                    monitor_command = 'none'
-                monitor_command = input('>> ').lower()
-                if (monitor_command == 'regs'):
-                    print('0-> ' + str(chip.REGISTERS) + ' <-15')
-                    continue
-                if (monitor_command == 'stack'):
-                    for _i in range(chip.STACK_SIZE-1, -1, -1):
-                        if (_i == chip.STACK_POINTER):
-                            pointer = '==>'
-                        else:
-                            pointer = '-->'
-                        print("[ " + str(_i) + "] " + pointer + "[ " +
-                              str(chip.STACK[_i]) + ' ]')
-                if (monitor_command == 'pc'):
-                    print('PC = ', chip.PROGRAM_COUNTER)
-                if (monitor_command == 'carry'):
-                    print('CARRY = ', chip.read_carry())
-                if (monitor_command == 'ram'):
-                    print('RAM = ', chip.RAM)
-                if (monitor_command == 'pram'):
-                    print('PRAM = ', chip.PRAM)
-                if (monitor_command == 'rom'):
-                    print('ROM = ', chip.ROM)
-                if (monitor_command[:3] == 'reg'):
-                    register = int(monitor_command[3:])
-                    print('REG[' + monitor_command[3:].strip()+'] = ' +
-                          str(chip.REGISTERS[register]))
-                if (monitor_command == 'acc'):
-                    print('ACC =', chip.read_accumulator())
-                if (monitor_command == 'pin10'):
-                    print('PIN10 = ', chip.read_pin10())
-                if (monitor_command == 'crb'):
-                    print('CURRENT RAM BANK = ', chip.read_current_ram_bank())
-                if (monitor_command[:1] == 'b'):
-                    bp = monitor_command.split()[1]
-                    BREAKPOINTS.append(bp)
-                if (monitor_command == 'off'):
-                    monitor_command = ''
-                    monitor = False
-                if (monitor_command == 'q'):
-                    monitor = False
-                    opcode = 255
-                    break
 
     return True
 
@@ -626,8 +654,8 @@ def main(argv):
         print()
         execute(chip, inputfile, 'rom', 0, True)
         print()
-        acc = str(chip.read_accumulator())
-        print('Accumulator : ' + acc +
+        acc = chip.read_accumulator()
+        print('Accumulator : ' + str(acc) +
               '  (0b ' + str(chip.decimal_to_binary(acc)) + ')')
         print('Carry       :', chip.read_carry())
         print()

@@ -25,6 +25,16 @@
         clb
         wrr
         bbl 0
+fch,    jms com
+        wpm
+        fim 0p  224 
+        src 0 
+        rdr
+        xch 2
+        inc 0
+        rdr
+        xch 3
+        bbl 0
 com,    fim 0p 0
         src 0
         rd1     
@@ -36,14 +46,4 @@ com,    fim 0p 0
         src 0
         wrr
         src 5 
-        bbl 0
-fch,    jms com
-        wpm
-        fim 0p  224 
-        src 0 
-        rdr
-        xch 2
-        inc 0
-        rdr
-        xch 3
         bbl 0
