@@ -24,7 +24,6 @@ def is_breakpoint(BREAKPOINTS, PC):
 
 def deal_with_monitor_command(chip: processor, monitor_command: str,
                               BREAKPOINTS, monitor: bool, opcode: str):
-    print(monitor_command)
     if (monitor_command == ''):
         return True, monitor, monitor_command, opcode
 
@@ -72,15 +71,16 @@ def deal_with_monitor_command(chip: processor, monitor_command: str,
     if (monitor_command[:1] == 'b'):
         bp = monitor_command.split()[1]
         BREAKPOINTS.append(bp)
+        print('Breakpoint set at address ' + bp)
         return True, monitor, monitor_command, opcode
     if (monitor_command == 'off'):
         monitor_command = ''
         monitor = False
         return False, monitor, monitor_command, opcode
     if (monitor_command == 'q'):
-        monitor = False  # noqa
-        opcode = 255     # noqa
-        return False, monitor, monitor_command, opcode
+        monitor = False
+        opcode = 255
+        return None, monitor, monitor_command, opcode
 
 
 def execute(chip: processor, inputfile: str, location, PC, monitor):
@@ -93,27 +93,26 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
 
     chip.PROGRAM_COUNTER = 0
     opcode = 0
+    classic_prompt = '>>> '
+    breakout_prompt = 'B>> '
+    prompt = classic_prompt
     while opcode != 255:  # pseudo-opcode (directive) for "end"
         monitor_command = 'none'
-        print(is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER))
-        print(chip.PROGRAM_COUNTER)
-        print(monitor_command)
-        print(BREAKPOINTS)
-        #if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
-        #    monitor_command = 'none'
-        print('monitor = ', monitor)
+
+        if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
+            monitor_command = 'none'
+            monitor = True
+            prompt = breakout_prompt
         if (monitor is True):
             while (monitor_command != ''):
-                # if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
-                #    monitor = False
-                monitor_command = input('>> ').lower()
+                monitor_command = input(prompt).lower()
                 result, monitor, monitor_command, opcode = \
                     deal_with_monitor_command(chip, monitor_command,
                                               BREAKPOINTS, monitor, opcode)
-
                 if (result is False):
+                    prompt = classic_prompt
+                if (result is None):
                     break
-        
         custom_opcode = False
         OPCODE = _TPS[chip.PROGRAM_COUNTER]
         if (OPCODE == 255):  # pseudo-opcode (directive "end" - stop program)
@@ -122,7 +121,6 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
         opcodeinfo = next((item for item in chip.INSTRUCTIONS
                           if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
-        print("exe=", exe)
         if (exe == '-'):
             break
 
@@ -341,67 +339,67 @@ def assemble(program_name: str, object_file: str, chip: processor):
 
     # Pass 1
 
-    program = open(program_name, 'r')
-    print()
-    print()
-    print('Program Code:', program_name)
-    print()
-    ORG_FOUND = False
-    location = ''
-    count = 0
-    ERR = False
-    p_line = 0
-    address = 0
+    try:
+        program = open(program_name, 'r')
+    except IOError:
+        ERR = ('FATAL: Pass 1: File "' + program_name +
+               '" does not exist.')
+    else:
+        print()
+        print()
+        print('Program Code:', program_name)
+        print()
+        ORG_FOUND = False
+        location = ''
+        count = 0
+        ERR = False
+        p_line = 0
+        address = 0
 
-    while True:
-        line = program.readline()
-        print(line)
-        constant = False
-        # if line is empty, end of file is reached
-        if not line:
-            break
-        else:
-            # Work with a line of assembly code
-            parts = line.split()
-            if (parts[0][-1] == ','):
-                # Found a label, now add it to the label table
-                if add_label(_LABELS, parts[0]) == -1:
-                    ERR = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
-                           ' at line ' + str(p_line + 1))
-                    break
-                # Attach value to a label
-                if ('0' <= str(parts[1])[:1] <= '9'):
-                    constant = True
-                    match_label(_LABELS, parts[0], parts[1])
-                else:
-                    match_label(_LABELS, parts[0], address)
-                # Set opcode
-                opcode = parts[1][:3]
+        while True:
+            line = program.readline()
+            constant = False
+            # if line is empty, end of file is reached
+            if not line:
+                break
             else:
-                # Set opcode
-                opcode = parts[0][:3]
-            if (opcode[:3] == 'inc'):
-                ERR = validate_inc(parts, p_line + 1)
-                if ERR:
-                    break
-            # Custom opcodes
-            print(len(opcode))
-            print(opcode)
-            if not constant:
-                if (opcode == 'ld()' or opcode[:2] == 'ld'):
-                    opcode = 'ld '
-                print(opcode)
-                if not (opcode in ('org', '/', 'end', 'pin')):
-                    print('opcode=', opcode)
-                    opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
-                    print(opcodeinfo)
-                    address = address + opcodeinfo['words']
-            TFILE[p_line] = line.strip()
-            p_line = p_line + 1
-    # Completed reading program into memory
-    program.close()
+                # Work with a line of assembly code
+                parts = line.split()
+                if (parts[0][-1] == ','):
+                    # Found a label, now add it to the label table
+                    if add_label(_LABELS, parts[0]) == -1:
+                        ERR = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
+                               ' at line ' + str(p_line + 1))
+                        break
+                    # Attach value to a label
+                    if ('0' <= str(parts[1])[:1] <= '9'):
+                        constant = True
+                        match_label(_LABELS, parts[0], parts[1])
+                    else:
+                        match_label(_LABELS, parts[0], address)
+                    # Set opcode
+                    opcode = parts[1][:3]
+                else:
+                    # Set opcode
+                    opcode = parts[0][:3]
+                if (opcode[:3] == 'inc'):
+                    ERR = validate_inc(parts, p_line + 1)
+                    if ERR:
+                        break
+                # Custom opcodes
+                if not constant:
+                    if (opcode == 'ld()' or opcode[:2] == 'ld'):
+                        opcode = 'ld '
+                    if not (opcode in ('org', '/', 'end', 'pin')):
+                        opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+                        address = address + opcodeinfo['words']
+                TFILE[p_line] = line.strip()
+                p_line = p_line + 1
+        # Completed reading program into memory
+        program.close()
 
     if ERR:
+        print(ERR)
         print("Program Assembly halted @ Pass 1")
         print()
         return False
@@ -538,7 +536,6 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                     f_opcode = x[0] + '(' + x[1] + ',data8)'
                                     opcodeinfo = get_opcodeinfo(chip, 'L',
                                                                 f_opcode)
-                                    print(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address + 1] = int(x[2])
                                     bit1, bit2 = get_bits(opcodeinfo)
@@ -631,7 +628,6 @@ def main(argv):
     except getopt.GetoptError:
         print('assemble.py -i <inputfile>')
         sys.exit(2)
-    print(opts)
     for opt, arg in opts:
         if opt == '-h':
             print('assemble -i <inputfile> -o <outputfile>')
