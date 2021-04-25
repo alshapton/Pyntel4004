@@ -30,7 +30,6 @@ class processor:
 
     # i4004 Processor characteristics
     MAX_4_BITS = 15             # Maximum value 4 bits can hold
-    MSB = 8                     # Most significant bit value (4-bit)
 
     MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
@@ -69,6 +68,7 @@ class processor:
     REGISTERS = []          # Registers (4-bit)
     STACK = []              # The stack - 3 x 12-bit registers
     STACK_POINTER = 2       # Stack Pointer
+
     # Set up RAM status characters
     STATUS_CHARACTERS = [[[[0 for _char in range(4)]
                          for _reg in range(4)]

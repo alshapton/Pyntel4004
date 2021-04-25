@@ -21,3 +21,13 @@ class InvalidPin10Value(Exception):
 class InvalidRamBank(Exception):
     """Raised when the attempting to select a RAM bank > 7 """
     pass
+
+
+class NotABinaryNumber(Exception):
+    """Raised when a supplied binary number is NOT binary """
+    pass
+
+
+class InvalidRegister(Exception):
+    """Raised when an invalid register is supplied """
+    pass

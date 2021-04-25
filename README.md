@@ -47,8 +47,9 @@ Assembler directives are not part of the program itself, but can control things 
 | Command | Example | Meaning |
 | :-:| :-:| :-|
 | "Enter" | "Enter"  | Execute the current instruction and move to the next |
-|  acc   |   acc     | Show the current contents of the Accumulator |
-|  carry |  carry    | Show the current contents of the Carry Bit |
+|  acc    |   acc     | Show the current contents of the Accumulator |
+|   b *n* |   b 71    | Create a breakpoint at address *n* |
+|  carry  |  carry    | Show the current contents of the Carry Bit |
 |  crb    |  crb     | Show the currently selected RAM Bank |
 |  off    |  off     | Continue to execute the program with no trace |
 |   pc    |   pc     | Show the Program Counter |
@@ -57,7 +58,7 @@ Assembler directives are not part of the program itself, but can control things 
 |  ram   |   ram     | Show the complete contents of RAM |
 |  reg *n*  |  reg 7 | Show content of a specified register |
 |  regs   |  regs    | Show all 16 registers |
-|  rom   |   rom     | Show the complete contents of ROM |
+|  rom    |   rom     | Show the complete contents of ROM |
 | stack   |  stack   | Show the stack and the location of the stack pointer |
 
 ### Credits

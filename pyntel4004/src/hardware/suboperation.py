@@ -1,16 +1,61 @@
 #  Sub-operation methods
 
 from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage, \
-    ProgramCounterOutOfBounds, InvalidPin10Value
+    ProgramCounterOutOfBounds, InvalidPin10Value, NotABinaryNumber, \
+    InvalidRegister
 
 
 def set_carry(self):
+    """
+    Set the carry bit
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    self.CARRY
+        The carry bit
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     # Set the carry bit
     self.CARRY = 1
     return self.CARRY
 
 
 def reset_carry(self):
+    """
+    Resets the carry bit
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    self.CARRY
+        The carry bit
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     # Reset the carry bit
     self.CARRY = 0
     return self.CARRY
@@ -25,6 +70,36 @@ def insert_register(self, register: int, value: int):
 
 
 def read_register(self, register: int):
+    """
+    Read a specific register
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    register: int, mandatory
+        The number of the register to read
+
+    Returns
+    -------
+    self.REGISTERS[register]
+        The value of the requested register
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    if (register >= 0 and register <= 15):
+        pass
+    else:
+        raise InvalidRegister('Register:' + str(register))
+
     return self.REGISTERS[register]
 
 
@@ -35,8 +110,8 @@ def insert_registerpair(self, registerpair: int, value: int):
                                        ',Value: ' +
                                        str(value))
     else:
-        self.insert_register(registerpair, (value >> 4) & 15)   # Bit-shift right and remove low bits
-        self.insert_register(registerpair + 1, value & 15)      # Remove low bits
+        self.insert_register(registerpair, (value >> 4) & 15)   # Bit-shift right and remove low bits   # noqa
+        self.insert_register(registerpair + 1, value & 15)      # Remove low bits                       # noqa
     return value
 
 
@@ -161,11 +236,66 @@ def decimal_to_binary(self, decimal: int):
 
 
 def binary_to_decimal(self, binary: str):
+    """
+    Converts a string value (which must be in binary form) to
+    a decimal value
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    binary : str, mandatory
+        a string which represents the binary value
+    Returns
+    -------
+    The decimal value of the supplied binary value
+
+    Raises
+    ------
+    NotABinaryNumber        : When a non-binary number is supplied
+
+    Notes
+    ------
+    N/A
+
+    """
+    if len(binary.replace('0', '').replace('1', '') != 0):
+        raise NotABinaryNumber('"' + binary + '"')
+
     # Convert binary to decimal
     return int(binary, 2)
 
 
 def flip_wpm_counter(self):
+    """
+    Two WPM instructions must always appear in close succession; that is,
+    each time one WPM instruction references a half byte of program RAM
+    as indicated by an SRC address, another WPM must access the other half
+    byte before the SRC address is altered.
+    This internal counter keeps track of which half-byte is being accessed.
+    If only one WPM occurs, this counter will be out of sync with the
+    program and errors will occur.
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    self.WPM_COUNTER
+        The flipped value of the WPM counter (either "LEFT" or "RIGHT")
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     if (self.WPM_COUNTER == 'LEFT'):
         self.WPM_COUNTER = 'RIGHT'
     else:
