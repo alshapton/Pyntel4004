@@ -25,7 +25,7 @@ def init_rom(self):
         self.ROM.append(0)
 
 
-def init_dram(self):
+def init_pram(self):
     for _i in range(self.MEMORY_SIZE_PRAM):
         self.PRAM.append(0)
 

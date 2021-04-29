@@ -3,7 +3,7 @@ class processor:
     # Import processor internals
     import hardware.opcodes
     from hardware.reset import init_stack, init_command_registers, \
-        init_ram, init_rom, init_dram, init_registers, init_wpm_counter
+        init_ram, init_rom, init_pram, init_registers, init_wpm_counter
 
     from hardware.instructions.nop import nop
     from hardware.instructions.idx import inc, fin
@@ -26,7 +26,9 @@ class processor:
     from hardware.reads import read_all_registers, read_all_ram, \
         read_all_rom, read_all_pram, read_accumulator, \
         read_current_ram_bank, read_carry, read_pin10, read_all_stack, \
-        read_all_command_registers
+        read_all_command_registers, read_wpm_counter, read_acbr, \
+        read_program_counter, read_stack_pointer, read_all_rom_ports, \
+        read_all_ram_ports, read_all_status_characters
 
     # i4004 Processor characteristics
     MAX_4_BITS = 15             # Maximum value 4 bits can hold
@@ -96,7 +98,7 @@ class processor:
         self.init_stack()
         self.init_command_registers()
         self.init_registers()
-        self.init_dram()
+        self.init_pram()
         self.init_ram()
         self.init_rom()
         self.reset_carry()
