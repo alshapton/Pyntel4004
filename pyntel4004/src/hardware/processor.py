@@ -19,7 +19,7 @@ class processor:
         write_to_stack, read_from_stack, ones_complement, \
         decimal_to_binary, binary_to_decimal, insert_register, \
         is_end_of_page, inc_pc_by_page, insert_registerpair, \
-        read_registerpair, read_register
+        read_registerpair, read_register, increment_pc
 
     # Operations to read the processor components
     # Some used internally,
@@ -103,5 +103,15 @@ class processor:
         self.init_rom()
         self.reset_carry()
         self.init_wpm_counter()
+
+    def __hash__(self):
+        processor_hash = \
+         hash(self.read_accumulator()) ^ \
+         hash(self.read_acbr()) ^ \
+         hash(self.read_carry()) ^ \
+         hash(self.read_current_ram_bank()) ^ \
+         hash(self.read_program_counter())
+        return processor_hash
+        #  hash(self.read_all_command_registers())
 
 #  END OF PROCESSOR DEFINITION

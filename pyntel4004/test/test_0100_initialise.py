@@ -6,8 +6,6 @@ import pytest
 sys.path.insert(1, '../src')
 
 from src.hardware.processor import processor  # noqa
-import src.hardware.reads   # noqa
-from src.hardware.opcodes import instructions  # nooqa
 
 
 @pytest.mark.withoutread
@@ -188,6 +186,10 @@ def test_init_pin_10_without_read():
 @pytest.mark.withread
 def test_init_pin_10_with_read():
     assert(chip.read_pin10() == 0)
+
+
+def test_full_opcodes():
+    assert (len(chip.INSTRUCTIONS) == 256)
 
 
 chip = processor()

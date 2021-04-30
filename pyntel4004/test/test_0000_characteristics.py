@@ -3,7 +3,6 @@
 
 import sys
 sys.path.insert(1, '../src')
-
 from src.hardware.processor import processor  # noqa
 
 

@@ -339,3 +339,8 @@ def check_overflow(self):
     else:
         self.reset_carry()
     return self.ACCUMULATOR, self.CARRY
+
+
+def increment_pc(self, words: int):
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + words
+    return self.PROGRAM_COUNTER
