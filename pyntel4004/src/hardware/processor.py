@@ -113,22 +113,4 @@ class processor:
             return tuple([o.ice(v) for v in o])
 
         return o
-
-    def make_hash(self):
-        """
-        makes a hash out of anything that contains only list,dict and
-        hashable types including string and numeric types
-        """
-        return hash(self.ice())
-
-    def __hash__(self):
-        processor_hash = \
-            hash(self.read_accumulator()) ^ \
-            hash(self.read_acbr()) ^ \
-            hash(self.read_carry()) ^ \
-            hash(self.read_current_ram_bank()) ^ \
-            hash(self.read_program_counter())
-        return processor_hash
-        #  hash(self.read_all_command_registers())
-
 #  END OF PROCESSOR DEFINITION
