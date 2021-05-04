@@ -109,9 +109,9 @@ def read_register(self, register: int):
 
 
 def insert_registerpair(self, registerpair: int, value: int):
-    if (registerpair <= 0 or registerpair > 7):
+    if (registerpair < 0 or registerpair > 7):
         raise InvalidRegisterPair('Register Pair: ' +
-                                  str(registerpair)
+                                  str(registerpair))
 
     if (value > 256):
         raise ValueTooLargeForRegister('Register Pair: ' +
@@ -119,15 +119,17 @@ def insert_registerpair(self, registerpair: int, value: int):
                                        ',Value: ' +
                                        str(value))
     else:
-        self.insert_register(registerpair, (value >> 4) & 15)   # Bit-shift right and remove low bits   # noqa
-        self.insert_register(registerpair + 1, value & 15)      # Remove low bits                       # noqa
+        # Convert a register pair into a base register for insertion
+        base_register = registerpair * 2
+        self.insert_register(base_register, (value >> 4) & 15)   # Bit-shift right and remove low bits   # noqa
+        self.insert_register(base_register + 1, value & 15)      # Remove low bits                       # noqa
     return value
 
 
 def read_registerpair(self, registerpair: int):
-    if (registerpair <= 0 or registerpair > 7):
+    if (registerpair < 0 or registerpair > 7):
         raise InvalidRegisterPair('Register Pair: ' +
-                                str(registerpair)
+                                  str(registerpair))
     hi = self.read_register(registerpair)       # High 4-bits
     lo = self.read_register(registerpair + 1)   # Low 4-bits
     return (hi << 4) + lo   # Bit-shift left high value and add low value

@@ -114,7 +114,6 @@ def test_suboperation_insert_register_scenario3():
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_suboperation_read_register_scenario1(register):
-    chip_base = processor()
     chip_test = processor()
 
     # Perform the instruction under test:
@@ -127,3 +126,25 @@ def test_suboperation_read_register_scenario1(register):
     # the test chip which has been operated on by the instruction under test.
     assert (chip_test.read_register(register) == 5)
 
+
+@pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])  # noqa
+def test_suboperation_insert_registerpair_scenario1(registerpair):
+    chip_base = processor()
+    chip_test = processor()
+
+    # Perform the instruction under test:
+    # insert a value of 25 into a registerpair
+    processor.insert_registerpair(chip_test, registerpair, 25)
+
+    print(chip_test.read_registerpair(registerpair))
+    print(chip_test.read_register(registerpair*2))
+    # Simulate conditions at end of instruction in base chip
+    chip_base.REGISTERS[registerpair * 2] = 1
+    chip_base.REGISTERS[(registerpair * 2) + 1] = 9
+    
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the instruction under test.
+    assert (chip_test.read_program_counter() == chip_base.read_program_counter())
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
