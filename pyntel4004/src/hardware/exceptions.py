@@ -31,3 +31,8 @@ class NotABinaryNumber(Exception):
 class InvalidRegister(Exception):
     """Raised when an invalid register is supplied """
     pass
+
+
+class InvalidRegisterPair(Exception):
+    """Raised when an invalid register pair is supplied """
+    pass

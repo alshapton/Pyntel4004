@@ -49,47 +49,47 @@ class processor:
     NO_STATUS_REGISTERS = 4     # Number of Status registers per memory chip
     NO_STATUS_CHARACTERS = 4    # Number of Status chars per status register
 
-    # Creation of processor internals
-
-    ACCUMULATOR = 0         # Initialise the accumulator
-    ACBR = 0                # Accumulator Buffer Register
-    CARRY = 0               # Reset the carry bit
-    COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
-    CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
-    PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
-
-    # Set up RAM
-    RAM = []                                # RAM
-    RAM_PORT = [[0 for _bank in range(8)]   # RAM Ports
-                for _chip in range(4)]
-    # Set up ROM
-    ROM = []                                # ROM
-    ROM_PORT = [0 for _bank in range(16)]   # ROM ports
-
-    PRAM = []               # Program RAM
-    REGISTERS = []          # Registers (4-bit)
-    STACK = []              # The stack - 3 x 12-bit registers
-    STACK_POINTER = 2       # Stack Pointer
-
-    # Set up RAM status characters
-    STATUS_CHARACTERS = [[[[0 for _char in range(4)]
-                         for _reg in range(4)]
-                         for _chip in range(4)]
-                         for _bank in range(8)]
-    WPM_COUNTER = 'LEFT'    # WPM Counter (Left/Right flip)
-
-    # Creation of processor simulated hardware
-
-    # Pin 10 on the physical chip is the "test" pin
-    # and can be read by the JCN instruction
-    PIN_10_SIGNAL_TEST = 0
-
     # Instruction table
     INSTRUCTIONS = hardware.opcodes.instructions.opcodes
 
     # Initialise processor
 
     def __init__(self):
+        # Creation of processor internals
+
+        self.ACCUMULATOR = 0         # Initialise the accumulator
+        self.ACBR = 0                # Accumulator Buffer Register
+        self.CARRY = 0               # Reset the carry bit
+        self.COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
+        self.CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
+        self.PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
+
+        # Set up RAM
+        self.RAM = []                                # RAM
+        self.RAM_PORT = [[0 for _bank in range(8)]   # RAM Ports
+                         for _chip in range(4)]
+        # Set up ROM
+        self.ROM = []                                # ROM
+        self.ROM_PORT = [0 for _bank in range(16)]   # ROM ports
+
+        self.PRAM = []               # Program RAM
+        self.REGISTERS = []          # Registers (4-bit)
+        self.STACK = []              # The stack - 3 x 12-bit registers
+        self.STACK_POINTER = 2       # Stack Pointer
+
+        # Set up RAM status characters
+        self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
+                                  for _reg in range(4)]
+                                  for _chip in range(4)]
+                                  for _bank in range(8)]
+        self.WPM_COUNTER = 'LEFT'    # WPM Counter (Left/Right flip)
+
+        # Creation of processor simulated hardware
+
+        # Pin 10 on the physical chip is the "test" pin
+        # and can be read by the JCN instruction
+        self.PIN_10_SIGNAL_TEST = 0
+
         # Initialise all the internals of the processor
         self.ACCUMULATOR = 0
         self.ACBR = 0

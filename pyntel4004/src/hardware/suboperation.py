@@ -2,7 +2,7 @@
 
 from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage, \
     ProgramCounterOutOfBounds, InvalidPin10Value, NotABinaryNumber, \
-    InvalidRegister
+    InvalidRegister, InvalidRegisterPair
 
 
 def set_carry(self):
@@ -62,6 +62,11 @@ def reset_carry(self):
 
 
 def insert_register(self, register: int, value: int):
+    if (register >= 0 and register <= 15):
+        pass
+    else:
+        raise InvalidRegister('Register: ' + str(register))
+
     if (value > 15):
         raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value)) # noqa
     else:
@@ -104,6 +109,10 @@ def read_register(self, register: int):
 
 
 def insert_registerpair(self, registerpair: int, value: int):
+    if (registerpair <= 0 or registerpair > 7):
+        raise InvalidRegisterPair('Register Pair: ' +
+                                  str(registerpair)
+
     if (value > 256):
         raise ValueTooLargeForRegister('Register Pair: ' +
                                        str(registerpair) +
@@ -116,6 +125,9 @@ def insert_registerpair(self, registerpair: int, value: int):
 
 
 def read_registerpair(self, registerpair: int):
+    if (registerpair <= 0 or registerpair > 7):
+        raise InvalidRegisterPair('Register Pair: ' +
+                                str(registerpair)
     hi = self.read_register(registerpair)       # High 4-bits
     lo = self.read_register(registerpair + 1)   # Low 4-bits
     return (hi << 4) + lo   # Bit-shift left high value and add low value
