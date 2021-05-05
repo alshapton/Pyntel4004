@@ -21,7 +21,7 @@ def clb(self):
 
     self.ACCUMULATOR = 0
     self.reset_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -37,7 +37,7 @@ def clc(self):
     """
 
     self.reset_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.CARRY
 
 
@@ -59,7 +59,7 @@ def iac(self):
         self.set_carry()
     else:
         self.reset_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -78,7 +78,7 @@ def cmc(self):
         self.reset_carry()
     else:
         self.set_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.CARRY
 
 
@@ -95,7 +95,7 @@ def cma(self):
     """
 
     self.ACCUMULATOR = self.ones_complement(self.ACCUMULATOR)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -126,7 +126,7 @@ def ral(self):
         self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
     # Add original carry bit
     self.ACCUMULATOR = self.ACCUMULATOR + C0
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -154,7 +154,7 @@ def rar(self):
     self.ACCUMULATOR = self.ACCUMULATOR // 2
     # Add carry to high-order bit of accumulator
     self.ACCUMULATOR = self.ACCUMULATOR + (C0 * self.MSB)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -174,7 +174,7 @@ def tcc(self):
     self.ACCUMULATOR = 0
     self.ACCUMULATOR = self.read_carry()
     self.reset_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -196,7 +196,7 @@ def dac(self):
         self.set_carry()
     else:
         self.reset_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -219,7 +219,7 @@ def tcs(self):
     else:
         self.ACCUMULATOR = 10
     self.reset_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -235,7 +235,7 @@ def stc(self):
     """
 
     self.set_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.CARRY
 
 
@@ -260,7 +260,7 @@ def daa(self):
         self.set_carry()
     else:
         self.reset_carry()
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -314,5 +314,5 @@ def kbp(self):
 
     # Error
     self.ACCUMULATOR = 15
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR

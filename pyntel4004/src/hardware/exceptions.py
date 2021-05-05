@@ -36,3 +36,9 @@ class InvalidRegister(Exception):
 class InvalidRegisterPair(Exception):
     """Raised when an invalid register pair is supplied """
     pass
+
+
+class ValueTooLargeForRegisterPair(Exception):
+    """Raised when the value for a register pair is too large"""
+    pass
+

@@ -70,7 +70,7 @@ def ldm(self, operand: int):
     """
 
     self.ACCUMULATOR = operand
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -88,7 +88,7 @@ def ld(self, register: int):
     """
 
     self.ACCUMULATOR = self.REGISTERS[register]
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -110,7 +110,7 @@ def xch(self, register: int):
     self.ACBR = self.ACCUMULATOR
     self.ACCUMULATOR = self.REGISTERS[register]
     self.insert_register(register, self.ACBR)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.REGISTERS
 
 
@@ -137,7 +137,7 @@ def add(self, register: int):
     # Check for carry bit set/reset when an overflow is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
     check_overflow(self)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -167,7 +167,7 @@ def sub(self, register: int):
     # Check for carry bit set/reset when borrow (overflow) is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
     check_overflow(self)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -222,7 +222,7 @@ def src(self, registerpair: int):
     Side-effects:   Not Applicable
     """
 
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     address = self.read_registerpair(registerpair)
     self.COMMAND_REGISTER = address
     return None
@@ -371,8 +371,7 @@ def jcn(self, conditions: int, address: int):
             self.PROGRAM_COUNTER = address
     if (i == 1):
         if (carry == 1) or (accumulator != 0) or (pin10 == 1):
-            self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2
-
+            self.increment_pc(2)
     return self.PROGRAM_COUNTER
 
 
@@ -401,10 +400,9 @@ def isz(self, register: int, address: int):
     """
     self.increment_register(register)
     if (self.REGISTERS[register] == 0):
-        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2
+        self.increment_pc(2)
     else:
         self.PROGRAM_COUNTER = address
-
     return None
 
 
@@ -422,7 +420,7 @@ def fim(self, registerpair: int, value: int):
     """
 
     self.insert_registerpair(registerpair, value)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2
+    self.increment_pc(2)
     return self.REGISTERS
 
 
@@ -461,7 +459,7 @@ def dcl(self):
         raise InvalidRamBank('RAM bank : ' + str(ACC))
 
     self.CURRENT_RAM_BANK = ACC
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.CURRENT_RAM_BANK
 
 
@@ -483,7 +481,7 @@ def wrm(self):
     address = self.COMMAND_REGISTER
     final_address = (crb * self.PAGE_SIZE) + address
     self.RAM[final_address] = value
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(2)
     return self.PROGRAM_COUNTER
 
 
@@ -516,7 +514,7 @@ def wr0(self):
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][0] = value
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
 
@@ -549,7 +547,7 @@ def wr1(self):
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][1] = value
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
 
@@ -582,7 +580,7 @@ def wr2(self):
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][2] = value
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
 
@@ -615,7 +613,7 @@ def wr3(self):
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][3] = value
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
 
@@ -647,7 +645,7 @@ def rd0(self):
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][0]
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -679,7 +677,7 @@ def rd1(self):
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][1]
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -711,7 +709,7 @@ def rd2(self):
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][2]
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -743,7 +741,7 @@ def rd3(self):
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][3]
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -782,7 +780,7 @@ def wmp(self):
     chip = int(bin(int(self.COMMAND_REGISTER))
                [2:].zfill(8)[:2], 2)
     self.RAM_PORT[crb][chip] = self.ACCUMULATOR
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -814,7 +812,7 @@ def wrr(self):
 
     rom = int(bin(int(self.COMMAND_REGISTER))[2:].zfill(8)[:4], 2)
     self.ROM_PORT[rom] = self.ACCUMULATOR
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -880,7 +878,7 @@ def wpm(self):
 
     flip_wpm_counter(self)
 
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 2
+    self.increment_pc(2)
     return True
 
 
@@ -921,7 +919,7 @@ def rdr(self):
 
     rom = self.COMMAND_REGISTER >> 4
     self.ACCUMULATOR = self.ROM_PORT[rom]
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -946,7 +944,7 @@ def rdm(self):
                        (chip * self.RAM_CHIP_SIZE) + \
                        (register * self.RAM_REGISTER_SIZE) + address
     self.ACCUMULATOR = self.RAM[absolute_address]
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR
 
 
@@ -982,7 +980,7 @@ def adm(self, register: int):
     # Check for carry bit set/reset when an overflow is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
     check_overflow(self)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
 
@@ -1040,5 +1038,5 @@ def sbm(self, register: int):
     # Check for carry bit set/reset when an overflow is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
     check_overflow(self)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY

@@ -2,7 +2,7 @@
 
 from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage, \
     ProgramCounterOutOfBounds, InvalidPin10Value, NotABinaryNumber, \
-    InvalidRegister, InvalidRegisterPair
+    InvalidRegister, InvalidRegisterPair, ValueTooLargeForRegisterPair
 
 
 def set_carry(self):
@@ -61,7 +61,61 @@ def reset_carry(self):
     return self.CARRY
 
 
+def read_complement_carry(self):
+    """
+    Reads the complement of the carry bit, but doesn't change the value
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+        The complement of the carry bit
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    return 1 if self.CARRY == 0 else 0
+
+
 def insert_register(self, register: int, value: int):
+    """
+    Insert a value into a specific register
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    register: int, mandatory
+        The number of the register to use
+
+    value: int, mandatory
+        The value to insert
+
+    Returns
+    -------
+    value
+        The value of the register
+
+    Raises
+    ------
+    InvalidRegister
+    ValueTooLargeForRegister
+
+    Notes
+    ------
+    N/A
+
+    """
     if (register >= 0 and register <= 15):
         pass
     else:
@@ -93,7 +147,7 @@ def read_register(self, register: int):
 
     Raises
     ------
-    N/A
+    InvalidRegister
 
     Notes
     ------
@@ -109,15 +163,43 @@ def read_register(self, register: int):
 
 
 def insert_registerpair(self, registerpair: int, value: int):
+    """
+    Insert a value into a specific register
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    registerpair: int, mandatory
+        The number of the register to insert
+
+    value: int, mandatory
+        The value to insert
+
+    Returns
+    -------
+    value
+        The value of the register pair
+
+    Raises
+    ------
+    InvalidRegisterPair
+    ValueTooLargeForRegisterPair
+
+    Notes
+    ------
+    N/A
+
+    """
     if (registerpair < 0 or registerpair > 7):
         raise InvalidRegisterPair('Register Pair: ' +
                                   str(registerpair))
-
     if (value > 256):
-        raise ValueTooLargeForRegister('Register Pair: ' +
-                                       str(registerpair) +
-                                       ',Value: ' +
-                                       str(value))
+        raise ValueTooLargeForRegisterPair('Register Pair: ' +
+                                           str(registerpair) +
+                                           ',Value: ' +
+                                           str(value))
     else:
         # Convert a register pair into a base register for insertion
         base_register = registerpair * 2
@@ -127,21 +209,73 @@ def insert_registerpair(self, registerpair: int, value: int):
 
 
 def read_registerpair(self, registerpair: int):
+    """
+    Read a specific register pair
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    registerpair: int, mandatory
+        The number of the register pair to read
+
+    Returns
+    -------
+    value
+        The value of the requested register pair
+
+    Raises
+    ------
+    InvalidRegister
+
+    Notes
+    ------
+    N/A
+
+    """
     if (registerpair < 0 or registerpair > 7):
         raise InvalidRegisterPair('Register Pair: ' +
                                   str(registerpair))
-    hi = self.read_register(registerpair)       # High 4-bits
-    lo = self.read_register(registerpair + 1)   # Low 4-bits
+    # Convert a register pair into a base register for insertion
+    base_register = registerpair * 2
+
+    hi = self.read_register(base_register)       # High 4-bits
+    lo = self.read_register(base_register + 1)   # Low 4-bits
     return (hi << 4) + lo   # Bit-shift left high value and add low value
 
 
-def inc_pc_by_page(self, pc: int):
-    # Point the program counter to 1 page on
-    pc = pc + self.PAGE_SIZE
-    if (pc > self.MEMORY_SIZE_RAM):
+def increment_pc(self, words: int):
+    """
+    Increment the Program Counter by a specific number of words
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    words: int, mandatory
+        The number of words to increment the Program Counter by
+
+    Returns
+    -------
+    self.PROGRAM_COUNTER
+        The new value of the Program Counter
+
+    Raises
+    ------
+    InvalidRegister
+
+    Notes
+    ------
+    N/A
+
+    """
+    if (self.PROGRAM_COUNTER + words > self.MEMORY_SIZE_RAM):
         raise ProgramCounterOutOfBounds('Program counter attempted to be' +
-                                        ' set to ' + str(pc))
-    return pc
+                                        ' set to ' + str(self.PROGRAM_COUNTER + words))
+    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + words
+    return self.PROGRAM_COUNTER
 
 
 def is_end_of_page(self, address: int, word: int):
@@ -154,6 +288,15 @@ def is_end_of_page(self, address: int, word: int):
         return False
     raise InvalidEndOfPage('Address:' + str(address))
     return None
+
+
+def inc_pc_by_page(self, pc: int):
+    # Point the program counter to 1 page on
+    pc = pc + self.PAGE_SIZE
+    if (pc > self.MEMORY_SIZE_RAM):
+        raise ProgramCounterOutOfBounds('Program counter attempted to be' +
+                                        ' set to ' + str(pc))
+    return pc
 
 
 def increment_register(self, register: int):
@@ -181,11 +324,6 @@ def write_ram_status(self, char: int):
     return True
 
 # Miscellaneous read/write operations
-
-
-def read_complement_carry(self):
-    # Return the complement of the carry bit
-    return 1 if self.CARRY == 0 else 0
 
 
 def write_to_stack(self, value: int):
@@ -355,6 +493,4 @@ def check_overflow(self):
     return self.ACCUMULATOR, self.CARRY
 
 
-def increment_pc(self, words: int):
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + words
-    return self.PROGRAM_COUNTER
+
