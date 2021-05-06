@@ -41,4 +41,3 @@ class InvalidRegisterPair(Exception):
 class ValueTooLargeForRegisterPair(Exception):
     """Raised when the value for a register pair is too large"""
     pass
-

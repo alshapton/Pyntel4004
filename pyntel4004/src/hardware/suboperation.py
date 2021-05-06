@@ -264,7 +264,7 @@ def increment_pc(self, words: int):
 
     Raises
     ------
-    InvalidRegister
+    ProgramCounterOutOfBounds
 
     Notes
     ------
@@ -273,12 +273,78 @@ def increment_pc(self, words: int):
     """
     if (self.PROGRAM_COUNTER + words > self.MEMORY_SIZE_RAM):
         raise ProgramCounterOutOfBounds('Program counter attempted to be' +
-                                        ' set to ' + str(self.PROGRAM_COUNTER + words))
+                                        ' set to ' +
+                                        str(self.PROGRAM_COUNTER + words))
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + words
     return self.PROGRAM_COUNTER
 
 
+def inc_pc_by_page(self, pc: int):
+    """
+    Retrieve the Program Counter's new value after being incremented
+    by a page
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    pc: int, mandatory
+        Current value of Program Counter
+
+    Returns
+    -------
+    pc
+        The new value of the Program Counter
+
+    Raises
+    ------
+    ProgramCounterOutOfBounds
+
+    Notes
+    ------
+    This function DOES NOT MODIFY the program counter, simply
+    calculates the new  value of the counter. It is up to the
+    calling  function to determine what to  do with the value.
+
+    """
+    if (pc + self.PAGE_SIZE > self.MEMORY_SIZE_RAM):
+        raise ProgramCounterOutOfBounds('Program counter attempted to be' +
+                                        ' set to ' + str(pc + self.PAGE_SIZE))
+    # Point the program counter to 1 page on
+    pc = pc + self.PAGE_SIZE
+    return pc
+
+
 def is_end_of_page(self, address: int, word: int):
+    """
+    Determine if an instruction is located at the end of a memory page
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    address: int, mandatory
+        Base address of the instruction
+
+    word: int, mandatory
+        Number of words in the instruction
+
+    Returns
+    -------
+    True        if the instruction is at the end of the memory page
+    False       if the instruction is not at the end of the memory page
+
+    Raises
+    ------
+    InvalidEndOfPage
+
+    Notes
+    ------
+    N/A
+
+    """
     page = address // self.PAGE_SIZE
     location = address - (page * self.PAGE_SIZE)
     word = word - 1
@@ -288,15 +354,6 @@ def is_end_of_page(self, address: int, word: int):
         return False
     raise InvalidEndOfPage('Address:' + str(address))
     return None
-
-
-def inc_pc_by_page(self, pc: int):
-    # Point the program counter to 1 page on
-    pc = pc + self.PAGE_SIZE
-    if (pc > self.MEMORY_SIZE_RAM):
-        raise ProgramCounterOutOfBounds('Program counter attempted to be' +
-                                        ' set to ' + str(pc))
-    return pc
 
 
 def increment_register(self, register: int):
@@ -491,6 +548,3 @@ def check_overflow(self):
     else:
         self.reset_carry()
     return self.ACCUMULATOR, self.CARRY
-
-
-

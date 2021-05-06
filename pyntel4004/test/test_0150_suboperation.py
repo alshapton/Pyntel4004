@@ -12,7 +12,8 @@ import hardware.suboperation # noqa
 from hardware.processor import processor  # noqa
 from hardware.exceptions import ValueTooLargeForRegister, \
         ValueTooLargeForRegisterPair, InvalidRegister, \
-        InvalidRegisterPair, ProgramCounterOutOfBounds # noqa
+        InvalidRegisterPair, ProgramCounterOutOfBounds, \
+        InvalidEndOfPage # noqa
 
 
 ##############################################################################
@@ -96,7 +97,8 @@ def test_suboperation_insert_register_scenario1(register):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() == chip_base.read_program_counter())
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
@@ -170,14 +172,15 @@ def test_suboperation_insert_registerpair_scenario1(registerpair):
 
     # Simulate conditions at end of operation in base chip
     chip_base.REGISTERS[registerpair * 2] = 15
-    chip_base.REGISTERS[(registerpair * 2) + 1] = 14  # Perform the operation under test:
+    chip_base.REGISTERS[(registerpair * 2) + 1] = 14
 
-    # insert a value of 254 into a registerpair
+    # Insert a value of 254 into a registerpair
     processor.insert_registerpair(chip_test, registerpair, 254)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() == chip_base.read_program_counter())
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
@@ -261,13 +264,14 @@ def test_suboperation_increment_pc_scenario1(words):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() == chip_base.read_program_counter())
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
 
 
-def test_suboperation_increment_pc_scenario3():
+def test_suboperation_increment_pc_scenario2():
     chip_base = processor()
     chip_test = processor()
 
@@ -284,4 +288,123 @@ def test_suboperation_increment_pc_scenario3():
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
 
-    assert (chip_test.read_program_counter() == chip_base.read_program_counter())
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
+
+
+##############################################################################
+#                      Increment Program Counter by Page                     #
+##############################################################################
+@pytest.mark.parametrize("pc", [45, 2045])  # noqa
+def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    chip_test.PROGRAM_COUNTER = pc
+    chip_base.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE
+
+    # Increment the Program Counter by 1 page
+    chip_test.PROGRAM_COUNTER = processor.inc_pc_by_page(chip_test, pc)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("pc", [ 3841,4090])  # noqa
+def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    chip_test.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE
+    chip_base.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE
+
+    # attempting to increment the Program Counter beyond the end of memory
+    with pytest.raises(Exception) as e:
+        assert (processor.inc_pc_by_page(chip_test, pc))
+    assert (str(e.value) == "Program counter attempted to be set to " +
+                            str(pc + chip_base.PAGE_SIZE))
+    assert (e.type == ProgramCounterOutOfBounds)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Is Program Counter at the end of a Page                     #
+##############################################################################
+def test_suboperation_is_at_end_of_page_scenario1():
+##### Dubious aboout this test?????
+    chip_test = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Check for end of page (5 different page values)
+    assert(processor.is_end_of_page(chip_test, 0, 1) is False)
+    assert(processor.is_end_of_page(chip_test, 0, 2) is False)
+
+    assert(processor.is_end_of_page(chip_test, 2209, 1) is False)
+    assert(processor.is_end_of_page(chip_test, 2209, 2) is False)
+
+    assert(processor.is_end_of_page(chip_test, 254, 1) is False)
+    assert(processor.is_end_of_page(chip_test, 254, 2) is False)
+
+    assert(processor.is_end_of_page(chip_test, 255, 1) is True)
+    assert(processor.is_end_of_page(chip_test, 255, 2) is False)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    # N/A
+
+    # Pickling each chip and comparing will show equality or not.
+    # N/A
+
+
+def test_suboperation_is_at_end_of_page_scenario2():
+
+    chip_test = processor()
+    chip_base = processor()
+    pc = -1
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    chip_test.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE
+    chip_base.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE
+
+    # attempting to increment the Program Counter beyond the end of memory- use negative numbers
+    try:
+        processor.is_end_of_page(chip_test, -1, -222)
+    except Exception as e:
+        assert False, (e.type == InvalidEndOfPage)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))

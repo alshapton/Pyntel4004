@@ -1,5 +1,5 @@
 # Using pytest
-# Test the initialisation of an instance of an i4004(processor)
+# Test the INC instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
@@ -37,8 +37,10 @@ def test_scenario1(register):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert (chip_test.read_program_counter() == chip_base.read_program_counter())
-    assert (chip_test.read_register(0) == chip_base.read_register(0))
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
+    assert (chip_test.read_register(0) ==
+            chip_base.read_register(0))
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
@@ -61,7 +63,8 @@ def test_scenario2():
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert (chip_test.read_program_counter() == chip_base.read_program_counter())
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
     assert (chip_test.read_register(0) == chip_base.read_register(0))
 
     # Pickling each chip and comparing will show complete equality or not.

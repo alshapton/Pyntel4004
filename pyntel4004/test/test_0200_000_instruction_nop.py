@@ -24,7 +24,8 @@ def test_post_nop_chip():
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
-    assert (chip_test.read_program_counter() == chip_base.read_program_counter())
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))

@@ -104,13 +104,5 @@ class processor:
         self.reset_carry()
         self.init_wpm_counter()
 
-    # extract and place in a separate file - this shouldnt be here
-    def ice(o):
-        if isinstance(o, dict):
-            return frozenset({k: o.ice(v) for k, v in o.items()}.items())
 
-        if isinstance(o, list):
-            return tuple([o.ice(v) for v in o])
-
-        return o
 #  END OF PROCESSOR DEFINITION
