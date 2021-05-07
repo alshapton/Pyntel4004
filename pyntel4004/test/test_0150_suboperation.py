@@ -353,7 +353,6 @@ def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
 #                Is Program Counter at the end of a Page                     #
 ##############################################################################
 def test_suboperation_is_at_end_of_page_scenario1():
-##### Dubious aboout this test?????
     chip_test = processor()
 
     # Simulate conditions at end of operation in base chip
@@ -395,9 +394,15 @@ def test_suboperation_is_at_end_of_page_scenario2():
     chip_test.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE
     chip_base.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE
 
-    # attempting to increment the Program Counter beyond the end of memory- use negative numbers
+    # attempting to increment the Program Counter beyond the end of memory -
+    # use negative numbers, zeros etc to try and "trip up" the function
     try:
         processor.is_end_of_page(chip_test, -1, -222)
+        processor.is_end_of_page(chip_test, 0, 0)
+        processor.is_end_of_page(chip_test, -22222, 30000)
+        processor.is_end_of_page(chip_test, 4096, 0)
+        processor.is_end_of_page(chip_test, 4096, -1)
+
     except Exception as e:
         assert False, (e.type == InvalidEndOfPage)
 
@@ -405,6 +410,32 @@ def test_suboperation_is_at_end_of_page_scenario2():
     # the test chip which has been operated on by the operation under test.
     assert (chip_test.read_program_counter() ==
             chip_base.read_program_counter())
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check for Accumulator Overflow                              #
+##############################################################################
+@pytest.mark.parametrize("values", [[16,2,1],[15,15,0],[0,0,0],[99,85,1]])  # noqa
+def test_suboperation_check_for_overflow(values):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    chip_base.ACCUMULATOR = values[1]
+    chip_base.CARRY = values[2]
+
+    print(values[2])
+    chip_test.ACCUMULATOR = values[0]
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    # Check for overflow
+
+    acc, carry = processor.check_overflow(chip_test)
+    assert (acc == values[1])
+    assert (carry == values[2])
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))

@@ -548,3 +548,37 @@ def check_overflow(self):
     else:
         self.reset_carry()
     return self.ACCUMULATOR, self.CARRY
+
+
+def set_accumulator(self, value: int):
+    """
+    Insert a value into the Accumulator
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    value: int, mandatory
+        The value to insert
+
+    Returns
+    -------
+    value
+        The value of the accumulator
+
+    Raises
+    ------
+    ValueTooLargeForAccumulator
+
+    Notes
+    ------
+    N/A
+
+    """
+
+    if (value > self.MAX_4_BITS):
+        raise ValueTooLargeForAccumulator(' Value: ' + str(value)) # noqa
+    else:
+        self.ACCUMULATOR = value
+    return value

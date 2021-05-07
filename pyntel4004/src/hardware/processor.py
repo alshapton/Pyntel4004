@@ -6,7 +6,7 @@ class processor:
         init_ram, init_rom, init_pram, init_registers, init_wpm_counter
 
     from hardware.instructions.nop import nop
-    from hardware.instructions.idx import inc, fin
+    from hardware.instructions.idx import fin, inc
     from hardware.instructions.accumulator import clb, clc, iac, cmc, \
         cma, ral, rar, tcc, dac, tcs, stc, daa, kbp
 
@@ -14,12 +14,12 @@ class processor:
         bbl, jin, src, jun, jms, jcn, isz, fim, \
         dcl, wrm, wr0, wr1, wr2, wr3, wmp, wrr, rd0, rd1, \
         rd2, rd3, wpm
-    from hardware.suboperation import set_carry, reset_carry,  \
-        increment_register, write_pin10, read_complement_carry, \
-        write_to_stack, read_from_stack, ones_complement, \
-        decimal_to_binary, binary_to_decimal, insert_register, \
-        is_end_of_page, inc_pc_by_page, insert_registerpair, \
-        read_registerpair, read_register, increment_pc
+    from hardware.suboperation import binary_to_decimal, check_overflow, \
+        decimal_to_binary, increment_register, inc_pc_by_page, \
+        insert_register, insert_registerpair, is_end_of_page, \
+        ones_complement, reset_carry, read_complement_carry, \
+        read_from_stack, read_register, read_registerpair, increment_pc, \
+        set_accumulator, set_carry, write_pin10, write_to_stack
 
     # Operations to read the processor components
     # Some used internally,
