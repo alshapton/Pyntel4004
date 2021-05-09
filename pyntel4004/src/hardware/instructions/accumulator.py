@@ -19,10 +19,10 @@ def clb(self):
     Side-effects:   Not Applicable
     """
 
-    self.ACCUMULATOR = 0
+    self.set_accumulator(0)
     self.reset_carry()
     self.increment_pc(1)
-    return self.ACCUMULATOR, self.CARRY
+    return self.read_accumulator(), self.read_carry()
 
 
 def clc(self):
@@ -38,7 +38,7 @@ def clc(self):
 
     self.reset_carry()
     self.increment_pc(1)
-    return self.CARRY
+    return self.read_carry()
 
 
 def iac(self):
@@ -60,7 +60,7 @@ def iac(self):
     else:
         self.reset_carry()
     self.increment_pc(1)
-    return self.ACCUMULATOR, self.CARRY
+    return self.read_accumulator(), self.read_carry()
 
 
 def cmc(self):
@@ -171,7 +171,7 @@ def tcc(self):
     Side-effects:   The carry bit will be set to the 0.
     """
 
-    self.ACCUMULATOR = 0
+    self.set_accumulator(0)
     self.ACCUMULATOR = self.read_carry()
     self.reset_carry()
     self.increment_pc(1)
@@ -215,12 +215,12 @@ def tcs(self):
     """
 
     if (self.read_carry() == 0):
-        self.ACCUMULATOR = 9
+        self.set_accumulator(9)
     else:
-        self.ACCUMULATOR = 10
+        self.set_accumulator(10)
     self.reset_carry()
     self.increment_pc(1)
-    return self.ACCUMULATOR, self.CARRY
+    return self.read_accumulator(), self.read_carry()
 
 
 def stc(self):
@@ -236,7 +236,7 @@ def stc(self):
 
     self.set_carry()
     self.increment_pc(1)
-    return self.CARRY
+    return self.read_carry()
 
 
 def daa(self):
@@ -299,20 +299,21 @@ def kbp(self):
                         1110	---->	1111    Error
                         1111	---->	1111    Error
     """
-    if (self.ACCUMULATOR == 0
-        or self.ACCUMULATOR == 1
-            or self.ACCUMULATOR == 2):
-        return self.ACCUMULATOR
+    ACC = self.read_accumulator()
+    if (ACC == 0
+        or ACC == 1
+            or ACC == 2):
+        return ACC
 
-    if (self.ACCUMULATOR == 4):
-        self.ACCUMULATOR = 3
-        return self.ACCUMULATOR
+    if (ACC == 4):
+        self.set_accumulator(3)
+        return self.read_accumulator()
 
-    if (self.ACCUMULATOR == 8):
-        self.ACCUMULATOR = 4
-        return self.ACCUMULATOR
+    if (ACC == 8):
+        self.set_accumulator(4)
+        return self.read_accumulator()
 
     # Error
-    self.ACCUMULATOR = 15
+    self.set_accumulator(15)
     self.increment_pc(1)
-    return self.ACCUMULATOR
+    return self.read_accumulator()

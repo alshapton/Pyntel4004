@@ -2,7 +2,8 @@
 
 from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage, \
     ProgramCounterOutOfBounds, InvalidPin10Value, NotABinaryNumber, \
-    InvalidRegister, InvalidRegisterPair, ValueTooLargeForRegisterPair
+    InvalidRegister, InvalidRegisterPair, ValueTooLargeForRegisterPair, \
+    ValueTooLargeForAccumulator # noqa
 
 
 def set_carry(self):
@@ -578,7 +579,7 @@ def set_accumulator(self, value: int):
     """
 
     if (value > self.MAX_4_BITS):
-        raise ValueTooLargeForAccumulator(' Value: ' + str(value)) # noqa
+        raise ValueTooLargeForAccumulator(' Value: ' + str(value))
     else:
         self.ACCUMULATOR = value
     return value

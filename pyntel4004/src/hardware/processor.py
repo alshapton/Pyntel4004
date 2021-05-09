@@ -15,10 +15,10 @@ class processor:
         dcl, wrm, wr0, wr1, wr2, wr3, wmp, wrr, rd0, rd1, \
         rd2, rd3, wpm
     from hardware.suboperation import binary_to_decimal, check_overflow, \
-        decimal_to_binary, increment_register, inc_pc_by_page, \
+        decimal_to_binary, increment_register, increment_pc, inc_pc_by_page, \
         insert_register, insert_registerpair, is_end_of_page, \
         ones_complement, reset_carry, read_complement_carry, \
-        read_from_stack, read_register, read_registerpair, increment_pc, \
+        read_from_stack, read_register, read_registerpair, \
         set_accumulator, set_carry, write_pin10, write_to_stack
 
     # Operations to read the processor components

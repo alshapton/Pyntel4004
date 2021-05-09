@@ -46,4 +46,3 @@ class ValueTooLargeForRegisterPair(Exception):
 class ValueTooLargeForAccumulator(Exception):
     """Raised when the value for the Accumulator is too large"""
     pass
-

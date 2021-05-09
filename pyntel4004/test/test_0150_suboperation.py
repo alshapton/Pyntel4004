@@ -9,11 +9,11 @@ import pytest
 sys.path.insert(1, '../src')
 
 import hardware.suboperation # noqa
-from hardware.processor import processor  # noqa
+from hardware.processor import processor # noqa
 from hardware.exceptions import ValueTooLargeForRegister, \
         ValueTooLargeForRegisterPair, InvalidRegister, \
         InvalidRegisterPair, ProgramCounterOutOfBounds, \
-        InvalidEndOfPage # noqa
+        InvalidEndOfPage, ValueTooLargeForAccumulator # noqa
 
 
 ##############################################################################
@@ -383,7 +383,6 @@ def test_suboperation_is_at_end_of_page_scenario1():
 
 
 def test_suboperation_is_at_end_of_page_scenario2():
-
     chip_test = processor()
     chip_base = processor()
     pc = -1
@@ -427,7 +426,6 @@ def test_suboperation_check_for_overflow(values):
     chip_base.ACCUMULATOR = values[1]
     chip_base.CARRY = values[2]
 
-    print(values[2])
     chip_test.ACCUMULATOR = values[0]
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -436,6 +434,53 @@ def test_suboperation_check_for_overflow(values):
     acc, carry = processor.check_overflow(chip_test)
     assert (acc == values[1])
     assert (carry == values[2])
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check "set accumulator"                                     #
+##############################################################################
+@pytest.mark.parametrize("value", [-1,0,14,15])  # noqa
+def test_suboperation_set_accumulator_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    chip_base.ACCUMULATOR = value
+
+    chip_test.set_accumulator(value)
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    # N/A
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", [16, 20, 257])
+def test_suboperation_set_accumulator_scenario2(value):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to set the accumulator to an invalid value
+    with pytest.raises(Exception) as e:
+        assert (processor.set_accumulator(chip_test, value))
+    assert (str(e.value) == ' Value: ' + str(value))
+    assert (e.type == ValueTooLargeForAccumulator)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    assert (chip_test.read_program_counter() ==
+            chip_base.read_program_counter())
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
