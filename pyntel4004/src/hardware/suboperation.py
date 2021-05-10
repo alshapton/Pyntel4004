@@ -373,9 +373,9 @@ def write_pin10(self, value: int):
 
 
 def write_ram_status(self, char: int):
-    value = self.ACCUMULATOR
+    value = self.read_accumulator()
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[self.read_current_ram_bank()]
+    address = self.COMMAND_REGISTERS[crb]
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][char] = value

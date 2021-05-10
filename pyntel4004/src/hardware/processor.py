@@ -2,18 +2,18 @@ class processor:
 
     # Import processor internals
     import hardware.opcodes
-    from hardware.reset import init_stack, init_command_registers, \
-        init_ram, init_rom, init_pram, init_registers, init_wpm_counter
+    from hardware.reset import init_command_registers, init_pram, \
+        init_ram, init_registers, init_rom, init_stack, init_wpm_counter
 
     from hardware.instructions.nop import nop
     from hardware.instructions.idx import fin, inc
-    from hardware.instructions.accumulator import clb, clc, iac, cmc, \
-        cma, ral, rar, tcc, dac, tcs, stc, daa, kbp
+    from hardware.instructions.accumulator import clb, clc, cma, cmc, \
+        daa, dac, iac, kbp, ral, rar, tcc, tcs, stc
 
-    from hardware.machine import ldm, ld, xch, add, sub, \
-        bbl, jin, src, jun, jms, jcn, isz, fim, \
-        dcl, wrm, wr0, wr1, wr2, wr3, wmp, wrr, rd0, rd1, \
-        rd2, rd3, wpm
+    from hardware.machine import add, bbl, ld, dcl, fim, isz, ldm, \
+        jcn, jin, jms, jun, src, sub, rd0, rd1, rd2, rd3, wrm, wr0, \
+        wr1, wr2, wr3, wmp, wrr, wpm, xch
+        
     from hardware.suboperation import binary_to_decimal, check_overflow, \
         decimal_to_binary, increment_register, increment_pc, inc_pc_by_page, \
         insert_register, insert_registerpair, is_end_of_page, \
@@ -55,14 +55,9 @@ class processor:
     # Initialise processor
 
     def __init__(self):
-        # Creation of processor internals
 
-        self.ACCUMULATOR = 0         # Initialise the accumulator
-        self.ACBR = 0                # Accumulator Buffer Register
-        self.CARRY = 0               # Reset the carry bit
+        # Set up all the internals of the processor
         self.COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
-        self.CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
-        self.PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
 
         # Set up RAM
         self.RAM = []                                # RAM
@@ -70,39 +65,38 @@ class processor:
                          for _chip in range(4)]
         # Set up ROM
         self.ROM = []                                # ROM
-        self.ROM_PORT = [0 for _bank in range(16)]   # ROM ports
+        self.ROM_PORT = [0 for _bank in range(self.NO_ROM_PORTS)]   # ROM ports
 
         self.PRAM = []               # Program RAM
         self.REGISTERS = []          # Registers (4-bit)
         self.STACK = []              # The stack - 3 x 12-bit registers
-        self.STACK_POINTER = 2       # Stack Pointer
 
         # Set up RAM status characters
         self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
                                   for _reg in range(4)]
                                   for _chip in range(4)]
                                   for _bank in range(8)]
-        self.WPM_COUNTER = 'LEFT'    # WPM Counter (Left/Right flip)
 
         # Creation of processor simulated hardware
-
         # Pin 10 on the physical chip is the "test" pin
         # and can be read by the JCN instruction
-        self.PIN_10_SIGNAL_TEST = 0
+        self.write_pin10(0)
 
-        # Initialise all the internals of the processor
-        self.ACCUMULATOR = 0
-        self.ACBR = 0
-        self.CURRENT_RAM_BANK = 0
-        self.PROGRAM_COUNTER == 0
+        # Initialise Internals
+        self.set_accumulator(0)      # Initialise the accumulator
+        self.ACBR = 0                # Accumulator Buffer Register
+        self.STACK_POINTER = 2       # Stack Pointer
+        self.PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
+
         self.init_stack()
         self.init_command_registers()
         self.init_registers()
         self.init_pram()
         self.init_ram()
         self.init_rom()
-        self.reset_carry()
-        self.init_wpm_counter()
-
+        self.CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
+        self.CURRENT_RAM_BANK = 0    # Current Program RAM Bank
+        self.reset_carry()           # Reset the carry bit
+        self.init_wpm_counter()      # WPM Counter (Left/Right flip)
 
 #  END OF PROCESSOR DEFINITION
