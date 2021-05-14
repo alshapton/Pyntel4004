@@ -484,3 +484,67 @@ def test_suboperation_set_accumulator_scenario2(value):
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+##############################################################################
+#                Check Increment Register                                    #
+##############################################################################
+@pytest.mark.parametrize("value", [0,3,9,14])  # noqa
+def test_suboperation_test_inc_register_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip (use R4)
+    chip_test.REGISTERS[4] = value
+    chip_base.REGISTERS[4] = value + 1
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    chip_test.increment_register(4)
+    assert (processor.read_register(chip_test, 4) == value + 1)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+def test_suboperation_test_inc_register_scenario2():
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A    # Simulate conditions at end of operation in base chip (use R4)
+    chip_test.REGISTERS[4] = 15
+    chip_base.REGISTERS[4] = 0
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # This is a rollover - i.e. 15 incremented becomes 0
+
+    processor.increment_register(chip_test, 4)
+    assert (processor.read_register(chip_test, 4) == 0)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", [16, 20, 257])
+def test_suboperation_test_increment_register_scenario3(value):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use an invalid register
+    with pytest.raises(Exception) as e:
+        assert (processor.increment_register(chip_test, value))
+    assert (str(e.value) == 'Register: ' + str(value))
+    assert (e.type == InvalidRegister)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))

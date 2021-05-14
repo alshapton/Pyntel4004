@@ -358,10 +358,39 @@ def is_end_of_page(self, address: int, word: int):
 
 
 def increment_register(self, register: int):
+    """
+    Increment the value in a register by 1
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    register: int, mandatory
+        register to increment
+
+    Returns
+    -------
+    self.REGISTERS[register]
+        value of the register post increment
+
+    Raises
+    ------
+    InvalidRegister
+
+    Notes
+    ------
+    N/A
+
+    """
+
+    if register < 0 or register > (self.NO_REGISTERS - 1):
+        raise InvalidRegister('Register: ' + str(register))
+
     self.REGISTERS[register] = self.REGISTERS[register] + 1
     if (self.REGISTERS[register] > self.MAX_4_BITS):
         self.REGISTERS[register] = 0
-    return None
+    return self.REGISTERS[register]
 
 
 def write_pin10(self, value: int):
