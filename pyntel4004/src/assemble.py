@@ -143,7 +143,7 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
 
         if (exe[:4] == 'jcn('):
             custom_opcode = True
-            address = _TPS[chip.PROGRAM_COUNTER+1]
+            address = _TPS[chip.PROGRAM_COUNTER + 1]
             conditions = (bin(_TPS[chip.PROGRAM_COUNTER])[2:].zfill(8)[4:])
             b10address = str(address)
             cop = exe.replace('address8', b10address)
@@ -157,7 +157,7 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
             # Remove opcode from 1st byte
             hvalue = bin(_TPS[chip.PROGRAM_COUNTER] &
                          0xffff0000)[2:].zfill(8)[:4]
-            lvalue = bin(_TPS[chip.PROGRAM_COUNTER+1])[2:].zfill(8)
+            lvalue = bin(_TPS[chip.PROGRAM_COUNTER + 1])[2:].zfill(8)
             whole_value = str(int(hvalue + lvalue, 2))
             cop = exe.replace('address12', whole_value)
             exe = exe[:4] + whole_value + ')'

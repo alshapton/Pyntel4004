@@ -23,7 +23,7 @@ def inc(self, register: int):
     """
 
     self.increment_register(register)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.REGISTERS[register]
 
 
@@ -65,5 +65,5 @@ def fin(self, registerpair: int):
     value = self.RAM[(self.REGISTERS[1] + (self.REGISTERS[0] << 4)) +
                      (self.PAGE_SIZE * page_shift)]
     self.insert_registerpair(registerpair, value)
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.REGISTERS[registerpair], self.REGISTERS[registerpair+1]

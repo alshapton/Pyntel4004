@@ -31,3 +31,18 @@ class NotABinaryNumber(Exception):
 class InvalidRegister(Exception):
     """Raised when an invalid register is supplied """
     pass
+
+
+class InvalidRegisterPair(Exception):
+    """Raised when an invalid register pair is supplied """
+    pass
+
+
+class ValueTooLargeForRegisterPair(Exception):
+    """Raised when the value for a register pair is too large"""
+    pass
+
+
+class ValueTooLargeForAccumulator(Exception):
+    """Raised when the value for the Accumulator is too large"""
+    pass

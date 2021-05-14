@@ -23,5 +23,5 @@ def nop(self):
     Side-effects:   Not Applicable
     """
 
-    self.PROGRAM_COUNTER = self.PROGRAM_COUNTER + 1
+    self.increment_pc(1)
     return self.PROGRAM_COUNTER

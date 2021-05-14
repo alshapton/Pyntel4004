@@ -2,24 +2,24 @@ class processor:
 
     # Import processor internals
     import hardware.opcodes
-    from hardware.reset import init_stack, init_command_registers, \
-        init_ram, init_rom, init_pram, init_registers, init_wpm_counter
+    from hardware.reset import init_command_registers, init_pram, \
+        init_ram, init_registers, init_rom, init_stack, init_wpm_counter
 
     from hardware.instructions.nop import nop
-    from hardware.instructions.idx import inc, fin
-    from hardware.instructions.accumulator import clb, clc, iac, cmc, \
-        cma, ral, rar, tcc, dac, tcs, stc, daa, kbp
+    from hardware.instructions.idx import fin, inc
+    from hardware.instructions.accumulator import clb, clc, cma, cmc, \
+        daa, dac, iac, kbp, ral, rar, tcc, tcs, stc
 
-    from hardware.machine import ldm, ld, xch, add, sub, \
-        bbl, jin, src, jun, jms, jcn, isz, fim, \
-        dcl, wrm, wr0, wr1, wr2, wr3, wmp, wrr, rd0, rd1, \
-        rd2, rd3, wpm
-    from hardware.suboperation import set_carry, reset_carry,  \
-        increment_register, write_pin10, read_complement_carry, \
-        write_to_stack, read_from_stack, ones_complement, \
-        decimal_to_binary, binary_to_decimal, insert_register, \
-        is_end_of_page, inc_pc_by_page, insert_registerpair, \
-        read_registerpair, read_register, increment_pc
+    from hardware.machine import add, bbl, ld, dcl, fim, isz, ldm, \
+        jcn, jin, jms, jun, src, sub, rd0, rd1, rd2, rd3, wrm, wr0, \
+        wr1, wr2, wr3, wmp, wrr, wpm, xch
+        
+    from hardware.suboperation import binary_to_decimal, check_overflow, \
+        decimal_to_binary, increment_register, increment_pc, inc_pc_by_page, \
+        insert_register, insert_registerpair, is_end_of_page, \
+        ones_complement, reset_carry, read_complement_carry, \
+        read_from_stack, read_register, read_registerpair, \
+        set_accumulator, set_carry, write_pin10, write_to_stack
 
     # Operations to read the processor components
     # Some used internally,
@@ -49,86 +49,54 @@ class processor:
     NO_STATUS_REGISTERS = 4     # Number of Status registers per memory chip
     NO_STATUS_CHARACTERS = 4    # Number of Status chars per status register
 
-    # Creation of processor internals
-
-    ACCUMULATOR = 0         # Initialise the accumulator
-    ACBR = 0                # Accumulator Buffer Register
-    CARRY = 0               # Reset the carry bit
-    COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
-    CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
-    PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
-
-    # Set up RAM
-    RAM = []                                # RAM
-    RAM_PORT = [[0 for _bank in range(8)]   # RAM Ports
-                for _chip in range(4)]
-    # Set up ROM
-    ROM = []                                # ROM
-    ROM_PORT = [0 for _bank in range(16)]   # ROM ports
-
-    PRAM = []               # Program RAM
-    REGISTERS = []          # Registers (4-bit)
-    STACK = []              # The stack - 3 x 12-bit registers
-    STACK_POINTER = 2       # Stack Pointer
-
-    # Set up RAM status characters
-    STATUS_CHARACTERS = [[[[0 for _char in range(4)]
-                         for _reg in range(4)]
-                         for _chip in range(4)]
-                         for _bank in range(8)]
-    WPM_COUNTER = 'LEFT'    # WPM Counter (Left/Right flip)
-
-    # Creation of processor simulated hardware
-
-    # Pin 10 on the physical chip is the "test" pin
-    # and can be read by the JCN instruction
-    PIN_10_SIGNAL_TEST = 0
-
     # Instruction table
     INSTRUCTIONS = hardware.opcodes.instructions.opcodes
 
     # Initialise processor
 
     def __init__(self):
-        # Initialise all the internals of the processor
-        self.ACCUMULATOR = 0
-        self.ACBR = 0
-        self.CURRENT_RAM_BANK = 0
-        self.PROGRAM_COUNTER == 0
+
+        # Set up all the internals of the processor
+        self.COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
+
+        # Set up RAM
+        self.RAM = []                                # RAM
+        self.RAM_PORT = [[0 for _bank in range(8)]   # RAM Ports
+                         for _chip in range(4)]
+        # Set up ROM
+        self.ROM = []                                # ROM
+        self.ROM_PORT = [0 for _bank in range(self.NO_ROM_PORTS)]   # ROM ports
+
+        self.PRAM = []               # Program RAM
+        self.REGISTERS = []          # Registers (4-bit)
+        self.STACK = []              # The stack - 3 x 12-bit registers
+
+        # Set up RAM status characters
+        self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
+                                  for _reg in range(4)]
+                                  for _chip in range(4)]
+                                  for _bank in range(8)]
+
+        # Creation of processor simulated hardware
+        # Pin 10 on the physical chip is the "test" pin
+        # and can be read by the JCN instruction
+        self.write_pin10(0)
+
+        # Initialise Internals
+        self.set_accumulator(0)      # Initialise the accumulator
+        self.ACBR = 0                # Accumulator Buffer Register
+        self.STACK_POINTER = 2       # Stack Pointer
+        self.PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
+
         self.init_stack()
         self.init_command_registers()
         self.init_registers()
         self.init_pram()
         self.init_ram()
         self.init_rom()
-        self.reset_carry()
-        self.init_wpm_counter()
-
-    # extract and place in a separate file - this shouldnt be here
-    def ice(o):
-        if isinstance(o, dict):
-            return frozenset({k: o.ice(v) for k, v in o.items()}.items())
-
-        if isinstance(o, list):
-            return tuple([o.ice(v) for v in o])
-
-        return o
-
-    def make_hash(self):
-        """
-        makes a hash out of anything that contains only list,dict and
-        hashable types including string and numeric types
-        """
-        return hash(self.ice())
-
-    def __hash__(self):
-        processor_hash = \
-            hash(self.read_accumulator()) ^ \
-            hash(self.read_acbr()) ^ \
-            hash(self.read_carry()) ^ \
-            hash(self.read_current_ram_bank()) ^ \
-            hash(self.read_program_counter())
-        return processor_hash
-        #  hash(self.read_all_command_registers())
+        self.CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
+        self.CURRENT_RAM_BANK = 0    # Current Program RAM Bank
+        self.reset_carry()           # Reset the carry bit
+        self.init_wpm_counter()      # WPM Counter (Left/Right flip)
 
 #  END OF PROCESSOR DEFINITION
