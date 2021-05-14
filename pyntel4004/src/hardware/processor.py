@@ -13,7 +13,7 @@ class processor:
     from hardware.machine import add, bbl, ld, dcl, fim, isz, ldm, \
         jcn, jin, jms, jun, src, sub, rd0, rd1, rd2, rd3, wrm, wr0, \
         wr1, wr2, wr3, wmp, wrr, wpm, xch
-        
+
     from hardware.suboperation import binary_to_decimal, check_overflow, \
         decimal_to_binary, increment_register, increment_pc, inc_pc_by_page, \
         insert_register, insert_registerpair, is_end_of_page, \

@@ -13,7 +13,8 @@ from hardware.processor import processor # noqa
 from hardware.exceptions import ValueTooLargeForRegister, \
         ValueTooLargeForRegisterPair, InvalidRegister, \
         InvalidRegisterPair, ProgramCounterOutOfBounds, \
-        InvalidEndOfPage, ValueTooLargeForAccumulator # noqa
+        InvalidEndOfPage, ValueTooLargeForAccumulator, \
+        InvalidPin10Value # noqa
 
 
 ##############################################################################
@@ -545,6 +546,48 @@ def test_suboperation_test_increment_register_scenario3(value):
         assert (processor.increment_register(chip_test, value))
     assert (str(e.value) == 'Register: ' + str(value))
     assert (e.type == InvalidRegister)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check set PIN_10_SIGNAL_TEST                                #
+##############################################################################
+@pytest.mark.parametrize("value", [0,1])  # noqa
+def test_suboperation_test_write_pin10_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip (use R4)
+    chip_base.PIN_10_SIGNAL_TEST = value
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    chip_test.write_pin10(value)
+    assert (chip_test.read_pin10() == value)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", [-1, 2, 23, 98, -3])
+def test_suboperation_test_increment_register_scenario2(value):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use an invalid PIN10 value
+    with pytest.raises(Exception) as e:
+        assert (processor.write_pin10(chip_test, value))
+    assert (str(e.value) == 'PIN 10 attempted to be set to ' + str(value))
+    assert (e.type == InvalidPin10Value)
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
