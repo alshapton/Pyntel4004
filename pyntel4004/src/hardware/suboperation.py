@@ -511,6 +511,7 @@ def binary_to_decimal(self, binary: str):
 
     binary : str, mandatory
         a string which represents the binary value
+
     Returns
     -------
     The decimal value of the supplied binary value
@@ -524,14 +525,18 @@ def binary_to_decimal(self, binary: str):
     N/A
 
     """
-    if len(binary.replace('0', '').replace('1', '') != 0):
+    if len(binary) == 0:
+        binary = '<empty>'
+        raise NotABinaryNumber('"' + binary + '"')
+
+    if (len(binary.replace('0', '').replace('1', '')) != 0):
         raise NotABinaryNumber('"' + binary + '"')
 
     # Convert binary to decimal
     return int(binary, 2)
 
 
-def flip_wpm_counter(self):
+def flip_wpm_counter(self): # Tested
     """
     Two WPM instructions must always appear in close succession; that is,
     each time one WPM instruction references a half byte of program RAM
