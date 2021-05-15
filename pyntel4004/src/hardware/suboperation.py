@@ -6,7 +6,7 @@ from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage, \
     ValueTooLargeForAccumulator # noqa
 
 
-def set_carry(self): #  Tested
+def set_carry(self):  #  Tested
     """
     Set the carry bit
 
@@ -393,7 +393,7 @@ def increment_register(self, register: int): #  Tested
     return self.REGISTERS[register]
 
 
-def write_pin10(self, value: int):
+def write_pin10(self, value: int): #  Tested
     """
     Write to pin 10 (reset pin)
 

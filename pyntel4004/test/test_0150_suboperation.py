@@ -591,3 +591,27 @@ def test_suboperation_test_increment_register_scenario2(value):
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check Flip WPM Counter                                      #
+##############################################################################
+@pytest.mark.parametrize("value", ['LEFT','RIGHT'])  # noqa
+def test_suboperation_test_flip_wpm_counter_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip (use R4)
+    chip_base.WPM_COUNTER = value
+    chip_test.WPM_COUNTER = value
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    # flip the WPM counter 4 times, such that it returns to the original value
+    for i in range(4):
+        chip_test.flip_wpm_counter()
+    assert (chip_test.read_wpm_counter() == value)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+

@@ -15,7 +15,8 @@ class processor:
         wr1, wr2, wr3, wmp, wrr, wpm, xch
 
     from hardware.suboperation import binary_to_decimal, check_overflow, \
-        decimal_to_binary, increment_register, increment_pc, inc_pc_by_page, \
+        decimal_to_binary, flip_wpm_counter, increment_register, \
+        increment_pc, inc_pc_by_page, \
         insert_register, insert_registerpair, is_end_of_page, \
         ones_complement, reset_carry, read_complement_carry, \
         read_from_stack, read_register, read_registerpair, \
