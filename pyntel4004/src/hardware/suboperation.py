@@ -1,9 +1,11 @@
 #  Sub-operation methods
 
-from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage, \
-    ProgramCounterOutOfBounds, InvalidPin10Value, NotABinaryNumber, \
-    InvalidRegister, InvalidRegisterPair, ValueTooLargeForRegisterPair, \
-    ValueTooLargeForAccumulator # noqa
+from .exceptions import InvalidBitValue, \
+    InvalidEndOfPage, InvalidPin10Value,\
+    InvalidRegister, InvalidRegisterPair,  \
+    NotABinaryNumber, ProgramCounterOutOfBounds, \
+    ValueTooLargeForAccumulator, ValueOutOfRangeForBits,\
+    ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
 def set_carry(self):  #  Tested
@@ -493,13 +495,49 @@ def ones_complement(self, value: str):
     return ones
 
 
-def decimal_to_binary(self, decimal: int):
+def decimal_to_binary(self, bits: int, decimal: int):
+    """
+    Converts a decimal value into a binary value of a specified bit length
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    bits : int, mandatory
+        number of bits required for the conversion
+
+    decimal: int: mandatory
+        decimal value to convert
+
+    Returns
+    -------
+    The binary value of the supplied decimal value.
+
+    Raises
+    ------
+    InvalidBitValue        : When a bit value of not 4,8 or 12 is specified
+    ValueOutOfRangeForBits : If the value supplied is either negative or is
+                             out of range of the number of bits requested
+
+    Notes
+    ------
+    N/A
+
+    """
+    if (bits not in [4, 8, 12]):
+        raise InvalidBitValue(' Bits: ' + str(bits))
+
+    if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
+        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
+                                     ' Bits: ' + str(bits))
+
     # Convert decimal to binary
-    binary = bin(decimal)[2:].zfill(4)
+    binary = bin(decimal)[2:].zfill(bits)
     return binary
 
 
-def binary_to_decimal(self, binary: str):
+def binary_to_decimal(self, binary: str):  # Tested
     """
     Converts a string value (which must be in binary form) to
     a decimal value
