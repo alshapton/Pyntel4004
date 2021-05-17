@@ -8,7 +8,7 @@ from .exceptions import InvalidBitValue, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
-def set_carry(self):  #  Tested
+def set_carry(self):  # Tested
     """
     Set the carry bit
 
@@ -36,7 +36,7 @@ def set_carry(self):  #  Tested
     return self.CARRY
 
 
-def reset_carry(self): #  Tested
+def reset_carry(self):  # Tested
     """
     Resets the carry bit
 
@@ -64,7 +64,7 @@ def reset_carry(self): #  Tested
     return self.CARRY
 
 
-def read_complement_carry(self): #  Tested
+def read_complement_carry(self):  # Tested
     """
     Reads the complement of the carry bit, but doesn't change the value
 
@@ -89,7 +89,7 @@ def read_complement_carry(self): #  Tested
     return 1 if self.CARRY == 0 else 0
 
 
-def insert_register(self, register: int, value: int): #  Tested
+def insert_register(self, register: int, value: int):  # Tested
     """
     Insert a value into a specific register
 
@@ -131,7 +131,7 @@ def insert_register(self, register: int, value: int): #  Tested
     return value
 
 
-def read_register(self, register: int): #  Tested
+def read_register(self, register: int):  # Tested
     """
     Read a specific register
 
@@ -165,7 +165,7 @@ def read_register(self, register: int): #  Tested
     return self.REGISTERS[register]
 
 
-def insert_registerpair(self, registerpair: int, value: int): #  Tested
+def insert_registerpair(self, registerpair: int, value: int):  # Tested
     """
     Insert a value into a specific register
 
@@ -211,7 +211,7 @@ def insert_registerpair(self, registerpair: int, value: int): #  Tested
     return value
 
 
-def read_registerpair(self, registerpair: int): #  Tested
+def read_registerpair(self, registerpair: int):  # Tested
     """
     Read a specific register pair
 
@@ -248,7 +248,7 @@ def read_registerpair(self, registerpair: int): #  Tested
     return (hi << 4) + lo   # Bit-shift left high value and add low value
 
 
-def increment_pc(self, words: int): #  Tested
+def increment_pc(self, words: int):  # Tested
     """
     Increment the Program Counter by a specific number of words
 
@@ -282,7 +282,7 @@ def increment_pc(self, words: int): #  Tested
     return self.PROGRAM_COUNTER
 
 
-def inc_pc_by_page(self, pc: int): #  Tested
+def inc_pc_by_page(self, pc: int):  # Tested
     """
     Retrieve the Program Counter's new value after being incremented
     by a page
@@ -319,7 +319,7 @@ def inc_pc_by_page(self, pc: int): #  Tested
     return pc
 
 
-def is_end_of_page(self, address: int, word: int): #  Tested
+def is_end_of_page(self, address: int, word: int):  # Tested
     """
     Determine if an instruction is located at the end of a memory page
 
@@ -359,7 +359,7 @@ def is_end_of_page(self, address: int, word: int): #  Tested
     return None
 
 
-def increment_register(self, register: int): #  Tested
+def increment_register(self, register: int):  # Tested
     """
     Increment the value in a register by 1
 
@@ -395,7 +395,7 @@ def increment_register(self, register: int): #  Tested
     return self.REGISTERS[register]
 
 
-def write_pin10(self, value: int): #  Tested
+def write_pin10(self, value: int):  # Tested
     """
     Write to pin 10 (reset pin)
 
@@ -432,8 +432,8 @@ def write_ram_status(self, char: int):
     value = self.read_accumulator()
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTERS[crb]
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    chip = int(self.decimal_to_binary(8, address)[:2], 2)
+    register = int(self.decimal_to_binary(8, address)[2:4], 2)
     self.STATUS_CHARACTERS[crb][chip][register][char] = value
     return True
 
@@ -532,7 +532,7 @@ def ones_complement(self, value: str, bits: int):  # Tested
     return ones
 
 
-def decimal_to_binary(self, bits: int, decimal: int): # Tested
+def decimal_to_binary(self, bits: int, decimal: int):  # Tested
     """
     Converts a decimal value into a binary value of a specified bit length
 
@@ -611,7 +611,7 @@ def binary_to_decimal(self, binary: str):  # Tested
     return int(binary, 2)
 
 
-def flip_wpm_counter(self): # Tested
+def flip_wpm_counter(self):  # Tested
     """
     Two WPM instructions must always appear in close succession; that is,
     each time one WPM instruction references a half byte of program RAM
@@ -647,7 +647,7 @@ def flip_wpm_counter(self): # Tested
     return self.WPM_COUNTER
 
 
-def check_overflow(self): #  Tested
+def check_overflow(self):  # Tested
     """
     Check for an overflow is detected
     i.e. the result is more than a 4-bit number (MAX_4_BITS)
@@ -685,7 +685,7 @@ def check_overflow(self): #  Tested
     return self.ACCUMULATOR, self.CARRY
 
 
-def set_accumulator(self, value: int): #  Tested
+def set_accumulator(self, value: int):  # Tested
     """
     Insert a value into the Accumulator
 

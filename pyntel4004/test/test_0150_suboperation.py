@@ -744,6 +744,7 @@ def test_suboperation_test_decimal_to_binary_scenario3(value):
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
 
+
 ##############################################################################
 #                Check One's Complement                                      #
 ##############################################################################

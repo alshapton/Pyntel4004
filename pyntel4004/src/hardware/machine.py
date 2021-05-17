@@ -508,12 +508,7 @@ def wr0(self):
 
     """
 
-    value = self.ACCUMULATOR
-    crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.STATUS_CHARACTERS[crb][chip][register][0] = value
+    self.write_ram_status(0)
     self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
@@ -541,12 +536,7 @@ def wr1(self):
 
     """
 
-    value = self.ACCUMULATOR
-    crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.STATUS_CHARACTERS[crb][chip][register][1] = value
+    self.write_ram_status(1)
     self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
@@ -574,12 +564,7 @@ def wr2(self):
 
     """
 
-    value = self.ACCUMULATOR
-    crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.STATUS_CHARACTERS[crb][chip][register][2] = value
+    self.write_ram_status(2)
     self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
@@ -607,12 +592,7 @@ def wr3(self):
 
     """
 
-    value = self.ACCUMULATOR
-    crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.STATUS_CHARACTERS[crb][chip][register][3] = value
+    self.write_ram_status(3)
     self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
