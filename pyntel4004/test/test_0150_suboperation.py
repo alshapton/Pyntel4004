@@ -10,10 +10,12 @@ sys.path.insert(1, '../src')
 
 import hardware.suboperation # noqa
 from hardware.processor import processor # noqa
-from hardware.exceptions import ValueTooLargeForRegister, \
-        ValueTooLargeForRegisterPair, InvalidRegister, \
-        InvalidRegisterPair, ProgramCounterOutOfBounds, \
-        InvalidEndOfPage, ValueTooLargeForAccumulator # noqa
+from hardware.exceptions import InvalidBitValue, InvalidRegister, \
+        InvalidRegisterPair, \
+        NotABinaryNumber, ProgramCounterOutOfBounds, \
+        InvalidEndOfPage, InvalidPin10Value, ValueTooLargeForAccumulator, \
+        ValueOutOfRangeForBits, ValueTooLargeForRegister, \
+        ValueTooLargeForRegisterPair # noqa
 
 
 ##############################################################################
@@ -548,3 +550,241 @@ def test_suboperation_test_increment_register_scenario3(value):
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check set PIN_10_SIGNAL_TEST                                #
+##############################################################################
+@pytest.mark.parametrize("value", [0,1])  # noqa
+def test_suboperation_test_write_pin10_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    chip_base.PIN_10_SIGNAL_TEST = value
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    chip_test.write_pin10(value)
+    assert (chip_test.read_pin10() == value)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", [-1, 2, 23, 98, -3])
+def test_suboperation_test_increment_register_scenario2(value):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use an invalid PIN10 value
+    with pytest.raises(Exception) as e:
+        assert (processor.write_pin10(chip_test, value))
+    assert (str(e.value) == 'PIN 10 attempted to be set to ' + str(value))
+    assert (e.type == InvalidPin10Value)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check Flip WPM Counter                                      #
+##############################################################################
+@pytest.mark.parametrize("value", ['LEFT','RIGHT'])  # noqa
+def test_suboperation_test_flip_wpm_counter_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    chip_base.WPM_COUNTER = value
+    chip_test.WPM_COUNTER = value
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    # flip the WPM counter 4 times, such that it returns to the original value
+    for i in range(4):
+        chip_test.flip_wpm_counter()
+    assert (chip_test.read_wpm_counter() == value)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check Binary to decimal                                     #
+##############################################################################
+@pytest.mark.parametrize("value", [['0000', '0'], ['0010', '2'],
+                                   ['1111', '15'], ['1010', '10'],
+                                   ['1100', '12'], ['11111111', '255'],
+                                   ['00001111', '15'],
+                                   ['100011111010', '2298'],
+                                   ['010101111011', '1403'],
+                                   ['11001100', '204'],
+                                   ['111111111111', '4095'] ])  # noqa
+def test_suboperation_test_binary_decimal_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Call the binary_to_decimal method - the rest of the chip should
+    # stay unchanged
+    assert (str(chip_test.binary_to_decimal(value[0])) == value[1])
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", ['-1', 'not a binary', '',
+                                   'IOIOIOIOI', ' Intel4004'])
+def test_suboperation_test_binary_decimal_scenario2(value):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use an invalid binary number
+    with pytest.raises(Exception) as e:
+        assert (processor.binary_to_decimal(chip_test, value))
+    if (value != ''):
+        assert (str(e.value) == '"' + value + '"')
+    else:
+        assert (str(e.value) == '"<empty>"')
+
+    assert (e.type == NotABinaryNumber)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check Decimal to Binary                                     #
+##############################################################################
+@pytest.mark.parametrize("value", [[0, 4, '0000'], [1, 4, '0001'],
+                                   [14, 4, '1110'], [15, 4, '1111'],
+                                   [8, 4, '1000'], [16, 8, '00010000'],
+                                   [17, 8, '00010001'], [9, 8, '00001001'],
+                                   [255, 8, '11111111'], [0, 8, '00000000'],
+                                   [4095, 12, '111111111111'],
+                                   [4094, 12, '111111111110'],
+                                   [0, 12, '000000000000'],
+                                   [2439, 12, '100110000111'],
+                                   [1002, 12, '001111101010']
+                                   ])  # noqa
+def test_suboperation_test_decimal_to_binaryscenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    # Attempt to convert decimal to binary (chip status should not change)
+    assert (chip_test.decimal_to_binary(value[1], value[0]) == value[2])
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", [[-1, 4], [-1, 8], [-1, 12],
+                                   [16, 4], [17, 4], [256, 4],
+                                   [256, 8], [257, 8],
+                                   [4096, 12], [2322442, 12]])
+def test_suboperation_test_decimal_to_binary_scenario2(value):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use binary number larger than the bits will allow
+    with pytest.raises(Exception) as e:
+        assert (processor.decimal_to_binary(chip_test, value[0], value[1]))
+        assert (str(e.value) == 'Value: ' + str(value[0] +
+                                                'Bits: ' + str(value[1])))
+        assert (e.type == ValueOutOfRangeForBits)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", [-1, 0, 1, 2, 3, 5, 6, 7, 9,
+                                   10, 11, 13, 14, 15, 16, 17])
+def test_suboperation_test_decimal_to_binary_scenario3(value):
+
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use a bit value which is illegal
+    with pytest.raises(Exception) as e:
+        assert (processor.decimal_to_binary(chip_test, value[0], 3))
+        assert (str(e.value) == 'Bits: ' + str(value[1]))
+        assert (e.type == InvalidBitValue)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+##############################################################################
+#                Check One's Complement                                      #
+##############################################################################
+@pytest.mark.parametrize("value", [[2, '1101', 4], [3, '1100', 4],
+                                   [0, '1111', 4], [2, '11111101', 8],
+                                   [3, '11111100', 8], [2, '111111111101', 12],
+                                   [3, '111111111100', 12],
+                                   [0, '111111111111', 12]
+                                   ])  # noqa
+def test_suboperation_test_ones_complement_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    # Attempt to convert decimal to binary (chip status should not change)
+    assert (chip_test.ones_complement(value[0], value[2]) == value[1])
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", [[-1, 4], [-1, 8], [-1, 12],
+                                   [16, 4], [17, 4], [256, 4],
+                                   [256, 8], [257, 8],
+                                   [4096, 12], [2322442, 12]])
+def test_suboperation_test_ones_complement_scenario2(value):
+
+    chip_test = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use binary number larger than the bits will allow
+    with pytest.raises(Exception) as e:
+        assert (processor.ones_complement(chip_test, value[0], value[1]))
+        assert (str(e.value) == 'Value: ' + str(value[0] +
+                                                'Bits: ' + str(value[1])))
+        assert (e.type == ValueOutOfRangeForBits)

@@ -161,7 +161,7 @@ def sub(self, register: int):
     carry = self.read_complement_carry()
     self.ACCUMULATOR = (self.ACCUMULATOR +
                         self.binary_to_decimal(
-                            self.ones_complement(self.REGISTERS[register]))
+                            self.ones_complement(self.REGISTERS[register], 4))
                         + carry)
 
     # Check for carry bit set/reset when borrow (overflow) is detected
@@ -1030,7 +1030,7 @@ def sbm(self, register: int):
     value = self.RAM[absolute_address]
 
     # Perform addition
-    value_complement = int(self.ones_complement(value), 2)
+    value_complement = int(self.ones_complement(value, 4), 2)
     carry_complement = self.read_complement_carry()
 
     self.ACCUMULATOR = (self.ACCUMULATOR + value_complement +

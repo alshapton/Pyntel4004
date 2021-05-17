@@ -652,7 +652,7 @@ def main(argv):
         print()
         acc = chip.read_accumulator()
         print('Accumulator : ' + str(acc) +
-              '  (0b ' + str(chip.decimal_to_binary(acc)) + ')')
+              '  (0b ' + str(chip.decimal_to_binary(4,acc)) + ')')
         print('Carry       :', chip.read_carry())
         print()
 

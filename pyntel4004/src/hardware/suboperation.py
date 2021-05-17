@@ -1,12 +1,14 @@
 #  Sub-operation methods
 
-from .exceptions import ValueTooLargeForRegister, InvalidEndOfPage, \
-    ProgramCounterOutOfBounds, InvalidPin10Value, NotABinaryNumber, \
-    InvalidRegister, InvalidRegisterPair, ValueTooLargeForRegisterPair, \
-    ValueTooLargeForAccumulator # noqa
+from .exceptions import InvalidBitValue, \
+    InvalidEndOfPage, InvalidPin10Value,\
+    InvalidRegister, InvalidRegisterPair,  \
+    NotABinaryNumber, ProgramCounterOutOfBounds, \
+    ValueTooLargeForAccumulator, ValueOutOfRangeForBits,\
+    ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
-def set_carry(self):
+def set_carry(self):  #  Tested
     """
     Set the carry bit
 
@@ -34,7 +36,7 @@ def set_carry(self):
     return self.CARRY
 
 
-def reset_carry(self):
+def reset_carry(self): #  Tested
     """
     Resets the carry bit
 
@@ -62,7 +64,7 @@ def reset_carry(self):
     return self.CARRY
 
 
-def read_complement_carry(self):
+def read_complement_carry(self): #  Tested
     """
     Reads the complement of the carry bit, but doesn't change the value
 
@@ -87,7 +89,7 @@ def read_complement_carry(self):
     return 1 if self.CARRY == 0 else 0
 
 
-def insert_register(self, register: int, value: int):
+def insert_register(self, register: int, value: int): #  Tested
     """
     Insert a value into a specific register
 
@@ -129,7 +131,7 @@ def insert_register(self, register: int, value: int):
     return value
 
 
-def read_register(self, register: int):
+def read_register(self, register: int): #  Tested
     """
     Read a specific register
 
@@ -163,7 +165,7 @@ def read_register(self, register: int):
     return self.REGISTERS[register]
 
 
-def insert_registerpair(self, registerpair: int, value: int):
+def insert_registerpair(self, registerpair: int, value: int): #  Tested
     """
     Insert a value into a specific register
 
@@ -209,7 +211,7 @@ def insert_registerpair(self, registerpair: int, value: int):
     return value
 
 
-def read_registerpair(self, registerpair: int):
+def read_registerpair(self, registerpair: int): #  Tested
     """
     Read a specific register pair
 
@@ -246,7 +248,7 @@ def read_registerpair(self, registerpair: int):
     return (hi << 4) + lo   # Bit-shift left high value and add low value
 
 
-def increment_pc(self, words: int):
+def increment_pc(self, words: int): #  Tested
     """
     Increment the Program Counter by a specific number of words
 
@@ -280,7 +282,7 @@ def increment_pc(self, words: int):
     return self.PROGRAM_COUNTER
 
 
-def inc_pc_by_page(self, pc: int):
+def inc_pc_by_page(self, pc: int): #  Tested
     """
     Retrieve the Program Counter's new value after being incremented
     by a page
@@ -317,7 +319,7 @@ def inc_pc_by_page(self, pc: int):
     return pc
 
 
-def is_end_of_page(self, address: int, word: int):
+def is_end_of_page(self, address: int, word: int): #  Tested
     """
     Determine if an instruction is located at the end of a memory page
 
@@ -357,7 +359,7 @@ def is_end_of_page(self, address: int, word: int):
     return None
 
 
-def increment_register(self, register: int):
+def increment_register(self, register: int): #  Tested
     """
     Increment the value in a register by 1
 
@@ -393,7 +395,32 @@ def increment_register(self, register: int):
     return self.REGISTERS[register]
 
 
-def write_pin10(self, value: int):
+def write_pin10(self, value: int): #  Tested
+    """
+    Write to pin 10 (reset pin)
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    value: int, mandatory
+        value for pin 10
+
+    Returns
+    -------
+    True
+        if the value is set successfully
+
+    Raises
+    ------
+    InvalidPin10Value
+
+    Notes
+    ------
+    N/A
+
+    """
     if (value == 0 or value == 1):
         self.PIN_10_SIGNAL_TEST = value
         return True
@@ -454,13 +481,50 @@ def read_from_stack(self):
 # Utility operations
 
 
-def ones_complement(self, value: str):
-    # ones = str(~ int(value))[2:].zfill(4)   # Maybe simplify with this ?
+def ones_complement(self, value: str, bits: int):  # Tested
+    """
+    Converts a decimal value into its one's compliment value
+    of a specified bit length
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    value: int: mandatory
+        decimal value to convert
+
+    bits : int, mandatory
+        number of bits required for the conversion
+
+    Returns
+    -------
+    The one's compliment binary value of the supplied decimal value.
+
+    Raises
+    ------
+    InvalidBitValue        : When a bit value of not 4,8 or 12 is specified
+    ValueOutOfRangeForBits : If the value supplied is either negative or is
+                             out of range of the number of bits requested
+
+    Notes
+    ------
+    N/A
+
+    """
+    if (bits not in [4, 8, 12]):
+        raise InvalidBitValue(' Bits: ' + str(bits))
+
+    if (value > ((2 ** bits) - 1)) or (value < 0):
+        raise ValueOutOfRangeForBits(' Value: ' + str(value) +
+                                     ' Bits: ' + str(bits))
+
     # Perform a one's complement
     # i.e. invert all the bits
-    binary = bin(value)[2:].zfill(4)
+
+    binary = bin(value)[2:].zfill(bits)
     ones = ''
-    for x in range(4):
+    for x in range(bits):
         if (binary[x] == '1'):
             ones = ones + '0'
         else:
@@ -468,13 +532,49 @@ def ones_complement(self, value: str):
     return ones
 
 
-def decimal_to_binary(self, decimal: int):
+def decimal_to_binary(self, bits: int, decimal: int): # Tested
+    """
+    Converts a decimal value into a binary value of a specified bit length
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    bits : int, mandatory
+        number of bits required for the conversion
+
+    decimal: int: mandatory
+        decimal value to convert
+
+    Returns
+    -------
+    The binary value of the supplied decimal value.
+
+    Raises
+    ------
+    InvalidBitValue        : When a bit value of not 4,8 or 12 is specified
+    ValueOutOfRangeForBits : If the value supplied is either negative or is
+                             out of range of the number of bits requested
+
+    Notes
+    ------
+    N/A
+
+    """
+    if (bits not in [4, 8, 12]):
+        raise InvalidBitValue(' Bits: ' + str(bits))
+
+    if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
+        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
+                                     ' Bits: ' + str(bits))
+
     # Convert decimal to binary
-    binary = bin(decimal)[2:].zfill(4)
+    binary = bin(decimal)[2:].zfill(bits)
     return binary
 
 
-def binary_to_decimal(self, binary: str):
+def binary_to_decimal(self, binary: str):  # Tested
     """
     Converts a string value (which must be in binary form) to
     a decimal value
@@ -486,6 +586,7 @@ def binary_to_decimal(self, binary: str):
 
     binary : str, mandatory
         a string which represents the binary value
+
     Returns
     -------
     The decimal value of the supplied binary value
@@ -499,14 +600,18 @@ def binary_to_decimal(self, binary: str):
     N/A
 
     """
-    if len(binary.replace('0', '').replace('1', '') != 0):
+    if len(binary) == 0:
+        binary = '<empty>'
+        raise NotABinaryNumber('"' + binary + '"')
+
+    if (len(binary.replace('0', '').replace('1', '')) != 0):
         raise NotABinaryNumber('"' + binary + '"')
 
     # Convert binary to decimal
     return int(binary, 2)
 
 
-def flip_wpm_counter(self):
+def flip_wpm_counter(self): # Tested
     """
     Two WPM instructions must always appear in close succession; that is,
     each time one WPM instruction references a half byte of program RAM
@@ -542,7 +647,7 @@ def flip_wpm_counter(self):
     return self.WPM_COUNTER
 
 
-def check_overflow(self):
+def check_overflow(self): #  Tested
     """
     Check for an overflow is detected
     i.e. the result is more than a 4-bit number (MAX_4_BITS)
@@ -580,7 +685,7 @@ def check_overflow(self):
     return self.ACCUMULATOR, self.CARRY
 
 
-def set_accumulator(self, value: int):
+def set_accumulator(self, value: int): #  Tested
     """
     Insert a value into the Accumulator
 
