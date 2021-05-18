@@ -4,8 +4,9 @@ from .exceptions import InvalidBitValue, \
     InvalidEndOfPage, InvalidPin10Value,\
     InvalidRegister, InvalidRegisterPair,  \
     NotABinaryNumber, ProgramCounterOutOfBounds, \
-    ValueTooLargeForAccumulator, ValueOutOfRangeForBits,\
-    ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
+    ValueOutOfRangeForBits, \
+    ValueOutOfRangeForStack, ValueTooLargeForAccumulator, \
+    ValueTooLargeForRegister, ValueTooLargeForRegisterPair # noqa
 
 
 def set_carry(self):  # Tested
@@ -428,12 +429,43 @@ def write_pin10(self, value: int):  # Tested
         raise InvalidPin10Value('PIN 10 attempted to be set to ' + str(value))
 
 
-def write_ram_status(self, char: int):
+def write_ram_status(self, char: int):  # Tested
+    """
+    Write to a RAM status character
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    char: int, mandatory
+        specified status character
+
+    Returns
+    -------
+    True
+        if the value is set successfully
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    No error checking is done in this function
+    All parameters cannot be out of range, since the functions to
+    place them in various registers etc all have range checking built in.
+
+    Eventually - there will be error checking here
+
+    """
     value = self.read_accumulator()
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTERS[crb]
+
     chip = int(self.decimal_to_binary(8, address)[:2], 2)
     register = int(self.decimal_to_binary(8, address)[2:4], 2)
+
     self.STATUS_CHARACTERS[crb][chip][register][char] = value
     return True
 
@@ -451,6 +483,9 @@ def write_to_stack(self, value: int):
     #  +------------+         +------------+         +------------+
     #
     # Note that after 3 writes, address "a" is lost
+
+    if (value < 0 or value > 4095):
+        raise ValueOutOfRangeforStack(' Value: ' + str(value))
 
     self.STACK[self.STACK_POINTER] = value
     self.STACK_POINTER = self.STACK_POINTER - 1

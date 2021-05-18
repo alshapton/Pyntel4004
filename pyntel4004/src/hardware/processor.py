@@ -20,7 +20,8 @@ class processor:
         insert_register, insert_registerpair, is_end_of_page, \
         ones_complement, reset_carry, read_complement_carry, \
         read_from_stack, read_register, read_registerpair, \
-        set_accumulator, set_carry, write_pin10, write_to_stack
+        set_accumulator, set_carry, write_pin10, write_ram_status, \
+        write_to_stack
 
     # Operations to read the processor components
     # Some used internally,

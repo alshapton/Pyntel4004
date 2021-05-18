@@ -58,3 +58,8 @@ class ValueTooLargeForRegister(Exception):
 class ValueTooLargeForRegisterPair(Exception):
     """Raised when the value for a register pair is too large"""
     pass
+
+
+class ValueOutOfRangeForStack(Exception):
+    """Raised when the value for the Stack is out of Range"""
+    pass

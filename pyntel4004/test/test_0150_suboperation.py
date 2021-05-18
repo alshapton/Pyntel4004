@@ -11,11 +11,11 @@ sys.path.insert(1, '../src')
 import hardware.suboperation # noqa
 from hardware.processor import processor # noqa
 from hardware.exceptions import InvalidBitValue, InvalidRegister, \
-        InvalidRegisterPair, \
+        InvalidRegisterPair,\
         NotABinaryNumber, ProgramCounterOutOfBounds, \
-        InvalidEndOfPage, InvalidPin10Value, ValueTooLargeForAccumulator, \
-        ValueOutOfRangeForBits, ValueTooLargeForRegister, \
-        ValueTooLargeForRegisterPair # noqa
+        InvalidEndOfPage, InvalidPin10Value, ValueTooLargeForAccumulator,\
+        ValueOutOfRangeForBits, ValueOutOfRangeForStack,\
+        ValueTooLargeForRegister, ValueTooLargeForRegisterPair # noqa
 
 
 ##############################################################################
@@ -789,3 +789,165 @@ def test_suboperation_test_ones_complement_scenario2(value):
         assert (str(e.value) == 'Value: ' + str(value[0] +
                                                 'Bits: ' + str(value[1])))
         assert (e.type == ValueOutOfRangeForBits)
+
+
+##############################################################################
+#                Check Insert RAM Status Character                           #
+##############################################################################
+@pytest.mark.parametrize("value", [[12,0], [12,1], [12,2], [12,3]])  # noqa
+def test_suboperation_test_insert_ram_status_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Simulate conditions at end of operation in base chip
+
+    """
+        Hi 2 bits of address are 1 of 4 data RAM chips
+        Nxt 2 bits of address are 1 of 4 registers in the above chip
+        Lo 4 bits are not relevant
+
+        e.g.   11110000b =240
+
+                Chip 3, Register 3
+    """
+    address = 240
+    chip_base.set_accumulator(value[0])
+    chip_base.CURRENT_RAM_BANK = 4
+    chip_base.COMMAND_REGISTERS[chip_base.CURRENT_RAM_BANK] = address
+    chip_base.STATUS_CHARACTERS[4][3][3][value[1]] = value[0]
+
+    chip_test.set_accumulator(value[0])
+    chip_test.CURRENT_RAM_BANK = 4
+    chip_test.COMMAND_REGISTERS[chip_test.CURRENT_RAM_BANK] = address
+
+    # Attempt to write to the RAM status character
+
+    processor.write_ram_status(chip_test, value[1])
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    #
+    assert (chip_test.STATUS_CHARACTERS[4][3][3][value[1]] == value[0])
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check Write to Stack                                        #
+##############################################################################
+@pytest.mark.parametrize("value", [-1, -100, -4096, 4096, 4098])  # noqa
+def test_suboperation_test_write_to_stackscenario1(value):
+
+    chip_test = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use binary number larger than the bits will allow
+    with pytest.raises(Exception) as e:
+        assert (processor.write_to_stack(chip_test, value[0]))
+        assert (str(e.value) == 'Value: ' + str(value[0]))
+        assert (e.type == ValueOutOfRangeForStack)
+
+
+def test_suboperation_test_write_to_stack_scenario2():
+    chip_test = processor()
+    chip_base = processor()
+
+    # Scenario 2.0
+
+    # Check that stack pointer is initialized and no content on the stack
+
+    assert (chip_test.STACK_POINTER == 2)
+    assert (chip_test.STACK[2] == 0)
+    assert (chip_test.STACK[1] == 0)
+    assert (chip_test.STACK[0] == 0)
+
+    # Scenario 2.1
+
+    # Attempt to write to an empty stack
+
+    # Simulate conditions at end of operation in base chip
+    chip_base.STACK_POINTER = 1
+    chip_base.STACK[2] = 14
+
+    processor.write_to_stack(chip_test, 14)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    #
+    assert (chip_test.STACK_POINTER == 1)
+    assert (chip_test.STACK[2] == 14)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+    # Scenario 2.2
+
+    # Attempt to write to a stack with one position full
+
+    # Simulate conditions at end of operation in base chip
+    chip_base.STACK_POINTER = 0
+    chip_base.STACK[2] = 14
+    chip_base.STACK[1] = 22
+
+    processor.write_to_stack(chip_test, 22)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    #
+    assert (chip_test.STACK_POINTER == 0)
+    assert (chip_test.STACK[2] == 14)
+    assert (chip_test.STACK[1] == 22)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+    # Scenario 2.2
+
+    # Attempt to write to a stack with two positions full
+
+    # Simulate conditions at end of operation in base chip
+    chip_base.STACK_POINTER = 2
+    chip_base.STACK[2] = 14
+    chip_base.STACK[1] = 22
+    chip_base.STACK[0] = 33
+
+    processor.write_to_stack(chip_test, 33)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    #
+    assert (chip_test.STACK_POINTER == 2)
+    assert (chip_test.STACK[2] == 14)
+    assert (chip_test.STACK[1] == 22)
+    assert (chip_test.STACK[0] == 33)
+
+    # Scenario 2.3
+
+    # Attempt to write to a full stack
+    # This will result in a pointer wrap-around and a value lost
+
+    # Simulate conditions at end of operation in base chip
+    chip_base.STACK_POINTER = 1
+    chip_base.STACK[2] = 44
+    chip_base.STACK[1] = 22
+    chip_base.STACK[0] = 33
+
+    processor.write_to_stack(chip_test, 44)
+
+    # Make assertions that the base chip is now at the same state as
+    # the test chip which has been operated on by the operation under test.
+    #
+    assert (chip_test.STACK_POINTER == 1)
+    assert (chip_test.STACK[2] == 44)
+    assert (chip_test.STACK[1] == 22)
+    assert (chip_test.STACK[0] == 33)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
