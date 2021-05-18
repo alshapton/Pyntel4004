@@ -63,3 +63,19 @@ class ValueTooLargeForRegisterPair(Exception):
 class ValueOutOfRangeForStack(Exception):
     """Raised when the value for the Stack is out of Range"""
     pass
+
+
+class ValueOutOfRangeForBits(Exception):
+    """Raised when the value to be converted from decimal to binary
+    is too large for the number of bits supplied """
+    pass
+
+
+class ValueTooLargeForRegister(Exception):
+    """Raised when the value for a register is too large"""
+    pass
+
+
+class ValueTooLargeForRegisterPair(Exception):
+    """Raised when the value for a register pair is too large"""
+    pass
