@@ -485,7 +485,7 @@ def write_to_stack(self, value: int):
     # Note that after 3 writes, address "a" is lost
 
     if (value < 0 or value > 4095):
-        raise ValueOutOfRangeforStack(' Value: ' + str(value))
+        raise ValueOutOfRangeForStack(' Value: ' + str(value))
 
     self.STACK[self.STACK_POINTER] = value
     self.STACK_POINTER = self.STACK_POINTER - 1
