@@ -24,6 +24,7 @@ A Python software implementation of the Intel 4004 processor.
 
 ## Status
 
+18-MAY-2021:    Implementing full test suite
 21-APR-2021:    Instruction Set functionally complete
                 Entering Testing Phase
 
