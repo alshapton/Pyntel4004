@@ -951,3 +951,59 @@ def test_suboperation_test_write_to_stack_scenario2():
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
 
+
+##############################################################################
+#                Check Read from Stack                                       #
+##############################################################################
+def test_suboperation_test_read_from_stack_scenarios():
+    chip_test = processor()
+    chip_base = processor()
+
+    # Initialize the stack for further testing
+
+    processor.write_to_stack(chip_test, 11)
+    processor.write_to_stack(chip_test, 22)
+    processor.write_to_stack(chip_test, 33)
+
+    processor.write_to_stack(chip_base, 11)
+    processor.write_to_stack(chip_base, 22)
+    processor.write_to_stack(chip_base, 33)
+
+    # Assert that the stack is in a position that is known
+    assert (chip_test.STACK_POINTER == 2)
+    assert (chip_test.STACK[2] == 11)
+    assert (chip_test.STACK[1] == 22)
+    assert (chip_test.STACK[0] == 33)
+
+    # Scenario (a)
+
+    processor.read_from_stack(chip_base)
+    assert(processor.read_from_stack(chip_test) == 33)
+    assert(chip_test.STACK_POINTER == 0)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+    # Scenario (b)
+    processor.read_from_stack(chip_base)
+    assert(processor.read_from_stack(chip_test) == 22)
+    assert(chip_test.STACK_POINTER == 1)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+    # Scenario (c)
+    processor.read_from_stack(chip_base)
+    assert(processor.read_from_stack(chip_test) == 11)
+    assert(chip_test.STACK_POINTER == 2)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+    # Scenario (d) (Wrap-around)
+    processor.read_from_stack(chip_base)
+    assert(processor.read_from_stack(chip_test) == 33)
+    assert(chip_test.STACK_POINTER == 0)
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))

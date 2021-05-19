@@ -4,12 +4,12 @@ from .exceptions import InvalidBitValue, \
     InvalidEndOfPage, InvalidPin10Value,\
     InvalidRegister, InvalidRegisterPair,  \
     NotABinaryNumber, ProgramCounterOutOfBounds, \
-    ValueOutOfRangeForBits, \
-    ValueOutOfRangeForStack, ValueTooLargeForAccumulator, \
-    ValueTooLargeForRegister, ValueTooLargeForRegisterPair # noqa
+    ValueOutOfRangeForBits, ValueOutOfRangeForStack, \
+    ValueTooLargeForAccumulator, ValueTooLargeForRegister, \
+    ValueTooLargeForRegisterPair # noqa
 
 
-def set_carry(self):  # Tested
+def set_carry(self):
     """
     Set the carry bit
 
@@ -37,7 +37,7 @@ def set_carry(self):  # Tested
     return self.CARRY
 
 
-def reset_carry(self):  # Tested
+def reset_carry(self):
     """
     Resets the carry bit
 
@@ -65,7 +65,7 @@ def reset_carry(self):  # Tested
     return self.CARRY
 
 
-def read_complement_carry(self):  # Tested
+def read_complement_carry(self):
     """
     Reads the complement of the carry bit, but doesn't change the value
 
@@ -90,7 +90,7 @@ def read_complement_carry(self):  # Tested
     return 1 if self.CARRY == 0 else 0
 
 
-def insert_register(self, register: int, value: int):  # Tested
+def insert_register(self, register: int, value: int):
     """
     Insert a value into a specific register
 
@@ -132,7 +132,7 @@ def insert_register(self, register: int, value: int):  # Tested
     return value
 
 
-def read_register(self, register: int):  # Tested
+def read_register(self, register: int):
     """
     Read a specific register
 
@@ -166,7 +166,7 @@ def read_register(self, register: int):  # Tested
     return self.REGISTERS[register]
 
 
-def insert_registerpair(self, registerpair: int, value: int):  # Tested
+def insert_registerpair(self, registerpair: int, value: int):
     """
     Insert a value into a specific register
 
@@ -212,7 +212,7 @@ def insert_registerpair(self, registerpair: int, value: int):  # Tested
     return value
 
 
-def read_registerpair(self, registerpair: int):  # Tested
+def read_registerpair(self, registerpair: int):
     """
     Read a specific register pair
 
@@ -249,7 +249,7 @@ def read_registerpair(self, registerpair: int):  # Tested
     return (hi << 4) + lo   # Bit-shift left high value and add low value
 
 
-def increment_pc(self, words: int):  # Tested
+def increment_pc(self, words: int):
     """
     Increment the Program Counter by a specific number of words
 
@@ -283,7 +283,7 @@ def increment_pc(self, words: int):  # Tested
     return self.PROGRAM_COUNTER
 
 
-def inc_pc_by_page(self, pc: int):  # Tested
+def inc_pc_by_page(self, pc: int):
     """
     Retrieve the Program Counter's new value after being incremented
     by a page
@@ -320,7 +320,7 @@ def inc_pc_by_page(self, pc: int):  # Tested
     return pc
 
 
-def is_end_of_page(self, address: int, word: int):  # Tested
+def is_end_of_page(self, address: int, word: int):
     """
     Determine if an instruction is located at the end of a memory page
 
@@ -360,7 +360,7 @@ def is_end_of_page(self, address: int, word: int):  # Tested
     return None
 
 
-def increment_register(self, register: int):  # Tested
+def increment_register(self, register: int):
     """
     Increment the value in a register by 1
 
@@ -396,7 +396,7 @@ def increment_register(self, register: int):  # Tested
     return self.REGISTERS[register]
 
 
-def write_pin10(self, value: int):  # Tested
+def write_pin10(self, value: int):
     """
     Write to pin 10 (reset pin)
 
@@ -429,7 +429,7 @@ def write_pin10(self, value: int):  # Tested
         raise InvalidPin10Value('PIN 10 attempted to be set to ' + str(value))
 
 
-def write_ram_status(self, char: int):  # Tested
+def write_ram_status(self, char: int):
     """
     Write to a RAM status character
 
@@ -473,16 +473,39 @@ def write_ram_status(self, char: int):  # Tested
 
 
 def write_to_stack(self, value: int):
-    # Note that the stack pointer begins at 2, and then moves toward 0
-    #
-    #  After 2 writes         After 3 writes         After 3 writes
-    #  +------------+         +------------+         +------------+
-    #  |     a      |         |      a     |  <--SP  |      d     |
-    #  |     b      |         |      b     |         |      b     |  <---SP
-    #  |            |  <--SP  |      c     |         |      c     |
-    #  +------------+         +------------+         +------------+
-    #
-    # Note that after 3 writes, address "a" is lost
+    """
+    Write to the stack
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    value: int, mandatory
+        value to write to the stack
+
+    Returns
+    -------
+    True
+        if the value is written to the stack successfully
+
+    Raises
+    ------
+    ValueOutOfRangeForStack
+
+    Notes
+    ------
+    The stack pointer begins at 2, and then moves toward 0
+
+      After 2 writes         After 3 writes         After 3 writes
+      +------------+         +------------+         +------------+
+      |     a      |         |      a     |  <--SP  |      d     |
+      |     b      |         |      b     |         |      b     |  <---SP
+      |            |  <--SP  |      c     |         |      c     |
+      +------------+         +------------+         +------------+
+
+    After 3 writes, address "a" is lost
+    """
 
     if (value < 0 or value > 4095):
         raise ValueOutOfRangeForStack(' Value: ' + str(value))
@@ -491,20 +514,39 @@ def write_to_stack(self, value: int):
     self.STACK_POINTER = self.STACK_POINTER - 1
     if (self.STACK_POINTER == -1):
         self.STACK_POINTER = 2
-    return None
+    return True
 
 
 def read_from_stack(self):
-    # Note that the stack pointer begins at 2, and then moves toward 0
-    #
-    #    First Read             Second Read          Third Read
-    #    +------------+        +------------+        +------------+
-    #    |     d      |  <--SP |      d     |        |      d     |
-    #    |     b      |        |      b     |        |      b     |  <---SP
-    #    |     c      |        |      c     |  <--SP |      c     |
-    #    +------------+        +------------+        +------------+
-    #
+    """
+    Read from the stack
 
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    value
+        the 12-bit number read from the stack
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    The stack pointer begins at 2, and then moves toward 0
+
+        First Read             Second Read          Third Read
+        +------------+        +------------+        +------------+
+        |     d      |  <--SP |      d     |        |      d     |
+        |     b      |        |      b     |        |      b     |  <---SP
+        |     c      |        |      c     |  <--SP |      c     |
+        +------------+        +------------+        +------------+
+
+    """
     if (self.STACK_POINTER == 2):
         self.STACK_POINTER = 0
     else:
@@ -516,7 +558,7 @@ def read_from_stack(self):
 # Utility operations
 
 
-def ones_complement(self, value: str, bits: int):  # Tested
+def ones_complement(self, value: str, bits: int):
     """
     Converts a decimal value into its one's compliment value
     of a specified bit length
@@ -567,7 +609,7 @@ def ones_complement(self, value: str, bits: int):  # Tested
     return ones
 
 
-def decimal_to_binary(self, bits: int, decimal: int):  # Tested
+def decimal_to_binary(self, bits: int, decimal: int):
     """
     Converts a decimal value into a binary value of a specified bit length
 
@@ -609,7 +651,7 @@ def decimal_to_binary(self, bits: int, decimal: int):  # Tested
     return binary
 
 
-def binary_to_decimal(self, binary: str):  # Tested
+def binary_to_decimal(self, binary: str):
     """
     Converts a string value (which must be in binary form) to
     a decimal value
@@ -646,7 +688,7 @@ def binary_to_decimal(self, binary: str):  # Tested
     return int(binary, 2)
 
 
-def flip_wpm_counter(self):  # Tested
+def flip_wpm_counter(self):
     """
     Two WPM instructions must always appear in close succession; that is,
     each time one WPM instruction references a half byte of program RAM
@@ -682,7 +724,7 @@ def flip_wpm_counter(self):  # Tested
     return self.WPM_COUNTER
 
 
-def check_overflow(self):  # Tested
+def check_overflow(self):
     """
     Check for an overflow is detected
     i.e. the result is more than a 4-bit number (MAX_4_BITS)
@@ -720,7 +762,7 @@ def check_overflow(self):  # Tested
     return self.ACCUMULATOR, self.CARRY
 
 
-def set_accumulator(self, value: int):  # Tested
+def set_accumulator(self, value: int):
     """
     Insert a value into the Accumulator
 
