@@ -10,11 +10,12 @@ sys.path.insert(1, '../src')
 
 import hardware.suboperation # noqa
 from hardware.processor import processor # noqa
-from hardware.exceptions import InvalidBitValue, InvalidRegister, \
-        InvalidRegisterPair,\
+from hardware.exceptions import IncompatibleChunkBit, InvalidBitValue, \
+        InvalidChunkValue, InvalidEndOfPage, InvalidPin10Value, \
+        InvalidRegister, InvalidRegisterPair,\
         NotABinaryNumber, ProgramCounterOutOfBounds, \
-        InvalidEndOfPage, InvalidPin10Value, ValueTooLargeForAccumulator,\
         ValueOutOfRangeForBits, ValueOutOfRangeForStack,\
+        ValueTooLargeForAccumulator, \
         ValueTooLargeForRegister, ValueTooLargeForRegisterPair # noqa
 
 
@@ -1007,3 +1008,126 @@ def test_suboperation_test_read_from_stack_scenarios():
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+##############################################################################
+#                Check Convert Decimal to n Bit Slices                       #
+##############################################################################
+@pytest.mark.parametrize("value", [[8, 4, 200, 'd', 12, 8],
+                                   [8, 4, 255, 'd', 15, 15],
+                                   [8, 4, 200, 'b', '1100', '1000'],
+                                   [8, 4, 255, 'b', '1111', '1111'],
+                                   [8, 4, 14, 'd', 0, 14],
+                                   [8, 4, 14, 'b', '0000', '1110']
+                                   ])  # noqa
+def test_suboperation_convert_decimal_to_n_bit_slices_scenario1(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Attempt to convert decimal to binary or decimal chunks
+    # (chip status should not change)
+    chunks = processor.convert_decimal_to_n_bit_slices(chip_test, value[0],
+                value[1], value[2], value[3]) # noqa
+    assert (chunks == [value[4], value[5]])
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+@pytest.mark.parametrize("value", [[12, 4, 200, 'd', 0, 12, 8],
+                                   [12, 4, 255, 'd', 0, 15, 15],
+                                   [12, 4, 200, 'b', '0000', '1100', '1000'],
+                                   [12, 4, 255, 'b', '0000', '1111', '1111'],
+                                   [12, 4, 14, 'd', 0, 0, 14],
+                                   [12, 4, 14, 'b', '0000', '0000', '1110'],
+                                   [12, 4, 4095, 'b', '1111', '1111', '1111'],
+                                   [12, 4, 4095, 'd', 15, 15, 15],
+                                   [12, 4, 2003, 'b', '0111', '1101', '0011'],
+                                   [12, 4, 2003, 'd', 7, 13, 3],
+                                   ])  # noqa
+def test_suboperation_convert_decimal_to_n_bit_slices_scenario2(value):
+    chip_test = processor()
+    chip_base = processor()
+
+    # Attempt to convert decimal to binary or decimal chunks
+    # (chip status should not change)
+    chunks = processor.convert_decimal_to_n_bit_slices(chip_test, value[0],
+                value[1], value[2], value[3]) # noqa
+    assert (chunks == [value[4], value[5], value[6]])
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Pickling each chip and comparing will show equality or not.
+    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+
+
+def test_suboperation_convert_decimal_to_n_bit_slices_scenario3():
+
+    chip_test = processor()
+
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use an invalid bit value (1)
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 3, 1, 12, 'd')) # noqa
+        assert (str(e.value) == 'Bits: 3')
+        assert (e.type == InvalidBitValue)
+
+    # attempting to use an invalid bit value (2)
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 0, 1, 12, 'd')) # noqa
+        assert (str(e.value) == 'Bits: 0')
+        assert (e.type == InvalidBitValue)
+
+    # attempting to use an invalid chunk value (1)
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 12, 1, 12, 'd')) # noqa
+        assert (str(e.value) == 'Chunk: 1')
+        assert (e.type == InvalidChunkValue)
+
+
+def test_suboperation_convert_decimal_to_n_bit_slices_scenario4():
+    # attempting to use an invalid bit value (2)
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 12, 0, 12, 'd')) # noqa
+        assert (str(e.value) == 'Chunk: 0')
+        assert (e.type == InvalidChunkValue)
+
+    # attempting to use an incompatible bit/chunk combination (1)
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 12, 8, 12, 'd')) # noqa
+        assert (str(e.value) == 'Bits: 12 Chunk: 8')
+        assert (e.type == IncompatibleChunkBit)
+
+    # attempting to use an incompatible bit/chunk combination (2)
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 4, 8, 12, 'd')) # noqa
+        assert (str(e.value) == 'Bits: 4 Chunk: 8')
+        assert (e.type == IncompatibleChunkBit)
+
+    # attempting to use an out of range value (1)
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 12, 4, -1, 'd')) # noqa
+        assert (str(e.value) == 'Value: -1 Bits: 12')
+        assert (e.type == ValueOutOfRangeForBits)
+
+    # attempting to use an out of range value (2)
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 8, 8, 257, 'd')) # noqa
+        assert (str(e.value) == 'Value: 12 Bits: 8')
+        assert (e.type == ValueOutOfRangeForBits)
+
+    # attempting to use a large value
+    with pytest.raises(Exception) as e:
+        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 8, 8, 8192, 'd')) # noqa
+        assert (str(e.value) == 'Value: 8192 Bits: 8')
+        assert (e.type == ValueOutOfRangeForBits)
+

@@ -1,6 +1,18 @@
+class IncompatibleChunkBit(Exception):
+    """Raised when it a bit value is not a multiple of the chunk value
+    when attempting to convert from a decimal number to chunked numbers """
+    pass
+
+
 class InvalidBitValue(Exception):
     """Raised when it a bit value of other than 4,8 or 12 is used to convert
     a decimal number to a binary number """
+    pass
+
+
+class InvalidChunkValue(Exception):
+    """Raised when it a chunk value of other than 4,8 or 12 is used to convert
+    a binary number into chunks """
     pass
 
 
@@ -62,20 +74,4 @@ class ValueTooLargeForRegisterPair(Exception):
 
 class ValueOutOfRangeForStack(Exception):
     """Raised when the value for the Stack is out of Range"""
-    pass
-
-
-class ValueOutOfRangeForBits(Exception):
-    """Raised when the value to be converted from decimal to binary
-    is too large for the number of bits supplied """
-    pass
-
-
-class ValueTooLargeForRegister(Exception):
-    """Raised when the value for a register is too large"""
-    pass
-
-
-class ValueTooLargeForRegisterPair(Exception):
-    """Raised when the value for a register pair is too large"""
     pass

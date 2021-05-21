@@ -1,5 +1,7 @@
 # Using pytest
 # Test the initialisation of an instance of an i4004(processor)
+# Using the functions from the reset.py module (via processor.py)
+# Also testing the functions of the reads.py module (via processor.py)
 
 import sys
 import pytest

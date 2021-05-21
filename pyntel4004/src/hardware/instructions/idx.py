@@ -31,15 +31,14 @@ def fin(self, registerpair: int):
     """
     Name:           Fetch indirect from ROM
     Function:       The 8 bit content of the 0 index register
-                    pair (0000) (0001)
-                    is sent out as an address in the same page
-                    where the FIN instruction is located. The 8 bit
-                    word at that location is loaded into the designated
-                    index register pair. The program counter is unaffected;
-                    after FIN has been executed the next instruction in
-                    sequence will be addressed. The content of the 0 index
-                    register pair is unaltered unless index register 0
-                    was designated.
+                    pair (0000) (0001) is sent out as an address
+                    in the same page where the FIN instruction is located.
+                    The 8 bit word at that location is loaded into the
+                    designated index register pair. The program counter
+                    is unaffected; after FIN has been executed the next
+                    instruction in sequence will be addressed. The content
+                    of the 0 index register pair is unaltered unless
+                    index register 0 was designated.
     Syntax:         FIN
     Assembled:      0011 RRRO
     Symbolic:       (PH) (0000) (0001) --> ROM address

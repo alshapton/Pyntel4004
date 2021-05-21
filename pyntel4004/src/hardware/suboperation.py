@@ -1,7 +1,8 @@
 #  Sub-operation methods
 
-from .exceptions import InvalidBitValue, \
-    InvalidEndOfPage, InvalidPin10Value,\
+from .exceptions import IncompatibleChunkBit, \
+    InvalidBitValue, InvalidChunkValue, \
+    InvalidEndOfPage, InvalidPin10Value, \
     InvalidRegister, InvalidRegisterPair,  \
     NotABinaryNumber, ProgramCounterOutOfBounds, \
     ValueOutOfRangeForBits, ValueOutOfRangeForStack, \
@@ -451,7 +452,7 @@ def write_ram_status(self, char: int):
     N/A
 
     Notes
-    ------
+    -----
     No error checking is done in this function
     All parameters cannot be out of range, since the functions to
     place them in various registers etc all have range checking built in.
@@ -607,6 +608,71 @@ def ones_complement(self, value: str, bits: int):
         else:
             ones = ones + '1'
     return ones
+
+
+def convert_decimal_to_n_bit_slices(self, bits: int, chunk: int, decimal: int, result: str='b'): # noqa
+    """
+    Converts a decimal value into several binary or decimal values of specific
+    bit lengths
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    bits : int, mandatory
+        number of bits of the source data
+
+    chunk : int, mandatory
+        number of bits required per chunk
+
+    decimal: int: mandatory
+        decimal value to convert
+
+    result: str: mandatory
+        'd' will generate a decimal output
+        'b' will generate a binary output
+
+    Returns
+    -------
+    The binary value of the supplied decimal value.
+
+    Raises
+    ------
+    IncompatibleChunkBit   : When the chunks do not fit exactly within the bits
+    InvalidBitValue        : When a bit value of not 4,8 or 12 is specified
+    InvalidChunkValue      : When a chunk value of not 4,8 or 12 is specified
+    ValueOutOfRangeForBits : If the value supplied is either negative or is
+                             out of range of the number of bits requested
+
+    Notes
+    ------
+    N/A
+
+    """
+    if (bits not in [4, 8, 12]):
+        raise InvalidBitValue(' Bits: ' + str(bits))
+
+    if (chunk not in [4, 8, 12]):
+        raise InvalidChunkValue(' Chunk: ' + str(chunk))
+
+    if (bits % chunk != 0):
+        raise IncompatibleChunkBit(' Bits: ' + str(bits) +
+                                   ' Chunk: ' + str(chunk))
+
+    if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
+        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
+                                     ' Bits: ' + str(bits))
+
+    binary = decimal_to_binary(self, bits, decimal)
+    chunks = [binary[i:i+chunk] for i in range(0, len(binary), chunk)]
+    if (result != 'b'):
+        decimals = []
+        for element in chunks:
+            decimals.append(self.binary_to_decimal(element))
+            print(decimals)
+        chunks = decimals
+    return chunks
 
 
 def decimal_to_binary(self, bits: int, decimal: int):

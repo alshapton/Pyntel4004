@@ -58,7 +58,7 @@ class instructions:
                 {"opcode": 53, "mnemonic": "jin(2)", "exe": 10.8, "bits": ["0011", "0101"], "words": 1},
                 {"opcode": 54, "mnemonic": "fin(3)", "exe": 21.6, "bits": ["0011", "0110"], "words": 1},
                 {"opcode": 55, "mnemonic": "jin(3)", "exe": 10.8, "bits": ["0011", "0111"], "words": 1},
-                {"opcode": 56, "mnemonic": "fim(4)", "exe": 21.6, "bits": ["0011", "1000"], "words": 1},
+                {"opcode": 56, "mnemonic": "fin(4)", "exe": 21.6, "bits": ["0011", "1000"], "words": 1},
                 {"opcode": 57, "mnemonic": "jin(4)", "exe": 10.8, "bits": ["0011", "1001"], "words": 1},
                 {"opcode": 58, "mnemonic": "fin(5)", "exe": 21.6, "bits": ["0011", "1010"], "words": 1},
                 {"opcode": 59, "mnemonic": "jin(5)", "exe": 10.8, "bits": ["0011", "1011"], "words": 1},
