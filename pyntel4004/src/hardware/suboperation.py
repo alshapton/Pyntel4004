@@ -670,7 +670,6 @@ def convert_decimal_to_n_bit_slices(self, bits: int, chunk: int, decimal: int, r
         decimals = []
         for element in chunks:
             decimals.append(self.binary_to_decimal(element))
-            print(decimals)
         chunks = decimals
     return chunks
 
