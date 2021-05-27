@@ -1130,4 +1130,3 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario4():
         assert (processor.convert_decimal_to_n_bit_slices(chip_test, 8, 8, 8192, 'd')) # noqa
         assert (str(e.value) == 'Value: 8192 Bits: 8')
         assert (e.type == ValueOutOfRangeForBits)
-
