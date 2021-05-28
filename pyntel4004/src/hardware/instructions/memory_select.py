@@ -10,8 +10,12 @@
 #                                 |__/                                   #
 ##########################################################################
 
+"""
+    Commands:   DCL -   DESIGNATE COMMAND LINE
+                SRC -   SEND REGISTER CONTROL
+"""
 
-from src.hardware.exceptions import InvalidRamBank
+from src.hardware.exceptions import InvalidRamBank, InvalidRegisterPair
 
 
 def dcl(self):
@@ -51,3 +55,38 @@ def dcl(self):
     self.CURRENT_RAM_BANK = ACC
     self.increment_pc(1)
     return self.CURRENT_RAM_BANK
+
+
+def src(self, registerpair: int):
+    """
+    Name:           Send register control
+    Function:       The 8 bit content of the designated index register pair
+                    is sent to the RAM address register at X2 and X3.
+                    A subsequent read, write, or I/O operation of the RAM will
+                    utilize this address. Specifically, the first 2 bits of the
+                    address designate a RAM chip; the second 2 bits designate
+                    1 out of 4 registers within the chip;
+                    the last 4 bits designate 1 out of 16 4-bit main memory
+                    characters within the register.
+
+                    This command is also used to designate a ROM for a
+                    subsequent ROM I/O port operation. The first 4 bits
+                    designate the ROM chip number to be selected. The address
+                    in ROM or RAM is not cleared until the next SRC
+                    instruction is executed.
+                    The 8 bit content of the index register is unaffected.
+    Syntax:         SRC
+    Assembled:      0010 RRR1
+    Symbolic:       (RRRO) --> DB (X2)
+                    (RRR1) --> DB (X3)
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec..
+    Side-effects:   Not Applicable
+    """
+
+    if (registerpair > 7):
+        raise InvalidRegisterPair('Register pair : ' + str(registerpair))
+
+    self.increment_pc(1)
+    address = self.read_registerpair(registerpair)
+    self.COMMAND_REGISTER = address
+    return None

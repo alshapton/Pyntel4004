@@ -8,6 +8,11 @@
 #                                                         #
 ###########################################################
 
+"""
+    Commands:   INC -   INCREMENT REGISTER
+                FIN -   FETCH INDIRECT
+"""
+
 
 def inc(self, register: int):
     """
