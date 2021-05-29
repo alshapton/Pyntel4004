@@ -66,8 +66,8 @@ def iac(self):
     """
 
     self.ACCUMULATOR = self.ACCUMULATOR + 1
-    if (self.ACCUMULATOR > self.MAX_4_BITS):
-        self.ACCUMULATOR = self.MAX_4_BITS - self.ACCUMULATOR
+    if (self.ACCUMULATOR == self.MAX_4_BITS + 1):
+        self.ACCUMULATOR = 0
         self.set_carry()
     else:
         self.reset_carry()
