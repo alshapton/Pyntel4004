@@ -106,7 +106,8 @@ def cma(self):
     Side-effects:   Not Applicable
     """
 
-    self.ACCUMULATOR = self.ones_complement(self.ACCUMULATOR, 4)
+    ONES_ACC = int(self.ones_complement(self.ACCUMULATOR, 4), 2)
+    self.ACCUMULATOR = ONES_ACC
     self.increment_pc(1)
     return self.ACCUMULATOR
 
