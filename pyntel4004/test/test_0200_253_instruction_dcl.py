@@ -1,5 +1,5 @@
 # Using pytest
-# Test the INC instructions of an instance of an i4004(processor)
+# Test the DCL instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
