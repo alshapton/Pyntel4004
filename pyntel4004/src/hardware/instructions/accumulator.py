@@ -181,7 +181,7 @@ def tcc(self):
     Assembled:      1111 0111
     Symbolic:       0 --> ACC, (CY) --> a0, 0 --> CY
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   The carry bit will be set to the 0.
+    Side-effects:   The carry bit will be reset..
     """
 
     self.set_accumulator(0)
@@ -313,6 +313,7 @@ def kbp(self):
                         1111	---->	1111    Error
     """
     ACC = self.read_accumulator()
+    self.increment_pc(1)
     if (ACC == 0
         or ACC == 1
             or ACC == 2):
@@ -328,5 +329,4 @@ def kbp(self):
 
     # Error
     self.set_accumulator(15)
-    self.increment_pc(1)
     return self.read_accumulator()
