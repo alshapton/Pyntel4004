@@ -47,6 +47,7 @@ class processor:
     RAM_BANK_SIZE = 256         # Size in 4-bit addresses of a Data RAM Bank
     RAM_CHIP_SIZE = 64          # Size in 4-bit addresses of a single RAM chip
     RAM_REGISTER_SIZE = 16      # Number of 4-bit registers in a RAM chip
+    MSB = 8                     # Most significant bit of a 4 bit register
     NO_DRB = 8                  # Number of Data RAM Banks (0-7)
     NO_COMMAND_REGISTERS = 8    # Number of command registers
     NO_STATUS_REGISTERS = 4     # Number of Status registers per memory chip

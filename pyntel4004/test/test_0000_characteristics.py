@@ -74,4 +74,8 @@ def test_init_ram_without_read():
     assert(sum(chip.RAM) == 0)
 
 
+def test_init_MSB():
+    assert(chip.MSB == 8)
+
+
 chip = processor()
