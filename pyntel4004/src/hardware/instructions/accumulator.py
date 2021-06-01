@@ -204,8 +204,8 @@ def dac(self):
     """
 
     self.ACCUMULATOR = self.ACCUMULATOR + 15
-    if (self.ACCUMULATOR > self.MAX_4_BITS):
-        self.ACCUMULATOR = self.MAX_4_BITS - self.ACCUMULATOR
+    if (self.ACCUMULATOR >= self.MAX_4_BITS):
+        self.ACCUMULATOR = self.MSB
         self.set_carry()
     else:
         self.reset_carry()
