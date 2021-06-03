@@ -271,13 +271,11 @@ def daa(self):
                     a carry, otherwise it is unaffected.
     """
 
-    if (self.read_carry == 1 or self.ACCUMULATOR > 9):
+    if (self.read_carry() == 1 or self.ACCUMULATOR > 9):
         self.ACCUMULATOR = self.ACCUMULATOR + 6
         if (self.ACCUMULATOR > self.MAX_4_BITS):
-            self.ACCUMULATOR = self.MAX_4_BITS - self.MAX_4_BITS
-        self.set_carry()
-    else:
-        self.reset_carry()
+            self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
+            self.set_carry()
     self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
