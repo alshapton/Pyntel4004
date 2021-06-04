@@ -20,6 +20,7 @@ def test_validate_instruction(registerpair):
     known = {"opcode": 33 + (registerpair * 2), "mnemonic": "src(" + str(registerpair) + ")", "exe": 21.6, "bits": ["0010", decimal_to_binary(chip_test, 4, (registerpair  * 2) + 1)], "words": 1} # noqa
     assert(op == known)
 
+
 @pytest.mark.parametrize("values", [[0, 240], [1, 91], [2, 245], [3, 102],
                                     [4, 30], [5, 164], [6, 196], [7, 231]])
 def test_scenario1(values):
