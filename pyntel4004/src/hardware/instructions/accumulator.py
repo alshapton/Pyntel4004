@@ -17,10 +17,10 @@
                 RAR -   ROTATE ACCUMULATOR RIGHT THROUGH CARRY
                 TCC -   TRANSMIT CARRY AND CLEAR
                 DAC -   DECREMENT ACCUMULATOR
-
                 TCS -   TRANSFER CARRY SUBTRACT
                 STC -   SET CARRY
                 DAA -   DECIMAL ADJUST ACCUMULATOR
+                
                 KBP -   KEYBOARD PROCESS
 """
 
