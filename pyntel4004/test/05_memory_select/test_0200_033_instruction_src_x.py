@@ -6,10 +6,10 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor # noqa
-from src.hardware.suboperation import insert_register , decimal_to_binary, \
+from hardware.processor import processor # noqa
+from hardware.suboperation import insert_register , decimal_to_binary, \
         insert_registerpair  # noqa
-from src.hardware.exceptions import InvalidRegisterPair # noqa
+from hardware.exceptions import InvalidRegisterPair # noqa
 
 
 @pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])

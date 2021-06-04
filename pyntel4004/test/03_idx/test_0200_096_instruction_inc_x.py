@@ -6,8 +6,8 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor # noqa
-from src.hardware.suboperation import insert_register , decimal_to_binary  # noqa
+from hardware.processor import processor # noqa
+from hardware.suboperation import insert_register , decimal_to_binary  # noqa
 
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa

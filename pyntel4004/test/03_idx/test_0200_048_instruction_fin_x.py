@@ -6,8 +6,8 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor # noqa
-from src.hardware.suboperation import convert_decimal_to_n_bit_slices, \
+from hardware.processor import processor # noqa
+from hardware.suboperation import convert_decimal_to_n_bit_slices, \
      decimal_to_binary, insert_register   # noqa
 
 

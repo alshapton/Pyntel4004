@@ -3,11 +3,10 @@
 
 import sys
 import pickle
-import pytest
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor # noqa
-from src.hardware.exceptions import InvalidRamBank # noqa
+from hardware.processor import processor # noqa
+from hardware.exceptions import InvalidRamBank # noqa
 
 
 def test_validate_instruction():

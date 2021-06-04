@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor # noqa
+from hardware.processor import processor # noqa
 
 
 def test_validate_instruction():
@@ -59,6 +59,8 @@ def test_scenario1(values):
             chip_base.read_program_counter())
     assert (chip_test.read_carry() ==
             chip_base.read_carry())
+    assert (chip_test.read_accumulator() ==
+            chip_base.read_accumulator())
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))

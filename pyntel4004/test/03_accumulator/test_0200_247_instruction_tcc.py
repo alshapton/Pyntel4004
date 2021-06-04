@@ -1,22 +1,22 @@
 # Using pytest
-# Test the ral instructions of an instance of an i4004(processor)
+# Test the tcc instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor # noqa
+from hardware.processor import processor # noqa
 
 
 def test_validate_instruction():
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
-    op = chip_test.INSTRUCTIONS[245]
-    known = {"opcode": 245, "mnemonic": "ral()", "exe": 10.8, "bits": ["1111", '0101'], "words": 1} # noqa
+    op = chip_test.INSTRUCTIONS[247]
+    known = {"opcode": 247, "mnemonic": "tcc()", "exe": 10.8, "bits": ["1111", '0111'], "words": 1} # noqa
     assert(op == known)
 
-@pytest.mark.parametrize("values", [[1, 0, 2, 0], [13, 0, 10, 1, [15, 0, 14, 1]]])
+@pytest.mark.parametrize("values", [[12, 1], [15, 0]])
 def test_scenario1(values):
     chip_test = processor()
     chip_base = processor()
@@ -29,13 +29,13 @@ def test_scenario1(values):
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0
     chip_base.increment_pc(1)
-    chip_base.set_accumulator(values[2])
-    chip_base.CARRY = values[3]
+    chip_base.set_accumulator(values[1])
+    chip_base.CARRY = 0
 
     # Carry out the instruction under test
-    # Perform a RAL operation
+    # Perform a RAR operation
 
-    processor.ral(chip_test)
+    processor.tcc(chip_test)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

@@ -7,7 +7,7 @@ import sys
 import pytest
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor  # noqa
+from hardware.processor import processor  # noqa
 
 
 @pytest.mark.withoutread

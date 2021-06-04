@@ -3,7 +3,7 @@
 
 import sys
 sys.path.insert(1, '../src')
-from src.hardware.processor import processor  # noqa
+from hardware.processor import processor  # noqa
 
 
 def test_chip_properties_MAX_4_BITS():

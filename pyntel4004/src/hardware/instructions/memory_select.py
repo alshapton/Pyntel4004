@@ -15,7 +15,7 @@
                 SRC -   SEND REGISTER CONTROL
 """
 
-from src.hardware.exceptions import InvalidRamBank, InvalidRegisterPair
+from hardware.exceptions import InvalidRamBank, InvalidRegisterPair
 
 
 def dcl(self):

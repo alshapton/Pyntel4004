@@ -5,7 +5,7 @@ import sys
 import pickle
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor            # noqa
+from hardware.processor import processor            # noqa
 
 
 def test_validate_instruction():

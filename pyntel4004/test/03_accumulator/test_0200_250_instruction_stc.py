@@ -1,49 +1,44 @@
 # Using pytest
-# Test the tcc instructions of an instance of an i4004(processor)
+# Test the stc instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
-import pytest
 sys.path.insert(1, '../src')
 
-from src.hardware.processor import processor # noqa
+from hardware.processor import processor # noqa
 
 
 def test_validate_instruction():
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
-    op = chip_test.INSTRUCTIONS[247]
-    known = {"opcode": 247, "mnemonic": "tcc()", "exe": 10.8, "bits": ["1111", '0111'], "words": 1} # noqa
+    op = chip_test.INSTRUCTIONS[250]
+    known = {"opcode": 250, "mnemonic": "stc()", "exe": 10.8, "bits": ["1111", '1010'], "words": 1} # noqa
     assert(op == known)
 
-@pytest.mark.parametrize("values", [[12, 1], [15, 0]])
-def test_scenario1(values):
+
+def test_scenario1():
     chip_test = processor()
     chip_base = processor()
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
-    chip_test.set_accumulator(values[0])
-    chip_test.CARRY = values[1]
+    chip_test.CARRY = 1
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0
     chip_base.increment_pc(1)
-    chip_base.set_accumulator(values[1])
-    chip_base.CARRY = 0
+    chip_base.set_carry()
 
     # Carry out the instruction under test
-    # Perform a RAR operation
+    # Perform a stc operation
 
-    processor.tcc(chip_test)
+    processor.stc(chip_test)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
     assert (chip_test.read_program_counter() ==
             chip_base.read_program_counter())
-    assert (chip_test.read_accumulator() ==
-            chip_base.read_accumulator())
     assert (chip_test.read_carry() ==
             chip_base.read_carry())
 
