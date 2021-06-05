@@ -111,4 +111,5 @@ def xch(self, register: int):
     self.ACCUMULATOR = self.REGISTERS[register]
     self.insert_register(register, self.ACBR)
     self.increment_pc(1)
+    self.ACBR = 0
     return self.ACCUMULATOR, self.REGISTERS
