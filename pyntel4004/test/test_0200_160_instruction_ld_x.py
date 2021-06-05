@@ -1,5 +1,5 @@
 # Using pytest
-# Test the add instructions of an instance of an i4004(processor)
+# Test the ld instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
@@ -16,45 +16,43 @@ from hardware.suboperation import decimal_to_binary, insert_register # noqa
 def test_validate_instruction(register):
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
-    op = chip_test.INSTRUCTIONS[128 + register]
-    known = {"opcode": 128 + register, "mnemonic": "add(" + str(register) + ")", "exe": 10.8, "bits": ["1000", decimal_to_binary(chip_test,4, register)], "words": 1} # noqa
+    op = chip_test.INSTRUCTIONS[160 + register]
+    known = {"opcode": 160 + register, "mnemonic": "ld (" + str(register) + ")", "exe": 10.8, "bits": ["1010", decimal_to_binary(chip_test,4, register)], "words": 1} # noqa
     assert(op == known)
 
 
-@pytest.mark.parametrize("values", [[0, 12, 9, 7, 1], [1, 4, 5, 10, 0],
-                                    [0, 4, 5, 9, 0]])
-def test_scenario1(values):
+@pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7,
+                                      8, 9, 10, 11, 12, 13, 14, 15])
+def test_scenario1(register):
     chip_test = processor()
     chip_base = processor()
 
-    RANDOM_REG = random.randint(0, 15)  # Select a random register
+    RANDOM_VALUE = random.randint(0, 15)  # Select a random 4-bit value
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
-    chip_test.set_accumulator(values[1])
-    chip_test.CARRY = values[0]
-    chip_test.insert_register(RANDOM_REG, values[2])
+    chip_test.set_accumulator(14)
+    chip_test.REGISTERS[register] = RANDOM_VALUE
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0
     chip_base.increment_pc(1)
-    chip_base.CARRY = values[4]
-    chip_base.set_accumulator(values[3])
-    chip_base.insert_register(RANDOM_REG, values[2])
+    chip_base.set_accumulator(RANDOM_VALUE)
+    chip_base.REGISTERS[register] = RANDOM_VALUE
 
     # Carry out the instruction under test
-    # Perform aN ADD operation
-    processor.add(chip_test, RANDOM_REG)
+    # Perform an LD operation
+    processor.ld(chip_test, register)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
     assert (chip_test.read_program_counter() ==
             chip_base.read_program_counter())
-    assert (chip_test.read_carry() ==
-            chip_base.read_carry())
     assert (chip_test.read_accumulator() ==
             chip_base.read_accumulator())
+    assert (chip_test.REGISTERS[register] ==
+            chip_base.REGISTERS[register])
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
