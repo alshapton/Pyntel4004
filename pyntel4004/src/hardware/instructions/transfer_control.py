@@ -33,6 +33,13 @@ def jun(self, address: int):
     Execution:      2 words, 16-bit code and an execution time of 21.6 usec.
     Side-effects:   Not Applicable
     """
+
+    from hardware.exceptions import ProgramCounterOutOfBounds
+
+    if (address >= self.MEMORY_SIZE_RAM or address < 0):
+        raise ProgramCounterOutOfBounds('Program counter attempted to be' +
+                                        ' set to ' +
+                                        str(address))
     self.PROGRAM_COUNTER = address
     return self.PROGRAM_COUNTER
 
