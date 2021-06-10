@@ -81,7 +81,7 @@ class instructions:
                 {"opcode": 76, "mnemonic": "jun(address12)", "exe": 21.6, "bits": ["0100", "1100"], "words": 2},
                 {"opcode": 77, "mnemonic": "jun(address12)", "exe": 21.6, "bits": ["0100", "1101"], "words": 2},
                 {"opcode": 78, "mnemonic": "jun(address12)", "exe": 21.6, "bits": ["0100", "1110"], "words": 2},
-                {"opcode": 79, "mnemonic": "jun(address12)", "exe": 21.6, "bits": ["0101", "1111"], "words": 2},
+                {"opcode": 79, "mnemonic": "jun(address12)", "exe": 21.6, "bits": ["0100", "1111"], "words": 2},
                 {"opcode": 80, "mnemonic": "jms(address12)", "exe": 21.6, "bits": ["0101", "0000"], "words": 2},
                 {"opcode": 81, "mnemonic": "jms(address12)", "exe": 21.6, "bits": ["0101", "0001"], "words": 2},
                 {"opcode": 82, "mnemonic": "jms(address12)", "exe": 21.6, "bits": ["0101", "0010"], "words": 2},
