@@ -23,7 +23,7 @@ def test_validate_instruction(value):
 
 
 @pytest.mark.parametrize("address12", [0, 100, 99, 256, 512, 4095, 4094, 2048])
-def test_dcl_scenario1(address12):
+def test_scenario1(address12):
     chip_test = processor()
     chip_base = processor()
 
@@ -41,7 +41,6 @@ def test_dcl_scenario1(address12):
 
     assert (chip_test.read_program_counter() ==
             chip_base.read_program_counter())
-
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))

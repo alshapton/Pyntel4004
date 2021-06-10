@@ -317,7 +317,7 @@ def inc_pc_by_page(self, pc: int):
         raise ProgramCounterOutOfBounds('Program counter attempted to be' +
                                         ' set to ' + str(pc + self.PAGE_SIZE))
     # Point the program counter to 1 page on
-    pc = pc + self.PAGE_SIZE
+    pc = pc + self.PAGE_SIZE - 1
     return pc
 
 

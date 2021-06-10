@@ -61,16 +61,27 @@ def jin(self, registerpair: int):
                     PH unchanged
     Execution:      1 words, 16-bit code and an execution time of 10.8 usec.
     """
+    from hardware.exceptions import ProgramCounterOutOfBounds
 
     address = self.read_registerpair(registerpair)
+    PCB = self.PROGRAM_COUNTER
 
     # Increment PROGRAM_COUNTER by a page if the instruction is at
     # the last position in a page.
     if (self.is_end_of_page(self.PROGRAM_COUNTER, 1) is True):
-        self.PROGRAM_COUNTER = self.inc_pc_by_page(self, self.PROGRAM_COUNTER)
+        self.PROGRAM_COUNTER = self.inc_pc_by_page(self.PROGRAM_COUNTER - 1)
+        self.PROGRAM_COUNTER = self.PROGRAM_COUNTER - 12
+        address = address - 1
 
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER >> 8
     self.PROGRAM_COUNTER = (self.PROGRAM_COUNTER << 8) + address
+
+    if (self.PROGRAM_COUNTER >= self.MEMORY_SIZE_RAM):
+        E_PC = self.PROGRAM_COUNTER
+        self.PROGRAM_COUNTER = PCB
+        raise ProgramCounterOutOfBounds('Program counter attempted to be' +
+                                        ' set to ' +
+                                        str(E_PC))
 
     return self.PROGRAM_COUNTER
 

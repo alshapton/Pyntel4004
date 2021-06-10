@@ -309,7 +309,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
 
     # Simulate conditions at end of operation in base chip
     chip_test.PROGRAM_COUNTER = pc
-    chip_base.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE
+    chip_base.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE - 1
 
     # Increment the Program Counter by 1 page
     chip_test.PROGRAM_COUNTER = processor.inc_pc_by_page(chip_test, pc)
