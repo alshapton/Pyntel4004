@@ -20,7 +20,6 @@
                 TCS -   TRANSFER CARRY SUBTRACT
                 STC -   SET CARRY
                 DAA -   DECIMAL ADJUST ACCUMULATOR
-                
                 KBP -   KEYBOARD PROCESS
 """
 

@@ -7,13 +7,15 @@ class processor:
 
     from hardware.instructions.nop import nop
     from hardware.instructions.idx import fin, inc
+    from hardware.instructions.idxacc import add, sub, ld, xch
     from hardware.instructions.memory_select import dcl
     from hardware.instructions.accumulator import clb, clc, cma, cmc, \
         daa, dac, iac, kbp, ral, rar, tcc, tcs, stc
+    from hardware.instructions.immediate import fim, ldm
 
-    from hardware.machine import add, bbl, ld, fim, isz, ldm, \
-        jcn, jin, jms, jun, src, sub, rd0, rd1, rd2, rd3, wrm, wr0, \
-        wr1, wr2, wr3, wmp, wrr, wpm, xch
+    from hardware.machine import bbl, isz, \
+        jcn, jin, jms, jun, src, rd0, rd1, rd2, rd3, wrm, wr0, \
+        wr1, wr2, wr3, wmp, wrr, wpm
 
     from hardware.suboperation import binary_to_decimal, check_overflow, \
         convert_decimal_to_n_bit_slices, decimal_to_binary, flip_wpm_counter, \
