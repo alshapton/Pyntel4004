@@ -7,7 +7,9 @@ Intel 4004 Op-Codes
 
    ../hardware/machine/fim
    ../hardware/machine/fin
+   ../hardware/machine/jin
    ../hardware/machine/jcn
+   ../hardware/machine/src
    ../hardware/machine/nop
    ../hardware/machine/src
 
@@ -45,7 +47,7 @@ Intel 4004 Op-Codes
      -
      - RP
    * - Jump Indirect
-     - JIN
+     - :ref:`hardware-machine-jin`
      - 0011RRR1
      -
      - RP
@@ -252,5 +254,4 @@ Intel 4004 Op-Codes
    - C =  Condition
    - D =  Data
    - R =  Register
-   - RP = Register Pair  
-
+   - RP = Register Pair
