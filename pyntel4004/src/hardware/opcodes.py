@@ -257,5 +257,5 @@ class instructions:
                 {"opcode": 252, "mnemonic": "kbp()", "exe": 10.8, "bits": ["1111", "1100"], "words": 1},
                 {"opcode": 253, "mnemonic": "dcl()", "exe": 10.8, "bits": ["1111", "1101"], "words": 1},
                 {"opcode": 254, "mnemonic": "-"},
-                {"opcode": 255, "mnemonic": "end", "exe":0, "bits": ["1111", "1111"], "words":0}
+                {"opcode": 255, "mnemonic": "end", "exe": 0, "bits": ["1111", "1111"], "words": 0}
         ]
