@@ -8,6 +8,7 @@ Intel 4004 Op-Codes
    ../hardware/machine/fim
    ../hardware/machine/fin
    ../hardware/machine/jin
+   ../hardware/machine/jun
    ../hardware/machine/jcn
    ../hardware/machine/src
    ../hardware/machine/nop
@@ -52,7 +53,7 @@ Intel 4004 Op-Codes
      -
      - RP
    * - Jump Unconditional
-     - JUN
+     - :ref:`hardware-machine-jun`
      - 0100AAAA
      - AAAAAAAA
      - A

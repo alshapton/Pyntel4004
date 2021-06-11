@@ -7,7 +7,7 @@ Pyntel4004 Documentation
 
 .. toctree::
    :maxdepth: 1
- 
+
    History <intro/intel4004>
    Intel 4004 OpCodes <intro/opcodes>
 
