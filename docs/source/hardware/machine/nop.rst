@@ -2,12 +2,13 @@
 
 NOP
 ===
+
 .. include:: ../../global.rst
 
 .. toctree::
    :hidden:
 
-.. list-table:: 
+.. list-table::
    :widths: 25 75
    :header-rows: 0
 
@@ -25,7 +26,7 @@ NOP
    * - Decimal
      - 0
    * - Hexadecimal
-     - 0x00 
+     - 0x00
    * - Symbolic
      - Not Applicable
    * - Execution
@@ -37,7 +38,7 @@ NOP
 
 .. rubric:: Description
 
-No operation is performed. 
+No operation is performed.
 The program counter is incremented by one and execution continues with the next sequential instruction.
 
 .. rubric:: Example program
@@ -54,7 +55,7 @@ The program does nothing, since the NOP operation is the only operator in the pr
 .. rubric:: Notes
 
 
-The NOP instruction is useful for padding out memory positions for those operators that function differently at the page boundary, such that they do not end at a page boundary. 
+The NOP instruction is useful for padding out memory positions for those operators that function differently at the page boundary, such that they do not end at a page boundary.
 
 
 .. _imp: https://github.com/alshapton/Pyntel4004/blob/4ed95ca321cd0e9f19a89ef0ebea2b0ebe52952c/pyntel4004/src/hardware/machine.py#L54

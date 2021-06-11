@@ -3,13 +3,14 @@
 
 FIM
 ===
+
 .. include:: ../../global.rst
 
 .. toctree::
    :hidden:
 
 
-.. list-table:: 
+.. list-table::
    :widths: 25 75
    :header-rows: 0
 

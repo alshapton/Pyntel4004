@@ -2,12 +2,13 @@
 
 SRC
 ===
+
 .. include:: ../../global.rst
 
 .. toctree::
    :hidden:
 
-.. list-table:: 
+.. list-table::
    :widths: 25 75
    :header-rows: 0
 
@@ -45,10 +46,10 @@ The address contained within the specified register pair designates either
 a particular DATA RAM data character, a DATA RAM status character,
 a RAM output port, or a ROM input/output port.
 However, the address designates all of these simultaneously; it is up to
-the programmer to then write the correct I/O or RAM instruction to access 
+the programmer to then write the correct I/O or RAM instruction to access
 the proper entity.
 
-The disassembly of the instruction below shows how the register pair are 
+The disassembly of the instruction below shows how the register pair are
 represented in the opcode.
 
 .. image:: images/src.png

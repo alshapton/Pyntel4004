@@ -7,8 +7,7 @@ JCN
 .. toctree::
    :hidden:
 
-
-.. list-table:: 
+.. list-table::
    :widths: 25 75
    :header-rows: 0
 
@@ -50,7 +49,7 @@ The condition code is specified in the assembly language statement as a decimal 
 More than one condition at a time may be tested.
 If the leftmost bit of the condition code is zero, a jump occurs if any of the remaining specified conditions is true (an
 "or" condition).
-If the leftmost bit is one, a jump occurs if the logical inverse of the "or" condition is true. 
+If the leftmost bit is one, a jump occurs if the logical inverse of the "or" condition is true.
 In Boolean notation, the equation for the jump condition is as follows:
 
 .. image:: images/jcn-bool.png

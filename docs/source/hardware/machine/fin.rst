@@ -1,16 +1,14 @@
 .. _hardware-machine-fin:
 
-
 FIN
 ===
+
 .. include:: ../../global.rst
 
 .. toctree::
    :hidden:
 
-TO COMPLETE
-
-.. list-table:: 
+.. list-table::
    :widths: 25 75
    :header-rows: 0
 
