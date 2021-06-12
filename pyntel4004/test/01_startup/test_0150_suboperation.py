@@ -657,7 +657,7 @@ def test_suboperation_test_binary_decimal_scenario2(value):
     # attempting to use an invalid binary number
     with pytest.raises(Exception) as e:
         assert (processor.binary_to_decimal(chip_test, value))
-    if (value != ''):
+    if value != '':
         assert (str(e.value) == '"' + value + '"')
     else:
         assert (str(e.value) == '"<empty>"')

@@ -28,7 +28,7 @@ def test_scenario1(values):
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0
-    if (values[0] == chip_base.MAX_4_BITS):
+    if values[0] == chip_base.MAX_4_BITS:
         chip_base.set_accumulator(0)
     else:
         chip_base.set_accumulator(values[0] + 1)

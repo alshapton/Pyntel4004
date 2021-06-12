@@ -68,7 +68,7 @@ def jin(self, registerpair: int):
 
     # Increment PROGRAM_COUNTER by a page if the instruction is at
     # the last position in a page.
-    if (self.is_end_of_page(self.PROGRAM_COUNTER, 1) is True):
+    if self.is_end_of_page(self.PROGRAM_COUNTER, 1) is True:
         self.PROGRAM_COUNTER = self.inc_pc_by_page(self.PROGRAM_COUNTER - 1)
         self.PROGRAM_COUNTER = self.PROGRAM_COUNTER - 12
         address = address - 1
@@ -76,7 +76,7 @@ def jin(self, registerpair: int):
     self.PROGRAM_COUNTER = self.PROGRAM_COUNTER >> 8
     self.PROGRAM_COUNTER = (self.PROGRAM_COUNTER << 8) + address
 
-    if (self.PROGRAM_COUNTER >= self.MEMORY_SIZE_RAM):
+    if self.PROGRAM_COUNTER >= self.MEMORY_SIZE_RAM:
         E_PC = self.PROGRAM_COUNTER
         self.PROGRAM_COUNTER = PCB
         raise ProgramCounterOutOfBounds('Program counter attempted to be' +
@@ -141,10 +141,10 @@ def jcn(self, conditions: int, address: int):
     carry = self.read_carry()
     accumulator = self.read_accumulator()
     pin10 = self.read_pin10()
-    if (i == 0):
+    if i == 0:
         if (carry == 1) or (accumulator == 0) or (pin10 == 0):
             self.PROGRAM_COUNTER = address
-    if (i == 1):
+    if i == 1:
         if (carry == 1) or (accumulator != 0) or (pin10 == 1):
             self.increment_pc(2)
     return self.PROGRAM_COUNTER
@@ -174,7 +174,7 @@ def isz(self, register: int, address: int):
 
     """
     self.increment_register(register)
-    if (self.REGISTERS[register] == 0):
+    if self.REGISTERS[register] == 0:
         self.increment_pc(2)
     else:
         self.PROGRAM_COUNTER = address

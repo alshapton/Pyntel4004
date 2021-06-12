@@ -68,7 +68,7 @@ def sub(self, register: int):
                         + carry)
     # Check for carry bit set/reset when borrow (overflow) is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
-    if (self.ACCUMULATOR > self.MAX_4_BITS):
+    if self.ACCUMULATOR > self.MAX_4_BITS:
         self.ACCUMULATOR = self.ACCUMULATOR - (self.MAX_4_BITS + 1)
         self.set_carry()
     else:

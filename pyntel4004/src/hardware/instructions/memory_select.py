@@ -49,7 +49,7 @@ def dcl(self):
     """
 
     ACC = self.ACCUMULATOR
-    if (ACC > 7):
+    if ACC > 7:
         raise InvalidRamBank('RAM bank : ' + str(ACC))
 
     self.CURRENT_RAM_BANK = ACC
@@ -83,7 +83,7 @@ def src(self, registerpair: int):
     Side-effects:   Not Applicable
     """
 
-    if (registerpair > 7):
+    if registerpair > 7:
         raise InvalidRegisterPair('Register pair : ' + str(registerpair))
 
     self.increment_pc(1)
