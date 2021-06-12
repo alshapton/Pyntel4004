@@ -490,21 +490,21 @@ def wpm(self):
     # Get the value of the WPM Counter
     wpm_counter = read_wpm_counter(self)
 
-    if (self.ROM_PORT[14] == 1):
+    if self.ROM_PORT[14] == 1:
         # Write enabled, so store
         value = self.ACCUMULATOR
-        if (wpm_counter == 'LEFT'):
+        if wpm_counter == 'LEFT':
             value = self.ACCUMULATOR << 4
             self.PRAM[address] = value
-        if (wpm_counter == 'RIGHT'):
+        if wpm_counter == 'RIGHT':
             value = self.ACCUMULATOR
             self.PRAM[address] = self.PRAM[address] + value
 
-    if (self.ROM_PORT[14] != 1):
+    if self.ROM_PORT[14] != 1:
         # read
-        if (wpm_counter == 'LEFT'):
+        if wpm_counter == 'LEFT':
             self.ROM_PORT[14] = self.PRAM[address] >> 4 << 4
-        if (wpm_counter == 'RIGHT'):
+        if wpm_counter == 'RIGHT':
             value = self.ACCUMULATOR
             self.ROM_PORT[14] = self.PRAM[address] << 4 >> 4
 

@@ -70,7 +70,7 @@ def iac(self):
     """
 
     self.ACCUMULATOR = self.ACCUMULATOR + 1
-    if (self.ACCUMULATOR == self.MAX_4_BITS + 1):
+    if self.ACCUMULATOR == self.MAX_4_BITS + 1:
         self.ACCUMULATOR = 0
         self.set_carry()
     else:
@@ -90,7 +90,7 @@ def cmc(self):
     Side-effects:   Not Applicable
     """
 
-    if (self.CARRY == 1):
+    if self.CARRY == 1:
         self.reset_carry()
     else:
         self.set_carry()
@@ -134,12 +134,12 @@ def ral(self):
     # Shift left
     self.ACCUMULATOR = self.ACCUMULATOR * 2
     # Set carry bit correctly
-    if (self.ACCUMULATOR >= self.MAX_4_BITS):
+    if self.ACCUMULATOR >= self.MAX_4_BITS:
         self.set_carry()
     else:
         self.reset_carry()
     # If necessary remove non-existent bit 5
-    if (self.ACCUMULATOR > self.MAX_4_BITS):
+    if self.ACCUMULATOR > self.MAX_4_BITS:
         self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
     # Add original carry bit
     self.ACCUMULATOR = self.ACCUMULATOR + C0
@@ -163,7 +163,7 @@ def rar(self):
     # Store Carry bit
     C0 = self.read_carry()
     # Set carry bit correctly
-    if (self.ACCUMULATOR % 2 == 0):
+    if self.ACCUMULATOR % 2 == 0:
         self.reset_carry()
     else:
         self.set_carry()
@@ -208,7 +208,7 @@ def dac(self):
     """
 
     self.ACCUMULATOR = self.ACCUMULATOR + 15
-    if (self.ACCUMULATOR >= self.MAX_4_BITS):
+    if self.ACCUMULATOR >= self.MAX_4_BITS:
         self.ACCUMULATOR = self.MSB
         self.set_carry()
     else:
@@ -231,7 +231,7 @@ def tcs(self):
     Side-effects:   The carry/link is set to 0.
     """
 
-    if (self.read_carry() == 0):
+    if self.read_carry() == 0:
         self.set_accumulator(9)
     else:
         self.set_accumulator(10)
@@ -272,7 +272,7 @@ def daa(self):
 
     if (self.read_carry() == 1 or self.ACCUMULATOR > 9):
         self.ACCUMULATOR = self.ACCUMULATOR + 6
-        if (self.ACCUMULATOR > self.MAX_4_BITS):
+        if self.ACCUMULATOR > self.MAX_4_BITS:
             self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
             self.set_carry()
     self.increment_pc(1)
@@ -321,11 +321,11 @@ def kbp(self):
             or ACC == 2):
         return ACC
 
-    if (ACC == 4):
+    if ACC == 4:
         self.set_accumulator(3)
         return self.read_accumulator()
 
-    if (ACC == 8):
+    if ACC == 8:
         self.set_accumulator(4)
         return self.read_accumulator()
 

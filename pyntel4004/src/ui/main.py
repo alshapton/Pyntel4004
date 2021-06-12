@@ -51,7 +51,7 @@ class MainWindow(npyscreen.FormWithMenus):
         self.add(npyscreen.Textfield, name="registers", editable=False,
                  value="       REGISTERS", color='GOOD')
         for _i in range(0, 16, 2):
-            if (_i < 10):
+            if _i < 10:
                 j = " " + str(_i)
                 k = " " + str(_i + 1)
             else:

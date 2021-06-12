@@ -62,7 +62,7 @@ def fin(self, registerpair: int):
 
     # EXCEPTION (b) - fin instruction is located at page boundary #
     eop = self.is_end_of_page(self.PROGRAM_COUNTER, 1)
-    if (eop is True):
+    if eop is True:
         page_shift = 1
     else:
         page_shift = 0

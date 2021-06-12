@@ -31,7 +31,7 @@ def test_scenario1(values):
     chip_base.PROGRAM_COUNTER = 0
     ACC = values[0] + 15
 
-    if (ACC > 8):
+    if ACC > 8:
         chip_base.set_accumulator(8)
     else:
         chip_base.set_accumulator(ACC - 1)

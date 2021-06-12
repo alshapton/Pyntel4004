@@ -17,67 +17,67 @@ import getopt
 
 def is_breakpoint(BREAKPOINTS, PC):
     for i in BREAKPOINTS:
-        if (str(i) == str(PC)):
+        if str(i) == str(PC):
             return True
     return False
 
 
 def deal_with_monitor_command(chip: processor, monitor_command: str,
                               BREAKPOINTS, monitor: bool, opcode: str):
-    if (monitor_command == ''):
+    if monitor_command == '':
         return True, monitor, monitor_command, opcode
 
-    if (monitor_command == 'regs'):
+    if monitor_command == 'regs':
         print('0-> ' + str(chip.REGISTERS) + ' <-15')
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'stack'):
+    if monitor_command == 'stack':
         for _i in range(chip.STACK_SIZE-1, -1, -1):
-            if (_i == chip.STACK_POINTER):
+            if _i == chip.STACK_POINTER:
                 pointer = '==>'
             else:
                 pointer = '-->'
             print("[ " + str(_i) + "] " + pointer + "[ " +
                   str(chip.STACK[_i]) + ' ]')
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'pc'):
+    if monitor_command == 'pc':
         print('PC = ', chip.PROGRAM_COUNTER)
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'carry'):
+    if monitor_command == 'carry':
         print('CARRY = ', chip.read_carry())
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'ram'):
+    if monitor_command == 'ram':
         print('RAM = ', chip.RAM)
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'pram'):
+    if monitor_command == 'pram':
         print('PRAM = ', chip.PRAM)
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'rom'):
+    if monitor_command == 'rom':
         print('ROM = ', chip.ROM)
         return True, monitor, monitor_command, opcode
-    if (monitor_command[:3] == 'reg'):
+    if monitor_command[:3] == 'reg':
         register = int(monitor_command[3:])
         print('REG[' + monitor_command[3:].strip()+'] = ' +
               str(chip.REGISTERS[register]))
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'acc'):
+    if monitor_command == 'acc':
         print('ACC =', chip.read_accumulator())
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'pin10'):
+    if monitor_command == 'pin10':
         print('PIN10 = ', chip.read_pin10())
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'crb'):
+    if monitor_command == 'crb':
         print('CURRENT RAM BANK = ', chip.read_current_ram_bank())
         return True, monitor, monitor_command, opcode
-    if (monitor_command[:1] == 'b'):
+    if monitor_command[:1] == 'b':
         bp = monitor_command.split()[1]
         BREAKPOINTS.append(bp)
         print('Breakpoint set at address ' + bp)
         return True, monitor, monitor_command, opcode
-    if (monitor_command == 'off'):
+    if monitor_command == 'off':
         monitor_command = ''
         monitor = False
         return False, monitor, monitor_command, opcode
-    if (monitor_command == 'q'):
+    if monitor_command == 'q':
         monitor = False
         opcode = 255
         return None, monitor, monitor_command, opcode
@@ -86,7 +86,7 @@ def deal_with_monitor_command(chip: processor, monitor_command: str,
 def execute(chip: processor, inputfile: str, location, PC, monitor):
     BREAKPOINTS = []
     _TPS = []
-    if (location == 'rom'):
+    if location == 'rom':
         _TPS = chip.ROM
     else:
         _TPS = chip.PRAM
@@ -99,49 +99,49 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
     while opcode != 255:  # pseudo-opcode (directive) for "end"
         monitor_command = 'none'
 
-        if (is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER)):
+        if is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER):
             monitor_command = 'none'
             monitor = True
             prompt = breakout_prompt
-        if (monitor is True):
-            while (monitor_command != ''):
+        if monitor is True:
+            while monitor_command != '':
                 monitor_command = input(prompt).lower()
                 result, monitor, monitor_command, opcode = \
                     deal_with_monitor_command(chip, monitor_command,
                                               BREAKPOINTS, monitor, opcode)
-                if (result is False):
+                if result is False:
                     prompt = classic_prompt
-                if (result is None):
+                if result is None:
                     break
         custom_opcode = False
         OPCODE = _TPS[chip.PROGRAM_COUNTER]
-        if (OPCODE == 255):  # pseudo-opcode (directive "end" - stop program)
+        if OPCODE == 255:  # pseudo-opcode (directive "end" - stop program)
             print('           end')
             break
         opcodeinfo = next((item for item in chip.INSTRUCTIONS
                           if item['opcode'] == OPCODE), None)
         exe = opcodeinfo['mnemonic']
-        if (exe == '-'):
+        if exe == '-':
             break
 
         # Only mnemonic with 2 characters - fix
-        if (exe[:3] == 'ld '):
+        if exe[:3] == 'ld ':
             exe = exe[:2] + exe[3:]
 
         # Ensure that the correct arguments are passed to the operations
-        if (exe[:3] == 'fim'):
+        if exe[:3] == 'fim':
             custom_opcode = True
             value = str(_TPS[chip.PROGRAM_COUNTER + 1])
             cop = exe.replace('data8', value)
             exe = exe.replace('p', '').replace('data8)', '') + value + ')'
 
-        if (exe[:3] == 'isz'):
+        if exe[:3] == 'isz':
             # Remove opcode from 1st byte to get register
             register = bin(_TPS[chip.PROGRAM_COUNTER] & 15)[2:].zfill(8)[4:]
             address = str(_TPS[chip.PROGRAM_COUNTER + 1])
             exe = 'isz(' + str(int(register, 2)) + ',' + str(address) + ')'
 
-        if (exe[:4] == 'jcn('):
+        if exe[:4] == 'jcn(':
             custom_opcode = True
             address = _TPS[chip.PROGRAM_COUNTER + 1]
             conditions = (bin(_TPS[chip.PROGRAM_COUNTER])[2:].zfill(8)[4:])
@@ -152,7 +152,7 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
         # if (exe[:4] in ('src(')):
         #    custom_opcode = True
 
-        if (exe[:4] in ('jun(', 'jms(')):
+        if exe[:4] in ('jun(', 'jms('):
             custom_opcode = True
             # Remove opcode from 1st byte
             hvalue = bin(_TPS[chip.PROGRAM_COUNTER] &
@@ -162,7 +162,7 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
             cop = exe.replace('address12', whole_value)
             exe = exe[:4] + whole_value + ')'
 
-        if (custom_opcode):
+        if custom_opcode:
             custom_opcode = False
             print('  {:>7}  {:<10}'.format(OPCODE, cop.replace('()', '')))
         else:
@@ -193,13 +193,13 @@ def add_label(_L, label: str):
     if not label_exists:
         _L.append({'label': label, 'address': -1})
     else:
-        return (-1)
+        return -1
     return _L
 
 
 def match_label(_L, label: str, address):
     for _i in range(len(_L)):
-        if (_L[_i]['label'] == label):
+        if _L[_i]['label'] == label:
             _L[_i]['address'] = address
     return _L
 
@@ -207,7 +207,7 @@ def match_label(_L, label: str, address):
 def get_label_addr(_L, label: str):
     label_address = -1
     for _i in _L:
-        if (_i['label'] == label + ','):
+        if _i['label'] == label + ',':
             label_address = _i['address']
     return label_address
 
@@ -227,7 +227,7 @@ def do_error(message: str):
 
 
 def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
-    if (ls.upper() == 'S'):
+    if ls.upper() == 'S':
         return next((item for item in chip.INSTRUCTIONS
                     if str(item["mnemonic"][:3]) == mnemonic), None)
     else:
@@ -259,14 +259,14 @@ def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
 def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
                address_right, label, count):
     # pad out for the only 2-character mnemonic
-    if (opcode == 'ld'):
+    if opcode == 'ld':
         opcode = 'ld '
     f_opcode = opcode + '(' + x[1] + ')'
-    if (opcode in ('jun', 'jms')):
+    if opcode in ('jun', 'jms'):
         # Special case for JUN and JMS
-        if (opcode == 'jun'):
+        if opcode == 'jun':
             decimal_code = 64
-        if (opcode == 'jms'):
+        if opcode == 'jms':
             decimal_code = 80
         f_opcode = opcode + '(address12)'
         opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
@@ -283,7 +283,7 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
                  '', '', '', '', '')
         address = address + opcodeinfo['words']
     else:
-        if (opcode == 'src'):
+        if opcode == 'src':
             register = x[1].lower().replace('p', '').replace('r', '')
             f_opcode = 'src(' + register + ')'
             opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
@@ -305,10 +305,10 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
 
 
 def validate_inc(parts, line):
-    if (len(parts) == 1):
-        if (parts[0] == 'inc'):
+    if len(parts) == 1:
+        if parts[0] == 'inc':
             return do_error('No register value at line ' + str(line))
-    if (len(parts) == 2):
+    if len(parts) == 2:
         if ((parts[1] == 'inc') and (parts[0][-1])):
             return do_error('No register value at line ' + str(line))
         if ((parts[0] == 'inc') and ((int(parts[1]) > 15) or
@@ -365,14 +365,14 @@ def assemble(program_name: str, object_file: str, chip: processor):
             else:
                 # Work with a line of assembly code
                 parts = line.split()
-                if (parts[0][-1] == ','):
+                if parts[0][-1] == ',':
                     # Found a label, now add it to the label table
                     if add_label(_LABELS, parts[0]) == -1:
                         ERR = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
                                ' at line ' + str(p_line + 1))
                         break
                     # Attach value to a label
-                    if ('0' <= str(parts[1])[:1] <= '9'):
+                    if '0' <= str(parts[1])[:1] <= '9':
                         constant = True
                         match_label(_LABELS, parts[0], parts[1])
                     else:
@@ -382,7 +382,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 else:
                     # Set opcode
                     opcode = parts[0][:3]
-                if (opcode[:3] == 'inc'):
+                if opcode[:3] == 'inc':
                     ERR = validate_inc(parts, p_line + 1)
                     if ERR:
                         break
@@ -390,7 +390,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 if not constant:
                     if (opcode == 'ld()' or opcode[:2] == 'ld'):
                         opcode = 'ld '
-                    if not (opcode in ('org', '/', 'end', 'pin')):
+                    if not opcode in ('org', '/', 'end', 'pin'):
                         opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
                         address = address + opcodeinfo['words']
                 TFILE[p_line] = line.strip()
@@ -414,24 +414,24 @@ def assemble(program_name: str, object_file: str, chip: processor):
     count = 0
     while True:
         line = TFILE[count].strip()
-        if (len(line) == 0):
+        if len(line) == 0:
             break  # End of code
 
         x = line.split()
         label = ''
 
         # Check for initial comments
-        if (line[0] == '/'):
+        if line[0] == '/':
             print_ln('', label, ' ', ' ', ' ', ' ', ' ', ' ', ' ',  ' ',
                      ' ', str(count), line, ' ', '', '', '',)
             pass
         else:
-            if (len(line) > 0):
-                if (x[0][-1] == ','):
+            if len(line) > 0:
+                if x[0][-1] == ',':
                     label = x[0]
                     opcode = x[1]
                     # Check to see if we are assembling a label
-                    if ('0' <= str(x[1])[:1] <= '9'):
+                    if '0' <= str(x[1])[:1] <= '9':
                         TPS[address] = int(x[1])
                         print_ln('', '',  '', '', '', '', '', '', '', '', '',
                                  str(count), label, str(x[1]), '', '', '',)
@@ -441,7 +441,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
                 if (opcode in ['org', 'end', 'pin']) or (opcode is not None):
                     if (opcode in ['org', 'end', 'pin']):
-                        if (opcode == 'org'):
+                        if opcode == 'org':
                             ORG_FOUND = True
                             print_ln('', label,  '', '', '', '', '', '', '',
                                      '', '', str(count), opcode, str(x[1]),
@@ -452,16 +452,16 @@ def assemble(program_name: str, object_file: str, chip: processor):
                             else:
                                 location = 'ram'
                                 address = int(str(x[1]))
-                        if (opcode == 'end'):
+                        if opcode == 'end':
                             print_ln('', label, '', '', '', '', '',  '', '',
                                      '', '', str(count), opcode, '', '',
                                      '', '')
                             # pseudo-opcode (directive "end")
                             TPS[address] = 255
                             # break
-                        if (opcode == 'pin'):
+                        if opcode == 'pin':
                             result = chip.write_pin10(int(x[1]))
-                            if (result is False):
+                            if result is False:
                                 ERR = do_error(
                                     "FATAL: Pass 2:  Invalid value for "
                                     + "TEST PIN 10 at line " + count)
@@ -470,8 +470,8 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                      str(x[1]))
                         pass
                     else:
-                        if (ORG_FOUND is True):
-                            if (x[0][-1] == ','):
+                        if ORG_FOUND is True:
+                            if x[0][-1] == ',':
                                 label = x[0]
                                 match_label(_LABELS, label, address)
                                 for _i in range(len([x])-1):
@@ -484,13 +484,13 @@ def assemble(program_name: str, object_file: str, chip: processor):
 
                             # Check for operand(s)
                             # Operator & operand (generic)
-                            if (len(x) == 2):
+                            if len(x) == 2:
                                 address, TPS, _LABELS = \
                                  assemble_2(chip, x, opcode, address, TPS,
                                             _LABELS, address_left,
                                             address_right, label,
                                             count)
-                            if (len(x) == 1):
+                            if len(x) == 1:
                                 # Only operator, no operand
                                 bit1, bit2 = get_bits(opcodeinfo)
                                 TPS[address] = opcodeinfo['opcode']
@@ -499,20 +499,20 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                          TPS[address], '', '', str(count),
                                          opcode, '', '', '', '')
                                 address = address + opcodeinfo['words']
-                            if (len(x) == 3):
+                            if len(x) == 3:
                                 opcode = x[0]
                                 # Operator and 2 operands
-                                if (opcode == 'jcn'):
+                                if opcode == 'jcn':
                                     conditions = x[1].upper()
                                     dest_label = x[2]
                                     bin_conditions = 0
-                                    if ('I' in conditions):
+                                    if 'I' in conditions:
                                         bin_conditions = 8
-                                    if ('A' in conditions):
+                                    if 'A' in conditions:
                                         bin_conditions = bin_conditions + 4
-                                    if ('C' in conditions):
+                                    if 'C' in conditions:
                                         bin_conditions = bin_conditions + 2
-                                    if ('T' in conditions):
+                                    if 'T' in conditions:
                                         bin_conditions = bin_conditions + 1
                                     f_opcode = 'jcn(' + str(bin_conditions) \
                                         + ',address8)'
@@ -532,7 +532,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                              str(count), opcode, str(x[1]),
                                              str(x[2]), '')
                                     address = address + opcodeinfo['words']
-                                if (opcode[:3] == 'fim'):
+                                if opcode[:3] == 'fim':
                                     f_opcode = x[0] + '(' + x[1] + ',data8)'
                                     opcodeinfo = get_opcodeinfo(chip, 'L',
                                                                 f_opcode)
@@ -546,7 +546,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                              str(count), opcode, str(x[1]),
                                              str(x[2]), '', '', '', '')
                                     address = address + opcodeinfo['words']
-                                if (opcode == 'isz'):
+                                if opcode == 'isz':
                                     n_opcode, label_addr, words, \
                                         addr_left, addr_right, \
                                         bit1, bit2 = \
@@ -561,9 +561,9 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                              str(count), opcode, str(x[1]),
                                              str(x[2]), '', '', '', '')
                                     address = address + words
-                                if (opcode not in ('jcn', 'fim', 'isz')):
+                                if opcode not in ('jcn', 'fim', 'isz'):
                                     d_type = ''
-                                    if (int(x[2]) <= 256):
+                                    if int(x[2]) <= 256:
                                         d_type = 'data8'
                                     val_left = bin(int(x[2]))[2:].zfill(8)[:4]
                                     val_right = bin(int(x[2]))[2:].zfill(8)[4:]
@@ -598,10 +598,10 @@ def assemble(program_name: str, object_file: str, chip: processor):
     print()
 
     # Place assembled code into correct location
-    if (location == 'rom'):
+    if location == 'rom':
         chip.ROM = TPS
 
-    if (location == 'ram'):
+    if location == 'ram':
         chip.PRAM = TPS
 
     print('Labels:')
@@ -635,7 +635,7 @@ def main(argv):
         elif opt in ("-i", "--ifile"):
             inputfile = arg
         elif opt in ("-o", "--ofile"):
-            if (outputfile == ''):
+            if outputfile == '':
                 outputfile = inputfile.replace('asm', 'obj')
             else:
                 outputfile = arg
