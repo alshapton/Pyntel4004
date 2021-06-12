@@ -35,4 +35,13 @@ jobs:
       working-directory: ./pyntel4004/test
       run: |
         pytest 
+    - name: Generate Report
+      working-directory: ./pyntel4004/test
+      run: |
+        pip install coverage
+        coverage run -m unittest
+    - name: Upload Coverage to Codecov
+      working-directory: ./pyntel4004/test
+      uses: codecov/codecov-action@v1
+      with:
  
