@@ -2,6 +2,9 @@
 
 ![Pyntel 4004 Logo](./images/pyntel4004.svg)
 
+[![Python application](https://github.com/alshapton/Pyntel4004/actions/workflows/python-app.yml/badge.svg)](https://github.com/alshapton/Pyntel4004/actions/workflows/python-app.yml)
+![GitHub](https://img.shields.io/github/license/alshapton/pyntel4004)
+
 A Python software implementation of the Intel 4004 processor.
 
 ## General Information
@@ -24,7 +27,10 @@ A Python software implementation of the Intel 4004 processor.
 
 ## Status
 
+12-JUN-2021:    Auto-build with GITHUB Actions implemented
+<br>
 18-MAY-2021:    Implementing full test suite
+<br>
 21-APR-2021:    Instruction Set functionally complete
                 Entering Testing Phase
 
