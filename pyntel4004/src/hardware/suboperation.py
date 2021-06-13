@@ -358,7 +358,6 @@ def is_end_of_page(self, address: int, word: int):
     else:
         return False
     raise InvalidEndOfPage('Address:' + str(address))
-    return None
 
 
 def increment_register(self, register: int):

@@ -87,5 +87,3 @@ def test_scenario2(values):
 
     assert (str(e.value) == 'Program counter attempted to be set to ' + str(PCE)) # noqa
     assert (e.type == ProgramCounterOutOfBounds)
-
-
