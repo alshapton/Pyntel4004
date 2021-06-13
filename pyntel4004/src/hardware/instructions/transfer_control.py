@@ -33,7 +33,6 @@ def jun(self, address: int):
     Execution:      2 words, 16-bit code and an execution time of 21.6 usec.
     Side-effects:   Not Applicable
     """
-
     from hardware.exceptions import ProgramCounterOutOfBounds
 
     if (address >= self.MEMORY_SIZE_RAM or address < 0):
@@ -135,7 +134,6 @@ def jcn(self, conditions: int, address: int):
 
     Need to do "if JCN at end of page" code
     """
-
     i = int((conditions & 8) / 8)
 
     carry = self.read_carry()

@@ -76,7 +76,6 @@ def bbl(self, accumulator: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-
     address = self.read_from_stack()
     self.PROGRAM_COUNTER = address
     self.ACCUMULATOR = accumulator
@@ -127,7 +126,6 @@ def wrm(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTER
@@ -159,7 +157,6 @@ def wr0(self):
     Bits 5-8   = Not relevant
 
     """
-
     self.write_ram_status(0)
     self.increment_pc(1)
     return self.PROGRAM_COUNTER
@@ -187,7 +184,6 @@ def wr1(self):
     Bits 5-8   = Not relevant
 
     """
-
     self.write_ram_status(1)
     self.increment_pc(1)
     return self.PROGRAM_COUNTER
@@ -215,7 +211,6 @@ def wr2(self):
     Bits 5-8   = Not relevant
 
     """
-
     self.write_ram_status(2)
     self.increment_pc(1)
     return self.PROGRAM_COUNTER
@@ -243,7 +238,6 @@ def wr3(self):
     Bits 5-8   = Not relevant
 
     """
-
     self.write_ram_status(3)
     self.increment_pc(1)
     return self.PROGRAM_COUNTER
@@ -271,7 +265,6 @@ def rd0(self):
     Bits 5-8   = Not relevant
 
     """
-
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
@@ -303,7 +296,6 @@ def rd1(self):
     Bits 5-8   = Not relevant
 
     """
-
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
@@ -335,7 +327,6 @@ def rd2(self):
     Bits 5-8   = Not relevant
 
     """
-
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
@@ -367,7 +358,6 @@ def rd3(self):
     Bits 5-8   = Not relevant
 
     """
-
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
@@ -407,7 +397,6 @@ def wmp(self):
                  selected by a DCL instruction
     Bits 3 - 8 = Not relevant
     """
-
     crb = self.read_current_ram_bank()
     chip = int(bin(int(self.COMMAND_REGISTER))
                [2:].zfill(8)[:2], 2)
@@ -441,7 +430,6 @@ def wrr(self):
     Bits 1 - 4 = The ROM chip targetted
     Bits 5 - 8 = Not relevant
     """
-
     rom = int(bin(int(self.COMMAND_REGISTER))[2:].zfill(8)[:4], 2)
     self.ROM_PORT[rom] = self.ACCUMULATOR
     self.increment_pc(1)
@@ -481,7 +469,6 @@ def wpm(self):
 
 
     """
-
     from hardware.suboperation import flip_wpm_counter
     from hardware.reads import read_wpm_counter
 
@@ -548,7 +535,6 @@ def rdr(self):
                     This software implementation of the i4004 will ALWAYS
                     return the values of the output lines as-is.
     """
-
     rom = self.COMMAND_REGISTER >> 4
     self.ACCUMULATOR = self.ROM_PORT[rom]
     self.increment_pc(1)
