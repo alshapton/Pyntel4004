@@ -59,7 +59,6 @@ def sub(self, register: int):
                     otherwise, it is set to 1.
                     The 4 bit content of the index register is unaffected.
     """
-
     carry = self.read_complement_carry()
 
     self.ACCUMULATOR = (self.ACCUMULATOR +
@@ -89,7 +88,6 @@ def ld(self, register: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   The carry bit is not affected.
     """
-
     self.ACCUMULATOR = self.REGISTERS[register]
     self.increment_pc(1)
     return self.ACCUMULATOR
@@ -109,7 +107,6 @@ def xch(self, register: int):
     Side-effects:   The carry bit is not affected.
 
     '''
-
     self.ACBR = self.ACCUMULATOR
     self.ACCUMULATOR = self.REGISTERS[register]
     self.insert_register(register, self.ACBR)
