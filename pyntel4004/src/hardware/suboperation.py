@@ -386,7 +386,6 @@ def increment_register(self, register: int):
     N/A
 
     """
-
     if register < 0 or register > (self.NO_REGISTERS - 1):
         raise InvalidRegister('Register: ' + str(register))
 
@@ -506,7 +505,6 @@ def write_to_stack(self, value: int):
 
     After 3 writes, address "a" is lost
     """
-
     if (value < 0 or value > 4095):
         raise ValueOutOfRangeForStack(' Value: ' + str(value))
 
@@ -817,7 +815,6 @@ def check_overflow(self):
     N/A
 
     """
-
     if self.ACCUMULATOR > self.MAX_4_BITS:
         self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS + 1
         self.set_carry()
@@ -852,7 +849,6 @@ def set_accumulator(self, value: int):
     N/A
 
     """
-
     if value > self.MAX_4_BITS:
         raise ValueTooLargeForAccumulator(' Value: ' + str(value))
     else:

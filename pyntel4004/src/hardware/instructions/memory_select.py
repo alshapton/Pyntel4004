@@ -47,7 +47,6 @@ def dcl(self):
                     X110	CM-RAM2, CM-RAM3	        Bank 6
                     X111	CM-RAM1, CM-RAM2, CM-RAM3	Bank 7
     """
-
     ACC = self.ACCUMULATOR
     if ACC > 7:
         raise InvalidRamBank('RAM bank : ' + str(ACC))
@@ -82,7 +81,6 @@ def src(self, registerpair: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec..
     Side-effects:   Not Applicable
     """
-
     if registerpair > 7:
         raise InvalidRegisterPair('Register pair : ' + str(registerpair))
 

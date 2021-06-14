@@ -26,6 +26,5 @@ def nop(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-
     self.increment_pc(1)
     return self.PROGRAM_COUNTER

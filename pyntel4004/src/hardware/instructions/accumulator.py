@@ -34,7 +34,6 @@ def clb(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-
     self.set_accumulator(0)
     self.reset_carry()
     self.increment_pc(1)
@@ -51,7 +50,6 @@ def clc(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-
     self.reset_carry()
     self.increment_pc(1)
     return self.read_carry()
@@ -68,7 +66,6 @@ def iac(self):
     Side-effects:   No overflow sets the carry/link to 0;
                     overflow sets the carry/link to a 1.
     """
-
     self.ACCUMULATOR = self.ACCUMULATOR + 1
     if self.ACCUMULATOR == self.MAX_4_BITS + 1:
         self.ACCUMULATOR = 0
@@ -89,7 +86,6 @@ def cmc(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-
     if self.CARRY == 1:
         self.reset_carry()
     else:
@@ -109,7 +105,6 @@ def cma(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-
     ONES_ACC = int(self.ones_complement(self.ACCUMULATOR, 4), 2)
     self.ACCUMULATOR = ONES_ACC
     self.increment_pc(1)
@@ -128,8 +123,6 @@ def ral(self):
     Side-effects:   The carry bit will be set to the highest significant
                     bit of the accumulator.
     """
-
-    # Store Carry bit
     C0 = self.read_carry()
     # Shift left
     self.ACCUMULATOR = self.ACCUMULATOR * 2
@@ -159,8 +152,6 @@ def rar(self):
     Side-effects:   The carry bit will be set to the lowest significant
                     bit of the accumulator.
     """
-
-    # Store Carry bit
     C0 = self.read_carry()
     # Set carry bit correctly
     if self.ACCUMULATOR % 2 == 0:
@@ -187,7 +178,6 @@ def tcc(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   The carry bit will be reset..
     """
-
     self.set_accumulator(0)
     self.ACCUMULATOR = self.read_carry()
     self.reset_carry()
@@ -206,7 +196,6 @@ def dac(self):
     Side-effects:   A borrow sets the carry/link to 0;
                     No borrow sets the carry/link to a 1.
     """
-
     self.ACCUMULATOR = self.ACCUMULATOR + 15
     if self.ACCUMULATOR >= self.MAX_4_BITS:
         self.ACCUMULATOR = self.MSB
@@ -230,7 +219,6 @@ def tcs(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   The carry/link is set to 0.
     """
-
     if self.read_carry() == 0:
         self.set_accumulator(9)
     else:
@@ -250,7 +238,6 @@ def stc(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-
     self.set_carry()
     self.increment_pc(1)
     return self.read_carry()
@@ -269,7 +256,6 @@ def daa(self):
     Side-effects:   The carry/link is set to a 1 if the result generates
                     a carry, otherwise it is unaffected.
     """
-
     if (self.read_carry() == 1 or self.ACCUMULATOR > 9):
         self.ACCUMULATOR = self.ACCUMULATOR + 6
         if self.ACCUMULATOR > self.MAX_4_BITS:

@@ -11,7 +11,6 @@ def fim(self, registerpair: int, value: int):
     Execution:      2 words, 16-bit code and an execution time of 21.6 usec.
     Side-effects:   Not Applicable
     """
-
     self.insert_registerpair(registerpair, value)
     self.increment_pc(2)
     return self.REGISTERS
@@ -28,7 +27,6 @@ def ldm(self, operand: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   The carry bit is not affected.
     """
-
     self.ACCUMULATOR = operand
     self.increment_pc(1)
     return self.ACCUMULATOR

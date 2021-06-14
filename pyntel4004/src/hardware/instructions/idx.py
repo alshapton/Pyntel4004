@@ -26,7 +26,6 @@ def inc(self, register: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   The carry bit is not affected.
     """
-
     self.increment_register(register)
     self.increment_pc(1)
     return self.REGISTERS[register]
@@ -59,8 +58,6 @@ def fin(self, registerpair: int):
                         located. That is, next address is
                         (PH + 1) (0000) (0001) and not (PH) (0000) (0001).
     """
-
-    # EXCEPTION (b) - fin instruction is located at page boundary #
     eop = self.is_end_of_page(self.PROGRAM_COUNTER, 1)
     if eop is True:
         page_shift = 1
