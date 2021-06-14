@@ -446,7 +446,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                             print_ln('', label,  '', '', '', '', '', '', '',
                                      '', '', str(count), opcode, str(x[1]),
                                      '', '', '',)
-                            if (x[1] == 'rom') or (x[1] == 'ram'):
+                            if x[1] in ('rom', 'ram'):
                                 location = x[1]
                                 address = 0
                             else:

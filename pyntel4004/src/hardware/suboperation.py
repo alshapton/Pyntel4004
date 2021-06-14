@@ -422,7 +422,7 @@ def write_pin10(self, value: int):
     N/A
 
     """
-    if (value == 0 or value == 1):
+    if value in (0, 1):
         self.PIN_10_SIGNAL_TEST = value
         return True
     else:

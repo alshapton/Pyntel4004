@@ -316,9 +316,7 @@ def kbp(self):
     """
     ACC = self.read_accumulator()
     self.increment_pc(1)
-    if (ACC == 0
-        or ACC == 1
-            or ACC == 2):
+    if ACC in (0, 1, 2):
         return ACC
 
     if ACC == 4:
