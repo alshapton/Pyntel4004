@@ -1,8 +1,9 @@
 # Import i4004 processor
 
 from hardware.processor import processor
-import sys
+import ast
 import getopt
+import sys
 
 ##############################################################################
 #  _ _  _    ___   ___  _  _     ______                 _       _            #
@@ -172,8 +173,7 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
 
         # Evaluate the command (some commands may change
         # the PROGRAM_COUNTER here)
-        eval(exe)
-
+        ast.literal_eval(exe)
     return True
 
 ###############################################################################
