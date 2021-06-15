@@ -230,9 +230,8 @@ def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
     if ls.upper() == 'S':
         return next((item for item in chip.INSTRUCTIONS
                     if str(item["mnemonic"][:3]) == mnemonic), None)
-    else:
-        return next((item for item in chip.INSTRUCTIONS
-                    if str(item["mnemonic"]) == mnemonic), None)
+    return next((item for item in chip.INSTRUCTIONS
+                if str(item["mnemonic"]) == mnemonic), None)
 
 
 def assemble_isz(chip: processor, register, label, dest_label, _LABELS):
