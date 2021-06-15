@@ -230,9 +230,8 @@ def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
     if ls.upper() == 'S':
         return next((item for item in chip.INSTRUCTIONS
                     if str(item["mnemonic"][:3]) == mnemonic), None)
-    else:
-        return next((item for item in chip.INSTRUCTIONS
-                    if str(item["mnemonic"]) == mnemonic), None)
+    return next((item for item in chip.INSTRUCTIONS
+                if str(item["mnemonic"]) == mnemonic), None)
 
 
 def assemble_isz(chip: processor, register, label, dest_label, _LABELS):
@@ -390,7 +389,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 if not constant:
                     if (opcode == 'ld()' or opcode[:2] == 'ld'):
                         opcode = 'ld '
-                    if not opcode in ('org', '/', 'end', 'pin'):
+                    if opcode not in ('org', '/', 'end', 'pin'):
                         opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
                         address = address + opcodeinfo['words']
                 TFILE[p_line] = line.strip()
