@@ -24,7 +24,7 @@ def is_breakpoint(BREAKPOINTS, PC):
 
 
 def deal_with_monitor_command(chip: processor, monitor_command: str,
-                              BREAKPOINTS, monitor:     , opcode: str):
+                              BREAKPOINTS, monitor: bool, opcode: str):
     if monitor_command == '':
         return True, monitor, monitor_command, opcode
 
