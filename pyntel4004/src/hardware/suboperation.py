@@ -128,8 +128,7 @@ def insert_register(self, register: int, value: int):
 
     if value > 15:
         raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value)) # noqa
-    else:
-        self.REGISTERS[register] = value
+    self.REGISTERS[register] = value
     return value
 
 
@@ -205,11 +204,10 @@ def insert_registerpair(self, registerpair: int, value: int):
                                            str(registerpair) +
                                            ',Value: ' +
                                            str(value))
-    else:
-        # Convert a register pair into a base register for insertion
-        base_register = registerpair * 2
-        self.insert_register(base_register, (value >> 4) & 15)   # Bit-shift right and remove low bits   # noqa
-        self.insert_register(base_register + 1, value & 15)      # Remove low bits                       # noqa
+    # Convert a register pair into a base register for insertion
+    base_register = registerpair * 2
+    self.insert_register(base_register, (value >> 4) & 15)   # Bit-shift right and remove low bits   # noqa
+    self.insert_register(base_register + 1, value & 15)      # Remove low bits                       # noqa
     return value
 
 
@@ -846,6 +844,5 @@ def set_accumulator(self, value: int):
     """
     if value > self.MAX_4_BITS:
         raise ValueTooLargeForAccumulator(' Value: ' + str(value))
-    else:
-        self.ACCUMULATOR = value
+    self.ACCUMULATOR = value
     return value
