@@ -353,10 +353,7 @@ def is_end_of_page(self, address: int, word: int):
     page = address // self.PAGE_SIZE
     location = address - (page * self.PAGE_SIZE)
     word = word - 1
-    if (location - word) == self.PAGE_SIZE - 1:
-        return True
-    else:
-        return False
+    return (location - word) == self.PAGE_SIZE - 1
 
 
 def increment_register(self, register: int):
