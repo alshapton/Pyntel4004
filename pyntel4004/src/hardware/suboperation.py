@@ -421,8 +421,7 @@ def write_pin10(self, value: int):
     if value in (0, 1):
         self.PIN_10_SIGNAL_TEST = value
         return True
-    else:
-        raise InvalidPin10Value('PIN 10 attempted to be set to ' + str(value))
+    raise InvalidPin10Value('PIN 10 attempted to be set to ' + str(value))
 
 
 def write_ram_status(self, char: int):
