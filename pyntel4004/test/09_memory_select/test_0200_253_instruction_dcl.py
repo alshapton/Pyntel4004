@@ -36,10 +36,8 @@ def test_dcl_scenario1(rambank):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert chip_test.read_program_counter() ==
-           chip_base.read_program_counter()
-    assert chip_test.CURRENT_RAM_BANK ==
-           chip_base.CURRENT_RAM_BANK
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
+    assert chip_test.CURRENT_RAM_BANK == chip_base.CURRENT_RAM_BANK
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
