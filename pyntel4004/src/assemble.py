@@ -84,7 +84,7 @@ def deal_with_monitor_command(chip: processor, monitor_command: str,
         return None, monitor, monitor_command, opcode
 
 
-def execute(chip: processor, inputfile: str, location, PC, monitor):
+def execute(chip: processor, location: str, PC: int, monitor: bool):
     BREAKPOINTS = []
     _TPS = []
     if location == 'rom':
@@ -92,7 +92,7 @@ def execute(chip: processor, inputfile: str, location, PC, monitor):
     else:
         _TPS = chip.PRAM
 
-    chip.PROGRAM_COUNTER = 0
+    chip.PROGRAM_COUNTER = PC
     opcode = 0
     classic_prompt = '>>> '
     breakout_prompt = 'B>> '
@@ -647,7 +647,7 @@ def main(argv):
         print()
         print('EXECUTING : ')
         print()
-        execute(chip, inputfile, 'rom', 0, True)
+        execute(chip, 'rom', 0, True)
         print()
         acc = chip.read_accumulator()
         print('Accumulator : ' + str(acc) +
