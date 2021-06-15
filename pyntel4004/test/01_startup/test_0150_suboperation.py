@@ -796,15 +796,16 @@ def test_suboperation_test_insert_ram_status_scenario1(value):
 
     # Simulate conditions at end of operation in base chip
 
-    """
-        Hi 2 bits of address are 1 of 4 data RAM chips
-        Nxt 2 bits of address are 1 of 4 registers in the above chip
-        Lo 4 bits are not relevant
+    #
+    #    Hi 2 bits of address are 1 of 4 data RAM chips
+    #    Nxt 2 bits of address are 1 of 4 registers in the above chip
+    #    Lo 4 bits are not relevant
+    #
+    #    e.g.   11110000b =240
+    #
+    #            Chip 3, Register 3
+    #
 
-        e.g.   11110000b =240
-
-                Chip 3, Register 3
-    """
     address = 240
     chip_base.set_accumulator(value[0])
     chip_base.CURRENT_RAM_BANK = 4
