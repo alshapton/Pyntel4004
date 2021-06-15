@@ -94,7 +94,7 @@ def ld(self, register: int):
 
 
 def xch(self, register: int):
-    '''
+    """
     Name:           Exchange index register and accumulator
     Function:       The 4 bit content of designated index register is
                     loaded into the accumulator. The prior content of the
@@ -105,7 +105,7 @@ def xch(self, register: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   The carry bit is not affected.
 
-    '''
+    """
     self.ACBR = self.ACCUMULATOR
     self.ACCUMULATOR = self.REGISTERS[register]
     self.insert_register(register, self.ACBR)
