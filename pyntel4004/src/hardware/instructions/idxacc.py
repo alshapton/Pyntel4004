@@ -94,7 +94,6 @@ def ld(self, register: int):
 
 
 def xch(self, register: int):
-
     '''
     Name:           Exchange index register and accumulator
     Function:       The 4 bit content of designated index register is
