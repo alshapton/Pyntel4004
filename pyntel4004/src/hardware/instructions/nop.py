@@ -11,9 +11,8 @@
 #                                           |_|     #
 #                                                   #
 #####################################################
-"""
-    Commands:   NOP -   NO OPERATION
-"""
+
+#   Commands:   NOP -   NO OPERATION
 
 
 def nop(self):
