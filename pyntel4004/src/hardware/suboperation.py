@@ -343,7 +343,7 @@ def is_end_of_page(self, address: int, word: int):
 
     Raises
     ------
-    InvalidEndOfPage
+    N/A
 
     Notes
     ------
@@ -357,7 +357,6 @@ def is_end_of_page(self, address: int, word: int):
         return True
     else:
         return False
-    raise InvalidEndOfPage('Address:' + str(address))
 
 
 def increment_register(self, register: int):

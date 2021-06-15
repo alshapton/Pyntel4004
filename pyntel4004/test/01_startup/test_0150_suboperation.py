@@ -610,7 +610,7 @@ def test_suboperation_test_flip_wpm_counter_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # flip the WPM counter 4 times, such that it returns to the original value
-    for i in range(4):
+    for _i in range(4):
         chip_test.flip_wpm_counter()
     assert (chip_test.read_wpm_counter() == value)
 
