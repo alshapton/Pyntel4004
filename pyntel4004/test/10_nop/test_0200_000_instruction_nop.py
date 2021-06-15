@@ -12,7 +12,7 @@ def test_validate_instruction():
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[0]
     known = {'opcode': 0, 'mnemonic': 'nop()', 'exe': 10.8, 'bits': ['0000', '0000'], 'words': 1} # noqa
-    assert (known == op)
+    assert known == op
 
 
 def test_post_nop_chip():
@@ -24,11 +24,10 @@ def test_post_nop_chip():
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 chip_base = processor()

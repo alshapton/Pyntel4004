@@ -13,7 +13,7 @@ def test_validate_instruction():
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[241]
     known = {"opcode": 241, "mnemonic": "clc()", "exe": 10.8, "bits": ["1111", '0001'], "words": 1} # noqa
-    assert(op == known)
+    assert op == known
 
 
 def test_scenario1():
@@ -37,13 +37,9 @@ def test_scenario1():
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
-    assert (chip_test.read_carry() ==
-            chip_base.read_carry())
-    assert (chip_test.read_carry() ==
-            chip_base.read_carry())
-            
-    # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
+    assert chip_test.read_carry() == chip_base.read_carry()
+    assert chip_test.read_carry() == chip_base.read_carry()
 
+    # Pickling each chip and comparing will show equality or not.
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
