@@ -389,7 +389,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 if not constant:
                     if (opcode == 'ld()' or opcode[:2] == 'ld'):
                         opcode = 'ld '
-                    if not opcode in ('org', '/', 'end', 'pin'):
+                    if opcode not in ('org', '/', 'end', 'pin'):
                         opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
                         address = address + opcodeinfo['words']
                 TFILE[p_line] = line.strip()
