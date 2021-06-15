@@ -15,7 +15,7 @@ def test_validate_instruction1_15(opcode):
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[opcode]
     known = {"opcode": opcode, "mnemonic": "-"}
-    assert(op == known)
+    assert op == known
 
 
 def test_validate_instruction255():
@@ -23,4 +23,4 @@ def test_validate_instruction255():
     # Validate the "fake" opcode and characteristics:
     op = chip_test.INSTRUCTIONS[255]
     known = {"opcode": 255, "mnemonic": "end", "exe": 0, "bits": ["1111", "1111"], "words": 0}  # noqa
-    assert(op == known)
+    assert op == known

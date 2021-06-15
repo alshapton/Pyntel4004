@@ -35,10 +35,10 @@ def test_suboperation_set_carry():
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_carry() == chip_base.read_carry())
+    assert chip_test.read_carry() == chip_base.read_carry()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 def test_suboperation_reset_carry():
@@ -54,10 +54,10 @@ def test_suboperation_reset_carry():
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_carry() == chip_base.read_carry())
+    assert chip_test.read_carry() == chip_base.read_carry()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -77,8 +77,8 @@ def test_suboperation_read_complement_carry(carry):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # Also ensure the carry flag is still correctly set
-    assert (chip_test.read_complement_carry() == complement_carry)
-    assert (chip_test.read_carry() == chip_test.CARRY)
+    assert chip_test.read_complement_carry() == complement_carry
+    assert chip_test.read_carry() == chip_test.CARRY
 
     # Pickling each chip and comparing will show equality or not.
     # N/A
@@ -100,11 +100,10 @@ def test_suboperation_insert_register_scenario1(register):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 def test_suboperation_insert_register_scenario2():
@@ -114,16 +113,16 @@ def test_suboperation_insert_register_scenario2():
     # Perform the operation under test:
     # attempting to insert a value larger than the register can hold
     with pytest.raises(Exception) as e:
-        assert (processor.insert_register(chip_test, 3, 25))
-    assert (str(e.value) == "Register: 3,Value: 25")
-    assert (e.type == ValueTooLargeForRegister)
+        assert processor.insert_register(chip_test, 3, 25)
+    assert str(e.value) == "Register: 3,Value: 25"
+    assert e.type == ValueTooLargeForRegister
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert(chip_test.read_register(3) == 0)
+    assert chip_test.read_register(3) == 0
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 def test_suboperation_insert_register_scenario3():
@@ -133,9 +132,9 @@ def test_suboperation_insert_register_scenario3():
     # Perform the operation under test:
     # attempting to insert a value into an invalid register
     with pytest.raises(Exception) as e:
-        assert (processor.insert_register(chip_test, 25, 3))
-    assert (str(e.value) == "Register: 25")
-    assert (e.type == InvalidRegister)
+        assert processor.insert_register(chip_test, 25, 3)
+    assert str(e.value) == "Register: 25"
+    assert e.type == InvalidRegister
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -144,7 +143,7 @@ def test_suboperation_insert_register_scenario3():
     # in the base state
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 ##############################################################################
 #                      Read Register                                         #
@@ -162,7 +161,7 @@ def test_suboperation_read_register(register):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_register(register) == 5)
+    assert chip_test.read_register(register) == 5
 
 
 ##############################################################################
@@ -182,11 +181,10 @@ def test_suboperation_insert_registerpair_scenario1(registerpair):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 def test_suboperation_insert_registerpair_scenario2():
@@ -196,16 +194,16 @@ def test_suboperation_insert_registerpair_scenario2():
     # Perform the operation under test:
     # attempting to insert a value larger than the register pair can hold
     with pytest.raises(Exception) as e:
-        assert (processor.insert_registerpair(chip_test, 3, 300))
-    assert (str(e.value) == "Register Pair: 3,Value: 300")
-    assert (e.type == ValueTooLargeForRegisterPair)
+        assert processor.insert_registerpair(chip_test, 3, 300)
+    assert str(e.value) == "Register Pair: 3,Value: 300"
+    assert e.type == ValueTooLargeForRegisterPair
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert(chip_test.read_register(3) == 0)
+    assert chip_test.read_register(3) == 0
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 def test_suboperation_insert_registerpair_scenario3():
@@ -215,9 +213,9 @@ def test_suboperation_insert_registerpair_scenario3():
     # Perform the operation under test:
     # attempting to insert a value into an invalid registerpair
     with pytest.raises(Exception) as e:
-        assert (processor.insert_registerpair(chip_test, 9, 3))
-    assert (str(e.value) == "Register Pair: 9")
-    assert (e.type == InvalidRegisterPair)
+        assert processor.insert_registerpair(chip_test, 9, 3)
+    assert str(e.value) == "Register Pair: 9"
+    assert e.type == InvalidRegisterPair
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -226,7 +224,7 @@ def test_suboperation_insert_registerpair_scenario3():
     # in the base state
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -241,7 +239,7 @@ def test_suboperation_read_registerpair():
 
     # Perform the operation under test:
     # Read a value from register pair 3 (registers 6 and 7)
-    assert (chip_test.read_registerpair(3) == 254)
+    assert chip_test.read_registerpair(3) == 254
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -267,11 +265,10 @@ def test_suboperation_increment_pc_scenario1(words):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 def test_suboperation_increment_pc_scenario2():
@@ -284,15 +281,14 @@ def test_suboperation_increment_pc_scenario2():
     # Perform the operation under test:
     # attempting to increment the Program Counter beyond the end of memory
     with pytest.raises(Exception) as e:
-        assert (processor.increment_pc(chip_test, 2))
-    assert (str(e.value) == "Program counter attempted to be set to 4097")
-    assert (e.type == ProgramCounterOutOfBounds)
+        assert processor.increment_pc(chip_test, 2)
+    assert str(e.value) == "Program counter attempted to be set to 4097"
+    assert e.type == ProgramCounterOutOfBounds
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
 
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
 
 ##############################################################################
@@ -316,11 +312,11 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == \
+           chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("pc", [ 3841,4090])  # noqa
@@ -338,18 +334,17 @@ def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
 
     # attempting to increment the Program Counter beyond the end of memory
     with pytest.raises(Exception) as e:
-        assert (processor.inc_pc_by_page(chip_test, pc))
-    assert (str(e.value) == "Program counter attempted to be set to " +
-                            str(pc + chip_base.PAGE_SIZE))
-    assert (e.type == ProgramCounterOutOfBounds)
+        assert processor.inc_pc_by_page(chip_test, pc)
+    assert str(e.value) == "Program counter attempted to be set to " + str(pc + chip_base.PAGE_SIZE) # noqa
+    assert e.type == ProgramCounterOutOfBounds
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == \
+            chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -365,17 +360,17 @@ def test_suboperation_is_at_end_of_page_scenario1():
     # N/A
 
     # Check for end of page (5 different page values)
-    assert(processor.is_end_of_page(chip_test, 0, 1) is False)
-    assert(processor.is_end_of_page(chip_test, 0, 2) is False)
+    assert processor.is_end_of_page(chip_test, 0, 1) is False
+    assert processor.is_end_of_page(chip_test, 0, 2) is False
 
-    assert(processor.is_end_of_page(chip_test, 2209, 1) is False)
-    assert(processor.is_end_of_page(chip_test, 2209, 2) is False)
+    assert processor.is_end_of_page(chip_test, 2209, 1) is False
+    assert processor.is_end_of_page(chip_test, 2209, 2) is False
 
-    assert(processor.is_end_of_page(chip_test, 254, 1) is False)
-    assert(processor.is_end_of_page(chip_test, 254, 2) is False)
+    assert processor.is_end_of_page(chip_test, 254, 1) is False
+    assert processor.is_end_of_page(chip_test, 254, 2) is False
 
-    assert(processor.is_end_of_page(chip_test, 255, 1) is True)
-    assert(processor.is_end_of_page(chip_test, 255, 2) is False)
+    assert processor.is_end_of_page(chip_test, 255, 1) is True
+    assert processor.is_end_of_page(chip_test, 255, 2) is False
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -410,11 +405,10 @@ def test_suboperation_is_at_end_of_page_scenario2():
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -435,11 +429,11 @@ def test_suboperation_check_for_overflow(values):
     # Check for overflow
 
     acc, carry = processor.check_overflow(chip_test)
-    assert (acc == values[1])
-    assert (carry == values[2])
+    assert acc == values[1]
+    assert carry == values[2]
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -459,7 +453,7 @@ def test_suboperation_set_accumulator_scenario1(value):
     # N/A
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("value", [16, 20, 257])
@@ -476,17 +470,17 @@ def test_suboperation_set_accumulator_scenario2(value):
 
     # attempting to set the accumulator to an invalid value
     with pytest.raises(Exception) as e:
-        assert (processor.set_accumulator(chip_test, value))
-    assert (str(e.value) == ' Value: ' + str(value))
-    assert (e.type == ValueTooLargeForAccumulator)
+        assert processor.set_accumulator(chip_test, value)
+    assert str(e.value) == ' Value: ' + str(value)
+    assert e.type == ValueTooLargeForAccumulator
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
+
 
 ##############################################################################
 #                Check Increment Register                                    #
@@ -503,10 +497,10 @@ def test_suboperation_test_inc_register_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     chip_test.increment_register(4)
-    assert (processor.read_register(chip_test, 4) == value + 1)
+    assert processor.read_register(chip_test, 4) == value + 1
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 def test_suboperation_test_inc_register_scenario2():
@@ -525,10 +519,10 @@ def test_suboperation_test_inc_register_scenario2():
     # This is a rollover - i.e. 15 incremented becomes 0
 
     processor.increment_register(chip_test, 4)
-    assert (processor.read_register(chip_test, 4) == 0)
+    assert processor.read_register(chip_test, 4) == 0
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("value", [16, 20, 257])
@@ -545,12 +539,12 @@ def test_suboperation_test_increment_register_scenario3(value):
 
     # attempting to use an invalid register
     with pytest.raises(Exception) as e:
-        assert (processor.increment_register(chip_test, value))
-    assert (str(e.value) == 'Register: ' + str(value))
-    assert (e.type == InvalidRegister)
+        assert processor.increment_register(chip_test, value)
+    assert str(e.value) == 'Register: ' + str(value)
+    assert e.type == InvalidRegister
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -567,10 +561,10 @@ def test_suboperation_test_write_pin10_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     chip_test.write_pin10(value)
-    assert (chip_test.read_pin10() == value)
+    assert chip_test.read_pin10() == value
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("value", [-1, 2, 23, 98, -3])
@@ -587,12 +581,12 @@ def test_suboperation_test_increment_register_scenario2(value):
 
     # attempting to use an invalid PIN10 value
     with pytest.raises(Exception) as e:
-        assert (processor.write_pin10(chip_test, value))
-    assert (str(e.value) == 'PIN 10 attempted to be set to ' + str(value))
-    assert (e.type == InvalidPin10Value)
+        assert processor.write_pin10(chip_test, value)
+    assert str(e.value) == 'PIN 10 attempted to be set to ' + str(value)
+    assert e.type == InvalidPin10Value
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -612,10 +606,10 @@ def test_suboperation_test_flip_wpm_counter_scenario1(value):
     # flip the WPM counter 4 times, such that it returns to the original value
     for _i in range(4):
         chip_test.flip_wpm_counter()
-    assert (chip_test.read_wpm_counter() == value)
+    assert chip_test.read_wpm_counter() == value
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -635,10 +629,10 @@ def test_suboperation_test_binary_decimal_scenario1(value):
 
     # Call the binary_to_decimal method - the rest of the chip should
     # stay unchanged
-    assert (str(chip_test.binary_to_decimal(value[0])) == value[1])
+    assert str(chip_test.binary_to_decimal(value[0])) == value[1]
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("value", ['-1', 'not a binary', '',
@@ -656,16 +650,16 @@ def test_suboperation_test_binary_decimal_scenario2(value):
 
     # attempting to use an invalid binary number
     with pytest.raises(Exception) as e:
-        assert (processor.binary_to_decimal(chip_test, value))
+        assert processor.binary_to_decimal(chip_test, value)
     if value != '':
-        assert (str(e.value) == '"' + value + '"')
+        assert str(e.value) == '"' + value + '"'
     else:
-        assert (str(e.value) == '"<empty>"')
+        assert str(e.value) == '"<empty>"'
 
-    assert (e.type == NotABinaryNumber)
+    assert e.type == NotABinaryNumber
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -691,10 +685,10 @@ def test_suboperation_test_decimal_to_binaryscenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # Attempt to convert decimal to binary (chip status should not change)
-    assert (chip_test.decimal_to_binary(value[1], value[0]) == value[2])
+    assert chip_test.decimal_to_binary(value[1], value[0]) == value[2]
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("value", [[-1, 4], [-1, 8], [-1, 12],
@@ -714,13 +708,13 @@ def test_suboperation_test_decimal_to_binary_scenario2(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert (processor.decimal_to_binary(chip_test, value[0], value[1]))
-        assert (str(e.value) == 'Value: ' + str(value[0] +
-                                                'Bits: ' + str(value[1])))
-        assert (e.type == ValueOutOfRangeForBits)
+        assert processor.decimal_to_binary(chip_test, value[0], value[1])
+        assert str(e.value) == 'Value: ' + str(value[0] +
+                                                'Bits: ' + str(value[1]))
+        assert e.type == ValueOutOfRangeForBits
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("value", [-1, 0, 1, 2, 3, 5, 6, 7, 9,
@@ -738,12 +732,12 @@ def test_suboperation_test_decimal_to_binary_scenario3(value):
 
     # attempting to use a bit value which is illegal
     with pytest.raises(Exception) as e:
-        assert (processor.decimal_to_binary(chip_test, value[0], 3))
-        assert (str(e.value) == 'Bits: ' + str(value[1]))
-        assert (e.type == InvalidBitValue)
+        assert processor.decimal_to_binary(chip_test, value[0], 3)
+        assert str(e.value) == 'Bits: ' + str(value[1])
+        assert e.type == InvalidBitValue
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -764,10 +758,10 @@ def test_suboperation_test_ones_complement_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # Attempt to convert decimal to binary (chip status should not change)
-    assert (chip_test.ones_complement(value[0], value[2]) == value[1])
+    assert chip_test.ones_complement(value[0], value[2]) == value[1]
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("value", [[-1, 4], [-1, 8], [-1, 12],
@@ -786,10 +780,10 @@ def test_suboperation_test_ones_complement_scenario2(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert (processor.ones_complement(chip_test, value[0], value[1]))
-        assert (str(e.value) == 'Value: ' + str(value[0] +
-                                                'Bits: ' + str(value[1])))
-        assert (e.type == ValueOutOfRangeForBits)
+        assert processor.ones_complement(chip_test, value[0], value[1])
+        assert str(e.value) == 'Value: ' + str(value[0] +
+                                                'Bits: ' + str(value[1]))
+        assert e.type == ValueOutOfRangeForBits
 
 
 ##############################################################################
@@ -828,10 +822,10 @@ def test_suboperation_test_insert_ram_status_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     #
-    assert (chip_test.STATUS_CHARACTERS[4][3][3][value[1]] == value[0])
+    assert chip_test.STATUS_CHARACTERS[4][3][3][value[1]] == value[0]
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -850,9 +844,9 @@ def test_suboperation_test_write_to_stackscenario1(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert (processor.write_to_stack(chip_test, value[0]))
-        assert (str(e.value) == 'Value: ' + str(value[0]))
-        assert (e.type == ValueOutOfRangeForStack)
+        assert processor.write_to_stack(chip_test, value[0])
+        assert str(e.value) == 'Value: ' + str(value[0])
+        assert e.type == ValueOutOfRangeForStack
 
 
 def test_suboperation_test_write_to_stack_scenario2():
@@ -863,10 +857,10 @@ def test_suboperation_test_write_to_stack_scenario2():
 
     # Check that stack pointer is initialized and no content on the stack
 
-    assert (chip_test.STACK_POINTER == 2)
-    assert (chip_test.STACK[2] == 0)
-    assert (chip_test.STACK[1] == 0)
-    assert (chip_test.STACK[0] == 0)
+    assert chip_test.STACK_POINTER == 2
+    assert chip_test.STACK[2] == 0
+    assert chip_test.STACK[1] == 0
+    assert chip_test.STACK[0] == 0
 
     # Scenario 2.1
 
@@ -881,11 +875,11 @@ def test_suboperation_test_write_to_stack_scenario2():
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     #
-    assert (chip_test.STACK_POINTER == 1)
-    assert (chip_test.STACK[2] == 14)
+    assert chip_test.STACK_POINTER == 1
+    assert chip_test.STACK[2] == 14
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
     # Scenario 2.2
 
@@ -901,12 +895,12 @@ def test_suboperation_test_write_to_stack_scenario2():
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     #
-    assert (chip_test.STACK_POINTER == 0)
-    assert (chip_test.STACK[2] == 14)
-    assert (chip_test.STACK[1] == 22)
+    assert chip_test.STACK_POINTER == 0
+    assert chip_test.STACK[2] == 14
+    assert chip_test.STACK[1] == 22
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
     # Scenario 2.2
 
@@ -922,11 +916,11 @@ def test_suboperation_test_write_to_stack_scenario2():
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    #
-    assert (chip_test.STACK_POINTER == 2)
-    assert (chip_test.STACK[2] == 14)
-    assert (chip_test.STACK[1] == 22)
-    assert (chip_test.STACK[0] == 33)
+
+    assert chip_test.STACK_POINTER == 2
+    assert chip_test.STACK[2] == 14
+    assert chip_test.STACK[1] == 22
+    assert chip_test.STACK[0] == 33
 
     # Scenario 2.3
 
@@ -944,13 +938,13 @@ def test_suboperation_test_write_to_stack_scenario2():
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     #
-    assert (chip_test.STACK_POINTER == 1)
-    assert (chip_test.STACK[2] == 44)
-    assert (chip_test.STACK[1] == 22)
-    assert (chip_test.STACK[0] == 33)
+    assert chip_test.STACK_POINTER == 1
+    assert chip_test.STACK[2] == 44
+    assert chip_test.STACK[1] == 22
+    assert chip_test.STACK[0] == 33
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -971,43 +965,43 @@ def test_suboperation_test_read_from_stack_scenarios():
     processor.write_to_stack(chip_base, 33)
 
     # Assert that the stack is in a position that is known
-    assert (chip_test.STACK_POINTER == 2)
-    assert (chip_test.STACK[2] == 11)
-    assert (chip_test.STACK[1] == 22)
-    assert (chip_test.STACK[0] == 33)
+    assert chip_test.STACK_POINTER == 2
+    assert chip_test.STACK[2] == 11
+    assert chip_test.STACK[1] == 22
+    assert chip_test.STACK[0] == 33
 
     # Scenario (a)
 
     processor.read_from_stack(chip_base)
-    assert(processor.read_from_stack(chip_test) == 33)
-    assert(chip_test.STACK_POINTER == 0)
+    assert processor.read_from_stack(chip_test) == 33
+    assert chip_test.STACK_POINTER == 0
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
     # Scenario (b)
     processor.read_from_stack(chip_base)
-    assert(processor.read_from_stack(chip_test) == 22)
-    assert(chip_test.STACK_POINTER == 1)
+    assert processor.read_from_stack(chip_test) == 22
+    assert chip_test.STACK_POINTER == 1
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
     # Scenario (c)
     processor.read_from_stack(chip_base)
-    assert(processor.read_from_stack(chip_test) == 11)
-    assert(chip_test.STACK_POINTER == 2)
+    assert processor.read_from_stack(chip_test) == 11
+    assert chip_test.STACK_POINTER == 2
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
     # Scenario (d) (Wrap-around)
     processor.read_from_stack(chip_base)
-    assert(processor.read_from_stack(chip_test) == 33)
-    assert(chip_test.STACK_POINTER == 0)
+    assert processor.read_from_stack(chip_test) == 33
+    assert chip_test.STACK_POINTER == 0
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -1028,13 +1022,13 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario1(value):
     # (chip status should not change)
     chunks = processor.convert_decimal_to_n_bit_slices(chip_test, value[0],
                 value[1], value[2], value[3]) # noqa
-    assert (chunks == [value[4], value[5]])
+    assert chunks == [value[4], value[5]]
 
     # Simulate conditions at end of operation in base chip
     # N/A
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("value", [[12, 4, 200, 'd', 0, 12, 8],
@@ -1056,13 +1050,13 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario2(value):
     # (chip status should not change)
     chunks = processor.convert_decimal_to_n_bit_slices(chip_test, value[0],
                 value[1], value[2], value[3]) # noqa
-    assert (chunks == [value[4], value[5], value[6]])
+    assert chunks == [value[4], value[5], value[6]]
 
     # Simulate conditions at end of operation in base chip
     # N/A
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 def test_suboperation_convert_decimal_to_n_bit_slices_scenario3():
@@ -1077,56 +1071,56 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario3():
 
     # attempting to use an invalid bit value (1)
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 3, 1, 12, 'd')) # noqa
-        assert (str(e.value) == 'Bits: 3')
-        assert (e.type == InvalidBitValue)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 3, 1, 12, 'd') # noqa
+        assert str(e.value) == 'Bits: 3'
+        assert e.type == InvalidBitValue
 
     # attempting to use an invalid bit value (2)
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 0, 1, 12, 'd')) # noqa
-        assert (str(e.value) == 'Bits: 0')
-        assert (e.type == InvalidBitValue)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 0, 1, 12, 'd') # noqa
+        assert str(e.value) == 'Bits: 0'
+        assert e.type == InvalidBitValue
 
     # attempting to use an invalid chunk value (1)
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 12, 1, 12, 'd')) # noqa
-        assert (str(e.value) == 'Chunk: 1')
-        assert (e.type == InvalidChunkValue)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 12, 1, 12, 'd') # noqa
+        assert str(e.value) == 'Chunk: 1'
+        assert e.type == InvalidChunkValue
 
 
 def test_suboperation_convert_decimal_to_n_bit_slices_scenario4():
     # attempting to use an invalid bit value (2)
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 12, 0, 12, 'd')) # noqa
-        assert (str(e.value) == 'Chunk: 0')
-        assert (e.type == InvalidChunkValue)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 12, 0, 12, 'd') # noqa
+        assert str(e.value) == 'Chunk: 0'
+        assert e.type == InvalidChunkValue
 
     # attempting to use an incompatible bit/chunk combination (1)
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 12, 8, 12, 'd')) # noqa
-        assert (str(e.value) == 'Bits: 12 Chunk: 8')
-        assert (e.type == IncompatibleChunkBit)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 12, 8, 12, 'd') # noqa
+        assert str(e.value) == 'Bits: 12 Chunk: 8'
+        assert e.type == IncompatibleChunkBit
 
     # attempting to use an incompatible bit/chunk combination (2)
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 4, 8, 12, 'd')) # noqa
-        assert (str(e.value) == 'Bits: 4 Chunk: 8')
-        assert (e.type == IncompatibleChunkBit)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 4, 8, 12, 'd') # noqa
+        assert str(e.value) == 'Bits: 4 Chunk: 8'
+        assert e.type == IncompatibleChunkBit
 
     # attempting to use an out of range value (1)
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 12, 4, -1, 'd')) # noqa
-        assert (str(e.value) == 'Value: -1 Bits: 12')
-        assert (e.type == ValueOutOfRangeForBits)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 12, 4, -1, 'd') # noqa
+        assert str(e.value) == 'Value: -1 Bits: 12'
+        assert e.type == ValueOutOfRangeForBits
 
     # attempting to use an out of range value (2)
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 8, 8, 257, 'd')) # noqa
-        assert (str(e.value) == 'Value: 12 Bits: 8')
-        assert (e.type == ValueOutOfRangeForBits)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 8, 8, 257, 'd') # noqa
+        assert str(e.value) == 'Value: 12 Bits: 8'
+        assert e.type == ValueOutOfRangeForBits
 
     # attempting to use a large value
     with pytest.raises(Exception) as e:
-        assert (processor.convert_decimal_to_n_bit_slices(chip_test, 8, 8, 8192, 'd')) # noqa
-        assert (str(e.value) == 'Value: 8192 Bits: 8')
-        assert (e.type == ValueOutOfRangeForBits)
+        assert processor.convert_decimal_to_n_bit_slices(chip_test, 8, 8, 8192, 'd') # noqa
+        assert str(e.value) == 'Value: 8192 Bits: 8'
+        assert e.type == ValueOutOfRangeForBits
