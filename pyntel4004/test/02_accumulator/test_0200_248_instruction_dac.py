@@ -10,11 +10,15 @@ from hardware.processor import processor # noqa
 
 
 def test_validate_instruction():
+    '''
+    Ensure instruction's characteristics are valid
+    '''
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[248]
     known = {"opcode": 248, "mnemonic": "dac()", "exe": 10.8, "bits": ["1111", '1000'], "words": 1} # noqa
     assert(op == known)
+
 
 @pytest.mark.parametrize("values", [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1],
                                     [6, 1], [7, 1], [8, 1], [9, 1], [10, 1],

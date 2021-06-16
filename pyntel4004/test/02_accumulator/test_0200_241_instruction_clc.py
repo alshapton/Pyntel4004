@@ -10,6 +10,9 @@ from hardware.exceptions import InvalidRamBank # noqa
 
 
 def test_validate_instruction():
+    '''
+    Ensure instruction's characteristics are valid
+    '''
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[241]

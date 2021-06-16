@@ -10,6 +10,9 @@ from hardware.processor import processor # noqa
 
 
 def test_validate_instruction():
+    '''
+    Ensure instruction's characteristics are valid
+    '''
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[243]
@@ -43,4 +46,3 @@ def test_scenario1(values):
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
-
