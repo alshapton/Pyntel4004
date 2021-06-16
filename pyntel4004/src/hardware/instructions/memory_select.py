@@ -87,4 +87,4 @@ def src(self, registerpair: int):
     self.increment_pc(1)
     address = self.read_registerpair(registerpair)
     self.COMMAND_REGISTER = address
-    return None
+    return address
