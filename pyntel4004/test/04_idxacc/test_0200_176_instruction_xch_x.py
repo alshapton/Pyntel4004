@@ -18,7 +18,7 @@ def test_validate_instruction(register):
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[176 + register]
     known = {"opcode": 176 + register, "mnemonic": "xch(" + str(register) + ")", "exe": 10.8, "bits": ["1011", decimal_to_binary(chip_test,4, register)], "words": 1} # noqa
-    assert(op == known)
+    assert op == known
 
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7,
@@ -47,12 +47,9 @@ def test_scenario1(register):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
-    assert (chip_test.read_accumulator() ==
-            chip_base.read_accumulator())
-    assert (chip_test.REGISTERS[register] ==
-            chip_base.REGISTERS[register])
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
+    assert chip_test.read_accumulator() == chip_base.read_accumulator()
+    assert chip_test.REGISTERS[register] == chip_base.REGISTERS[register]
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)

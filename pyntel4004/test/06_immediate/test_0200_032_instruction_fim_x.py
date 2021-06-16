@@ -17,7 +17,7 @@ def test_validate_instruction(registerpair):
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[32 + (registerpair * 2)]
     known = {"opcode": 32 + (registerpair * 2), "mnemonic": "fim(" + str(registerpair) + "p,data8)", "exe": 21.6, "bits": ["0010", decimal_to_binary(chip_test,4, ( 2 * registerpair)), 'xxxx', 'xxxx'], "words": 2} # noqa
-    assert(op == known)
+    assert op == known
 
 
 @pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])
@@ -45,14 +45,10 @@ def test_scenario1(registerpair):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
-    assert (chip_test.read_accumulator() ==
-            chip_base.read_accumulator())
-    assert (chip_test.REGISTERS[base_register] ==
-            chip_base.REGISTERS[base_register])
-    assert (chip_test.REGISTERS[base_register + 1] ==
-            chip_base.REGISTERS[base_register + 1])
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
+    assert chip_test.read_accumulator() == chip_base.read_accumulator()
+    assert chip_test.REGISTERS[base_register] == chip_base.REGISTERS[base_register]
+    assert chip_test.REGISTERS[base_register + 1] == chip_base.REGISTERS[base_register + 1]
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
