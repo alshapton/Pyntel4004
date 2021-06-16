@@ -6,6 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/alshapton/pyntel4004)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=active+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=resolved+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/alshapton/pyntel4004)
 
 A Python software implementation of the Intel 4004 processor.
 
