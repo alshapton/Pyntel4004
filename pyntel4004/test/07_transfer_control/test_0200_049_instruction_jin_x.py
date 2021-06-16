@@ -18,7 +18,7 @@ def test_validate_instruction(value):
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[49 + (value * 2)]
     known = {"opcode": 49 + (value * 2), "mnemonic": "jin(" + str(value) + ")", "exe": 10.8, "bits": ["0011", decimal_to_binary(chip_test, 4, (2 * value) + 1)], "words": 1} # noqa
-    assert(op == known)
+    assert op == known
 
 
 @pytest.mark.parametrize("values", [[100, 4, 21, 21], [255, 4, 21, 276]])
@@ -50,11 +50,10 @@ def test_scenario1(values):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("values", [[4095, 4, 21, 4350], [4095, 4, 42, 4350]])
@@ -82,8 +81,7 @@ def test_scenario2(values):
 
     # attempting to use an invalid address
     with pytest.raises(Exception) as e:
-        assert (processor.jin(chip_test, RP))
-        print(chip_test.PROGRAM_COUNTER)
+        assert processor.jin(chip_test, RP)
 
-    assert (str(e.value) == 'Program counter attempted to be set to ' + str(PCE)) # noqa
-    assert (e.type == ProgramCounterOutOfBounds)
+    assert str(e.value) == 'Program counter attempted to be set to ' + str(PCE) # noqa
+    assert e.type == ProgramCounterOutOfBounds
