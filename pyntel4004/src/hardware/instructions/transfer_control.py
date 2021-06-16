@@ -176,4 +176,4 @@ def isz(self, register: int, address: int):
         self.increment_pc(2)
     else:
         self.PROGRAM_COUNTER = address
-    return None
+    return self.PROGRAM_COUNTER
