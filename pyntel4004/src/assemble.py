@@ -645,7 +645,7 @@ def main(argv):
     result = assemble(inputfile, outputfile, chip)
     if result:
         print()
-        print('EXECUTING : ')
+        print('EXECUTING PROGRAM: ')
         print()
         execute(chip, 'rom', 0, True)
         print()
