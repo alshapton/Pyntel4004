@@ -623,7 +623,7 @@ def main(argv):
     inputfile = ''
     outputfile = ''
     try:
-        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
+        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="]) # noqa
     except getopt.GetoptError:
         print('assemble.py -i <inputfile>')
         sys.exit(2)

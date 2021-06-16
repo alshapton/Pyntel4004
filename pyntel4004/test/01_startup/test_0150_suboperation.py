@@ -685,7 +685,7 @@ def test_suboperation_test_decimal_to_binaryscenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # Attempt to convert decimal to binary (chip status should not change)
-    assert chip_test.decimal_to_binary(value[1], value[0]) == value[2]
+    assert processor.decimal_to_binary(value[1], value[0]) == value[2]
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
@@ -708,7 +708,7 @@ def test_suboperation_test_decimal_to_binary_scenario2(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert processor.decimal_to_binary(chip_test, value[0], value[1])
+        assert processor.decimal_to_binary(value[0], value[1])
         assert str(e.value) == 'Value: ' + str(value[0]) + \
                                'Bits: ' + str(value[1])
         assert e.type == ValueOutOfRangeForBits
@@ -732,7 +732,7 @@ def test_suboperation_test_decimal_to_binary_scenario3(value):
 
     # attempting to use a bit value which is illegal
     with pytest.raises(Exception) as e:
-        assert processor.decimal_to_binary(chip_test, value[0], 3)
+        assert processor.decimal_to_binary(value[0], 3)
         assert str(e.value) == 'Bits: ' + str(value[1])
         assert e.type == InvalidBitValue
 

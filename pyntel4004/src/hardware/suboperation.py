@@ -455,8 +455,8 @@ def write_ram_status(self, char: int):
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTERS[crb]
 
-    chip = int(self.decimal_to_binary(8, address)[:2], 2)
-    register = int(self.decimal_to_binary(8, address)[2:4], 2)
+    chip = int(decimal_to_binary(8, address)[:2], 2)
+    register = int(decimal_to_binary(8, address)[2:4], 2)
 
     self.STATUS_CHARACTERS[crb][chip][register][char] = value
     return True
@@ -654,7 +654,7 @@ def convert_decimal_to_n_bit_slices(self, bits: int, chunk: int, decimal: int, r
         raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
                                      ' Bits: ' + str(bits))
 
-    binary = decimal_to_binary(self, bits, decimal)
+    binary = decimal_to_binary(bits, decimal)
     chunks = [binary[i:i+chunk] for i in range(0, len(binary), chunk)]
     if result != 'b':
         decimals = []
@@ -664,7 +664,7 @@ def convert_decimal_to_n_bit_slices(self, bits: int, chunk: int, decimal: int, r
     return chunks
 
 
-def decimal_to_binary(self, bits: int, decimal: int):
+def decimal_to_binary(bits: int, decimal: int):
     """
     Converts a decimal value into a binary value of a specified bit length
 

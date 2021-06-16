@@ -18,7 +18,7 @@ def test_validate_instruction(value):
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[49 + (value * 2)]
-    known = {"opcode": 49 + (value * 2), "mnemonic": "jin(" + str(value) + ")", "exe": 10.8, "bits": ["0011", decimal_to_binary(chip_test, 4, (2 * value) + 1)], "words": 1} # noqa
+    known = {"opcode": 49 + (value * 2), "mnemonic": "jin(" + str(value) + ")", "exe": 10.8, "bits": ["0011", decimal_to_binary( 4, (2 * value) + 1)], "words": 1} # noqa
     assert op == known
 
 

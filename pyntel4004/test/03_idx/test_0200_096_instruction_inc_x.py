@@ -17,7 +17,7 @@ def test_validate_instruction(register):
     print(register)
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[96 + register]
-    known = {"opcode": 96 + register, "mnemonic": "inc(" + str(register) + ")", "exe": 10.8, "bits": ["0110", decimal_to_binary(chip_test, 4, register)], "words": 1} # noqa
+    known = {"opcode": 96 + register, "mnemonic": "inc(" + str(register) + ")", "exe": 10.8, "bits": ["0110", decimal_to_binary( 4, register)], "words": 1} # noqa
     assert(op == known)
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) # noqa
