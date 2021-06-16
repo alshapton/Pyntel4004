@@ -53,7 +53,7 @@ def test_scenario2():
 
     # Perform the instruction under test:
     # Use register 0 to attempt to raise an exception
-    for i in range(14):
+    for _i in range(14):
         processor.inc(chip_test, 0)
 
     # Simulate conditions at end of instruction in base chip
