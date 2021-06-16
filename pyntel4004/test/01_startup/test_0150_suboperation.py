@@ -341,7 +341,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     assert chip_test.read_program_counter() == \
-            chip_base.read_program_counter()
+           chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
@@ -400,7 +400,7 @@ def test_suboperation_is_at_end_of_page_scenario2():
         processor.is_end_of_page(chip_test, 4096, 0)
         processor.is_end_of_page(chip_test, 4096, -1)
 
-    except Exception as e:
+    except pytest.raises(Exception) as e:
         assert False, (e.type == InvalidEndOfPage)
 
     # Make assertions that the base chip is now at the same state as
@@ -709,8 +709,8 @@ def test_suboperation_test_decimal_to_binary_scenario2(value):
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
         assert processor.decimal_to_binary(chip_test, value[0], value[1])
-        assert str(e.value) == 'Value: ' + str(value[0] +
-                                                'Bits: ' + str(value[1]))
+        assert str(e.value) == 'Value: ' + str(value[0]) + \
+                               'Bits: ' + str(value[1])
         assert e.type == ValueOutOfRangeForBits
 
     # Pickling each chip and comparing will show equality or not.
@@ -781,8 +781,8 @@ def test_suboperation_test_ones_complement_scenario2(value):
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
         assert processor.ones_complement(chip_test, value[0], value[1])
-        assert str(e.value) == 'Value: ' + str(value[0] +
-                                                'Bits: ' + str(value[1]))
+        assert str(e.value) == 'Value: ' + str(value[0]) + \
+                               'Bits: ' + str(value[1])
         assert e.type == ValueOutOfRangeForBits
 
 
