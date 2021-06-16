@@ -142,7 +142,7 @@ def jcn(self, conditions: int, address: int):
     if i == 0:
         if (carry == 1) or (accumulator == 0) or (pin10 == 0):
             self.PROGRAM_COUNTER = address
-    if i == 1:
+    else:
         if (carry == 1) or (accumulator != 0) or (pin10 == 1):
             self.increment_pc(2)
     return self.PROGRAM_COUNTER
