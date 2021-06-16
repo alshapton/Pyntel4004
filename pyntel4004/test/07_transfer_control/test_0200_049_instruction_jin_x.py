@@ -14,9 +14,7 @@ from hardware.suboperation import decimal_to_binary, convert_decimal_to_n_bit_sl
 
 @pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7])
 def test_validate_instruction(value):
-    '''
-    Ensure instruction's characteristics are valid
-    '''
+    ''' Ensure instruction's characteristics are valid '''
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[49 + (value * 2)]
