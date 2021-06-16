@@ -234,7 +234,7 @@ def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
                 if str(item["mnemonic"]) == mnemonic), None)
 
 
-def assemble_isz(chip: processor, register, label, dest_label, _LABELS):
+def assemble_isz(chip: processor, register, dest_label, _LABELS):
     n_opcode = 112 + int(register)
     opcodeinfo = next((item for item in chip.INSTRUCTIONS
                       if item["opcode"] == n_opcode), None)
@@ -549,7 +549,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                     n_opcode, label_addr, words, \
                                         addr_left, addr_right, \
                                         bit1, bit2 = \
-                                        assemble_isz(chip, x[1], label, x[2],
+                                        assemble_isz(chip, x[1], x[2],
                                                      _LABELS)
                                     TPS[address] = n_opcode
                                     TPS[address + 1] = label_addr
@@ -623,7 +623,7 @@ def main(argv):
     inputfile = ''
     outputfile = ''
     try:
-        opts = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
+        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
     except getopt.GetoptError:
         print('assemble.py -i <inputfile>')
         sys.exit(2)
