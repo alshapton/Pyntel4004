@@ -59,4 +59,3 @@ def test_scenario1(values):
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
-

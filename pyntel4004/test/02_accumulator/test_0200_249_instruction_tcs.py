@@ -19,6 +19,7 @@ def test_validate_instruction():
     known = {"opcode": 249, "mnemonic": "tcs()", "exe": 10.8, "bits": ["1111", '1001'], "words": 1} # noqa
     assert(op == known)
 
+
 @pytest.mark.parametrize("values", [[0, 9], [1, 10]])
 def test_scenario1(values):
     chip_test = processor()
@@ -52,4 +53,3 @@ def test_scenario1(values):
 
     # Pickling each chip and comparing will show equality or not.
     assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
-

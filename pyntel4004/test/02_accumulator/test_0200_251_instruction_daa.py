@@ -19,6 +19,7 @@ def test_validate_instruction():
     known = {"opcode": 251, "mnemonic": "daa()", "exe": 10.8, "bits": ["1111", '1011'], "words": 1} # noqa
     assert(op == known)
 
+
 @pytest.mark.parametrize("values", [[1, 0, 6, 1], [1, 1, 7, 1],
                                     [1, 2, 8, 1], [1, 3, 9, 1],
                                     [1, 4, 10, 1], [1, 5, 11, 1],

@@ -20,7 +20,8 @@ def test_validate_instruction():
     assert(op == known)
 
 
-@pytest.mark.parametrize("values", [[1, 0, 2, 0], [13, 0, 10, 1, [15, 0, 14, 1]]])
+@pytest.mark.parametrize("values",
+                         [[1, 0, 2, 0], [13, 0, 10, 1, [15, 0, 14, 1]]])
 def test_scenario1(values):
     chip_test = processor()
     chip_base = processor()
