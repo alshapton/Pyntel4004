@@ -17,7 +17,7 @@ def test_validate_instruction(registerpair):
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[48 + (registerpair * 2)]
     known = {"opcode": 48 + (registerpair * 2), "mnemonic": "fin(" + str(registerpair) + ")", "exe": 21.6, "bits": ["0011", decimal_to_binary(chip_test, 4, registerpair *2 )], "words": 1} # noqa
-    assert(op == known)
+    assert op == known
 
 
 @pytest.mark.parametrize("values", [[1, 123, 23], [1, 234, 34],
@@ -49,12 +49,12 @@ def test_scenario1(values):
     left_r = chip_test.read_register(values[0])
     right_r = chip_test.read_register(values[0]+1)
 
-    assert(left == left_r)
-    assert(right == right_r)
-    assert(chip_test.PROGRAM_COUNTER == 256)
+    assert left == left_r
+    assert right == right_r
+    assert chip_test.PROGRAM_COUNTER == 256
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("values", [[1, 123, 23], [1, 234, 34],
@@ -86,9 +86,9 @@ def test_scenario2(values):
     left_r = chip_test.read_register(values[0])
     right_r = chip_test.read_register(values[0]+1)
 
-    assert(left == left_r)
-    assert(right == right_r)
-    assert(chip_test.PROGRAM_COUNTER == 11)
+    assert left == left_r
+    assert right == right_r
+    assert chip_test.PROGRAM_COUNTER == 11
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)

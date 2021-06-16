@@ -47,8 +47,8 @@ def test_scenario1(registerpair):
 
     assert chip_test.read_program_counter() == chip_base.read_program_counter()
     assert chip_test.read_accumulator() == chip_base.read_accumulator()
-    assert chip_test.REGISTERS[base_register] == chip_base.REGISTERS[base_register]
-    assert chip_test.REGISTERS[base_register + 1] == chip_base.REGISTERS[base_register + 1]
+    assert chip_test.REGISTERS[base_register] == chip_base.REGISTERS[base_register] # noqa
+    assert chip_test.REGISTERS[base_register + 1] == chip_base.REGISTERS[base_register + 1] # noqa
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
