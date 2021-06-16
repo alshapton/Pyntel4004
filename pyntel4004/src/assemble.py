@@ -361,39 +361,39 @@ def assemble(program_name: str, object_file: str, chip: processor):
             # if line is empty, end of file is reached
             if not line:
                 break
-            else:
-                # Work with a line of assembly code
-                parts = line.split()
-                if parts[0][-1] == ',':
-                    # Found a label, now add it to the label table
-                    if add_label(_LABELS, parts[0]) == -1:
-                        ERR = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
-                               ' at line ' + str(p_line + 1))
-                        break
-                    # Attach value to a label
-                    if '0' <= str(parts[1])[:1] <= '9':
-                        constant = True
-                        match_label(_LABELS, parts[0], parts[1])
-                    else:
-                        match_label(_LABELS, parts[0], address)
-                    # Set opcode
-                    opcode = parts[1][:3]
+
+            # Work with a line of assembly code
+            parts = line.split()
+            if parts[0][-1] == ',':
+                # Found a label, now add it to the label table
+                if add_label(_LABELS, parts[0]) == -1:
+                    ERR = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
+                           ' at line ' + str(p_line + 1))
+                    break
+                # Attach value to a label
+                if '0' <= str(parts[1])[:1] <= '9':
+                    constant = True
+                    match_label(_LABELS, parts[0], parts[1])
                 else:
-                    # Set opcode
-                    opcode = parts[0][:3]
-                if opcode[:3] == 'inc':
-                    ERR = validate_inc(parts, p_line + 1)
-                    if ERR:
-                        break
-                # Custom opcodes
-                if not constant:
-                    if (opcode == 'ld()' or opcode[:2] == 'ld'):
-                        opcode = 'ld '
-                    if opcode not in ('org', '/', 'end', 'pin'):
-                        opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
-                        address = address + opcodeinfo['words']
-                TFILE[p_line] = line.strip()
-                p_line = p_line + 1
+                    match_label(_LABELS, parts[0], address)
+                # Set opcode
+                opcode = parts[1][:3]
+            else:
+                # Set opcode
+                opcode = parts[0][:3]
+            if opcode[:3] == 'inc':
+                ERR = validate_inc(parts, p_line + 1)
+                if ERR:
+                    break
+            # Custom opcodes
+            if not constant:
+                if (opcode == 'ld()' or opcode[:2] == 'ld'):
+                    opcode = 'ld '
+                if opcode not in ('org', '/', 'end', 'pin'):
+                    opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+                    address = address + opcodeinfo['words']
+            TFILE[p_line] = line.strip()
+            p_line = p_line + 1
         # Completed reading program into memory
         program.close()
 
