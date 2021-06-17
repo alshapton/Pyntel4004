@@ -73,10 +73,7 @@ Assembler directives are not part of the program itself, but can control things 
 | stack   |  stack   | Show the stack and the location of the stack pointer |
 
 
-### Additional License information
-
-This package is [Treeware](https://treeware.earth). If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/alshapton/Pyntel4004) to thank us for our work. By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
-
+## Licence            This package is [Treeware](https://treeware.earth). If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/alshapton/Pyntel4004) to thank us for our work. By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
 
 ### Credits
 
