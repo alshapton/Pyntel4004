@@ -312,8 +312,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert chip_test.read_program_counter() == \
-           chip_base.read_program_counter()
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
@@ -340,8 +339,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
-    assert chip_test.read_program_counter() == \
-           chip_base.read_program_counter()
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)

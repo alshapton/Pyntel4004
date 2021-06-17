@@ -14,7 +14,7 @@ from hardware.exceptions import InvalidRegisterPair # noqa
 
 @pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])
 def test_validate_instruction(registerpair):
-    ''' Ensure instruction's characteristics are valid '''
+    '''Ensure instruction's characteristics are valid.'''
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[33 + (registerpair * 2)]

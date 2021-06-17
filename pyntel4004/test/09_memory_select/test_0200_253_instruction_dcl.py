@@ -12,7 +12,7 @@ from hardware.exceptions import InvalidRamBank # noqa
 
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
 def test_validate_dcl_instruction(rambank):
-    ''' Ensure instruction's characteristics are valid '''
+    '''Ensure instruction's characteristics are valid.'''
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[253]
