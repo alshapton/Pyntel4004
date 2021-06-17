@@ -12,7 +12,7 @@ from hardware.suboperation import insert_register , decimal_to_binary  # noqa
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_validate_instruction(register):
-    '''Ensure instruction's characteristics are valid.'''
+    """Ensure instruction's characteristics are valid."""
     chip_test = processor()
     print(register)
     # Validate the instruction's opcode and characteristics:

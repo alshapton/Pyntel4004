@@ -1,10 +1,37 @@
 # Read Processor Methods
 
+
 def read_all_registers(self):
+    """
+    Return the values of the Registers
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    REGISTERS
+        The values of all the Registers
+    """
     return self.REGISTERS
 
 
 def read_all_command_registers(self):
+    """
+    Return the values of all of the Command Registers
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    COMMAND_REGISTERS
+        The values of all the Command Registers
+    """
     return self.COMMAND_REGISTERS
 
 
