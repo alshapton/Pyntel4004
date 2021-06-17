@@ -6,7 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/alshapton/pyntel4004)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=active+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=resolved+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/alshapton/pyntel4004)
+[![Plant Tree](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=Plant%20Tree&query=%24.total&url=https%3A%2F%2Fpublic.offset.earth%2Fusers%2Ftreeware%2Ftrees)](https://plant.treeware.earth/alshapton/pyntel4004)
 
 A Python software implementation of the Intel 4004 processor.
 
@@ -71,6 +71,12 @@ Assembler directives are not part of the program itself, but can control things 
 |  regs   |  regs    | Show all 16 registers |
 |  rom    |   rom     | Show the complete contents of ROM |
 | stack   |  stack   | Show the stack and the location of the stack pointer |
+
+
+### Additional License information
+
+This package is [Treeware](https://treeware.earth). If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/alshapton/Pyntel4004) to thank us for our work. By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
+
 
 ### Credits
 
