@@ -19,7 +19,7 @@ def test_validate_instruction(registerpair):
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[33 + (registerpair * 2)]
     known = {"opcode": 33 + (registerpair * 2), "mnemonic": "src(" + str(registerpair) + ")", "exe": 21.6, "bits": ["0010", decimal_to_binary(4, (registerpair  * 2) + 1)], "words": 1} # noqa
-    assert(op == known)
+    assert op == known
 
 
 @pytest.mark.parametrize("values", [[0, 240], [1, 91], [2, 245], [3, 102],
@@ -46,13 +46,11 @@ def test_scenario1(values):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert (chip_test.read_program_counter() ==
-            chip_base.read_program_counter())
-    assert (chip_test.COMMAND_REGISTER ==
-            chip_base.COMMAND_REGISTER)
+    assert chip_test.read_program_counter() == chip_base.read_program_counter()
+    assert chip_test.COMMAND_REGISTER == chip_base.COMMAND_REGISTER
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 @pytest.mark.parametrize("registerpair", [8, 9])
@@ -71,9 +69,9 @@ def test_dcl_scenario2(registerpair):
 
     # attempting to use an invalid Register Pair
     with pytest.raises(Exception) as e:
-        assert (processor.src(chip_test, registerpair))
-    assert (str(e.value) == 'Register pair : ' + str(registerpair))
-    assert (e.type == InvalidRegisterPair)
+        assert processor.src(chip_test, registerpair)
+    assert str(e.value) == 'Register pair : ' + str(registerpair)
+    assert e.type == InvalidRegisterPair
 
     # Pickling each chip and comparing will show equality or not.
-    assert (pickle.dumps(chip_test) == pickle.dumps(chip_base))
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
