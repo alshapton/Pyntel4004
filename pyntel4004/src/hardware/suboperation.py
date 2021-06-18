@@ -158,7 +158,7 @@ def read_register(self, register: int):
     N/A
 
     """
-    if (register >= 0 and register <= 15):
+    if 0 <= register <= 15:
         pass
     else:
         raise InvalidRegister('Register:' + str(register))
@@ -196,7 +196,7 @@ def insert_registerpair(self, registerpair: int, value: int):
     N/A
 
     """
-    if (registerpair < 0 or registerpair > 7):
+    if 0 > registerpair < 7:
         raise InvalidRegisterPair('Register Pair: ' +
                                   str(registerpair))
     if value > 256:
