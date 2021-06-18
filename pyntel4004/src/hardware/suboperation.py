@@ -121,7 +121,7 @@ def insert_register(self, register: int, value: int):
     N/A
 
     """
-    if (register >= 0 and register <= 15):
+    if 0 <= register <= 15:
         pass
     else:
         raise InvalidRegister('Register: ' + str(register))
