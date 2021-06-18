@@ -10,10 +10,10 @@
 #############################################################
 
 """
-    Commands:   ADD -   ADD REGISTER TO ACCUMULATOR WITH CARRY
-                SUB -   SUBTRACT REGISTER FROM ACCUMULATOR WITH BORROW
-                LD  -   LOAD ACCUMULATOR
-                XCH -   EXCHANGE REGISTER AND ACCUMULATOR
+Commands:   ADD -   ADD REGISTER TO ACCUMULATOR WITH CARRY
+            SUB -   SUBTRACT REGISTER FROM ACCUMULATOR WITH BORROW
+            LD  -   LOAD ACCUMULATOR
+            XCH -   EXCHANGE REGISTER AND ACCUMULATOR
 """
 
 

@@ -9,8 +9,8 @@
 ###########################################################
 
 """
-    Commands:   INC -   INCREMENT REGISTER
-                FIN -   FETCH INDIRECT
+Commands:   INC -   INCREMENT REGISTER
+            FIN -   FETCH INDIRECT
 """
 
 

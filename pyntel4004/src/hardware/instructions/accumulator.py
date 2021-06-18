@@ -8,19 +8,19 @@
 ##########################################################################
 
 """
-    Commands:   CLB -   CLEAR BOTH
-                CLC -   CLEAR CARRY
-                IAC -   INCREMENT ACCUMULATOR
-                CMC -   COMPLEMENT CARRY
-                CMA -   COMPLEMENT ACCUMULATOR
-                RAL -   ROTATE ACCUMULATOR LEFT THROUGH CARRY
-                RAR -   ROTATE ACCUMULATOR RIGHT THROUGH CARRY
-                TCC -   TRANSMIT CARRY AND CLEAR
-                DAC -   DECREMENT ACCUMULATOR
-                TCS -   TRANSFER CARRY SUBTRACT
-                STC -   SET CARRY
-                DAA -   DECIMAL ADJUST ACCUMULATOR
-                KBP -   KEYBOARD PROCESS
+Commands:   CLB -   CLEAR BOTH
+            CLC -   CLEAR CARRY
+            IAC -   INCREMENT ACCUMULATOR
+            CMC -   COMPLEMENT CARRY
+            CMA -   COMPLEMENT ACCUMULATOR
+            RAL -   ROTATE ACCUMULATOR LEFT THROUGH CARRY
+            RAR -   ROTATE ACCUMULATOR RIGHT THROUGH CARRY
+            TCC -   TRANSMIT CARRY AND CLEAR
+            DAC -   DECREMENT ACCUMULATOR
+            TCS -   TRANSFER CARRY SUBTRACT
+            STC -   SET CARRY
+            DAA -   DECIMAL ADJUST ACCUMULATOR
+            KBP -   KEYBOARD PROCESS
 """
 
 

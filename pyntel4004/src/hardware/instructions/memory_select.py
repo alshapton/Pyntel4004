@@ -11,8 +11,8 @@
 ##########################################################################
 
 """
-    Commands:   DCL -   DESIGNATE COMMAND LINE
-                SRC -   SEND REGISTER CONTROL
+Commands:   DCL -   DESIGNATE COMMAND LINE
+            SRC -   SEND REGISTER CONTROL
 """
 
 from hardware.exceptions import InvalidRamBank, InvalidRegisterPair

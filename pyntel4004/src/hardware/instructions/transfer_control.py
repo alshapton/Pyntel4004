@@ -11,10 +11,10 @@
 ##########################################################################
 
 """
-    Commands:   JUN -   JUMP UNCONDITIONALLY
-                JIN -   JUMP INDIRECT
-                JCN -   JUMP ON CONDITION
-                ISZ -   INCREMENT AND SKIP IF ZERO
+Commands:   JUN -   JUMP UNCONDITIONALLY
+            JIN -   JUMP INDIRECT
+            JCN -   JUMP ON CONDITION
+            ISZ -   INCREMENT AND SKIP IF ZERO
 """
 
 
