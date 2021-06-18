@@ -17,6 +17,31 @@ import sys
 
 
 def is_breakpoint(BREAKPOINTS, PC):
+    """
+    Determine if the current programme counter is at a predetermined
+    breakpoint.
+
+    Parameters
+    ----------
+    BREAKPOINT : list, mandatory
+        A list of the predetermined breakpoints
+    PC: int, mandatory
+        The current value of the program counter
+
+    Returns
+    -------
+    True        if the current program counter is at a breakpoint
+    False       if the current program counter is not at a breakpoint
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     for i in BREAKPOINTS:
         if str(i) == str(PC):
             return True
@@ -220,7 +245,27 @@ def get_bits(opcodeinfo):
 
 
 def do_error(message: str):
-    # Print Assembly error
+    """
+    Print an assembly error message
+
+    Parameters
+    ----------
+        message: str, mandatory
+        The error message to display
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     print()
     print(message)
     return True
@@ -257,7 +302,7 @@ def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
     Raises
     ------
     N/A
-    
+
     Notes
     ------
     N/A
