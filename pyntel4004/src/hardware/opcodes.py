@@ -1,6 +1,7 @@
 # flake8: noqa
 # Ignore format and style issues
 class instructions:
+    """Complete set of opcodes for the i4004 processor."""
     opcodes = [
                 {"opcode": 0, "mnemonic": "nop()", "exe": 10.8, "bits": ["0000", "0000"], "words": 1},
                 {"opcode": 1, "mnemonic": "-"},

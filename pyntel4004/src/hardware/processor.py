@@ -1,5 +1,5 @@
 class processor:
-
+    """Definition of an i4004 processor."""
     # Import processor internals
     import hardware.opcodes
     from hardware.reset import init_command_registers, init_pram, \
