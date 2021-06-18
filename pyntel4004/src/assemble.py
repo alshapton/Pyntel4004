@@ -198,7 +198,7 @@ def add_label(_L, label: str):
 
 
 def match_label(_L, label: str, address):
-    for _i in enumerate(_L):
+    for _i in range(len(_L)): # noqa
         if _L[_i]['label'] == label:
             _L[_i]['address'] = address
     return _L
@@ -228,16 +228,27 @@ def do_error(message: str):
 
 def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
     if ls.upper() == 'S':
-        return next((item for item in chip.INSTRUCTIONS
-                    if str(item["mnemonic"][:3]) == mnemonic), None)
-    return next((item for item in chip.INSTRUCTIONS
-                if str(item["mnemonic"]) == mnemonic), None)
+        try:
+            opcodeinfo = next((item for item in chip.INSTRUCTIONS
+                               if str(item["mnemonic"][:3]) == mnemonic), None)
+        except: # noqa
+            opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
+        return opcodeinfo
+    try:
+        opcodeinfo = next((item for item in chip.INSTRUCTIONS
+                            if str(item["mnemonic"]) == mnemonic), None)
+    except: # noqa
+        opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
+    return opcodeinfo
 
 
 def assemble_isz(chip: processor, register, dest_label, _LABELS):
     n_opcode = 112 + int(register)
-    opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                      if item["opcode"] == n_opcode), None)
+    try:
+        opcodeinfo = next((item for item in chip.INSTRUCTIONS
+                          if item["opcode"] == n_opcode), None)
+    except: # noqa
+        opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
     bit1, bit2 = get_bits(opcodeinfo)
     label_address = get_label_addr(_LABELS, dest_label)
     val_left = bin(int(label_address))[2:].zfill(8)[:4]
@@ -605,7 +616,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
 
     print('Labels:')
     print('Address   Label')
-    for _i in enumerate(_LABELS):
+    for _i in range(len(_LABELS)): # noqa
         print('{:>5}     {}'.format(_LABELS[_i]['address'],
               _LABELS[_i]['label']))
     write_program_to_file(TPS, object_file)
