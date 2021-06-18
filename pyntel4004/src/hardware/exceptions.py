@@ -34,8 +34,7 @@ class InvalidRegisterPair(Exception):
 
 
 class NotABinaryNumber(Exception):
-    # Raised when a supplied binary number is NOT binary
-    pass
+    """Raised when a supplied binary number is NOT binary."""
 
 
 class ProgramCounterOutOfBounds(Exception):

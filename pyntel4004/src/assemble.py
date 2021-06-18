@@ -198,7 +198,7 @@ def add_label(_L, label: str):
 
 
 def match_label(_L, label: str, address):
-    for _i in range(len(_L)):
+    for _i in enumerate(_L):
         if _L[_i]['label'] == label:
             _L[_i]['address'] = address
     return _L
@@ -605,7 +605,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
 
     print('Labels:')
     print('Address   Label')
-    for _i in range(len(_LABELS)):
+    for _i in enumerate(_LABELS):
         print('{:>5}     {}'.format(_LABELS[_i]['address'],
               _LABELS[_i]['label']))
     write_program_to_file(TPS, object_file)
