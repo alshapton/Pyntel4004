@@ -244,7 +244,7 @@ def get_bits(opcodeinfo):
     Parameters
     ----------
     opcodeinfo: str, mandatory
-        JSON string containing the opcode info retrieved from the 
+        JSON string containing the opcode info retrieved from the
         opcode table.
 
     Returns
