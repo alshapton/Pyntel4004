@@ -238,7 +238,29 @@ def get_label_addr(_L, label: str):
 
 
 def get_bits(opcodeinfo):
-    # Return an opcode 2x 4-bit nibbles
+    """
+    Return an opcode 2x 4-bit nibbles
+
+    Parameters
+    ----------
+    opcodeinfo: str, mandatory
+        JSON string containing the opcode info retrieved from the 
+        opcode table.
+
+    Returns
+    -------
+    bit1, bit2
+        2 strings containing 4 binary digits each
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     bit1 = opcodeinfo['bits'][0]
     bit2 = opcodeinfo['bits'][1]
     return bit1, bit2
@@ -250,7 +272,7 @@ def do_error(message: str):
 
     Parameters
     ----------
-        message: str, mandatory
+    message: str, mandatory
         The error message to display
 
     Returns
@@ -274,7 +296,7 @@ def do_error(message: str):
 def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
     """
     Given a mnemonic, retrieve information about the mnemonic from
-    the opcode tablee
+    the opcode table
 
     Parameters
     ----------
@@ -397,9 +419,34 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
 
 
 def validate_inc(parts, line):
-    if len(parts) == 1:
-        if parts[0] == 'inc':
-            return do_error('No register value at line ' + str(line))
+    """
+    Validate the contents (i.e. the parameters) of an INC command
+
+    Parameters
+    ----------
+    parts: list, mandatory
+        List of the parts of the line separated into elements of a list
+
+    line: str, mandatory
+        The mnemonic to locate
+
+    Returns
+    -------
+    False in all circumstances except when an error occurs,
+    in which case that error is printed during assembly and the
+    assembly process will cease.
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    if len(parts) == 1 and parts[0] == 'inc':
+        return do_error('No register value at line ' + str(line))
     if len(parts) == 2:
         if ((parts[1] == 'inc') and (parts[0][-1])):
             return do_error('No register value at line ' + str(line))
