@@ -213,6 +213,31 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
 
 
 def add_label(_L, label: str):
+    """
+    Add a label to the label table (if it does not exist already).
+
+    Parameters
+    ----------
+    _L : list, mandatory
+        A list of the existing labels
+    label: str, mandatory
+        A candidate new label
+
+    Returns
+    -------
+    -1          if the label already existed and was not added
+    _L : list
+                the list of labels with the new label appended
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     label_exists = next((item for item in _L
                         if str(item["label"]) == label), None)
     if not label_exists:
@@ -363,6 +388,28 @@ def assemble_isz(chip: processor, register, dest_label, _LABELS):
 
 def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
              f9, f10, f11, f12, f13, f14, f15, f16):
+    """
+    Given a set of items, print them to the screen in a standard, columnar
+    fashion.
+
+    Parameters
+    ----------
+    f0 ....... f16 : str, all optional
+        Parameters to print
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     fmt = '{:>4} {:<10} {:>4} {:>4}  {:>4} {:>4} {:>4} '
     fmt = fmt + '{:>4} {:>7} {:<4} {:<4}{:<8}{:<3}'
     fmt = fmt + ' {:<3} {:<3} {} {}'
@@ -753,6 +800,29 @@ def assemble(program_name: str, object_file: str, chip: processor):
 
 
 def write_program_to_file(program, filename):
+    """
+    Take the assembled program and write to a given filename.
+
+    Parameters
+    ----------
+    program : list, mandatory
+        The compiled program
+    filename: str, mandatory
+        The filename to write to
+
+    Returns
+    -------
+    True
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     with open(filename + '.obj', "w") as output:
         for location in program:
             output.write(str(hex(location)[2:]))
