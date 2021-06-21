@@ -255,6 +255,30 @@ def match_label(_L, label: str, address):
 
 
 def get_label_addr(_L, label: str):
+    """
+    Given a label, get the address for that label.
+
+    Parameters
+    ----------
+    _L : list, mandatory
+        A list of the known labels and their addresses
+    label: str, mandatory
+        The label whose address is required
+
+    Returns
+    -------
+    label_address
+        The integer address of the label
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    This will return -1 if the label is not found
+
+    """
     label_address = -1
     for _i in _L:
         if _i['label'] == label + ',':
