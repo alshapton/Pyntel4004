@@ -23,6 +23,7 @@ from hardware.exceptions import IncompatibleChunkBit, InvalidBitValue, \
 #                      Set/Reset Carry Flag                                  #
 ##############################################################################
 def test_suboperation_set_carry():
+    """Tests for SET Carry Flag."""
     chip_base = processor()
     chip_test = processor()
 
@@ -42,6 +43,7 @@ def test_suboperation_set_carry():
 
 
 def test_suboperation_reset_carry():
+    """Tests for RESET Carry Flag."""
     chip_base = processor()
     chip_test = processor()
 
@@ -65,6 +67,7 @@ def test_suboperation_reset_carry():
 ##############################################################################
 @pytest.mark.parametrize("carry", [0, 1])
 def test_suboperation_read_complement_carry(carry):
+    """Read Complement of Carry Flag."""
     chip_test = processor()
 
     # Simulate conditions at end of operation in base chip
@@ -88,6 +91,7 @@ def test_suboperation_read_complement_carry(carry):
 ##############################################################################
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_suboperation_insert_register_scenario1(register):
+    """ Test Insert Registerr functionality."""
     chip_base = processor()
     chip_test = processor()
 
@@ -107,6 +111,7 @@ def test_suboperation_insert_register_scenario1(register):
 
 
 def test_suboperation_insert_register_scenario2():
+    """ Test Insert Register failure case #1."""
     chip_base = processor()
     chip_test = processor()
 
@@ -126,6 +131,7 @@ def test_suboperation_insert_register_scenario2():
 
 
 def test_suboperation_insert_register_scenario3():
+    """ Test Insert Register failure case #2."""
     chip_base = processor()
     chip_test = processor()
 
@@ -150,6 +156,7 @@ def test_suboperation_insert_register_scenario3():
 ##############################################################################
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_suboperation_read_register(register):
+    """Test Read Register function."""
     chip_test = processor()
 
     # Perform the operation under test:
@@ -169,6 +176,7 @@ def test_suboperation_read_register(register):
 ##############################################################################
 @pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])  # noqa
 def test_suboperation_insert_registerpair_scenario1(registerpair):
+    """Test Insert Register Pair function."""
     chip_base = processor()
     chip_test = processor()
 
@@ -188,6 +196,7 @@ def test_suboperation_insert_registerpair_scenario1(registerpair):
 
 
 def test_suboperation_insert_registerpair_scenario2():
+    """Test Insert Register Pair failure case #1."""
     chip_base = processor()
     chip_test = processor()
 
@@ -207,6 +216,7 @@ def test_suboperation_insert_registerpair_scenario2():
 
 
 def test_suboperation_insert_registerpair_scenario3():
+    """Test Insert Register Pair failure case #2."""
     chip_base = processor()
     chip_test = processor()
 
