@@ -310,7 +310,6 @@ def test_suboperation_increment_pc_scenario2():
 @pytest.mark.parametrize("pc", [45, 2045])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
     """Test Increment PC by page function."""
-
     chip_test = processor()
     chip_base = processor()
 
@@ -335,7 +334,6 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
 @pytest.mark.parametrize("pc", [ 3841,4090])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
     """Test Increment PC by page failure."""
-
     chip_test = processor()
     chip_base = processor()
 
