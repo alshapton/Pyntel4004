@@ -763,18 +763,13 @@ def test_suboperation_test_decimal_to_binary_scenario3(value):
                                    [0, '111111111111', 12]
                                    ])  # noqa
 def test_suboperation_test_ones_complement_scenario1(value):
-    chip_test = processor()
-    chip_base = processor()
 
     # Simulate conditions at end of operation in base chip
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # Attempt to convert decimal to binary (chip status should not change)
-    assert chip_test.ones_complement(value[0], value[2]) == value[1]
-
-    # Pickling each chip and comparing will show equality or not.
-    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
+    assert processor.ones_complement(value[0], value[2]) == value[1]
 
 
 @pytest.mark.parametrize("value", [[-1, 4], [-1, 8], [-1, 12],
@@ -782,8 +777,6 @@ def test_suboperation_test_ones_complement_scenario1(value):
                                    [256, 8], [257, 8],
                                    [4096, 12], [2322442, 12]])
 def test_suboperation_test_ones_complement_scenario2(value):
-
-    chip_test = processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -793,7 +786,7 @@ def test_suboperation_test_ones_complement_scenario2(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert processor.ones_complement(chip_test, value[0], value[1])
+        assert processor.ones_complement(value[0], value[1])
         assert str(e.value) == 'Value: ' + str(value[0]) + \
                                'Bits: ' + str(value[1])
         assert e.type == ValueOutOfRangeForBits

@@ -549,7 +549,7 @@ def read_from_stack(self):
 # Utility operations
 
 
-def ones_complement(self, value: str, bits: int):
+def ones_complement(value: str, bits: int):
     """
     Converts a decimal value into its one's compliment value
     of a specified bit length

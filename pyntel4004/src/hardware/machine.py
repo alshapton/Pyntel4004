@@ -635,7 +635,7 @@ def sbm(self, register: int):
                     be complemented by the program between each required
                     subtraction operation.
     """
-    from hardware.suboperation import check_overflow
+    from hardware.suboperation import check_overflow, ones_complement
 
     # Get value
     crb = self.read_current_ram_bank()
@@ -649,7 +649,7 @@ def sbm(self, register: int):
     value = self.RAM[absolute_address]
 
     # Perform addition
-    value_complement = int(self.ones_complement(value, 4), 2)
+    value_complement = int(ones_complement(value, 4), 2)
     carry_complement = self.read_complement_carry()
 
     self.ACCUMULATOR = (self.ACCUMULATOR + value_complement +
