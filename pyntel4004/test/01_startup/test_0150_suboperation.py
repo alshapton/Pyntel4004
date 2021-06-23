@@ -91,7 +91,7 @@ def test_suboperation_read_complement_carry(carry):
 ##############################################################################
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_suboperation_insert_register_scenario1(register):
-    """ Test Insert Registerr functionality."""
+    """Test Insert Registerr functionality."""
     chip_base = processor()
     chip_test = processor()
 
@@ -111,7 +111,7 @@ def test_suboperation_insert_register_scenario1(register):
 
 
 def test_suboperation_insert_register_scenario2():
-    """ Test Insert Register failure case #1."""
+    """Test Insert Register failure case #1."""
     chip_base = processor()
     chip_test = processor()
 
@@ -131,7 +131,7 @@ def test_suboperation_insert_register_scenario2():
 
 
 def test_suboperation_insert_register_scenario3():
-    """ Test Insert Register failure case #2."""
+    """Test Insert Register failure case #2."""
     chip_base = processor()
     chip_test = processor()
 
@@ -241,6 +241,7 @@ def test_suboperation_insert_registerpair_scenario3():
 #                      Read Register Pair                                    #
 ##############################################################################
 def test_suboperation_read_registerpair():
+    """Test Read Register Pair function."""
     chip_test = processor()
 
     # Simulate conditions at end of operation in base chip
@@ -261,6 +262,7 @@ def test_suboperation_read_registerpair():
 ##############################################################################
 @pytest.mark.parametrize("words", [0, 1, 2])  # noqa
 def test_suboperation_increment_pc_scenario1(words):
+    """Test increment PC scenario 1."""
     chip_base = processor()
     chip_test = processor()
 
@@ -282,6 +284,7 @@ def test_suboperation_increment_pc_scenario1(words):
 
 
 def test_suboperation_increment_pc_scenario2():
+    """Test Increment PC scenario 2 (failure case)."""
     chip_base = processor()
     chip_test = processor()
 
@@ -306,6 +309,7 @@ def test_suboperation_increment_pc_scenario2():
 ##############################################################################
 @pytest.mark.parametrize("pc", [45, 2045])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
+    """Test Increment PC by page function."""
 
     chip_test = processor()
     chip_base = processor()
@@ -330,6 +334,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
 
 @pytest.mark.parametrize("pc", [ 3841,4090])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
+    """Test Increment PC by page failure."""
 
     chip_test = processor()
     chip_base = processor()
@@ -359,6 +364,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
 #                Is Program Counter at the end of a Page                     #
 ##############################################################################
 def test_suboperation_is_at_end_of_page_scenario1():
+    """Test to see if the PC is at the end of the page."""
     chip_test = processor()
 
     # Simulate conditions at end of operation in base chip
@@ -389,6 +395,7 @@ def test_suboperation_is_at_end_of_page_scenario1():
 
 
 def test_suboperation_is_at_end_of_page_scenario2():
+    """Test failure scenarios for "is PC at end of page" function."""
     chip_test = processor()
     chip_base = processor()
     pc = -1
