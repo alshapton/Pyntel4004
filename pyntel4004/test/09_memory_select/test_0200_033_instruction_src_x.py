@@ -25,6 +25,7 @@ def test_validate_instruction(registerpair):
 @pytest.mark.parametrize("values", [[0, 240], [1, 91], [2, 245], [3, 102],
                                     [4, 30], [5, 164], [6, 196], [7, 231]])
 def test_scenario1(values):
+    """Test SRC instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 
@@ -55,7 +56,7 @@ def test_scenario1(values):
 
 @pytest.mark.parametrize("registerpair", [8, 9])
 def test_dcl_scenario2(registerpair):
-
+    """Test SRC instruction failure."""
     chip_test = processor()
     chip_base = processor()
 

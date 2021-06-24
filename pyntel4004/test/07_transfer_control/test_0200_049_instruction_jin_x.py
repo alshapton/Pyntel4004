@@ -24,6 +24,7 @@ def test_validate_instruction(value):
 
 @pytest.mark.parametrize("values", [[100, 4, 21, 21], [255, 4, 21, 276]])
 def test_scenario1(values):
+    """Test JIN instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 
@@ -59,7 +60,7 @@ def test_scenario1(values):
 
 @pytest.mark.parametrize("values", [[4095, 4, 21, 4350], [4095, 4, 42, 4350]])
 def test_scenario2(values):
-
+    """Test JIN instruction failure."""
     chip_test = processor()
 
     PCB = values[0]

@@ -22,6 +22,7 @@ def test_validate_dcl_instruction(rambank):
 
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
 def test_dcl_scenario1(rambank):
+    """Test DCL instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 
@@ -46,7 +47,7 @@ def test_dcl_scenario1(rambank):
 
 @pytest.mark.parametrize("rambank", [8, 9])
 def test_dcl_scenario2(rambank):
-
+    """Test DCL instruction failure."""
     chip_test = processor()
     chip_base = processor()
 

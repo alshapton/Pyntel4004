@@ -24,6 +24,7 @@ def test_validate_instruction(register):
 
 @pytest.mark.parametrize("values", [[0, 6, 2, 4, 1], [1, 6, 2, 3, 1]])
 def test_scenario1(values):
+    """Test SUB instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

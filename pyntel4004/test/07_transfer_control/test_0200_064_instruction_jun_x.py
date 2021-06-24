@@ -25,6 +25,7 @@ def test_validate_instruction(value):
 
 @pytest.mark.parametrize("address12", [0, 100, 99, 256, 512, 4095, 4094, 2048])
 def test_scenario1(address12):
+    """Test JUN instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 
@@ -48,7 +49,7 @@ def test_scenario1(address12):
 
 @pytest.mark.parametrize("address12", [-1, 4096])
 def test_scenario2(address12):
-
+    """Test JUN instruction failure."""
     chip_test = processor()
     chip_base = processor()
 

@@ -1,5 +1,5 @@
 # Using pytest
-# Test the INC instructions of an instance of an i4004(processor)
+# Test the FIN instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
@@ -25,6 +25,7 @@ def test_validate_instruction(registerpair):
                                     [2, 12, 5], [3, 100, 90], [4, 0, 12],
                                     [5, 44, 100], [6, 15, 48], [7, 255, 0]])
 def test_scenario1(values):
+    """Test FIN instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 
@@ -62,6 +63,7 @@ def test_scenario1(values):
                                     [2, 12, 5], [3, 100, 90], [4, 0, 12],
                                     [5, 44, 100], [6, 15, 48], [7, 255, 0]])
 def test_scenario2(values):
+    """Test DCL instruction functionality (scenario 2)."""
     chip_test = processor()
     chip_base = processor()
 

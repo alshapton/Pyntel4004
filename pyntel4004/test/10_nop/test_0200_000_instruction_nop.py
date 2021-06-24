@@ -17,6 +17,7 @@ def test_validate_instruction():
 
 
 def test_post_nop_chip():
+    """Test NOP instruction."""
     # Perform the instruction under test:
     processor.nop(chip_test)
 

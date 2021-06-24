@@ -22,6 +22,7 @@ def test_validate_instruction(register):
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) # noqa
 def test_scenario1(register):
+    """Test INC instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 
@@ -46,6 +47,7 @@ def test_scenario1(register):
 
 
 def test_scenario2():
+    """Test DCL instruction functionality (scenario 2)."""
 
     chip_test = processor()
     chip_base = processor()
