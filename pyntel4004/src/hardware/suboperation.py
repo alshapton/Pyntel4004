@@ -600,7 +600,7 @@ def ones_complement(value: str, bits: int):
     return ones
 
 
-def convert_decimal_to_n_bit_slices(self, bits: int, chunk: int, decimal: int, result: str='b'): # noqa
+def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result: str='b'): # noqa
     """
     Converts a decimal value into several binary or decimal values of specific
     bit lengths

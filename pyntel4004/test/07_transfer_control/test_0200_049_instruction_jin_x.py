@@ -31,8 +31,8 @@ def test_scenario1(values):
     RP = values[1]
     REG = RP * 2
     RP_CONTENT = values[2]
-    RPM = processor.convert_decimal_to_n_bit_slices(chip_test, 8, 4, RP_CONTENT, 'd')[1] # noqa
-    RPL = processor.convert_decimal_to_n_bit_slices(chip_test, 8, 4, RP_CONTENT, 'd')[0] # noqa
+    RPM = processor.convert_decimal_to_n_bit_slices(8, 4, RP_CONTENT, 'd')[1] # noqa
+    RPL = processor.convert_decimal_to_n_bit_slices(8, 4, RP_CONTENT, 'd')[0] # noqa
     PCE = values[3]
 
     # Set chip to initial status
@@ -66,8 +66,8 @@ def test_scenario2(values):
     RP = values[1]
     REG = RP * 2
     RP_CONTENT = values[2]
-    RPM = processor.convert_decimal_to_n_bit_slices(chip_test, 8, 4, RP_CONTENT, 'd')[1] # noqa
-    RPL = processor.convert_decimal_to_n_bit_slices(chip_test, 8, 4, RP_CONTENT, 'd')[0] # noqa
+    RPM = processor.convert_decimal_to_n_bit_slices(8, 4, RP_CONTENT, 'd')[1] # noqa
+    RPL = processor.convert_decimal_to_n_bit_slices(8, 4, RP_CONTENT, 'd')[0] # noqa
     PCE = values[3]
 
     # Simulate conditions at START of operation in base chip

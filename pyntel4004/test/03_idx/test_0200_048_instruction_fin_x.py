@@ -31,7 +31,7 @@ def test_scenario1(values):
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 256
     chip_base.RAM[values[2]] = values[1]
-    registervalue = convert_decimal_to_n_bit_slices(chip_base, 8, 4, values[1], 'd') # noqa
+    registervalue = convert_decimal_to_n_bit_slices(8, 4, values[1], 'd') # noqa
     chip_base.REGISTERS[0] = registervalue[0]
     chip_base.REGISTERS[1] = registervalue[1]
 
@@ -68,7 +68,7 @@ def test_scenario2(values):
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 11
     chip_base.RAM[values[2]] = values[1]
-    registervalue = convert_decimal_to_n_bit_slices(chip_base, 8, 4, values[1], 'd') # noqa
+    registervalue = convert_decimal_to_n_bit_slices(8, 4, values[1], 'd') # noqa
     chip_base.REGISTERS[0] = registervalue[0]
     chip_base.REGISTERS[1] = registervalue[1]
 
