@@ -50,6 +50,49 @@ def is_breakpoint(BREAKPOINTS, PC):
 
 def deal_with_monitor_command(chip: processor, monitor_command: str,
                               BREAKPOINTS, monitor: bool, opcode: str):
+    """
+    Take appropriate action depending on the command supplied.
+
+    Parameters
+    ----------
+    chip : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    monitor_command: str, mandatory
+        Command given by the user.
+
+    BREAKPOINTS : list, mandatory
+        A list of the predetermined breakpoints
+
+    monitor: bool, mandatory
+        Whether or not the monitor is currently "on" or "off"
+
+    opcode: str, mandatory
+        Opcode of the current instruction
+
+    Returns
+    -------
+    True/False: bool  if the code should continue with monitor on or off
+    None              if the monitor should be disabled 
+
+    monitor: bool
+        Whether or not the monitor is currently "on" or "off"
+
+    monitor_command: str
+        The command that was entered by the user
+
+    opcode: str,
+        Opcode of the current instruction
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    Function will return a value of -1 if the monitor command is invalid.
+
+    """
     if monitor_command == '':
         return True, monitor, monitor_command, opcode
 
@@ -350,7 +393,7 @@ def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
 
     Parameters
     ----------
-    self : processor, mandatory
+    chip : processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     ls: str, mandatory
