@@ -59,12 +59,11 @@ def sub(self, register: int):
                     otherwise, it is set to 1.
                     The 4 bit content of the index register is unaffected.
     """
-    from hardware.suboperation import ones_complement
+    from hardware.suboperation import ones_complement, binary_to_decimal
 
     carry = self.read_complement_carry()
 
-    self.ACCUMULATOR = (self.ACCUMULATOR +
-                        self.binary_to_decimal(
+    self.ACCUMULATOR = (self.ACCUMULATOR + binary_to_decimal(
                             ones_complement(self.REGISTERS[register], 4))
                         + carry)
     # Check for carry bit set/reset when borrow (overflow) is detected

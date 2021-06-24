@@ -642,7 +642,7 @@ def test_suboperation_test_binary_decimal_scenario1(value):
 
     # Call the binary_to_decimal method - the rest of the chip should
     # stay unchanged
-    assert str(chip_test.binary_to_decimal(value[0])) == value[1]
+    assert str(processor.binary_to_decimal(value[0])) == value[1]
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
@@ -663,7 +663,7 @@ def test_suboperation_test_binary_decimal_scenario2(value):
 
     # attempting to use an invalid binary number
     with pytest.raises(Exception) as e:
-        assert processor.binary_to_decimal(chip_test, value)
+        assert processor.binary_to_decimal(value)
     if value != '':
         assert str(e.value) == '"' + value + '"'
     else:

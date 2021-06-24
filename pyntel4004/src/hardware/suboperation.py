@@ -659,7 +659,7 @@ def convert_decimal_to_n_bit_slices(self, bits: int, chunk: int, decimal: int, r
     if result != 'b':
         decimals = []
         for element in chunks:
-            decimals.append(self.binary_to_decimal(element))
+            decimals.append(binary_to_decimal(element))
         chunks = decimals
     return chunks
 
@@ -706,7 +706,7 @@ def decimal_to_binary(bits: int, decimal: int):
     return binary
 
 
-def binary_to_decimal(self, binary: str):
+def binary_to_decimal(binary: str):
     """
     Converts a string value (which must be in binary form) to
     a decimal value
