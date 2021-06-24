@@ -635,7 +635,6 @@ def assemble(program_name: str, object_file: str, chip: processor):
         if line[0] == '/':
             print_ln('', label, ' ', ' ', ' ', ' ', ' ', ' ', ' ',  ' ',
                      ' ', str(count), line, ' ', '', '', '',)
-            pass
         else:
             if len(line) > 0:
                 if x[0][-1] == ',':
@@ -679,7 +678,6 @@ def assemble(program_name: str, object_file: str, chip: processor):
                             print_ln('', label, '', '', '', '', '', '', '', '',
                                      '', '', '', '', str(count), opcode,
                                      str(x[1]))
-                        pass
                     else:
                         if ORG_FOUND is True:
                             if x[0][-1] == ',':
