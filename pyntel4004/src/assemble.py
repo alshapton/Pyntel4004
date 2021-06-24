@@ -107,6 +107,7 @@ def deal_with_monitor_command(chip: processor, monitor_command: str,
         monitor = False
         opcode = 255
         return None, monitor, monitor_command, opcode
+    return -1
 
 
 def execute(chip: processor, location: str, PC: int, monitor: bool):
