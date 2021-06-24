@@ -429,6 +429,7 @@ def test_suboperation_is_at_end_of_page_scenario2():
 ##############################################################################
 @pytest.mark.parametrize("values", [[16,2,1],[15,15,0],[0,0,0],[99,85,1]])  # noqa
 def test_suboperation_check_for_overflow(values):
+    """Test check for overflow function."""
     chip_test = processor()
     chip_base = processor()
 
@@ -454,6 +455,7 @@ def test_suboperation_check_for_overflow(values):
 ##############################################################################
 @pytest.mark.parametrize("value", [-1,0,14,15])  # noqa
 def test_suboperation_set_accumulator_scenario1(value):
+    """Test set accumulator."""
     chip_test = processor()
     chip_base = processor()
 
@@ -471,7 +473,7 @@ def test_suboperation_set_accumulator_scenario1(value):
 
 @pytest.mark.parametrize("value", [16, 20, 257])
 def test_suboperation_set_accumulator_scenario2(value):
-
+    """Test set accumulator function failure."""
     chip_test = processor()
     chip_base = processor()
 
@@ -500,6 +502,7 @@ def test_suboperation_set_accumulator_scenario2(value):
 ##############################################################################
 @pytest.mark.parametrize("value", [0,3,9,14])  # noqa
 def test_suboperation_test_inc_register_scenario1(value):
+    """Test increment register scenario 1."""
     chip_test = processor()
     chip_base = processor()
 
@@ -517,7 +520,7 @@ def test_suboperation_test_inc_register_scenario1(value):
 
 
 def test_suboperation_test_inc_register_scenario2():
-
+    """Test increment register scenario 2."""
     chip_test = processor()
     chip_base = processor()
 
@@ -540,7 +543,7 @@ def test_suboperation_test_inc_register_scenario2():
 
 @pytest.mark.parametrize("value", [16, 20, 257])
 def test_suboperation_test_increment_register_scenario3(value):
-
+    """Test increment register failure."""
     chip_test = processor()
     chip_base = processor()
 
@@ -565,6 +568,7 @@ def test_suboperation_test_increment_register_scenario3(value):
 ##############################################################################
 @pytest.mark.parametrize("value", [0,1])  # noqa
 def test_suboperation_test_write_pin10_scenario1(value):
+    """Test reading of PIN 10."""
     chip_test = processor()
     chip_base = processor()
 
@@ -581,8 +585,8 @@ def test_suboperation_test_write_pin10_scenario1(value):
 
 
 @pytest.mark.parametrize("value", [-1, 2, 23, 98, -3])
-def test_suboperation_test_increment_register_scenario2(value):
-
+def test_suboperation_test_write_pin_10_scenario2(value):
+    """Test PIN 10 failure."""
     chip_test = processor()
     chip_base = processor()
 
@@ -607,6 +611,7 @@ def test_suboperation_test_increment_register_scenario2(value):
 ##############################################################################
 @pytest.mark.parametrize("value", ['LEFT','RIGHT'])  # noqa
 def test_suboperation_test_flip_wpm_counter_scenario1(value):
+    """Test WPM counter flip function."""
     chip_test = processor()
     chip_base = processor()
 
@@ -637,6 +642,7 @@ def test_suboperation_test_flip_wpm_counter_scenario1(value):
                                    ['11001100', '204'],
                                    ['111111111111', '4095'] ])  # noqa
 def test_suboperation_test_binary_decimal_scenario1(value):
+    """Test binary to decimal function #1."""
     chip_test = processor()
     chip_base = processor()
 
@@ -651,7 +657,7 @@ def test_suboperation_test_binary_decimal_scenario1(value):
 @pytest.mark.parametrize("value", ['-1', 'not a binary', '',
                                    'IOIOIOIOI', ' Intel4004'])
 def test_suboperation_test_binary_decimal_scenario2(value):
-
+    """Test binary to decimal function failure #2."""
     chip_test = processor()
     chip_base = processor()
 
@@ -690,6 +696,7 @@ def test_suboperation_test_binary_decimal_scenario2(value):
                                    [1002, 12, '001111101010']
                                    ])  # noqa
 def test_suboperation_test_decimal_to_binaryscenario1(value):
+    """Test decimal to binary function."""
     chip_test = processor()
     chip_base = processor()
 
@@ -709,7 +716,7 @@ def test_suboperation_test_decimal_to_binaryscenario1(value):
                                    [256, 8], [257, 8],
                                    [4096, 12], [2322442, 12]])
 def test_suboperation_test_decimal_to_binary_scenario2(value):
-
+    """Test decimal to binary function failure #2."""
     chip_test = processor()
     chip_base = processor()
 
@@ -733,7 +740,7 @@ def test_suboperation_test_decimal_to_binary_scenario2(value):
 @pytest.mark.parametrize("value", [-1, 0, 1, 2, 3, 5, 6, 7, 9,
                                    10, 11, 13, 14, 15, 16, 17])
 def test_suboperation_test_decimal_to_binary_scenario3(value):
-
+    """Test decimal to binary function failure #3."""
     chip_test = processor()
     chip_base = processor()
 
@@ -763,7 +770,7 @@ def test_suboperation_test_decimal_to_binary_scenario3(value):
                                    [0, '111111111111', 12]
                                    ])  # noqa
 def test_suboperation_test_ones_complement_scenario1(value):
-
+    """Test ones_complement scenario 1."""
     # Simulate conditions at end of operation in base chip
 
     # Make assertions that the base chip is now at the same state as
@@ -777,7 +784,7 @@ def test_suboperation_test_ones_complement_scenario1(value):
                                    [256, 8], [257, 8],
                                    [4096, 12], [2322442, 12]])
 def test_suboperation_test_ones_complement_scenario2(value):
-
+    """Test ones_complement scenario 2."""
     # Simulate conditions at end of operation in base chip
     # N/A
 
@@ -797,6 +804,7 @@ def test_suboperation_test_ones_complement_scenario2(value):
 ##############################################################################
 @pytest.mark.parametrize("value", [[12,0], [12,1], [12,2], [12,3]])  # noqa
 def test_suboperation_test_insert_ram_status_scenario1(value):
+    """Test insert RAM status character."""
     chip_test = processor()
     chip_base = processor()
 
@@ -840,7 +848,7 @@ def test_suboperation_test_insert_ram_status_scenario1(value):
 ##############################################################################
 @pytest.mark.parametrize("value", [-1, -100, -4096, 4096, 4098])  # noqa
 def test_suboperation_test_write_to_stackscenario1(value):
-
+    """Test Write to Stack scenario 1."""
     chip_test = processor()
 
     # Simulate conditions at end of operation in base chip
@@ -857,6 +865,7 @@ def test_suboperation_test_write_to_stackscenario1(value):
 
 
 def test_suboperation_test_write_to_stack_scenario2():
+    """Test Write to Stack scenario 2."""
     chip_test = processor()
     chip_base = processor()
 
@@ -958,6 +967,7 @@ def test_suboperation_test_write_to_stack_scenario2():
 #                Check Read from Stack                                       #
 ##############################################################################
 def test_suboperation_test_read_from_stack_scenarios():
+    """Test Read from Stack."""
     chip_test = processor()
     chip_base = processor()
 
@@ -1022,6 +1032,7 @@ def test_suboperation_test_read_from_stack_scenarios():
                                    [8, 4, 14, 'b', '0000', '1110']
                                    ])  # noqa
 def test_suboperation_convert_decimal_to_n_bit_slices_scenario1(value):
+    """Test convert decimal to n bit slices #1."""
     chip_test = processor()
     chip_base = processor()
 
@@ -1050,6 +1061,7 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario1(value):
                                    [12, 4, 2003, 'd', 7, 13, 3],
                                    ])  # noqa
 def test_suboperation_convert_decimal_to_n_bit_slices_scenario2(value):
+    """Test convert decimal to n bit slices #2."""
     chip_test = processor()
     chip_base = processor()
 
@@ -1067,7 +1079,7 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario2(value):
 
 
 def test_suboperation_convert_decimal_to_n_bit_slices_scenario3():
-
+    """Test convert decimal to n bit slices #3."""
     # Simulate conditions at end of operation in base chip
     # N/A
 
@@ -1094,6 +1106,7 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario3():
 
 
 def test_suboperation_convert_decimal_to_n_bit_slices_scenario4():
+    """Test convert decimal to n bit slices #4."""
     # attempting to use an invalid bit value (2)
     with pytest.raises(Exception) as e:
         assert processor.convert_decimal_to_n_bit_slices(12, 0, 12, 'd') # noqa
