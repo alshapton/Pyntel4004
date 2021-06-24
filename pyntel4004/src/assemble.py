@@ -613,8 +613,8 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
         Address in memory to place the newly assembled instruction
 
     TPS: list, mandatory
-        List representing the memory of the i4004 into which the newly assembled
-        instructions will be placed.
+        List representing the memory of the i4004 into which the
+        newly assembled instructions will be placed.
 
     _LABELS: list, mandatory
         List of valid labels
@@ -623,7 +623,7 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
         Binary representation of 2 4-bit words representing "address"
 
     label: str, mandatory
-        If there is a label associated with this instruction, it will be here, 
+        If there is a label associated with this instruction, it will be here,
         "" otherwise.
 
     count: int, mandatory
@@ -632,12 +632,12 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
     Returns
     -------
     address: int
-        After the instruction has been assembled, the incoming address is incremented
-        by the number of words in the assembled instruction.
+        After the instruction has been assembled, the incoming address
+        is incremented by the number of words in the assembled instruction.
 
     TPS: list
-        List representing the memory of the i4004 into which the newly assembled
-        instruction has just been placed.
+        List representing the memory of the i4004 into which the newly
+        assembled instruction has just been placed.
 
     _LABELS: list
         Addresses of the labels (pass through only)

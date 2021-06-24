@@ -17,7 +17,7 @@ import os
 
 
 def setup(app):
-        """Setup for Sphinx doc theme."""
-        app.add_html_theme(
+    """Setup for Sphinx doc theme."""
+    app.add_html_theme(
         "faculty-sphinx-theme", os.path.abspath(os.path.dirname(__file__))
     )
