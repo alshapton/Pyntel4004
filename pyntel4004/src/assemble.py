@@ -73,7 +73,7 @@ def deal_with_monitor_command(chip: processor, monitor_command: str,
     Returns
     -------
     True/False: bool  if the code should continue with monitor on or off
-    None              if the monitor should be disabled 
+    None              if the monitor should be disabled
 
     monitor: bool
         Whether or not the monitor is currently "on" or "off"
@@ -188,8 +188,11 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
         if OPCODE == 255:  # pseudo-opcode (directive "end" - stop program)
             print('           end')
             break
-        opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                          if item['opcode'] == OPCODE), None)
+        try:
+            opcodeinfo = next((item for item in chip.INSTRUCTIONS
+                              if item['opcode'] == OPCODE), None)
+        except: # noqa
+            opcodeinfo = {"opcode": -1, "mnemonic": "-"}
         exe = opcodeinfo['mnemonic']
         if exe == '-':
             break
@@ -282,8 +285,11 @@ def add_label(_L, label: str):
     N/A
 
     """
-    label_exists = next((item for item in _L
-                        if str(item["label"]) == label), None)
+    try:
+        label_exists = next((item for item in _L
+                            if str(item["label"]) == label), None)
+    except: # noqa
+        pass
     if not label_exists:
         _L.append({'label': label, 'address': -1})
     else:
