@@ -18,6 +18,7 @@ def test_validate_instruction():
 
 
 def test_scenario1():
+    """Test STC instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

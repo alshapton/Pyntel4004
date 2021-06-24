@@ -19,6 +19,7 @@ def test_validate_instruction():
 
 @pytest.mark.parametrize("values", [[0, 0], [1, 0], [4, 0], [7, 0], [9, 0], [13, 0], [14, 0], [15, 1]]) # noqa
 def test_scenario1(values):
+    """Test IAC instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

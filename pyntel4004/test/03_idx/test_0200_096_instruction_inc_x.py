@@ -48,7 +48,6 @@ def test_scenario1(register):
 
 def test_scenario2():
     """Test DCL instruction functionality (scenario 2)."""
-
     chip_test = processor()
     chip_base = processor()
 

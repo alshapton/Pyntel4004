@@ -22,6 +22,7 @@ def test_validate_instruction():
                                     [6, 1], [7, 1], [8, 1], [9, 1], [10, 1],
                                     [11, 1], [12, 1], [13, 1], [14, 1], [15, 1], ]) # noqa
 def test_scenario1(values):
+    """Test DAC instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

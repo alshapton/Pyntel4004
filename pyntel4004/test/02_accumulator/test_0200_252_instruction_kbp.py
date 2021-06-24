@@ -23,6 +23,7 @@ def test_validate_instruction():
                                     [9, 15], [10, 15], [11, 15], [12, 15],
                                     [13, 15], [15, 15], [15, 15]])
 def test_scenario1(values):
+    """Test KPB instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

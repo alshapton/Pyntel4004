@@ -20,6 +20,7 @@ def test_validate_instruction():
 
 @pytest.mark.parametrize("values", [[0, 9], [1, 10]])
 def test_scenario1(values):
+    """Test TCS instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

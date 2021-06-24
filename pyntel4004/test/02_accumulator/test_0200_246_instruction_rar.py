@@ -21,6 +21,7 @@ def test_validate_instruction():
 @pytest.mark.parametrize("values", [[6, 1, 11, 0], [6, 0, 3, 0],
                                     [15, 1, 15, 1], [15, 0, 7, 1]])
 def test_scenario1(values):
+    """Test RAR instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

@@ -20,6 +20,7 @@ def test_validate_instruction():
 
 @pytest.mark.parametrize("values", [[1, 14], [14, 1]])
 def test_scenario1(values):
+    """Test CMA instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

@@ -19,6 +19,7 @@ def test_validate_instruction():
 
 
 def test_scenario1():
+    """Test CLC instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

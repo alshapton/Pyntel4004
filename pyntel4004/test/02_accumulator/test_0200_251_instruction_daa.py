@@ -35,6 +35,7 @@ def test_validate_instruction():
                                     [0, 12, 2, 1], [0, 13, 3, 1],
                                     [0, 14, 4, 1], [0, 15, 5, 1]])
 def test_scenario1(values):
+    """Test DAA instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

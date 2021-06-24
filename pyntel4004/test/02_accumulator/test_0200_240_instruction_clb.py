@@ -12,12 +12,13 @@ def test_validate_instruction():
     """Ensure instruction's characteristics are valid."""
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
-    op = chip_test.INSTRUCTIONS[241]
-    known = {"opcode": 241, "mnemonic": "clc()", "exe": 10.8, "bits": ["1111", '0001'], "words": 1} # noqa
+    op = chip_test.INSTRUCTIONS[240]
+    known = {"opcode": 240, "mnemonic": "clb()", "exe": 10.8, "bits": ["1111", '0000'], "words": 1} # noqa
     assert op == known
 
 
 def test_scenario1():
+    """Test CLB instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 
