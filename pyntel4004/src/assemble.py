@@ -154,6 +154,36 @@ def deal_with_monitor_command(chip: processor, monitor_command: str,
 
 
 def execute(chip: processor, location: str, PC: int, monitor: bool):
+    """
+    Control the execution of a previously assembled program.
+
+    Parameters
+    ----------
+    chip : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    location : int, mandatory
+        The location to which the program should be loaded
+
+    PC : int, mandatory
+        The program counter value commence execution
+
+    monitor: bool, mandatory
+        Whether or not the monitor is currently "on" or "off"
+
+    Returns
+    -------
+    True        in all instances
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     BREAKPOINTS = []
     _TPS = []
     if location == 'rom':
@@ -298,6 +328,34 @@ def add_label(_L, label: str):
 
 
 def match_label(_L, label: str, address):
+    """
+    Given a label and an address, add it (if required) to the list of labels.
+
+    Parameters
+    ----------
+    _L : list, mandatory
+        A list of the known labels and their addresses
+
+    label: str, mandatory
+        The potential new label
+
+    label: int, mandatory
+        The address of the potential new label
+
+    Returns
+    -------
+    label_address
+        The integer address of the label
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    This will return -1 if the label is not found
+
+    """
     for _i in range(len(_L)): # noqa
         if _L[_i]['label'] == label:
             _L[_i]['address'] = address
@@ -446,6 +504,50 @@ def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
 
 
 def assemble_isz(chip: processor, register, dest_label, _LABELS):
+    """
+    Function to correctly assemble the ISZ instruction.
+
+    Parameters
+    ----------
+    chip : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    register: int, mandatory
+        The register which will be compared in this instruction
+
+    dest_label: str, mandatory
+        The label to jump to if the conditions are met
+
+    _LABELS: list, mandatory
+        List of valid labels
+
+    Returns
+    -------
+    n_opcode: int
+        Decimal representation of the opcode (changes depending on conditions)
+
+    label_address: int
+        Address of the label in memory
+
+    opcodeinfo['words']: int
+        Length of the instruction in words
+
+    val_left,val_right: str
+        2 4-bit binary values - MSB and LSB of the memory address to jump to
+        within this page.
+
+    bit1, bit2: str
+        2 4-bit binary values representing the two words of the opcode
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     n_opcode = 112 + int(register)
     try:
         opcodeinfo = next((item for item in chip.INSTRUCTIONS
@@ -493,6 +595,62 @@ def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
 
 def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
                address_right, label, count):
+    """
+    Function to assemble specific instructions.
+
+    Parameters
+    ----------
+    chip : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    x: list, mandatory
+        The current line of code being assembled split into individual elements
+
+    opcode: str, mandatory
+        The textual opcode (LD, LDM etc..)
+
+    address: int, mandatory
+        Address in memory to place the newly assembled instruction
+
+    TPS: list, mandatory
+        List representing the memory of the i4004 into which the newly assembled
+        instructions will be placed.
+
+    _LABELS: list, mandatory
+        List of valid labels
+
+    address_left, address_right: str, mandatory
+        Binary representation of 2 4-bit words representing "address"
+
+    label: str, mandatory
+        If there is a label associated with this instruction, it will be here, 
+        "" otherwise.
+
+    count: int, mandatory
+        Assembly line number (used for printing during assembly)
+
+    Returns
+    -------
+    address: int
+        After the instruction has been assembled, the incoming address is incremented
+        by the number of words in the assembled instruction.
+
+    TPS: list
+        List representing the memory of the i4004 into which the newly assembled
+        instruction has just been placed.
+
+    _LABELS: list
+        Addresses of the labels (pass through only)
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     # pad out for the only 2-character mnemonic
     if opcode == 'ld':
         opcode = 'ld '
@@ -579,6 +737,34 @@ def validate_inc(parts, line):
 
 
 def assemble(program_name: str, object_file: str, chip: processor):
+    """
+    Main tw-pass assembler for i4004 code
+
+    Parameters
+    ----------
+    program_name: str, mandatory
+        Name of the source file to load
+
+    object_file: str, mandatory
+        Name of the output file in which to place the object code
+
+    chip: processor, mandatory
+        Instance of a processor to place the assembled code in.
+
+    Returns
+    -------
+    True if the code assembles correctly
+    False if there are errors in the code
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     # Reset label table for this program
     _LABELS = []
 
@@ -902,6 +1088,26 @@ def write_program_to_file(program, filename):
 
 
 def main(argv):
+    """
+    Control the assembly and execution of a named assembly language file.
+
+    Parameters
+    ----------
+    argv: list of command line arguments
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
     inputfile = ''
     outputfile = ''
     try:
