@@ -23,9 +23,9 @@
 from hardware.instructions.accumulator import clb, clc, cma, cmc, iac, \
      daa, dac, kbp, ral, rar, stc, tcc, tcs  # noqa
 from hardware.instructions.idx import inc, fin  # noqa
-from hardware.instructions.idxacc import add, ld, sub, xch # noqa
-from hardware.instructions.immediate import fim, ldm # noqa
-from hardware.instructions.memory_select import dcl, src # noqa
+from hardware.instructions.idxacc import add, ld, sub, xch  # noqa
+from hardware.instructions.immediate import fim, ldm  # noqa
+from hardware.instructions.memory_select import dcl, src  # noqa
 from hardware.instructions.nop import nop  # noqa
 
 #

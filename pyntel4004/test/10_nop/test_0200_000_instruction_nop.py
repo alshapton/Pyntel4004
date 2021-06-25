@@ -12,7 +12,7 @@ def test_validate_instruction():
     """Ensure instruction's characteristics are valid."""
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[0]
-    known = {'opcode': 0, 'mnemonic': 'nop()', 'exe': 10.8, 'bits': ['0000', '0000'], 'words': 1} # noqa
+    known = {'opcode': 0, 'mnemonic': 'nop()', 'exe': 10.8, 'bits': ['0000', '0000'], 'words': 1}  # noqa
     assert known == op
 
 

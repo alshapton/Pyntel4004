@@ -5,7 +5,7 @@ import sys
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor # noqa
+from hardware.processor import processor  # noqa
 
 
 @pytest.mark.parametrize("opcode", [1, 2, 3, 4, 5, 6, 7,

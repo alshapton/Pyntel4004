@@ -64,8 +64,8 @@ def sub(self, register: int):
     carry = self.read_complement_carry()
 
     self.ACCUMULATOR = (self.ACCUMULATOR + binary_to_decimal(
-                            ones_complement(self.REGISTERS[register], 4))
-                        + carry)
+        ones_complement(self.REGISTERS[register], 4))
+        + carry)
     # Check for carry bit set/reset when borrow (overflow) is detected
     # i.e. the result is more than a 4-bit number (MAX_4_BITS)
     if self.ACCUMULATOR > self.MAX_4_BITS:

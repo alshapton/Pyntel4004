@@ -72,17 +72,17 @@ def test_chip_properties_NO_DRB():
 
 
 def test_chip_properties_NO_COMMAND_REGISTERS():
-    """Ensure the chip has been set with the right number of command registers.""" # noqa
+    """Ensure the chip has been set with the right number of command registers."""  # noqa
     assert chip.NO_COMMAND_REGISTERS == 8
 
 
 def test_chip_properties_NO_STATUS_REGISTERS():
-    """Ensure the chip has been set with the correct number of status registers.""" # noqa
+    """Ensure the chip has been set with the correct number of status registers."""  # noqa
     assert chip.NO_STATUS_REGISTERS == 4
 
 
 def test_chip_properties_NO_STATUS_CHARACTERS():
-    """Ensure the chip has been set with the correct number of status characters.""" # noqa
+    """Ensure the chip has been set with the correct number of status characters."""  # noqa
     assert chip.NO_STATUS_CHARACTERS == 4
 
 

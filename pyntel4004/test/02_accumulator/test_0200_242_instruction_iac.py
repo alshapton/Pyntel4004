@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor # noqa
+from hardware.processor import processor  # noqa
 
 
 def test_validate_instruction():
@@ -14,10 +14,11 @@ def test_validate_instruction():
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[242]
-    known = {"opcode": 242, "mnemonic": "iac()", "exe": 10.8, "bits": ["1111", '0010'], "words": 1} # noqa
+    known = {"opcode": 242, "mnemonic": "iac()", "exe": 10.8, "bits": ["1111", '0010'], "words": 1}  # noqa
     assert op == known
 
-@pytest.mark.parametrize("values", [[0, 0], [1, 0], [4, 0], [7, 0], [9, 0], [13, 0], [14, 0], [15, 1]]) # noqa
+
+@pytest.mark.parametrize("values", [[0, 0], [1, 0], [4, 0], [7, 0], [9, 0], [13, 0], [14, 0], [15, 1]])  # noqa
 def test_scenario1(values):
     """Test IAC instruction functionality."""
     chip_test = processor()

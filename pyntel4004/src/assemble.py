@@ -224,7 +224,7 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
         try:
             opcodeinfo = next((item for item in chip.INSTRUCTIONS
                               if item['opcode'] == OPCODE), None)
-        except: # noqa
+        except:  # noqa
             opcodeinfo = {"opcode": -1, "mnemonic": "-"}
         exe = opcodeinfo['mnemonic']
         if exe == '-':
@@ -321,7 +321,7 @@ def match_label(_L, label: str, address):
     This will return -1 if the label is not found
 
     """
-    for _i in range(len(_L)): # noqa
+    for _i in range(len(_L)):  # noqa
         if _L[_i]['label'] == label:
             _L[_i]['address'] = address
     return _L
@@ -457,13 +457,13 @@ def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
         try:
             opcodeinfo = next((item for item in chip.INSTRUCTIONS
                                if str(item["mnemonic"][:3]) == mnemonic), None)
-        except: # noqa
+        except:  # noqa
             opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
         return opcodeinfo
     try:
         opcodeinfo = next((item for item in chip.INSTRUCTIONS
                            if str(item["mnemonic"]) == mnemonic), None)
-    except: # noqa
+    except:  # noqa
         opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
     return opcodeinfo
 
@@ -517,7 +517,7 @@ def assemble_isz(chip: processor, register, dest_label, _LABELS):
     try:
         opcodeinfo = next((item for item in chip.INSTRUCTIONS
                           if item["opcode"] == n_opcode), None)
-    except: # noqa
+    except:  # noqa
         opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
     bit1, bit2 = get_bits(opcodeinfo)
     label_address = get_label_addr(_LABELS, dest_label)
@@ -895,10 +895,10 @@ def assemble(program_name: str, object_file: str, chip: processor):
                             # Operator & operand (generic)
                             if len(x) == 2:
                                 address, TPS, _LABELS = \
-                                 assemble_2(chip, x, opcode, address, TPS,
-                                            _LABELS, address_left,
-                                            address_right, label,
-                                            count)
+                                    assemble_2(chip, x, opcode, address, TPS,
+                                               _LABELS, address_left,
+                                               address_right, label,
+                                               count)
                             if len(x) == 1:
                                 # Only operator, no operand
                                 bit1, bit2 = get_bits(opcodeinfo)
@@ -1015,7 +1015,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
 
     print('Labels:')
     print('Address   Label')
-    for _i in range(len(_LABELS)): # noqa
+    for _i in range(len(_LABELS)):  # noqa
         print('{:>5}     {}'.format(_LABELS[_i]['address'],
               _LABELS[_i]['label']))
     write_program_to_file(TPS, object_file)
@@ -1076,7 +1076,7 @@ def main(argv):
     inputfile = ''
     outputfile = ''
     try:
-        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="]) # noqa
+        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])  # noqa
     except getopt.GetoptError:
         print('assemble.py -i <inputfile>')
         sys.exit(2)

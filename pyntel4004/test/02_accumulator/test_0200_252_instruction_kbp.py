@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor # noqa
+from hardware.processor import processor  # noqa
 
 
 def test_validate_instruction():
@@ -14,7 +14,7 @@ def test_validate_instruction():
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[252]
-    known = {"opcode": 252, "mnemonic": "kbp()", "exe": 10.8, "bits": ["1111", '1100'], "words": 1} # noqa
+    known = {"opcode": 252, "mnemonic": "kbp()", "exe": 10.8, "bits": ["1111", '1100'], "words": 1}  # noqa
     assert op == known
 
 
