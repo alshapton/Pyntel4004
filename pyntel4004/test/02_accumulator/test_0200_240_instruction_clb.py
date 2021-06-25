@@ -5,7 +5,7 @@ import sys
 import pickle
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor # noqa
+from hardware.processor import processor  # noqa
 
 
 def test_validate_instruction():
@@ -13,7 +13,7 @@ def test_validate_instruction():
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[240]
-    known = {"opcode": 240, "mnemonic": "clb()", "exe": 10.8, "bits": ["1111", '0000'], "words": 1} # noqa
+    known = {"opcode": 240, "mnemonic": "clb()", "exe": 10.8, "bits": ["1111", '0000'], "words": 1}  # noqa
     assert op == known
 
 

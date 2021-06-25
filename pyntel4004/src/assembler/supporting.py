@@ -27,7 +27,7 @@ def add_label(_L, label: str):
     try:
         label_exists = next((item for item in _L
                             if str(item["label"]) == label), None)
-    except: # noqa
+    except:  # noqa
         pass
     if not label_exists:
         _L.append({'label': label, 'address': -1})

@@ -6,10 +6,10 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.exceptions import ProgramCounterOutOfBounds # noqa
-from hardware.processor import processor # noqa
+from hardware.exceptions import ProgramCounterOutOfBounds  # noqa
+from hardware.processor import processor  # noqa
 
-from hardware.suboperation import decimal_to_binary # noqa
+from hardware.suboperation import decimal_to_binary  # noqa
 
 
 @pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -19,7 +19,7 @@ def test_validate_instruction(value):
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[64 + value]
-    known = {"opcode": 64 + value, "mnemonic": "jun(address12)", "exe": 21.6, "bits": ["0100", decimal_to_binary( 4, value)], "words": 2} # noqa
+    known = {"opcode": 64 + value, "mnemonic": "jun(address12)", "exe": 21.6, "bits": ["0100", decimal_to_binary(4, value)], "words": 2}  # noqa
     assert op == known
 
 
@@ -64,7 +64,7 @@ def test_scenario2(address12):
     # attempting to use an invalid address
     with pytest.raises(Exception) as e:
         assert processor.jun(chip_test, address12)
-    assert str(e.value) == 'Program counter attempted to be set to ' + str(address12) # noqa
+    assert str(e.value) == 'Program counter attempted to be set to ' + str(address12)  # noqa
     assert e.type == ProgramCounterOutOfBounds
 
     # Pickling each chip and comparing will show equality or not.

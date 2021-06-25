@@ -7,7 +7,7 @@ from .exceptions import IncompatibleChunkBit, \
     NotABinaryNumber, ProgramCounterOutOfBounds, \
     ValueOutOfRangeForBits, ValueOutOfRangeForStack, \
     ValueTooLargeForAccumulator, ValueTooLargeForRegister, \
-    ValueTooLargeForRegisterPair # noqa
+    ValueTooLargeForRegisterPair  # noqa
 
 
 def set_carry(self):
@@ -127,7 +127,7 @@ def insert_register(self, register: int, value: int):
         raise InvalidRegister('Register: ' + str(register))
 
     if value > 15:
-        raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value)) # noqa
+        raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value))  # noqa
     self.REGISTERS[register] = value
     return value
 
@@ -600,7 +600,7 @@ def ones_complement(value: str, bits: int):
     return ones
 
 
-def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result: str='b'): # noqa
+def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result: str = 'b'):  # noqa
     """
     Converts a decimal value into several binary or decimal values of specific
     bit lengths

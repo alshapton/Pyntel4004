@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor # noqa
+from hardware.processor import processor  # noqa
 
 
 def test_validate_instruction():
@@ -14,13 +14,13 @@ def test_validate_instruction():
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[248]
-    known = {"opcode": 248, "mnemonic": "dac()", "exe": 10.8, "bits": ["1111", '1000'], "words": 1} # noqa
+    known = {"opcode": 248, "mnemonic": "dac()", "exe": 10.8, "bits": ["1111", '1000'], "words": 1}  # noqa
     assert op == known
 
 
 @pytest.mark.parametrize("values", [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1],
                                     [6, 1], [7, 1], [8, 1], [9, 1], [10, 1],
-                                    [11, 1], [12, 1], [13, 1], [14, 1], [15, 1], ]) # noqa
+                                    [11, 1], [12, 1], [13, 1], [14, 1], [15, 1], ])  # noqa
 def test_scenario1(values):
     """Test DAC instruction functionality."""
     chip_test = processor()

@@ -6,8 +6,8 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor # noqa
-from hardware.exceptions import InvalidRamBank # noqa
+from hardware.processor import processor  # noqa
+from hardware.exceptions import InvalidRamBank  # noqa
 
 
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
@@ -16,7 +16,7 @@ def test_validate_dcl_instruction(rambank):
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[253]
-    known = {"opcode": 253, "mnemonic": "dcl()", "exe": 10.8, "bits": ["1111", '1101'], "words": 1} # noqa
+    known = {"opcode": 253, "mnemonic": "dcl()", "exe": 10.8, "bits": ["1111", '1101'], "words": 1}  # noqa
     assert op == known
 
 

@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor # noqa
+from hardware.processor import processor  # noqa
 from hardware.suboperation import convert_decimal_to_n_bit_slices, \
      decimal_to_binary, insert_register   # noqa
 
@@ -17,7 +17,7 @@ def test_validate_instruction(registerpair):
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[48 + (registerpair * 2)]
-    known = {"opcode": 48 + (registerpair * 2), "mnemonic": "fin(" + str(registerpair) + ")", "exe": 21.6, "bits": ["0011", decimal_to_binary( 4, registerpair *2 )], "words": 1} # noqa
+    known = {"opcode": 48 + (registerpair * 2), "mnemonic": "fin(" + str(registerpair) + ")", "exe": 21.6, "bits": ["0011", decimal_to_binary(4, registerpair * 2)], "words": 1}  # noqa
     assert op == known
 
 
@@ -32,7 +32,7 @@ def test_scenario1(values):
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 256
     chip_base.RAM[values[2]] = values[1]
-    registervalue = convert_decimal_to_n_bit_slices(8, 4, values[1], 'd') # noqa
+    registervalue = convert_decimal_to_n_bit_slices(8, 4, values[1], 'd')  # noqa
     chip_base.REGISTERS[0] = registervalue[0]
     chip_base.REGISTERS[1] = registervalue[1]
 
@@ -70,7 +70,7 @@ def test_scenario2(values):
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 11
     chip_base.RAM[values[2]] = values[1]
-    registervalue = convert_decimal_to_n_bit_slices(8, 4, values[1], 'd') # noqa
+    registervalue = convert_decimal_to_n_bit_slices(8, 4, values[1], 'd')  # noqa
     chip_base.REGISTERS[0] = registervalue[0]
     chip_base.REGISTERS[1] = registervalue[1]
 

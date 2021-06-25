@@ -8,15 +8,15 @@ import pytest
 
 sys.path.insert(1, '../src')
 
-import hardware.suboperation # noqa
-from hardware.processor import processor # noqa
+import hardware.suboperation  # noqa
+from hardware.processor import processor  # noqa
 from hardware.exceptions import IncompatibleChunkBit, InvalidBitValue, \
         InvalidChunkValue, InvalidEndOfPage, InvalidPin10Value, \
         InvalidRegister, InvalidRegisterPair,\
         NotABinaryNumber, ProgramCounterOutOfBounds, \
         ValueOutOfRangeForBits, ValueOutOfRangeForStack,\
         ValueTooLargeForAccumulator, \
-        ValueTooLargeForRegister, ValueTooLargeForRegisterPair # noqa
+        ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
 ##############################################################################
@@ -89,6 +89,8 @@ def test_suboperation_read_complement_carry(carry):
 ##############################################################################
 #                      Insert Register                                       #
 ##############################################################################
+
+
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_suboperation_insert_register_scenario1(register):
     """Test Insert Registerr functionality."""
@@ -154,6 +156,8 @@ def test_suboperation_insert_register_scenario3():
 ##############################################################################
 #                      Read Register                                         #
 ##############################################################################
+
+
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_suboperation_read_register(register):
     """Test Read Register function."""
@@ -331,7 +335,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
-@pytest.mark.parametrize("pc", [ 3841,4090])  # noqa
+@pytest.mark.parametrize("pc", [3841, 4090])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
     """Test Increment PC by page failure."""
     chip_test = processor()
@@ -347,7 +351,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
     # attempting to increment the Program Counter beyond the end of memory
     with pytest.raises(Exception) as e:
         assert processor.inc_pc_by_page(chip_test, pc)
-    assert str(e.value) == "Program counter attempted to be set to " + str(pc + chip_base.PAGE_SIZE) # noqa
+    assert str(e.value) == "Program counter attempted to be set to " + str(pc + chip_base.PAGE_SIZE)  # noqa
     assert e.type == ProgramCounterOutOfBounds
 
     # Make assertions that the base chip is now at the same state as
@@ -427,7 +431,7 @@ def test_suboperation_is_at_end_of_page_scenario2():
 ##############################################################################
 #                Check for Accumulator Overflow                              #
 ##############################################################################
-@pytest.mark.parametrize("values", [[16,2,1],[15,15,0],[0,0,0],[99,85,1]])  # noqa
+@pytest.mark.parametrize("values", [[16, 2, 1], [15, 15, 0], [0, 0, 0], [99, 85, 1]])  # noqa
 def test_suboperation_check_for_overflow(values):
     """Test check for overflow function."""
     chip_test = processor()
@@ -453,7 +457,7 @@ def test_suboperation_check_for_overflow(values):
 ##############################################################################
 #                Check "set accumulator"                                     #
 ##############################################################################
-@pytest.mark.parametrize("value", [-1,0,14,15])  # noqa
+@pytest.mark.parametrize("value", [-1, 0, 14, 15])  # noqa
 def test_suboperation_set_accumulator_scenario1(value):
     """Test set accumulator."""
     chip_test = processor()
@@ -500,7 +504,7 @@ def test_suboperation_set_accumulator_scenario2(value):
 ##############################################################################
 #                Check Increment Register                                    #
 ##############################################################################
-@pytest.mark.parametrize("value", [0,3,9,14])  # noqa
+@pytest.mark.parametrize("value", [0, 3, 9, 14])  # noqa
 def test_suboperation_test_inc_register_scenario1(value):
     """Test increment register scenario 1."""
     chip_test = processor()
@@ -566,7 +570,7 @@ def test_suboperation_test_increment_register_scenario3(value):
 ##############################################################################
 #                Check set PIN_10_SIGNAL_TEST                                #
 ##############################################################################
-@pytest.mark.parametrize("value", [0,1])  # noqa
+@pytest.mark.parametrize("value", [0, 1])  # noqa
 def test_suboperation_test_write_pin10_scenario1(value):
     """Test reading of PIN 10."""
     chip_test = processor()
@@ -609,7 +613,7 @@ def test_suboperation_test_write_pin_10_scenario2(value):
 ##############################################################################
 #                Check Flip WPM Counter                                      #
 ##############################################################################
-@pytest.mark.parametrize("value", ['LEFT','RIGHT'])  # noqa
+@pytest.mark.parametrize("value", ['LEFT', 'RIGHT'])  # noqa
 def test_suboperation_test_flip_wpm_counter_scenario1(value):
     """Test WPM counter flip function."""
     chip_test = processor()
@@ -640,7 +644,7 @@ def test_suboperation_test_flip_wpm_counter_scenario1(value):
                                    ['100011111010', '2298'],
                                    ['010101111011', '1403'],
                                    ['11001100', '204'],
-                                   ['111111111111', '4095'] ])  # noqa
+                                   ['111111111111', '4095']])  # noqa
 def test_suboperation_test_binary_decimal_scenario1(value):
     """Test binary to decimal function #1."""
     chip_test = processor()
@@ -802,7 +806,7 @@ def test_suboperation_test_ones_complement_scenario2(value):
 ##############################################################################
 #                Check Insert RAM Status Character                           #
 ##############################################################################
-@pytest.mark.parametrize("value", [[12,0], [12,1], [12,2], [12,3]])  # noqa
+@pytest.mark.parametrize("value", [[12, 0], [12, 1], [12, 2], [12, 3]])  # noqa
 def test_suboperation_test_insert_ram_status_scenario1(value):
     """Test insert RAM status character."""
     chip_test = processor()
@@ -1039,7 +1043,7 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario1(value):
     # Attempt to convert decimal to binary or decimal chunks
     # (chip status should not change)
     chunks = processor.convert_decimal_to_n_bit_slices(value[0],
-                value[1], value[2], value[3]) # noqa
+                value[1], value[2], value[3])  # noqa
     assert chunks == [value[4], value[5]]
 
     # Simulate conditions at end of operation in base chip
@@ -1068,7 +1072,7 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario2(value):
     # Attempt to convert decimal to binary or decimal chunks
     # (chip status should not change)
     chunks = processor.convert_decimal_to_n_bit_slices(value[0],
-                value[1], value[2], value[3]) # noqa
+                value[1], value[2], value[3])  # noqa
     assert chunks == [value[4], value[5], value[6]]
 
     # Simulate conditions at end of operation in base chip
@@ -1088,19 +1092,19 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario3():
 
     # attempting to use an invalid bit value (1)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(3, 1, 12, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(3, 1, 12, 'd')  # noqa
         assert str(e.value) == 'Bits: 3'
         assert e.type == InvalidBitValue
 
     # attempting to use an invalid bit value (2)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(0, 1, 12, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(0, 1, 12, 'd')  # noqa
         assert str(e.value) == 'Bits: 0'
         assert e.type == InvalidBitValue
 
     # attempting to use an invalid chunk value (1)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(12, 1, 12, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(12, 1, 12, 'd')  # noqa
         assert str(e.value) == 'Chunk: 1'
         assert e.type == InvalidChunkValue
 
@@ -1109,36 +1113,36 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario4():
     """Test convert decimal to n bit slices #4."""
     # attempting to use an invalid bit value (2)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(12, 0, 12, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(12, 0, 12, 'd')  # noqa
         assert str(e.value) == 'Chunk: 0'
         assert e.type == InvalidChunkValue
 
     # attempting to use an incompatible bit/chunk combination (1)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(12, 8, 12, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(12, 8, 12, 'd')  # noqa
         assert str(e.value) == 'Bits: 12 Chunk: 8'
         assert e.type == IncompatibleChunkBit
 
     # attempting to use an incompatible bit/chunk combination (2)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(4, 8, 12, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(4, 8, 12, 'd')  # noqa
         assert str(e.value) == 'Bits: 4 Chunk: 8'
         assert e.type == IncompatibleChunkBit
 
     # attempting to use an out of range value (1)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(12, 4, -1, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(12, 4, -1, 'd')  # noqa
         assert str(e.value) == 'Value: -1 Bits: 12'
         assert e.type == ValueOutOfRangeForBits
 
     # attempting to use an out of range value (2)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(8, 8, 257, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(8, 8, 257, 'd')  # noqa
         assert str(e.value) == 'Value: 12 Bits: 8'
         assert e.type == ValueOutOfRangeForBits
 
     # attempting to use a large value
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(8, 8, 8192, 'd') # noqa
+        assert processor.convert_decimal_to_n_bit_slices(8, 8, 8192, 'd')  # noqa
         assert str(e.value) == 'Value: 8192 Bits: 8'
         assert e.type == ValueOutOfRangeForBits
