@@ -27,7 +27,7 @@ from hardware.instructions.idxacc import add, ld, sub, xch  # noqa
 from hardware.instructions.immediate import fim, ldm  # noqa
 from hardware.instructions.memory_select import dcl, src  # noqa
 from hardware.instructions.nop import nop  # noqa
-from hardware.instructions.subroutine import bbl, jms # noqa
+from hardware.instructions.subroutine import bbl, jms  # noqa
 
 #
 # Abbreviations used in the descriptions of each instruction's actions:
