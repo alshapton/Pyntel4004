@@ -14,9 +14,9 @@ class processor:
     from hardware.instructions.transfer_control import jun, jin, jcn, isz
     from hardware.instructions.immediate import fim, ldm
     from hardware.instructions.nop import nop
+    from hardware.instructions.subroutine import bbl, jms
 
-    from hardware.machine import bbl, \
-        jms, rd0, rd1, rd2, rd3, wrm, wr0, \
+    from hardware.machine import rd0, rd1, rd2, rd3, wrm, wr0, \
         wr1, wr2, wr3, wmp, wrr, wpm
 
     from hardware.suboperation import binary_to_decimal, check_overflow, \
