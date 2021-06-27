@@ -21,6 +21,7 @@ def test_validate_instruction(increment):
     known = {"opcode": 80 + increment, "mnemonic": "jms(address12)", "exe": 21.6, "bits": ["0101", decimal_to_binary(4, increment)], "words": 2}  # noqa
     assert op == known
 
+
 '''
 @pytest.mark.parametrize("values", [[1, 123, 23], [1, 234, 34],
                                     [2, 12, 5], [3, 100, 90], [4, 0, 12],
