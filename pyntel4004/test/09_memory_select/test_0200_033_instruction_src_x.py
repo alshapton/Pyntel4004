@@ -1,5 +1,5 @@
 # Using pytest
-# Test the INC instructions of an instance of an i4004(processor)
+# Test the SRC instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
@@ -55,7 +55,7 @@ def test_scenario1(values):
 
 
 @pytest.mark.parametrize("registerpair", [8, 9])
-def test_dcl_scenario2(registerpair):
+def test_src_scenario2(registerpair):
     """Test SRC instruction failure."""
     chip_test = processor()
     chip_base = processor()

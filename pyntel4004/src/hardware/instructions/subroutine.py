@@ -1,4 +1,4 @@
- ##########################################################################
+###########################################################################
 #                         _ _ _   __   __  _ _                            #
 #                        (_) | | /  \ /  \| | |                           #
 #                        | |_  _| () | () |_  _|                          #
@@ -7,13 +7,15 @@
 #                  ____  _| |__ _ _ ___ _  _| |_(_)_ _  ___               #
 #                 (_-< || | '_ \ '_/ _ \ || |  _| | ' \/ -_)              #
 #                 /__/\_,_|_.__/_| \___/\_,_|\__|_|_||_\___|              #
-#                                                                         #                                                                        #
+#                                                                         #
 ###########################################################################
 
 """
-    Commands:   BBL -   BRANCH BACK AND LOAD
-                JMS -   JUMP TO SUBROUTINE
+Commands:   BBL -   BRANCH BACK AND LOAD
+            JMS -   JUMP TO SUBROUTINE
 """
+
+from hardware.exceptions import ValueOutOfRangeForStack
 
 
 def bbl(self, accumulator: int):
@@ -66,5 +68,7 @@ def jms(self, address: int):
     """
     # Add number of words so return address is correct
     self.write_to_stack(self.PROGRAM_COUNTER + 2)
-    self.PROGRAM_COUNTER = address - 1
-    return self.PROGRAM_COUNTER
+    if 0 <= address <= 4095:
+        self.PROGRAM_COUNTER = address - 1
+        return self.PROGRAM_COUNTER
+    raise ValueOutOfRangeForStack(' Value: ' + str(address))
