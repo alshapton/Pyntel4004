@@ -50,6 +50,7 @@ def test_scenario1(address12):
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
+
 '''
 @pytest.mark.parametrize("values", [[1, 123, 23], [1, 234, 34],
                                     [2, 12, 5], [3, 100, 90], [4, 0, 12],
