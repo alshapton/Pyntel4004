@@ -23,7 +23,7 @@ def test_validate_instruction(increment):
 
 
 @pytest.mark.parametrize("address12", [1024, 24, 99, 2095, 4090])
-def test_scenario1(address12):
+def test_jms_scenario1(address12):
     """Test JMS instruction functionality."""
     chip_test = processor()
     chip_base = processor()
@@ -50,48 +50,9 @@ def test_scenario1(address12):
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
-'''
-@pytest.mark.parametrize("values", [[1, 123, 23], [1, 234, 34],
-                                    [2, 12, 5], [3, 100, 90], [4, 0, 12],
-                                    [5, 44, 100], [6, 15, 48], [7, 255, 0]])
-def test_scenario2(values):
-    """Test JMS instruction functionality (scenario 2)."""
-    chip_test = processor()
-    chip_base = processor()
-
-    # Simulate conditions at end of instruction in base chip
-    chip_base.PROGRAM_COUNTER = 11
-    chip_base.RAM[values[2]] = values[1]
-    registervalue = convert_decimal_to_n_bit_slices(8, 4, values[1], 'd')  # noqa
-    chip_base.REGISTERS[0] = registervalue[0]
-    chip_base.REGISTERS[1] = registervalue[1]
-
-    chip_test.PROGRAM_COUNTER = 10
-    chip_test.RAM[values[2]] = values[1]
-    chip_test.REGISTERS[0] = registervalue[0]
-    chip_test.REGISTERS[1] = registervalue[1]
-
-    # Perform the instruction under test:
-    # Fetch indirect from
-    left, right = processor.fin(chip_test, values[0])
-
-    # Make assertions that the base chip is now at the same state as
-    # the test chip which has been operated on by the instruction under test.
-
-    left_r = chip_test.read_register(values[0])
-    right_r = chip_test.read_register(values[0]+1)
-
-    assert left == left_r
-    assert right == right_r
-    assert chip_test.PROGRAM_COUNTER == 11
-
-    # Pickling each chip and comparing will show equality or not.
-    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
-'''
-
 
 @pytest.mark.parametrize("address12", [-1, 4096])
-def test_dcl_scenario2(address12):
+def test_jms_scenario2(address12):
     """Test JMS instruction failure."""
     chip_test = processor()
 
