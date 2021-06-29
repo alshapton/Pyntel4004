@@ -55,10 +55,6 @@ from hardware.instructions.subroutine import bbl, jms  # noqa
 #        .           logical OR
 #
 
-# Operators
-
-# One Word Machine Instructions
-
 
 def wrm(self):
     """

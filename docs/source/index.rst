@@ -9,6 +9,7 @@ Pyntel4004 Documentation
    :maxdepth: 1
 
    History <intro/intel4004>
+   MCS-4 Manual <intro/mcs4>
    Intel 4004 OpCodes <intro/opcodes>
 
 Indices and tables
