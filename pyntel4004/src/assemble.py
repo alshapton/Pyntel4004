@@ -703,7 +703,7 @@ def validate_inc(parts, line):
 
 def assemble(program_name: str, object_file: str, chip: processor):
     """
-    Main tw-pass assembler for i4004 code
+    Main two-pass assembler for i4004 code
 
     Parameters
     ----------
@@ -1018,11 +1018,11 @@ def assemble(program_name: str, object_file: str, chip: processor):
     for _i in range(len(_LABELS)):  # noqa
         print('{:>5}     {}'.format(_LABELS[_i]['address'],
               _LABELS[_i]['label']))
-    write_program_to_file(TPS, object_file)
+    write_program_to_file(TPS, object_file, location, _LABELS)
     return True
 
 
-def write_program_to_file(program, filename):
+def write_program_to_file(program, filename, memory_location, _LABELS):
     """
     Take the assembled program and write to a given filename.
 
@@ -1032,6 +1032,10 @@ def write_program_to_file(program, filename):
         The compiled program
     filename: str, mandatory
         The filename to write to
+    memory_location: str, mandatory
+        Location in memory of the first word of the program
+    _LABELS: list, mandatory
+        Label table
 
     Returns
     -------
@@ -1046,9 +1050,29 @@ def write_program_to_file(program, filename):
     N/A
 
     """
+
+    from datetime import datetime
+
+    program_name = '"program":"' + filename + '"'
+    m_location = '"location":"' + memory_location + '"'
+    compdate = '"compile_date":"' + \
+               datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '"'
+    labels = '"labels":' + str(_LABELS).replace("'", '"')
+    memorycontent = '"memory":['
+    for location in program:
+        memorycontent = memorycontent + '"' + str(hex(location)[2:]) + '", '
+    memory_content = memorycontent[:-2] + ']'
+    json_doc = "{"
+    json_doc = json_doc + program_name + ','
+    json_doc = json_doc + compdate + ','
+    json_doc = json_doc + m_location + ','
+    json_doc = json_doc + memory_content + ','
+    json_doc = json_doc + labels
+    json_doc = json_doc + '}'
+    print(json_doc)
     with open(filename + '.obj', "w") as output:
-        for location in program:
-            output.write(str(hex(location)[2:]))
+        output.write(json_doc)
+
     return True
 
 
@@ -1075,14 +1099,15 @@ def main(argv):
     """
     inputfile = ''
     outputfile = ''
+    RUN = True
     try:
-        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])  # noqa
+        opts, args = getopt.getopt(argv, "hi:o:norun", ["ifile=", "ofile="])  # noqa
     except getopt.GetoptError:
-        print('assemble.py -i <inputfile>')
+        print('assemble.py -i <inputfile>\n -o <outputfile>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print('assemble -i <inputfile> -o <outputfile>')
+            print('assemble -i <inputfile> -o <outputfile> -norun')
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -1091,12 +1116,14 @@ def main(argv):
                 outputfile = inputfile.replace('asm', 'obj')
             else:
                 outputfile = arg
+        elif opt in ("-norun"):
+            RUN = False
 
     # Create new instance of a processor
     chip = processor()
 
     result = assemble(inputfile, outputfile, chip)
-    if result:
+    if RUN is True and result is True:
         print()
         print('EXECUTING PROGRAM: ')
         print()
