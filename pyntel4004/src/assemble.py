@@ -1050,7 +1050,6 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
     N/A
 
     """
-
     from datetime import datetime
 
     program_name = '"program":"' + filename + '"'
@@ -1116,7 +1115,7 @@ def main(argv):
                 outputfile = inputfile.replace('asm', 'obj')
             else:
                 outputfile = arg
-        elif opt in ("-norun"):
+        elif opt == "-norun":
             RUN = False
 
     # Create new instance of a processor
