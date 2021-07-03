@@ -7,9 +7,9 @@ import sys
 
 # Assembler imports
 from assembler.supporting import add_label, assemble_isz, assemble_2, \
-                                 do_error, get_bits, get_label_addr, \
-                                 get_opcodeinfo, match_label, print_ln, \
-                                 validate_inc, write_program_to_file
+    do_error, get_bits, get_label_addr, \
+    get_opcodeinfo, match_label, print_ln, \
+    validate_inc, write_program_to_file
 
 from executer.supporting import deal_with_monitor_command, is_breakpoint
 
