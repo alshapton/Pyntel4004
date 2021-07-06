@@ -133,5 +133,6 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
 
         # Evaluate the command (some commands may change
         # the PROGRAM_COUNTER here)
-        eval(exe)  # noqa  Deliberately left here.
+        # Deliberately using eval here...
+        eval(exe)  # noqa
     return True

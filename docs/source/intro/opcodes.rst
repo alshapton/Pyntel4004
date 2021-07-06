@@ -8,11 +8,11 @@ Intel 4004 Op-Codes
    ../hardware/machine/fim
    ../hardware/machine/fin
    ../hardware/machine/jin
+   ../hardware/machine/jms
    ../hardware/machine/jun
    ../hardware/machine/jcn
    ../hardware/machine/src
    ../hardware/machine/nop
-   ../hardware/machine/src
 
 .. list-table:: Intel 4004 processor Op-Codes
    :header-rows: 1
@@ -58,7 +58,7 @@ Intel 4004 Op-Codes
      - AAAAAAAA
      - A
    * - Jump to Subroutine
-     - JMS
+     - :ref:`hardware-machine-src`
      - 0101AAAA
      - AAAAAAAA
      - A

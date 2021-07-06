@@ -35,9 +35,9 @@ def main(argv):
     """
     inputfile = ''
     outputfile = ''
-    RUN = True
+    RUN = False
     try:
-        opts, args = getopt.getopt(argv, "hi:o:norun", ["ifile=", "ofile="])  # noqa
+        opts, args = getopt.getopt(argv, "hi:o:run", ["ifile=", "ofile="])  # noqa
     except getopt.GetoptError:
         print('assemble.py -i <inputfile>\n -o <outputfile>')
         sys.exit(2)
@@ -52,8 +52,8 @@ def main(argv):
                 outputfile = inputfile.replace('asm', 'obj')
             else:
                 outputfile = arg
-        elif opt == "-norun":
-            RUN = False
+        elif opt == "-run":
+            RUN = True
 
     # Create new instance of a processor
     chip = processor()
