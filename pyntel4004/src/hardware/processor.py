@@ -10,14 +10,13 @@ class processor:
         daa, dac, iac, kbp, ral, rar, tcc, tcs, stc
     from hardware.instructions.idx import fin, inc
     from hardware.instructions.idxacc import add, sub, ld, xch
-    from hardware.instructions.memory_select import dcl, src
-    from hardware.instructions.transfer_control import jun, jin, jcn, isz
     from hardware.instructions.immediate import fim, ldm
+    from hardware.instructions.io_ram import rd0, rd1, rd2, rd3, \
+        wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
+    from hardware.instructions.memory_select import dcl, src
     from hardware.instructions.nop import nop
     from hardware.instructions.subroutine import bbl, jms
-
-    from hardware.machine import rd0, rd1, rd2, rd3, wrm, wr0, \
-        wr1, wr2, wr3, wmp, wrr, wpm
+    from hardware.instructions.transfer_control import jun, jin, jcn, isz
 
     from hardware.suboperation import binary_to_decimal, check_overflow, \
         convert_decimal_to_n_bit_slices, decimal_to_binary, flip_wpm_counter, \

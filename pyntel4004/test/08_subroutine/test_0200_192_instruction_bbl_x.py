@@ -22,7 +22,6 @@ def test_validate_instruction(increment):
     assert op == known
 
 
-
 @pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
                                    12, 13, 14, 15])
 def test_bbl_scenario1(value):
@@ -66,6 +65,6 @@ def test_bbl_scenario1(value):
     assert chip_test.PROGRAM_COUNTER == PC + 2
     assert chip_test.STACK_POINTER == 2
     assert chip_test.STACK[chip_test.STACK_POINTER] == 302  # Return
-
+    assert chip_test.PROGRAM_COUNTER == 302
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)

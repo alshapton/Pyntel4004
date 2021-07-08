@@ -37,13 +37,13 @@ def main(argv):
     outputfile = ''
     RUN = False
     try:
-        opts, args = getopt.getopt(argv, "hi:o:run", ["ifile=", "ofile="])  # noqa
+        opts, args = getopt.getopt(argv, "i:o:x", ["ifile=", "ofile="])  # noqa
     except getopt.GetoptError:
-        print('assemble.py -i <inputfile>\n -o <outputfile>')
+        print('assemble.py -i <inputfile>\n -o <outputfile> -x')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print('assemble -i <inputfile> -o <outputfile> -norun')
+            print('assemble -i <inputfile> -o <outputfile> -x')
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -52,12 +52,11 @@ def main(argv):
                 outputfile = inputfile.replace('asm', 'obj')
             else:
                 outputfile = arg
-        elif opt == "-run":
+        elif opt == "-x":
             RUN = True
 
     # Create new instance of a processor
     chip = processor()
-
     result = assemble(inputfile, outputfile, chip)
     if RUN is True and result is True:
         print()
