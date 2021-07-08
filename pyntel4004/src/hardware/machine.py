@@ -29,7 +29,7 @@ from hardware.instructions.memory_select import dcl, src  # noqa
 from hardware.instructions.nop import nop  # noqa
 from hardware.instructions.subroutine import bbl, jms  # noqa
 from hardware.instructions.io_ram import rdm, rd0, rd1, rd2, rd3 \
-     rdr, wrm, wr0, wr1, wr2, wr3, wmp, wrr, adm, sbm, wpm # noqa
+     rdr, wrm, wr0, wr1, wr2, wr3, wmp, wrr, adm, sbm, wpm  # noqa
 
 #
 # Abbreviations used in the descriptions of each instruction's actions:
