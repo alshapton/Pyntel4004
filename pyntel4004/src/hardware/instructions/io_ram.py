@@ -15,7 +15,7 @@
 Commands:   RDM -   READ DATA RAM DATA CHARACTER
             RDn -   READ DATA RAM STATUS CHARACTER
             RDR -   READ DATA ROM PORT
-            WRM -   VvRITE DATA RAlvI CHARACTER
+            WRM -   WRITE DATA RAM CHARACTER
             WRn -   WRITE DATA RAM STATUS CHARACTER
             WMP -   WRITE RAM PORT
             WRR -   WRITE ROM PORT
@@ -39,8 +39,7 @@ def rdm(self):
     """
     crb = self.read_current_ram_bank()
     address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))
-               [2:].zfill(8)[:2], 2)
+    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     absolute_address = (crb * self.RAM_BANK_SIZE) + \
                        (chip * self.RAM_CHIP_SIZE) + \
