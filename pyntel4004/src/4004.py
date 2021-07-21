@@ -109,4 +109,4 @@ memory_space = results[0]
 execute(chip, memory_space, pc, True)
 
 
-#main(sys.argv[1:])
+# main(sys.argv[1:])
