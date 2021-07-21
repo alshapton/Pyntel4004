@@ -2,6 +2,7 @@
 
 from hardware.processor import processor
 import getopt
+import json
 import sys
 
 # Assembler imports
@@ -71,4 +72,41 @@ def main(argv):
         print()
 
 
-main(sys.argv[1:])
+def reload(inputfile, chip):
+    # Open the file
+    f = open(inputfile, "r")
+
+    # Load required data
+    data = json.loads(f.read())
+
+    # Close the file
+    f.close()
+
+    # Get data for memory load from JSON
+    memory_space = data['location']
+    location = 0
+    pc = location
+
+    # Place program in memory
+    for i in data['memory']:
+        if memory_space == 'rom':
+            chip.ROM[location] = int(i, 16)
+        else:
+            chip.PRAM[location] = int(i, 16)
+        location = location + 1
+
+    return memory_space, pc
+
+
+# Create new instance of a processor
+chip = processor()
+inputfile = ''
+results = reload('example.4004.obj.obj', chip)
+
+pc = results[1]
+memory_space = results[0]
+
+execute(chip, memory_space, pc, True)
+
+
+#main(sys.argv[1:])

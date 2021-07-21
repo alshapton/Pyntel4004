@@ -23,11 +23,11 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
     chip : processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
-    location : int, mandatory
+    location : str, mandatory
         The location to which the program should be loaded
 
     PC : int, mandatory
-        The program counter value commence execution
+        The program counter value to commence execution
 
     monitor: bool, mandatory
         Whether or not the monitor is currently "on" or "off"
@@ -76,6 +76,7 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
                     break
         custom_opcode = False
         OPCODE = _TPS[chip.PROGRAM_COUNTER]
+        print('opcode = ', OPCODE)
         if OPCODE == 255:  # pseudo-opcode (directive "end" - stop program)
             print('           end')
             break

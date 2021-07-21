@@ -23,14 +23,14 @@ def test_validate_rdm_instruction():
 @pytest.mark.parametrize("command_register", [2, 3])
 
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
-def test_dcl_scenario1(rambank, command_register):
-    """Test DCL instruction functionality."""
+def test_rdm_scenario1(rambank, command_register):
+    """Test RDM instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 
     # Perform the instruction under test:
     chip_test.set_accumulator(rambank)
-    chip_test.dcl()
+    chip_test.rdm()
 
     # Simulate conditions at end of instruction in base chip
     chip_base.set_accumulator(rambank)
