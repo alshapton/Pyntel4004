@@ -1,4 +1,59 @@
 from hardware.processor import processor
+import json
+
+
+def reload(inputfile, chip):
+    """
+    Reload an already assembled program and execute it
+
+    Parameters
+    ----------
+    inputfile: str, mandatory
+        filename of a .obj file
+
+    chip : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    memory_space: str
+        rom or ram (depending on the target memory space)
+
+    pc:  int
+        location to commence execution of the assembled program
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    # Open the file
+    f = open(inputfile, "r")
+
+    # Load required data
+    data = json.loads(f.read())
+
+    # Close the file
+    f.close()
+
+    # Get data for memory load from JSON
+    memory_space = data['location']
+    location = 0
+    pc = location
+
+    # Place program in memory
+    for i in data['memory']:
+        if memory_space == 'rom':
+            chip.ROM[location] = int(i, 16)
+        else:
+            chip.PRAM[location] = int(i, 16)
+        location = location + 1
+
+    return memory_space, pc
 
 
 def is_breakpoint(BREAKPOINTS, PC):
