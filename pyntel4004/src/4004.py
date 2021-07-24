@@ -42,7 +42,7 @@ def main(argv):
 
     RUN = False
     try:
-        opts, args = getopt.getopt(argv, "i:o:r:x", ["ifile=", "ofile=","s"])  # noqa
+        opts, args = getopt.getopt(argv, "i:o:r:x", ["ifile=", "ofile=", "s"])  # noqa
     except getopt.GetoptError:
         print('4004 -i <inputfile>\n -o <outputfile> -x')
         sys.exit(2)
