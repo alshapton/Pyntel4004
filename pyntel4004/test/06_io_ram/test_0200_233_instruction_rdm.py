@@ -18,6 +18,7 @@ def test_validate_rdm_instruction():
     known = {"opcode": 233, "mnemonic": "rdm()", "exe": 10.8, "bits": ["1110", '1001'], "words": 1}  # noqa
     assert op == known
 
+
 '''
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
 @pytest.mark.parametrize("command_register", [2, 3])
