@@ -477,16 +477,18 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
 
     """
     from datetime import datetime
-
     program_name = '"program":"' + filename + '"'
     m_location = '"location":"' + memory_location + '"'
     compdate = '"compile_date":"' + \
                datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '"'
     labels = '"labels":' + str(_LABELS).replace("'", '"')
     memorycontent = '"memory":['
+
     for location in program:
-        memorycontent = memorycontent + '"' + str(hex(location)[2:]) + '", '
+        content = str(hex(location)[2:])
+        memorycontent = memorycontent + '"' + content + '", '
     memory_content = memorycontent[:-2] + ']'
+
     json_doc = "{"
     json_doc = json_doc + program_name + ','
     json_doc = json_doc + compdate + ','
@@ -496,5 +498,8 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
     json_doc = json_doc + '}'
     with open(filename + '.obj', "w") as output:
         output.write(json_doc)
-
+    print(bytearray(program))
+    with open(filename + '.bin', "w+b") as b:
+        b.write(bytearray(program))
+    print('hello')
     return True

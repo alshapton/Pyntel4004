@@ -34,13 +34,14 @@ def main(argv):
 
     """
     inputfile = ''
-    outputfile = 'default.obj'
+    outputfile = 'default'
     pc = 0
 
     # Create new instance of a processor
     chip = processor()
 
     RUN = False
+    ASSEMBLE = False
     try:
         opts, args = getopt.getopt(argv, "i:o:r:x", ["ifile=", "ofile=","s"])  # noqa
     except getopt.GetoptError:
@@ -50,17 +51,17 @@ def main(argv):
         if opt == '-h':
             print('4004 -i <inputfile> -o <outputfile> -x')
             sys.exit()
-        elif opt in ("-o", "--ofile"):
-            if outputfile == '':
-                outputfile = inputfile.replace('asm', 'obj')
+        if opt in ("-o", "--ofile"):
+            if arg == '':
+                outputfile = inputfile
             else:
                 outputfile = arg
-        elif opt in ("-i", "--ifile"):
+        if opt in ("-i", "--ifile"):
             inputfile = arg
-            result = assemble(inputfile, outputfile, chip)
-        elif opt == "-x":
+            ASSEMBLE = True
+        if opt == "-x":
             RUN = True
-        elif opt == "-r":
+        if opt == "-r":
             reloadfile = arg
             RUN = True
             result = retrieve(reloadfile, chip)
@@ -71,6 +72,9 @@ def main(argv):
             print('From         : ' + str(pc))
             print()
             execute(chip, memory_space, pc, True)
+    print(opts, args)
+    if ASSEMBLE is True:
+        result = assemble(inputfile, outputfile, chip)
 
     if RUN is True and result is True:
         print()

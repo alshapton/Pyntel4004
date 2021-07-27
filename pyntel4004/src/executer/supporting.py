@@ -31,14 +31,8 @@ def reload(inputfile, chip):
     N/A
 
     """
-    # Open the file
-    f = open(inputfile, "r")
-
-    # Load required data
-    data = json.loads(f.read())
-
-    # Close the file
-    f.close()
+    with open(inputfile, "r") as input:
+        data = json.loads(input)
 
     # Get data for memory load from JSON
     memory_space = data['location']
