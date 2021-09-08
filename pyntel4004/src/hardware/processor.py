@@ -11,7 +11,7 @@ class processor:
     from hardware.instructions.idx import fin, inc
     from hardware.instructions.idxacc import add, sub, ld, xch
     from hardware.instructions.immediate import fim, ldm
-    from hardware.instructions.io_ram import rd0, rd1, rd2, rd3, \
+    from hardware.instructions.io_ram import rdm, rd0, rd1, rd2, rd3, \
         wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
     from hardware.instructions.memory_select import dcl, src
     from hardware.instructions.nop import nop
@@ -78,6 +78,8 @@ class processor:
         self.REGISTERS = []          # Registers (4-bit)
         self.STACK = []              # The stack - 3 x 12-bit registers
 
+        self.COMMAND_REGISTER = 0
+        
         # Set up RAM status characters
         self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
                                   for _reg in range(4)]
