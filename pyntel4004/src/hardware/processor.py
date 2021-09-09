@@ -11,7 +11,7 @@ class processor:
     from hardware.instructions.idx import fin, inc
     from hardware.instructions.idxacc import add, sub, ld, xch
     from hardware.instructions.immediate import fim, ldm
-    from hardware.instructions.io_ram import rdm, rd0, rd1, rd2, rd3, \
+    from hardware.instructions.io_ram import rdm, rdr, rd0, rd1, rd2, rd3, \
         wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
     from hardware.instructions.memory_select import dcl, src
     from hardware.instructions.nop import nop
@@ -45,7 +45,7 @@ class processor:
     PAGE_SIZE = 256             # Number of 4-bit words in a memory page
     STACK_SIZE = 3              # Number of 12-bit registers in the stack
     NO_REGISTERS = 16           # Number of registers
-    NO_ROM_PORTS = 32           # Number of ROM output ports
+    NO_ROM_PORTS = 16           # Number of ROM output ports
     NO_CHIPS_PER_BANK = 4       # Number of memory chips per Data RAM Bank
     RAM_BANK_SIZE = 256         # Size in 4-bit addresses of a Data RAM Bank
     RAM_CHIP_SIZE = 64          # Size in 4-bit addresses of a single RAM chip
@@ -79,7 +79,7 @@ class processor:
         self.STACK = []              # The stack - 3 x 12-bit registers
 
         self.COMMAND_REGISTER = 0
-        
+
         # Set up RAM status characters
         self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
                                   for _reg in range(4)]

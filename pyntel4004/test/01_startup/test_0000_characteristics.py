@@ -43,7 +43,7 @@ def test_chip_properties_NO_REGISTERS():
 
 def test_chip_properties_NO_ROM_PORTS():
     """Ensure the chip has been set with the correct number of ROM ports."""
-    assert chip.NO_ROM_PORTS == 32
+    assert chip.NO_ROM_PORTS == 16
 
 
 def test_chip_properties_NO_CHIPS_PER_BANK():
