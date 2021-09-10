@@ -1,6 +1,7 @@
 # Using pytest
 # Test the ADM instructions of an instance of an i4004(processor)
 
+from hardware.suboperation import insert_registerpair
 import sys
 import pickle
 import pytest
@@ -8,7 +9,6 @@ sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
-from hardware.suboperation import insert_registerpair 
 
 '''
 def test_validate_rdn_instruction():
