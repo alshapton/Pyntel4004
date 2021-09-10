@@ -3,6 +3,7 @@
 ![Pyntel 4004 Logo](./images/pyntel4004.svg)
 
 [![Python application](https://github.com/alshapton/Pyntel4004/actions/workflows/python-app.yml/badge.svg)](https://github.com/alshapton/Pyntel4004/actions/workflows/python-app.yml)
+[![Documentation Status](https://readthedocs.org/projects/pyntel4004/badge/?version=latest)](https://pyntel4004.readthedocs.io/en/latest/?badge=latest)
 ![GitHub](https://img.shields.io/github/license/alshapton/pyntel4004)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=active+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=resolved+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)

@@ -7,6 +7,7 @@ Intel 4004 Op-Codes
 
    ../hardware/machine/fim
    ../hardware/machine/fin
+   ../hardware/machine/inc
    ../hardware/machine/jin
    ../hardware/machine/jms
    ../hardware/machine/jun
@@ -63,7 +64,7 @@ Intel 4004 Op-Codes
      - AAAAAAAA
      - A
    * - Increment
-     - INC
+     - :ref:`hardware-machine-inc`
      - 0110RRRR
      -
      - R
