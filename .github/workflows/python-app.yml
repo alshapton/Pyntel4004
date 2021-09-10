@@ -41,7 +41,7 @@ jobs:
     - name: Build documentation
       working-directory: ./docs
       run: |
-        pip install --user sphinx
-        pip install --user faculty_sphinx_theme
+        python -m pip install --user sphinx
+        python -m pip install --user faculty_sphinx_theme
         make html
 
