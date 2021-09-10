@@ -43,4 +43,21 @@ jobs:
       run: |
         python -m pip install --user sphinx
         python -m pip install --user faculty_sphinx_theme
+<<<<<<< HEAD
         make html
+=======
+<<<<<<< HEAD
+        make html
+=======
+        make html
+  docs:
+
+    runs-on: ubuntu-latest
+  
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "docs"
+>>>>>>> main
+>>>>>>> main
