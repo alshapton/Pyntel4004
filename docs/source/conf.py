@@ -29,7 +29,14 @@ release = '0.0.1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["faculty_sphinx_theme", "sphinx.ext.autodoc"]
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+if on_rtd:
+    extensions = ["sphinx.ext.autodoc"]
+    html_theme = "alabaster"
+
+else:
+    extensions = ["faculty_sphinx_theme", "sphinx.ext.autodoc"]
+    html_theme = "faculty-sphinx-theme"
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -48,7 +55,7 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 # html_theme = 'alabaster'
-html_theme = "faculty-sphinx-theme"
+
 html_logo = "_static/pyntel4004.svg"
 
 
