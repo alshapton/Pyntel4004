@@ -31,8 +31,8 @@ def reload(inputfile, chip):
     N/A
 
     """
-    with open(inputfile, "r") as inputfile:
-        data = json.loads(inputfile)
+    with open(inputfile, "r") as programfile:
+        data = json.loads(programfile)
 
     # Get data for memory load from JSON
     memory_space = data['location']

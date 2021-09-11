@@ -197,7 +197,7 @@ def rdr(self):
 
             2       On the INTELLEC 4, a ROM port may be used for either
                     input or output. If programs tested on the INTELLEC 4 are
-                    to be run later with a 4001 ROM the programmer must be 
+                    to be run later with a 4001 ROM the programmer must be
                     careful not to use one port for both functions.
 
             3       On the physical devices, if the leftmost I/O line is an

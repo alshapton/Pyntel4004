@@ -31,6 +31,8 @@ A Python software implementation of the Intel 4004 processor.
 
 ## Status
 
+10-SEP-2021:    Documentation building and hosted with [READTHEDOCS](https://pyntel4004.readthedocs.io/en/latest/)
+<br>
 12-JUN-2021:    Auto-build with GITHUB Actions implemented
 <br>
 18-MAY-2021:    Implementing full test suite

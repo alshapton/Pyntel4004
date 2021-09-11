@@ -20,8 +20,10 @@ def test_validate_rdn_instruction():
     assert op == known
 
 
-@pytest.mark.parametrize("values", [[0, 15], [1, 14], [2, 13], [3, 12], [4, 11], [5, 10], [6, 9], [7, 8],
-                                   [8, 7], [9 ,6], [10, 5], [11, 4], [12, 3], [13, 2], [14, 1], [15,0]]) 
+@pytest.mark.parametrize("values", [[0, 15], [1, 14], [2, 13], [3, 12], [4, 11],
+                                    [5, 10], [6, 9], [7, 8], [8, 7], [9 ,6],
+                                    [10, 5], [11, 4], [12, 3], [13, 2], [14, 1],
+                                    [15,0]]) 
 def test_rdr_scenario1(values):
     """Test RDM instruction functionality."""
     chip_test = processor()

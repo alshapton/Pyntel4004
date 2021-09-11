@@ -35,6 +35,7 @@ def test_validate_rdN_instruction():
 @pytest.mark.parametrize("chip", [0, 1, 2, 3])
 @pytest.mark.parametrize("register", [0, 1, 2, 3])
 def test_rdN_scenario1(chip, register):
+    """Test instruction RDn"""
 
     from random import seed
     from random import randint
@@ -46,9 +47,10 @@ def test_rdN_scenario1(chip, register):
     value = randint(0, 15)
 
     address = (chip << 6) + (register << 4)
+    crb = chip_test.CURRENT_RAM_BANK
     chip_test.COMMAND_REGISTER = address
     chip_test.CURRENT_RAM_BANK = 0
-    chip_test.STATUS_CHARACTERS[chip_test.CURRENT_RAM_BANK][chip][register][register] = value
+    chip_test.STATUS_CHARACTERS[crb][chip][register][register] = value
 
     # Perform the instruction under test:
     if register == 0:
@@ -64,7 +66,7 @@ def test_rdN_scenario1(chip, register):
     chip_base.COMMAND_REGISTER = address
     chip_base.increment_pc(1)
     chip_base.set_accumulator(value)
-    chip_base.STATUS_CHARACTERS[chip_test.CURRENT_RAM_BANK][chip][register][register] = value
+    chip_base.STATUS_CHARACTERS[crb][chip][register][register] = value
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
