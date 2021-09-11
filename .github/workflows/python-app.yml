@@ -8,9 +8,15 @@ name: Python application
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      # Push events to main branch 
+      - main
+      # Push events to develop branch
+      - develop
   pull_request:
-    branches: [ main ]
+    branches:
+      # PR events to main branch 
+      - main
 
 jobs:
   build:
@@ -41,6 +47,8 @@ jobs:
     - name: Build documentation
       working-directory: ./docs
       run: |
-        python -m pip install --user sphinx
+        if: ${{ github.ref == 'refs/heads/main' }} then
+        python -m pip install --user sphinx 
         python -m pip install --user faculty_sphinx_theme
-        make html
+        make html;
+        fi
