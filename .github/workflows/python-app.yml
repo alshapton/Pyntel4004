@@ -47,8 +47,4 @@ jobs:
     - name: Build documentation
       working-directory: ./docs
       run: |
-        if github.ref == 'refs/heads/main' then
-        python -m pip install --user sphinx
-        python -m pip install --user faculty_sphinx_theme
-        make html
-        fi
+        if github.ref == 'refs/heads/main'; then python -m pip install --user sphinx; python -m pip install --user faculty_sphinx_theme; make html; fi
