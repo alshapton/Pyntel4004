@@ -51,4 +51,4 @@ jobs:
     - name: Build documentation
       working-directory: ./docs
       run: |
-        if [ "${{ steps.branch_name.outputs.branch }}" == "main"]; then python -m pip install --user sphinx; python -m pip install --user faculty_sphinx_theme; make html; fi
+        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then python -m pip install --user sphinx; python -m pip install --user faculty_sphinx_theme; make html; fi
