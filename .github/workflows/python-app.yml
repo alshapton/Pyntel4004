@@ -48,7 +48,11 @@ jobs:
       working-directory: ./pyntel4004/test
       run: |
         pytest 
-    - name: Build documentation
+    - name: Build documentation only if on main branch
       working-directory: ./docs
       run: |
-        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then python -m pip install --user sphinx; python -m pip install --user faculty_sphinx_theme; make html; fi
+        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
+        python -m pip install --user sphinx; 
+        python -m pip install --user faculty_sphinx_theme; 
+        make html;
+        fi
