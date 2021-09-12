@@ -8,9 +8,15 @@ name: Python application
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      # Push events to main branch 
+      - main
+      # Push events to develop branch
+      - develop
   pull_request:
-    branches: [ main ]
+    branches:
+      # PR events to main branch 
+      - main
 
 jobs:
   build:
@@ -23,6 +29,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+    - name: Get the current branch name
+      shell: bash
+      run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+      id: branch_name
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -38,9 +48,11 @@ jobs:
       working-directory: ./pyntel4004/test
       run: |
         pytest 
-    - name: Build documentation
+    - name: Build documentation only if on main branch
       working-directory: ./docs
       run: |
-        python -m pip install --user sphinx
-        python -m pip install --user faculty_sphinx_theme
-        make html
+        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
+        python -m pip install --user sphinx; 
+        python -m pip install --user faculty_sphinx_theme; 
+        make html;
+        fi
