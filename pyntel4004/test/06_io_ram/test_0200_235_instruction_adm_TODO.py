@@ -1,5 +1,5 @@
 # Using pytest
-# Test the ADM instructions of an instance of an i4004(processor)
+# Test the ADM instruction of an instance of an i4004(processor)
 
 from hardware.suboperation import insert_registerpair
 import sys
@@ -10,16 +10,16 @@ sys.path.insert(1, '../src')
 from hardware.processor import processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
 
-'''
+
 def test_validate_rdn_instruction():
     """Ensure instruction's characteristics are valid."""
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
-    op = chip_test.INSTRUCTIONS[234]
-    known = {"opcode": 234, "mnemonic": "rdr()", "exe": 10.8, "bits": ["1110", '1010'], "words": 1}  # noqa
+    op = chip_test.INSTRUCTIONS[235]
+    known = {"opcode": 235, "mnemonic": "adm()", "exe": 10.8, "bits": ["1110", '1000'], "words": 1}  # noqa
     assert op == known
 
-
+'''
 @pytest.mark.parametrize("values", [[0, 15], [1, 14], [2, 13], [3, 12], [4, 11],
                                     [5, 10], [6, 9], [7, 8], [8, 7], [9 ,6],
                                     [10, 5], [11, 4], [12, 3], [13, 2], [14, 1],
