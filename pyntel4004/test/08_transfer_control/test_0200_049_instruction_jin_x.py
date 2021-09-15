@@ -9,7 +9,7 @@ sys.path.insert(1, '../src')
 from hardware.exceptions import ProgramCounterOutOfBounds  # noqa
 from hardware.processor import processor  # noqa
 
-from hardware.suboperation import decimal_to_binary, convert_decimal_to_n_bit_slices  # noqa
+from hardware.suboperation import decimal_to_binary  # noqa
 
 
 @pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7])

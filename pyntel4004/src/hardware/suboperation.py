@@ -2,9 +2,9 @@
 
 from .exceptions import IncompatibleChunkBit, \
     InvalidBitValue, InvalidChunkValue, \
-    InvalidEndOfPage, InvalidPin10Value, \
-    InvalidRegister, InvalidRegisterPair,  \
-    NotABinaryNumber, ProgramCounterOutOfBounds, \
+    InvalidPin10Value, InvalidRegister, \
+    InvalidRegisterPair, NotABinaryNumber, \
+    ProgramCounterOutOfBounds, ValueTooLargeForRegister, \
     ValueOutOfRangeForBits, ValueOutOfRangeForStack, \
     ValueTooLargeForAccumulator, ValueTooLargeForRegister, \
     ValueTooLargeForRegisterPair  # noqa
