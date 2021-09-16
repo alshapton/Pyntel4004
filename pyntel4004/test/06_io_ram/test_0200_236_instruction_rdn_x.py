@@ -1,7 +1,6 @@
 # Using pytest
 # Test the RDn instructions of an instance of an i4004(processor)
 
-from hardware.suboperation import insert_registerpair
 import sys
 import pickle
 import pytest
@@ -40,7 +39,6 @@ def test_rdN_scenario1(chip, register):
     from random import seed
     from random import randint
 
-    """Test RDM instruction functionality."""
     chip_test = processor()
     chip_base = processor()
 

@@ -1,14 +1,12 @@
 # Using pytest
 # Test the RDM instructions of an instance of an i4004(processor)
 
-from hardware.suboperation import insert_registerpair
 import sys
 import pickle
 import pytest
 sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
-from hardware.exceptions import InvalidRamBank  # noqa
 
 
 def test_validate_rdm_instruction():
