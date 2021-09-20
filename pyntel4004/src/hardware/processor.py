@@ -11,8 +11,13 @@ class processor:
     from hardware.instructions.idx import fin, inc
     from hardware.instructions.idxacc import add, sub, ld, xch
     from hardware.instructions.immediate import fim, ldm
+<<<<<<< HEAD
     from hardware.instructions.io_ram import adm, rdm, rdr, rd0, rd1, rd2, \
         rd3, wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
+=======
+    from hardware.instructions.io_ram import adm, rdm, rdr, rd0, rd1, rd2, rd3, \
+        wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
+>>>>>>> test-opcode-235-adm
     from hardware.instructions.memory_select import dcl, src
     from hardware.instructions.nop import nop
     from hardware.instructions.subroutine import bbl, jms
