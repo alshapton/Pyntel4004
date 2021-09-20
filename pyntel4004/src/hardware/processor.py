@@ -37,11 +37,6 @@ class processor:
     from hardware.instructions.immediate import fim, ldm
 
 
-<< << << < HEAD
-== == == =
->>>>>> > test-opcode-235-adm
-
-
 # Operations to read the processor components
 # Some used internally,
 
