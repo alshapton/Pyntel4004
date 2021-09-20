@@ -412,7 +412,7 @@ def wrr(self):
     return self.ACCUMULATOR
 
 
-def adm(self, register: int):
+def adm(self):
     """
     Name:           Add from memory with carry
     Function:       The DATA RAM data character specified by the
@@ -431,10 +431,11 @@ def adm(self, register: int):
 
     # Get value
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))
+    cr = self.COMMAND_REGISTER
+    chip = int(bin(int(cr))
                [2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    register = int(bin(int(cr))[2:].zfill(8)[2:4], 2)
+    address = int(bin(int(cr))[2:].zfill(8)[4:8], 2)
     absolute_address = (crb * self.RAM_BANK_SIZE) + \
                        (chip * self.RAM_CHIP_SIZE) + \
                        (register * self.RAM_REGISTER_SIZE) + address
