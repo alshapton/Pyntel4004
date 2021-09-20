@@ -11,7 +11,7 @@ class processor:
     from hardware.instructions.idx import fin, inc
     from hardware.instructions.idxacc import add, sub, ld, xch
     from hardware.instructions.immediate import fim, ldm
-    from hardware.instructions.io_ram import rdm, rdr, rd0, rd1, rd2, rd3, \
+    from hardware.instructions.io_ram import adm,rdm, rdr, rd0, rd1, rd2, rd3, \
         wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
     from hardware.instructions.memory_select import dcl, src
     from hardware.instructions.nop import nop
@@ -89,6 +89,7 @@ class processor:
         # Creation of processor simulated hardware
         # Pin 10 on the physical chip is the "test" pin
         # and can be read by the JCN instruction
+        self.PIN_10_SIGNAL_TEST = 0
         self.write_pin10(0)
 
         # Initialise Internals
