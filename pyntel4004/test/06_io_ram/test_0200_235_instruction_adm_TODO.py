@@ -10,8 +10,8 @@ sys.path.append('../test')
 
 from hardware.processor import processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
+from utils import is_same  # noqa
 
-from utils import is_same
 
 def test_validate_adm_instruction():
     """Ensure instruction's characteristics are valid."""
@@ -22,8 +22,9 @@ def test_validate_adm_instruction():
     assert op == known
 
 
-@pytest.mark.parametrize("values", [[0, 1, 0, 7, 3], [1, 3, 1, 6, 4], [2, 3, 2, 5, 5],
-                                    [3, 2, 3, 4, 6], [4, 3, 2, 3, 7], [5, 2, 1, 2, 2],
+@pytest.mark.parametrize("values", [[0, 1, 0, 7, 3], [1, 3, 1, 6, 4],
+                                    [2, 3, 2, 5, 5], [3, 2, 3, 4, 6],
+                                    [4, 3, 2, 3, 7], [5, 2, 1, 2, 2],
                                     [6, 0, 0, 1, 1], [7, 2, 2, 0, 0]])
 def test_adm_scenario1(values):
     """Test ADM instruction functionality."""
@@ -55,8 +56,8 @@ def test_adm_scenario1(values):
     chip_base.CARRY = 0
     chip_base.COMMAND_REGISTER = cr
     absolute_address = (rambank * chip_base.RAM_BANK_SIZE) + \
-            (chip * chip_base.RAM_CHIP_SIZE) + \
-            (register * chip_base.RAM_REGISTER_SIZE) + address
+        (chip * chip_base.RAM_CHIP_SIZE) + \
+        (register * chip_base.RAM_REGISTER_SIZE) + address
     chip_base.RAM[absolute_address] = value
     chip_base.increment_pc(1)
     chip_base.CURRENT_RAM_BANK = rambank
@@ -70,4 +71,3 @@ def test_adm_scenario1(values):
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
-
