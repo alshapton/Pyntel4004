@@ -23,15 +23,9 @@ def test_validate_adm_instruction():
     assert op == known
 
 
-<<<<<<< HEAD
 @pytest.mark.parametrize("values", [[0, 1, 0, 7, 3], [1, 3, 1, 6, 4],
                                     [2, 3, 2, 5, 5], [3, 2, 3, 4, 6],
                                     [4, 3, 2, 3, 7], [5, 2, 1, 2, 2],
-=======
-@pytest.mark.parametrize("values", [[0, 1, 0, 7, 3], [1, 3, 1, 6, 4], [2, 3, 2, 5, 5],
-                                    [3, 2, 3, 4, 6], [4, 3, 2, 3, 7], [
-                                        5, 2, 1, 2, 2],
->>>>>>> test-opcode-235-adm
                                     [6, 0, 0, 1, 1], [7, 2, 2, 0, 0]])
 def test_adm_scenario1(values):
     """Test ADM instruction functionality."""

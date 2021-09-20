@@ -2,21 +2,12 @@
 from hardware.processor import processor
 
 
-<<<<<<< HEAD
 def is_same(chip1: processor, chip2: processor,component: str):
     """Individual assertions that the two supplied chips are identical."""
 
     if (component != ''):
         print('chip1:  ' + str(eval(('chip1.' + component ))))
         print('chip2:  ' + str(eval(('chip2.' + component ))))
-=======
-def is_same(chip1: processor, chip2: processor, component):
-    """Individual assertions that the two supplied chips are identical."""
-
-    if (component != ''):
-        print('chip1:  ' + str(eval(('chip1.' + component))))
-        print('chip2:  ' + str(eval(('chip2.' + component))))
->>>>>>> test-opcode-235-adm
 
     # Check command registers
     assert chip1.COMMAND_REGISTERS == chip2.COMMAND_REGISTERS
