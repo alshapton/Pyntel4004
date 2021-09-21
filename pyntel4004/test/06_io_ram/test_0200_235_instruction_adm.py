@@ -45,9 +45,9 @@ def test_adm_scenario1(values):
     chip_test.COMMAND_REGISTER = cr
 
     chip_test.CURRENT_RAM_BANK = rambank
-    absolute_address = (rambank * chip_test.RAM_BANK_SIZE) + \
-        (chip * chip_test.RAM_CHIP_SIZE) + \
-        (register * chip_test.RAM_REGISTER_SIZE) + address
+    absolute_address = (rambank * chip_test.RAM_BANK_SIZE) +
+    (chip * chip_test.RAM_CHIP_SIZE) +
+    (register * chip_test.RAM_REGISTER_SIZE) + address
     chip_test.RAM[absolute_address] = value
     chip_test.set_accumulator(accumulator)
 
