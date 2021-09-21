@@ -34,7 +34,6 @@ class processor:
         set_accumulator, set_carry, write_pin10, write_ram_status, \
         write_to_stack
 
-
     # Operations to read the processor components
     # Some used internally,
 
@@ -63,7 +62,6 @@ class processor:
 
     # Initialise processor
 
-
     def __init__(self):
 
         # Set up all the internals of the processor
@@ -72,7 +70,7 @@ class processor:
         # Set up RAM
         self.RAM = []                                # RAM
         self.RAM_PORT = [[0 for _bank in range(8)]   # RAM Ports
-                        for _chip in range(4)]
+                         for _chip in range(4)]
         # Set up ROM
         self.ROM = []                                # ROM
         self.ROM_PORT = [0 for _bank in range(self.NO_ROM_PORTS)]   # ROM ports
@@ -86,8 +84,8 @@ class processor:
         # Set up RAM status characters
         self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
                                     for _reg in range(4)]
-                                for _chip in range(4)]
-                                for _bank in range(8)]
+                                   for _chip in range(4)]
+                                  for _bank in range(8)]
 
         # Creation of processor simulated hardware
         # Pin 10 on the physical chip is the "test" pin
