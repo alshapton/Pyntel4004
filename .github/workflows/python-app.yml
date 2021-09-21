@@ -56,9 +56,9 @@ jobs:
         coverage run `which pytest`
     - name: Beta Upload code coverage report
       uses: codacy/codacy-coverage-reporter-action@v1
-          with:
-            project-token: ${{ secrets.CODACY_COVERAGE_TOKEN }}
-            coverage-reports: pyntel4004/test/.coverage
+      with:
+          project-token: ${{ secrets.CODACY_COVERAGE_TOKEN }}
+          coverage-reports: pyntel4004/test/.coverage
     - name: Upload code coverage report
       env: 
         CODACY_API_TOKEN: ${{ secrets.CODACY_COVERAGE_TOKEN }}
