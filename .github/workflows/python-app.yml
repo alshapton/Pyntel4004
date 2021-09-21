@@ -22,21 +22,27 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+    - name: Retrieve Codacy API token from secret store
+      shell: bash
+      env:
+        CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
+      run: |
+        export CODACY_PROJECT_TOKEN="$CODACY_API_TOKEN"
     - name: Get the current branch name
       shell: bash
       run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
       id: branch_name
     - name: Install dependencies
       run: |
+        # Update pip and install flake8, pytest and coverage
         python -m pip install --upgrade pip
-        pip install flake8 pytest
+        pip install flake8 pytest coverage
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
@@ -47,7 +53,15 @@ jobs:
     - name: Test with pytest
       working-directory: ./pyntel4004/test
       run: |
+        # Run all tests
         pytest 
+    - name: Generate code coverage report
+      working-directory: ./pyntel4004/test
+      run: |
+        # Run code coverage tool
+        coverage run `which pytest`
+        # Upload coverage to codacy dashboard
+        bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage
     - name: Build documentation only if on main branch
       working-directory: ./docs
       run: |
