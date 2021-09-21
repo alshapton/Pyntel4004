@@ -28,13 +28,6 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - name: Retrieve Codacy API token from secret store
-      shell: bash
-      env:
-        CODACY_API_TOKEN: ${{ secrets.CODACY_COVERAGE_TOKEN }}
-      run: |
-        export CODACY_PROJECT_TOKEN="$CODACY_API_TOKEN"
-        echo "$CODACY_API_TOKEN"
     - name: Get the current branch name
       shell: bash
       run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
@@ -58,11 +51,12 @@ jobs:
         pytest 
     - name: Generate code coverage report
       working-directory: ./pyntel4004/test
+      env: 
+        CODACY_API_TOKEN: ${{ secrets.CODACY_COVERAGE_TOKEN }}
       run: |
         # Run code coverage tool
         coverage run `which pytest`
         # Upload coverage to codacy dashboard
-        echo "$CODACY_API_TOKEN"
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage
     - name: Build documentation only if on main branch
       working-directory: ./docs
