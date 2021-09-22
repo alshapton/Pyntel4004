@@ -63,7 +63,6 @@ jobs:
         export CODACY_ORGANIZATION_PROVIDER=gh
         export CODACY_USERNAME=alshapton
         export CODACY_PROJECT_NAME=Pyntel4004
-        #export CODACY_API_TOKEN=KWiJ6gT9WuQLT12WIxBW
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage.xml
     - name: Build documentation only if on main branch
       working-directory: ./docs
