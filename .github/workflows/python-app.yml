@@ -53,7 +53,8 @@ jobs:
       working-directory: ./pyntel4004/test
       run: |
         # Run code coverage tool
-        coverage run `which pytest` xml -o .coverage.xml
+        coverage run `which pytest`
+        coverage xml -o .coverage.xml
     - name: Upload code coverage report
       env: 
         CODACY_API_TOKEN: ${{ secrets.CODACY_COVERAGE_TOKEN }}
