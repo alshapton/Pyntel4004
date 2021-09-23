@@ -159,7 +159,7 @@ def test_suboperation_insert_register_scenario3():
 
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
-def test_suboperation_read_register(register):
+def test_suboperation_read_register_scenario1(register):
     """Test Read Register function."""
     chip_test = processor()
 
@@ -173,6 +173,22 @@ def test_suboperation_read_register(register):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     assert chip_test.read_register(register) == 5
+
+@pytest.mark.parametrize("register", [-1, 16])  # noqa
+def test_suboperation_read_register_scenario2(register):
+    """Test Read Register failure case #1."""
+    chip_base = processor()
+    chip_test = processor()
+
+    # Perform the operation under test:
+    # attempting to read from a non-existent register
+    with pytest.raises(Exception) as e:
+        assert processor.read_register(chip_test, register)
+    assert str(e.value) == "Register:" + str(register)
+    assert e.type == InvalidRegister
+
+    # Pickling each chip and comparing will show equality or not.
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
 ##############################################################################
@@ -260,6 +276,21 @@ def test_suboperation_read_registerpair():
     # the test chip which has been operated on by the operation under test.
     # N/A
 
+@pytest.mark.parametrize("registerpair", [-1, 8])  # noqa
+def test_suboperation_read_registerpair_scenario2(registerpair):
+    """Test Read Register Pair failure case #1."""
+    chip_base = processor()
+    chip_test = processor()
+
+    # Perform the operation under test:
+    # attempting to read from a non-existent register pair
+    with pytest.raises(Exception) as e:
+        assert processor.read_registerpair(chip_test, registerpair)
+    assert str(e.value) == "Register Pair: " + str(registerpair)
+    assert e.type == InvalidRegisterPair
+
+    # Pickling each chip and comparing will show equality or not.
+    assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 ##############################################################################
 #                      Increment Program Counter                             #
@@ -803,6 +834,23 @@ def test_suboperation_test_ones_complement_scenario2(value):
         assert e.type == ValueOutOfRangeForBits
 
 
+@pytest.mark.parametrize("bits", [-1, 0, 1, 3, 5, 7, 9, 11, 13, 232])
+def test_suboperation_test_ones_complement_scenario3(bits):
+    """Test ones_complement scenario 2."""
+    # Simulate conditions at end of operation in base chip
+    # N/A
+
+    # Simulate conditions at end of operation in base chip
+    # N/A - chip should have not had any changes as the operations will fail
+
+    # attempting to use binary number larger than the bits will allow
+    with pytest.raises(Exception) as e:
+        assert processor.ones_complement(2, bits)
+        assert str(e.value) == 'Value: ' + str(2) + \
+                               'Bits: ' + str(bits)
+        assert e.type == InvalidBitValue
+
+
 ##############################################################################
 #                Check Insert RAM Status Character                           #
 ##############################################################################
@@ -863,8 +911,8 @@ def test_suboperation_test_write_to_stackscenario1(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert processor.write_to_stack(chip_test, value[0])
-        assert str(e.value) == 'Value: ' + str(value[0])
+        assert processor.write_to_stack(chip_test, value)
+        assert str(e.value) == 'Value: ' + str(value)
         assert e.type == ValueOutOfRangeForStack
 
 

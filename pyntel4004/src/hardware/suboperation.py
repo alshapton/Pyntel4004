@@ -121,9 +121,7 @@ def insert_register(self, register: int, value: int):
     N/A
 
     """
-    if 0 <= register <= 15:
-        pass
-    else:
+    if (register < 0) or (register > 15):
         raise InvalidRegister('Register: ' + str(register))
 
     if value > 15:
@@ -158,9 +156,7 @@ def read_register(self, register: int):
     N/A
 
     """
-    if 0 <= register <= 15:
-        pass
-    else:
+    if (register < 0) or (register > 15):
         raise InvalidRegister('Register:' + str(register))
 
     return self.REGISTERS[register]
