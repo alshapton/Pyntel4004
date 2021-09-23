@@ -556,9 +556,6 @@ def ones_complement(value: str, bits: int):
 
     Parameters
     ----------
-    self : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
     value: int: mandatory
         decimal value to convert
 
@@ -607,9 +604,6 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
 
     Parameters
     ----------
-    self : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
     bits : int, mandatory
         number of bits of the source data
 
@@ -670,9 +664,6 @@ def decimal_to_binary(bits: int, decimal: int):
 
     Parameters
     ----------
-    self : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
     bits : int, mandatory
         number of bits required for the conversion
 
@@ -713,9 +704,6 @@ def binary_to_decimal(binary: str):
 
     Parameters
     ----------
-    self : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
     binary : str, mandatory
         a string which represents the binary value
 
