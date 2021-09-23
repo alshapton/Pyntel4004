@@ -174,6 +174,7 @@ def test_suboperation_read_register_scenario1(register):
     # the test chip which has been operated on by the operation under test.
     assert chip_test.read_register(register) == 5
 
+
 @pytest.mark.parametrize("register", [-1, 16])  # noqa
 def test_suboperation_read_register_scenario2(register):
     """Test Read Register failure case #1."""
@@ -276,6 +277,7 @@ def test_suboperation_read_registerpair():
     # the test chip which has been operated on by the operation under test.
     # N/A
 
+
 @pytest.mark.parametrize("registerpair", [-1, 8])  # noqa
 def test_suboperation_read_registerpair_scenario2(registerpair):
     """Test Read Register Pair failure case #1."""
@@ -295,6 +297,8 @@ def test_suboperation_read_registerpair_scenario2(registerpair):
 ##############################################################################
 #                      Increment Program Counter                             #
 ##############################################################################
+
+
 @pytest.mark.parametrize("words", [0, 1, 2])  # noqa
 def test_suboperation_increment_pc_scenario1(words):
     """Test increment PC scenario 1."""
