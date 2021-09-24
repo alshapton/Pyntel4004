@@ -2,7 +2,8 @@
 #     i)    install Python dependencies
 #     ii)   run tests and lint with a single version of Python
 #     iii)  run code coverage tools
-#     iv)   build the sphinx-based documentation
+#     iv)   build and publish to PyPi
+#     v)    build the sphinx-based documentation (main branch only)
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Pyntel4004 Build pipeline
@@ -65,6 +66,19 @@ jobs:
         export CODACY_USERNAME=alshapton
         export CODACY_PROJECT_NAME=Pyntel4004
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage.xml
+    - name: Build and publish to pypi if on main branch
+      working-directory: ./pyntel4004
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_DEPLOY }}
+      run: |
+        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
+        python -m pip install —user —upgrade build ;
+        python -m pip install —user —upgrade twine ;
+        # python setup.py sdist bdist_wheel;
+        python -m build ;
+        python -m twine upload dist/* ;
+        fi
     - name: Build documentation only if on main branch
       working-directory: ./docs
       run: |
