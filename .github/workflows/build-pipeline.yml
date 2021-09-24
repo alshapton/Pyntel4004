@@ -73,8 +73,8 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_DEPLOY }}
       run: |
         if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
-        python -m pip install —user —upgrade build ;
-        python -m pip install —user —upgrade twine ;
+        python -m pip install —-user —-upgrade build ;
+        python -m pip install —-user —-upgrade twine ;
         # python setup.py sdist bdist_wheel;
         python -m build ;
         python -m twine upload dist/* ;
