@@ -80,8 +80,8 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_DEPLOY }}
       run: |
-        if [[ "${{ steps.branch_name.outputs.branch }}" = "release/" ]]; then 
         RB="${{ steps.branch_name.outputs.branch }}" 
+        if [[ "${RB:0:8}" = "release/" ]]; then 
         echo "Release Branch: ${RB:10}"; 
         fi
         if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
