@@ -2,11 +2,11 @@
 #     i)    install Python dependencies
 #     ii)   run tests and lint with a single version of Python
 #     iii)  run code coverage tools
-#     iv)   build and publish to PyPi
+#     iv)   build and publish to PyPi (main branch only)
 #     v)    build the sphinx-based documentation (main branch only)
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Pyntel4004 Build pipeline
+name: Build Pipeline
 
 on:
   push:
@@ -15,10 +15,16 @@ on:
       - main
       # Push events to develop branch
       - develop
+      # Push events to a release branch
+      - release/*
   pull_request:
     branches:
       # PR events to main branch 
       - main
+      # PR events to develop branch
+      - develop
+      # PR events to a release branch
+      - release/*
 
 jobs:
   build:
@@ -32,8 +38,12 @@ jobs:
         python-version: 3.9
     - name: Get the current branch name
       shell: bash
-      run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+      run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"; echo "Branch Name = ${GITHUB_REF#refs/heads/}"
       id: branch_name
+    - name: Printing Github Context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: echo "$GITHUB_CONTEXT"
     - name: Install dependencies
       run: |
         # Update pip and install flake8, pytest and coverage
@@ -66,16 +76,21 @@ jobs:
         export CODACY_USERNAME=alshapton
         export CODACY_PROJECT_NAME=Pyntel4004
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage.xml
-    - name: Build and publish to pypi if on main branch
+    - name: Build and publish to pypi if on a release branch
       working-directory: ./pyntel4004
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_DEPLOY }}
       run: |
-        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
-        python -m pip install —-user —-upgrade build ;
-        python -m pip install —-user —-upgrade twine ;
+        BRANCH_NAME="${{ steps.branch_name.outputs.branch }}" 
+        if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then 
+        RELEASE_NAME="${BRANCH_NAME:8}"
+        echo "Release Name: ${RELEASE_NAME}" ; 
+        echo "Publishing Release ${RELEASE_NAME} to PyPi"
+        python -m pip install build ;
+        python -m pip install twine ;
         # python setup.py sdist bdist_wheel;
+        cp ../README.md .
         python -m build ;
         python -m twine upload dist/* ;
         fi
