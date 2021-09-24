@@ -90,6 +90,7 @@ jobs:
         python -m pip install build ;
         python -m pip install twine ;
         # python setup.py sdist bdist_wheel;
+        cp ../README.md .
         python -m build ;
         python -m twine upload dist/* ;
         fi
