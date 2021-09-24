@@ -1,8 +1,9 @@
+
 class processor:
     """Definition of an i4004 processor."""
 
     # Import processor internals
-    import hardware.opcodes
+    from hardware import opcodes
     from hardware.reset import init_command_registers, init_pram, \
         init_ram, init_registers, init_rom, init_stack, init_wpm_counter
 
@@ -11,13 +12,19 @@ class processor:
     from hardware.instructions.idx import fin, inc
     from hardware.instructions.idxacc import add, sub, ld, xch
     from hardware.instructions.immediate import fim, ldm
-    from hardware.instructions.io_ram import rdm, rdr, rd0, rd1, rd2, rd3, \
-        wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
+    from hardware.instructions.io_ram import adm, rdm, rdr, rd0, rd1, rd2, \
+        rd3, wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
     from hardware.instructions.memory_select import dcl, src
     from hardware.instructions.nop import nop
     from hardware.instructions.subroutine import bbl, jms
     from hardware.instructions.transfer_control import jun, jin, jcn, isz
 
+    from hardware.reads import read_all_registers, read_all_ram, \
+        read_all_rom, read_all_pram, read_accumulator, \
+        read_current_ram_bank, read_carry, read_pin10, read_all_stack, \
+        read_all_command_registers, read_wpm_counter, read_acbr, \
+        read_program_counter, read_stack_pointer, read_all_rom_ports, \
+        read_all_ram_ports, read_all_status_characters
     from hardware.suboperation import binary_to_decimal, check_overflow, \
         convert_decimal_to_n_bit_slices, decimal_to_binary, flip_wpm_counter, \
         increment_register, increment_pc, inc_pc_by_page, \
@@ -29,12 +36,6 @@ class processor:
 
     # Operations to read the processor components
     # Some used internally,
-    from hardware.reads import read_all_registers, read_all_ram, \
-        read_all_rom, read_all_pram, read_accumulator, \
-        read_current_ram_bank, read_carry, read_pin10, read_all_stack, \
-        read_all_command_registers, read_wpm_counter, read_acbr, \
-        read_program_counter, read_stack_pointer, read_all_rom_ports, \
-        read_all_ram_ports, read_all_status_characters
 
     # i4004 Processor characteristics
     MAX_4_BITS = 15             # Maximum value 4 bits can hold
@@ -57,7 +58,7 @@ class processor:
     NO_STATUS_CHARACTERS = 4    # Number of Status chars per status register
 
     # Instruction table
-    INSTRUCTIONS = hardware.opcodes.instructions.opcodes
+    INSTRUCTIONS = opcodes.instructions.opcodes
 
     # Initialise processor
 
@@ -82,13 +83,14 @@ class processor:
 
         # Set up RAM status characters
         self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
-                                  for _reg in range(4)]
-                                  for _chip in range(4)]
+                                    for _reg in range(4)]
+                                   for _chip in range(4)]
                                   for _bank in range(8)]
 
         # Creation of processor simulated hardware
         # Pin 10 on the physical chip is the "test" pin
         # and can be read by the JCN instruction
+        self.PIN_10_SIGNAL_TEST = 0
         self.write_pin10(0)
 
         # Initialise Internals
@@ -108,4 +110,4 @@ class processor:
         self.reset_carry()           # Reset the carry bit
         self.init_wpm_counter()      # WPM Counter (Left/Right flip)
 
-#  END OF PROCESSOR DEFINITION
+    #  END OF PROCESSOR DEFINITION

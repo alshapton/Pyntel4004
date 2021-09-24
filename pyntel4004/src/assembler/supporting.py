@@ -498,8 +498,6 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
     json_doc = json_doc + '}'
     with open(filename + '.obj', "w") as output:
         output.write(json_doc)
-    print(bytearray(program))
     with open(filename + '.bin', "w+b") as b:
         b.write(bytearray(program))
-    print('hello')
     return True

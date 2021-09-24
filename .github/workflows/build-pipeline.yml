@@ -1,0 +1,104 @@
+# This Github Action will: 
+#     i)    install Python dependencies
+#     ii)   run tests and lint with a single version of Python
+#     iii)  run code coverage tools
+#     iv)   build and publish to PyPi (main branch only)
+#     v)    build the sphinx-based documentation (main branch only)
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Build Pipeline
+
+on:
+  push:
+    branches:
+      # Push events to main branch 
+      - main
+      # Push events to develop branch
+      - develop
+      # Push events to a release branch
+      - release/*
+  pull_request:
+    branches:
+      # PR events to main branch 
+      - main
+      # PR events to develop branch
+      - develop
+      # PR events to a release branch
+      - release/*
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Get the current branch name
+      shell: bash
+      run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"; echo "Branch Name = ${GITHUB_REF#refs/heads/}"
+      id: branch_name
+    - name: Printing Github Context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: echo "$GITHUB_CONTEXT"
+    - name: Install dependencies
+      run: |
+        # Update pip and install flake8, pytest and coverage
+        python -m pip install --upgrade pip
+        pip install flake8 pytest coverage
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      working-directory: ./pyntel4004/test
+      run: |
+        # Run all tests
+        pytest 
+    - name: Generate code coverage report
+      working-directory: ./pyntel4004/test
+      run: |
+        # Run code coverage tool
+        coverage run `which pytest`
+        coverage xml -o .coverage.xml
+    - name: Upload code coverage report
+      env: 
+        CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
+      run: |
+        # Upload coverage to codacy dashboard
+        export CODACY_ORGANIZATION_PROVIDER=gh
+        export CODACY_USERNAME=alshapton
+        export CODACY_PROJECT_NAME=Pyntel4004
+        bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage.xml
+    - name: Build and publish to pypi if on a release branch
+      working-directory: ./pyntel4004
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_DEPLOY }}
+      run: |
+        BRANCH_NAME="${{ steps.branch_name.outputs.branch }}" 
+        if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then 
+        RELEASE_NAME="${BRANCH_NAME:8}"
+        echo "Release Name: ${RELEASE_NAME}" ; 
+        echo "Publishing Release ${RELEASE_NAME} to PyPi"
+        python -m pip install build ;
+        python -m pip install twine ;
+        # python setup.py sdist bdist_wheel;
+        cp ../README.md .
+        python -m build ;
+        python -m twine upload dist/* ;
+        fi
+    - name: Build documentation only if on main branch
+      working-directory: ./docs
+      run: |
+        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
+        python -m pip install --user sphinx; 
+        python -m pip install --user faculty_sphinx_theme; 
+        make html;
+        fi

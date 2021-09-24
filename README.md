@@ -8,6 +8,8 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/28ff090ed5a9412b82a26b4da605745f)](https://www.codacy.com/gh/alshapton/Pyntel4004/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alshapton/Pyntel4004&amp;utm_campaign=Badge_Grade)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=active+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=resolved+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
+[![PyPI version](https://badge.fury.io/py/Pyntel4004.svg)](https://badge.fury.io/py/Pyntel4004)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/Pyntel4004)
 [![Plant Tree](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=Plant%20Tree&query=%24.total&url=https%3A%2F%2Fpublic.offset.earth%2Fusers%2Ftreeware%2Ftrees)](https://plant.treeware.earth/alshapton/pyntel4004)
 
 A Python software implementation of the Intel 4004 processor.
@@ -17,10 +19,50 @@ A Python software implementation of the Intel 4004 processor.
 -  Two pass assembler using the original mnemonics, directives and comments syntax
 -  Monitor facility to step through code and examine registers, memory etc
 
+## Requirements
+
+
+* `Python`_ >= 3.8.2
+<br>
+
+## Installation Instructions
+<br>
+
+### Source Code
+Pyntel4004’s git repo is available on GitHub, which can be browsed [here](https://github.com/alshapton/pyntel4004) and cloned using:
+
+```bash
+ 
+    $ git clone https://github.com/alshapton/pyntel4004 pyntel4004
+```
+
+Verify the installation by running unit tests:
+```bash
+
+    $ cd pyntel4004/test
+    $ pytest
+```
+## Questions, Answers and Issues
+
+Please use the github discussion board for questions, to ensure the right people see them in a timely manner.
+
+[Github Pyntel4004 Discussion Board](https://github.com/alshapton/Pyntel4004/discussions)
+
+and the github issue tracker to raise any issues.
+
+[Github Pyntel4004 Issues Board](https://github.com/alshapton/Pyntel4004/issues)
+
+<br>
+
+## Usage Instructions
+
+The user instructions can be found [here](https://pyntel4004.readthedocs.io/en/latest/intro/usage.html
+)
+
 ## Design goals
 
 -  [ ] As much of the internals as possible should be carried out using binary arithmetic and operations.
--  [ ] No 3rd party libraries to be used (i.e. pure Python).
+-  [X] No 3rd party libraries to be used (i.e. pure Python).
 -  [ ] Build a fully-working i4004 opcode emulator.
 -  [X] Build a fully-working assembler which generates correct op-codes.
 -  [ ] Construct a fully-working software-based i4004 chip which can use the generated object code from the compiler (possibly using micro-python or circuit python on an Ardiuno Board).
@@ -82,3 +124,5 @@ This package is [Treeware](https://treeware.earth). If you use it in production,
 -  Logo: [LouBeLou Print Shop](Www.psloubelou.com)
 
 ![Pyntel 4004 Logo](./images/Pyntel4001_chip.png)
+
+.. _Python: https://www.python.org
