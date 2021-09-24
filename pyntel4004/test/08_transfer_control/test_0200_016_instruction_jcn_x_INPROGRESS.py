@@ -18,11 +18,11 @@ def test_validate_instruction(value):
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[16 + value]
-    known = {"opcode": 16 + value, "mnemonic": "jcn(" + str(value) + ",address8)", "exe": 21.6, "bits": ["0001", decimal_to_binary(4,  value),"xxxx","xxxx"], "words": 2}  # noqa
+    known = {"opcode": 16 + value, "mnemonic": "jcn(" + str(value) + ",address8)", "exe": 21.6, "bits": ["0001", decimal_to_binary(4,  value), "xxxx", "xxxx"], "words": 2}  # noqa
     assert op == known
 
 
-@pytest.mark.parametrize("values", [[100,0,0,0,0,1234]])
+@pytest.mark.parametrize("values", [[100, 0, 0, 0, 0, 1234]])
 def test_scenario1(values):
     """Test JCN instruction functionality."""
     chip_test = processor()
@@ -38,14 +38,14 @@ def test_scenario1(values):
     CONDITION = int(C1 + C2 + C3 + C4)
     # Set chip to initial status
     chip_test.PROGRAM_COUNTER = PC
-    print(CONDITION,chip_base.PROGRAM_COUNTER, chip_test.PROGRAM_COUNTER)
+    print(CONDITION, chip_base.PROGRAM_COUNTER, chip_test.PROGRAM_COUNTER)
 
     # Perform the instruction under test:
     processor.jcn(chip_test, CONDITION, FA)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = FA
-    
+
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
@@ -53,7 +53,9 @@ def test_scenario1(values):
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
-    print(CONDITION,chip_base.PROGRAM_COUNTER, chip_test.PROGRAM_COUNTER)
+    print(CONDITION, chip_base.PROGRAM_COUNTER, chip_test.PROGRAM_COUNTER)
+
+
 '''
 @pytest.mark.parametrize("values", [[4095, 4, 21, 4350], [4095, 4, 42, 4350]])
 def test_scenario2(values):
