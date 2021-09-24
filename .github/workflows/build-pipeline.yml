@@ -87,8 +87,8 @@ jobs:
         RELEASE_NAME="${BRANCH_NAME:8}"
         echo "Release Name: ${RELEASE_NAME}" ; 
         echo "Publishing Release ${RELEASE_NAME} to PyPi"
-        python -m pip install —-upgrade build ;
-        python -m pip install —-upgrade twine ;
+        python -m pip install build ;
+        python -m pip install twine ;
         # python setup.py sdist bdist_wheel;
         python -m build ;
         python -m twine upload dist/* ;
