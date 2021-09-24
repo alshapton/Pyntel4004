@@ -23,6 +23,8 @@ on:
       - main
       # PR events to develop branch
       - develop
+      # PR events to a release branch
+      - release/*
 
 jobs:
   build:
@@ -74,15 +76,16 @@ jobs:
         export CODACY_USERNAME=alshapton
         export CODACY_PROJECT_NAME=Pyntel4004
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage.xml
-    - name: Build and publish to pypi if on main branch
+    - name: Build and publish to pypi if on a release branch
       working-directory: ./pyntel4004
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_DEPLOY }}
       run: |
-        RB="${{ steps.branch_name.outputs.branch }}" 
-        if [[ "${RB:0:8}" = "release/" ]]; then 
-        echo "Release Branch: ${RB:10}"; 
+        BRANCH_NAME="${{ steps.branch_name.outputs.branch }}" 
+        if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then 
+        RELEASE_NAME="${RB:9}"
+        echo "Release Branch: ${RELEASE_NAME}" ; 
         fi
         if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
         python -m pip install —-user —-upgrade build ;
