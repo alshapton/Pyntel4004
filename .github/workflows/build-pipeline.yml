@@ -84,8 +84,8 @@ jobs:
       run: |
         BRANCH_NAME="${{ steps.branch_name.outputs.branch }}" 
         if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then 
-        RELEASE_NAME="${RB:9}"
-        echo "Release Branch: ${RELEASE_NAME}" ; 
+        RELEASE_NAME="${BRANCH_NAME:9}"
+        echo "Release Name: ${RELEASE_NAME}" ; 
         fi
         if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
         python -m pip install —-user —-upgrade build ;
