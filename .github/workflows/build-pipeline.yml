@@ -15,10 +15,14 @@ on:
       - main
       # Push events to develop branch
       - develop
+      # Push events to a release branch
+      - release/*
   pull_request:
     branches:
       # PR events to main branch 
       - main
+      # PR events to develop branch
+      - develop
 
 jobs:
   build:
