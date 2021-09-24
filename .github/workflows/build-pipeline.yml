@@ -84,10 +84,9 @@ jobs:
       run: |
         BRANCH_NAME="${{ steps.branch_name.outputs.branch }}" 
         if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then 
-        RELEASE_NAME="${BRANCH_NAME:9}"
+        RELEASE_NAME="${BRANCH_NAME:8}"
         echo "Release Name: ${RELEASE_NAME}" ; 
-        fi
-        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
+        echo "Publishing Release ${RELEASE_NAME} to PyPi"
         python -m pip install —-user —-upgrade build ;
         python -m pip install —-user —-upgrade twine ;
         # python setup.py sdist bdist_wheel;
