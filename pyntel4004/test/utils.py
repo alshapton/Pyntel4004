@@ -4,8 +4,10 @@ from hardware.processor import processor
 
 def is_same(chip1: processor, chip2: processor, component: str):
     """Individual assertions that the two supplied chips are identical."""
-    if (component != ''):
+    if component != '':
+        # skipcq: PYL-PYL-W0123
         print('chip1:  ' + str(eval(('chip1.' + component))))
+        # skipcq: PYL-PYL-W0123
         print('chip2:  ' + str(eval(('chip2.' + component))))
 
     # Check command registers
