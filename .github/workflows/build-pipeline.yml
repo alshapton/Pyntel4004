@@ -28,7 +28,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -76,6 +75,10 @@ jobs:
         export CODACY_USERNAME=alshapton
         export CODACY_PROJECT_NAME=Pyntel4004
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage.xml
+    jobs:
+      pypi-publish:    
+        needs: build
+        runs-on: ubuntu-latest
     - name: Build and publish to pypi if on a release branch
       working-directory: ./pyntel4004
       env:
@@ -94,6 +97,10 @@ jobs:
         python -m build ;
         python -m twine upload dist/* ;
         fi
+    jobs:
+      documentation:    
+        needs: build
+        runs-on: ubuntu-latest
     - name: Build documentation only if on main branch
       working-directory: ./docs
       run: |
