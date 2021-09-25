@@ -81,6 +81,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - name: Get the current branch name
+      shell: bash
+      run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"; echo "Branch Name = ${GITHUB_REF#refs/heads/}"
+      id: branch_name
     - name: Build and publish to pypi if on a release branch
       working-directory: ./pyntel4004
       env:
@@ -103,6 +107,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - name: Get the current branch name
+      shell: bash
+      run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"; echo "Branch Name = ${GITHUB_REF#refs/heads/}"
+      id: branch_name
     - name: Build documentation only if on main branch
       working-directory: ./docs
       run: |
