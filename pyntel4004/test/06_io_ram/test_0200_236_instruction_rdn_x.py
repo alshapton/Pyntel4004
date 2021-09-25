@@ -35,7 +35,6 @@ def test_validate_rdN_instruction():
 @pytest.mark.parametrize("register", [0, 1, 2, 3])
 def test_rdN_scenario1(chip, register):
     """Test instruction RDn"""
-
     from random import seed
     from random import randint
 
