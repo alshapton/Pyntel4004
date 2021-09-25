@@ -17,6 +17,8 @@ on:
       - develop
       # Push events to a release branch
       - release/*
+        # Push events to a feature branch
+      - feature/*
   pull_request:
     branches:
       # PR events to main branch 
