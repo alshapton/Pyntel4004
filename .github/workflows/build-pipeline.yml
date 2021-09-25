@@ -1,10 +1,10 @@
 # This Github Action will: 
-#     i)    install Python dependencies
-#     ii)   run tests and lint with a single version of Python
-#     iii)  run code coverage tools
-#     iv)   build and publish to PyPi (main branch only)
-#     v)    build the sphinx-based documentation (main branch only)
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+#     jobs: 
+#        build:                 install Python dependencies
+#                               run tests and lint with a single version of Python
+#                               run code coverage tools
+#       pypi-publish:           build and publish to PyPi (main branch only) - if build job passes
+#       documentation-publish:  build the sphinx-based documentation (main branch only) - if build job passes
 
 name: Build Pipeline
 
