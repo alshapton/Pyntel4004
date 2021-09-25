@@ -29,19 +29,6 @@ def test_bbl_scenario1(value):
     chip_test = processor()
     chip_base = processor()
 
-    '''
-    chip_base is where I want the end conditions to be constructed by me
-    chip_test is where I want the start conditions to be managed by me, and the
-    bbl instruction to manipulate and be compared with chip_base
-
-    location 300
-    jms 400 (pc = 400) (1)
-            (pc = 302) (3) - end
-
-    location 400
-    bbl value (pc = 400) (2)
-
-    '''
     PC = 300
 
     # Simulate conditions at end of instruction in base chip

@@ -168,6 +168,7 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
 
         # Evaluate the command (some commands may change
         # the PROGRAM_COUNTER here)
-        # Deliberately using eval here...
+        # Deliberately using eval here... skip checks in all code quality tools
+        # skipcq: PYL-PYL-W0123
         eval(exe)  # noqa
     return True
