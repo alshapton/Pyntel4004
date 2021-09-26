@@ -1,8 +1,9 @@
 # Pyntel4004
 
-![Pyntel 4004 Logo](./images/pyntel4004.svg)
+![Pyntel 4004 Logo](https://github.com/alshapton/Pyntel4004/blob/4afcf04365d6169ca6c1a86a10d70997c7583da6/images/pyntel4004.svg)
 
-[![Python application](https://github.com/alshapton/Pyntel4004/actions/workflows/python-app.yml/badge.svg)](https://github.com/alshapton/Pyntel4004/actions/workflows/python-app.yml)
+
+[![Build Pipeline](https://github.com/alshapton/Pyntel4004/actions/workflows/build-pipeline.yml/badge.svg)](https://github.com/alshapton/Pyntel4004/actions/workflows/build-pipeline.yml)
 [![Documentation Status](https://readthedocs.org/projects/pyntel4004/badge/?version=latest)](https://pyntel4004.readthedocs.io/en/latest/?badge=latest)
 ![GitHub](https://img.shields.io/github/license/alshapton/pyntel4004)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/28ff090ed5a9412b82a26b4da605745f)](https://www.codacy.com/gh/alshapton/Pyntel4004/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alshapton/Pyntel4004&amp;utm_campaign=Badge_Grade)
@@ -20,7 +21,6 @@ A Python software implementation of the Intel 4004 processor.
 -  Monitor facility to step through code and examine registers, memory etc
 
 ## Requirements
-
 
 * `Python`_ >= 3.8.2
 <br>
@@ -61,14 +61,16 @@ The user instructions can be found [here](https://pyntel4004.readthedocs.io/en/l
 
 ## Design goals
 
--  [ ] As much of the internals as possible should be carried out using binary arithmetic and operations.
--  [X] No 3rd party libraries to be used (i.e. pure Python).
--  [ ] Build a fully-working i4004 opcode emulator.
--  [X] Build a fully-working assembler which generates correct op-codes.
--  [ ] Construct a fully-working software-based i4004 chip which can use the generated object code from the compiler (possibly using micro-python or circuit python on an Ardiuno Board).
+- As much of the internals as possible should be carried out using binary arithmetic and operations.
+- No 3rd party libraries to be used (i.e. pure Python).
+- Build a fully-working i4004 opcode emulator.
+- Build a fully-working assembler which generates correct op-codes.
+- Construct a fully-working software-based i4004 chip which can use the generated object code from the compiler (possibly using micro-python or circuit python on an Ardiuno Board).
 
 ## Status
 
+23-SEP-2021:    Publishing releases to [PyPi](https://pypi.org/project/Pyntel4004/)
+<br>
 10-SEP-2021:    Documentation building and hosted with [READTHEDOCS](https://pyntel4004.readthedocs.io/en/latest/)
 <br>
 12-JUN-2021:    Auto-build with GITHUB Actions implemented
@@ -92,7 +94,7 @@ Assembler directives are not part of the program itself, but can control things 
 |  / | / Author: ALS | A comment |
 | label,| loop,| A label can be referred to in various control transfer statements. It MUST end in a comma (,)
 
-![Assemble and Run](./images/assemble-run.png)
+![Assemble and Run](https://github.com/alshapton/Pyntel4004/blob/4afcf04365d6169ca6c1a86a10d70997c7583da6/images/assemble-run.png)
 
 ## Monitor Commands
 
@@ -121,8 +123,9 @@ This package is [Treeware](https://treeware.earth). If you use it in production,
 ### Credits
 
 -  Intel 4004 Design Team
--  Logo: [LouBeLou Print Shop](Www.psloubelou.com)
+-  Logo: [LouBeLou Print Shop](http://www.psloubelou.com)
 
-![Pyntel 4004 Logo](./images/Pyntel4001_chip.png)
+![Pyntel 4004 Logo](https://github.com/alshapton/Pyntel4004/blob/4afcf04365d6169ca6c1a86a10d70997c7583da6/images/Pyntel4001_chip.png)
+
 
 .. _Python: https://www.python.org

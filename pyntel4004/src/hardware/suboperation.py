@@ -4,10 +4,9 @@ from .exceptions import IncompatibleChunkBit, \
     InvalidBitValue, InvalidChunkValue, \
     InvalidPin10Value, InvalidRegister, \
     InvalidRegisterPair, NotABinaryNumber, \
-    ProgramCounterOutOfBounds, ValueTooLargeForRegister, \
-    ValueOutOfRangeForBits, ValueOutOfRangeForStack, \
-    ValueTooLargeForAccumulator, ValueTooLargeForRegister, \
-    ValueTooLargeForRegisterPair  # noqa
+    ProgramCounterOutOfBounds, ValueOutOfRangeForBits, \
+    ValueOutOfRangeForStack, ValueTooLargeForAccumulator, \
+    ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
 def set_carry(self):
