@@ -4,7 +4,7 @@
 #                               run tests and lint with a single version of Python
 #                               run code coverage tools
 #       pypi-publish:           build and publish to PyPi (main branch only) - if build job passes
-#       documentation-publish:  build the sphinx-based documentation (main branch only) - if build job passes
+#       documentation-publish:  build the sphinx-based documentation (release branch only) - if build job passes
 
 name: Build Pipeline
 
@@ -101,6 +101,7 @@ jobs:
         RELEASE_NAME="${BRANCH_NAME:8}"
         echo "Release Name: ${RELEASE_NAME}" ; 
         echo "Publishing Release ${RELEASE_NAME} to PyPi"
+        sed  "s/ENV_VERSION/$RELEASE_NAME/" setup.cfg
         python -m pip install build ;
         python -m pip install twine ;
         # python setup.py sdist bdist_wheel;
@@ -121,10 +122,15 @@ jobs:
       shell: bash
       run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"; echo "Branch Name = ${GITHUB_REF#refs/heads/}"
       id: branch_name
-    - name: Build documentation only if on main branch
+    - name: Build documentation only if on release branch
       working-directory: ./docs
       run: |
-        if [ "${{ steps.branch_name.outputs.branch }}" == "main" ]; then 
+        BRANCH_NAME="${{ steps.branch_name.outputs.branch }}" 
+        if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then 
+        RELEASE_NAME="${BRANCH_NAME:8}"  
+        echo "Release Name: ${RELEASE_NAME}" ; 
+        echo "Building Documentation for Release ${RELEASE_NAME}"
+        sed  "s/ENV_VERSION/$RELEASE_NAME/" ./source/conf.py
         python -m pip install --user sphinx; 
         python -m pip install --user faculty_sphinx_theme; 
         make html;
