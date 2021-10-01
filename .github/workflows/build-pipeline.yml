@@ -130,7 +130,7 @@ jobs:
         RELEASE_NAME="${BRANCH_NAME:8}"  
         echo "Release Name: ${RELEASE_NAME}" ; 
         echo "Building Documentation for Release ${RELEASE_NAME}"
-        sed  "s/ENV_VERSION/$RELEASE_NAME/" ./source/conf.py
+        sed  "s/ENV_VERSION/$RELEASE_NAME/" source/conf.py 
         python -m pip install --user sphinx; 
         python -m pip install --user faculty_sphinx_theme; 
         make html;
