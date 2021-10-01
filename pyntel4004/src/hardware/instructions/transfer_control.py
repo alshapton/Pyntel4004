@@ -114,10 +114,18 @@ def jcn(self, conditions: int, address: int):
     0001    0110  Jump if accumulator is zero or carry = 1
 
     Several conditions can be tested simultaneously.
+    
     The logic equation describing the condition for a jump is give below:
-    JUMP = ~C1 . ((ACC = 0) . C2 + (CY = 1) . C3 +
-                ~TEST . C4) + C1 . ~((ACC = 0) . C2 +
-                (CY = 1) . C3 + ~TEST . C4)
+    JUMP = ~C1 . ((ACC = 0) . C2 + (CY = 1) . C3 + ~TEST . C4) + 
+                C1 . ~((ACC != 0) . C2 + (CY = 1) . C3 + ~TEST . C4)
+
+                        +---------+---------+
+                        | Symbol  | Logical |   
+                        +---------+---------+
+                        |    ~    +   NOT   +
+                        |    .    +   AND   +
+                        |    +    +   OR    +
+                        +---------+---------+
 
     Side-effects:   Not Applicable
 
@@ -134,17 +142,43 @@ def jcn(self, conditions: int, address: int):
 
     Need to do "if JCN at end of page" code
     """
-    i = int((conditions & 8) / 8)
+    from hardware.processor import processor
 
     carry = self.read_carry()
     accumulator = self.read_accumulator()
     pin10 = self.read_pin10()
-    if i == 0:
-        if (carry == 1) or (accumulator == 0) or (pin10 == 0):
-            self.PROGRAM_COUNTER = address
+    notpin10 = not pin10
+    checks = str(processor.decimal_to_binary(4, conditions))
+
+    if checks[0:1] == '1':
+        c1 = True
     else:
-        if (carry == 1) or (accumulator != 0) or (pin10 == 1):
-            self.increment_pc(2)
+        c1 = False
+    if checks[1:2] == '1':
+        c2 = True
+    else:
+        c2 = False
+    if checks[2:3] == '1':
+        c3 = True
+    else:
+        c3 = False
+    if checks[3:4] == '1':
+        c4 = True
+    else:
+        c4 = False
+    notc1 = True if c1 == False else True
+    notc2 = True if c2 == False else True
+    notc3 = True if c3 == False else True
+    notc4 = True if c4 == False else True
+
+    # Use symbolic logic to determine whether to jump
+    JUMP = notc1 and (( accumulator == 0 ) and c2 or (carry == 1) and c3 or notpin10 and c4) or \
+            c1 and ((( accumulator != 0 ) or notc2) and (( carry == 0) or notc3) and (pin10 or notc4))
+
+    if JUMP == True:
+        self.PROGRAM_COUNTER = address
+    else:
+        self.increment_pc(2)
     return self.PROGRAM_COUNTER
 
 
