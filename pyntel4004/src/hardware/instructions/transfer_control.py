@@ -114,7 +114,7 @@ def jcn(self, conditions: int, address: int):
     0001    0110  Jump if accumulator is zero or carry = 1
 
     Several conditions can be tested simultaneously.
-    
+
     The logic equation describing the condition for a jump is give below:
     JUMP = ~C1 . ((ACC = 0) . C2 + (CY = 1) . C3 + ~TEST . C4) + 
                 C1 . ~((ACC != 0) . C2 + (CY = 1) . C3 + ~TEST . C4)
@@ -172,8 +172,9 @@ def jcn(self, conditions: int, address: int):
     notc4 = True if c4 == False else True
 
     # Use symbolic logic to determine whether to jump
-    JUMP = notc1 and (( accumulator == 0 ) and c2 or (carry == 1) and c3 or notpin10 and c4) or \
-            c1 and ((( accumulator != 0 ) or notc2) and (( carry == 0) or notc3) and (pin10 or notc4))
+    JUMP = notc1 and ((accumulator == 0) and c2 or (carry == 1) and c3 or notpin10 and c4) or \
+        c1 and (((accumulator != 0) or notc2) and (
+            (carry == 0) or notc3) and (pin10 or notc4))
 
     if JUMP == True:
         self.PROGRAM_COUNTER = address
