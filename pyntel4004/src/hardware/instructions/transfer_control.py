@@ -166,10 +166,10 @@ def jcn(self, conditions: int, address: int):
         c4 = True
     else:
         c4 = False
-    notc1 = True if c1 == False else True
-    notc2 = True if c2 == False else True
-    notc3 = True if c3 == False else True
-    notc4 = True if c4 == False else True
+    notc1 = True if c1 is False else True
+    notc2 = True if c2 is False else True
+    notc3 = True if c3 is False else True
+    notc4 = True if c4 is False else True
 
     # Use symbolic logic to determine whether to jump
     JUMP = notc1 and (( accumulator == 0 ) and c2 or (carry == 1) and c3 or notpin10 and c4) or \
