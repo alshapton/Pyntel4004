@@ -43,5 +43,5 @@ def is_same(chip1: processor, chip2: processor, component: str):
     assert chip1.CURRENT_RAM_BANK == chip2.CURRENT_RAM_BANK
     assert chip1.CARRY == chip2.CARRY
     assert chip1.WPM_COUNTER == chip2.WPM_COUNTER
-    
+
     return True
