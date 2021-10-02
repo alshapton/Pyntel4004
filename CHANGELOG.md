@@ -4,6 +4,7 @@
 | **Changes** |
 * Auto added version from release branch name
 * Completed tests for JCN instruction
+* Completed tests for ISZ instruction
 
 <br>
 
