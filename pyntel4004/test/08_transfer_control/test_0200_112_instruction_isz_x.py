@@ -9,6 +9,7 @@ sys.path.insert(1, '../src')
 from hardware.processor import processor  # noqa
 from hardware.suboperation import decimal_to_binary  # noqa
 
+
 @pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 def test_validate_instruction(value):
     """Ensure instruction's characteristics are valid."""
@@ -17,7 +18,6 @@ def test_validate_instruction(value):
     op = chip_test.INSTRUCTIONS[112 + value]
     known = {"opcode": 112 + value, "mnemonic": "isz(" + str(value) + ",address8)", "exe": 10.8, "bits": ["0111", decimal_to_binary(4,  value)], "words": 2}  # noqa
     assert op == known
-
 
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
@@ -39,12 +39,12 @@ def test_scenario1(values, register):
         PCaft = PCaftjump
     else:
         PCaft = PCaftnojump
-    
+
     # Set both chips to initial status
     # Program Counter
     chip_test.PROGRAM_COUNTER = PC
     chip_base.PROGRAM_COUNTER = PC
-    
+
     # Registers
     chip_test.insert_register(REGISTER, VALUE)
     chip_base.insert_register(REGISTER, VALUE)
