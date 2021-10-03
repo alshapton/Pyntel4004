@@ -231,7 +231,7 @@ def wrm(self):
     """
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
-    binary_form_of_address = decimal_to_binary(8,self.COMMAND_REGISTER)
+    binary_form_of_address = decimal_to_binary(8, self.COMMAND_REGISTER)
     chip = binary_to_decimal(binary_form_of_address[0:2])
     register = binary_to_decimal(binary_form_of_address[2:4])
     address = binary_to_decimal(binary_form_of_address[4:])
