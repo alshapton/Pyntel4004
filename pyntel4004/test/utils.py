@@ -14,6 +14,12 @@ def is_same(chip1: processor, chip2: processor, component: str):
     assert chip1.COMMAND_REGISTERS == chip2.COMMAND_REGISTERS
 
     # Check RAM content
+    if component == 'RAM':
+        for i in range(4095):
+            if chip1.RAM[i] != chip2.RAM[i]:
+                print('RAM Location: ', i, '   ', chip1.RAM[i], '    ', chip2.RAM[i])
+            assert chip1.RAM[i] == chip2.RAM[i]
+
     assert chip1.RAM == chip2.RAM
     assert chip1.RAM_PORT == chip2.RAM_PORT
 

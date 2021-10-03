@@ -572,7 +572,7 @@ def ones_complement(value: str, bits: int):
     N/A
 
     """
-    if (bits not in [4, 8, 12]):
+    if (bits not in [2, 4, 8, 12]):
         raise InvalidBitValue(' Bits: ' + str(bits))
 
     if (value > ((2 ** bits) - 1)) or (value < 0):
@@ -629,10 +629,10 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
     N/A
 
     """
-    if (bits not in [4, 8, 12]):
+    if (bits not in [2, 4, 8, 12]):
         raise InvalidBitValue(' Bits: ' + str(bits))
 
-    if (chunk not in [4, 8, 12]):
+    if (chunk not in [2, 4, 8, 12]):
         raise InvalidChunkValue(' Chunk: ' + str(chunk))
 
     if bits % chunk != 0:
@@ -680,7 +680,7 @@ def decimal_to_binary(bits: int, decimal: int):
     N/A
 
     """
-    if (bits not in [4, 8, 12]):
+    if (bits not in [2, 4, 8, 12]):
         raise InvalidBitValue(' Bits: ' + str(bits))
 
     if (decimal > ((2 ** bits) - 1)) or (decimal < 0):

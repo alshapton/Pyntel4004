@@ -25,6 +25,9 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
 """
 
 
+from hardware.suboperation import binary_to_decimal, decimal_to_binary
+
+
 def rdm(self):
     """
     Name:           Read Data RAM data character
@@ -228,10 +231,15 @@ def wrm(self):
     """
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    final_address = (crb * self.PAGE_SIZE) + address
-    self.RAM[final_address] = value
-    self.increment_pc(2)
+    binary_form_of_address = decimal_to_binary(8,self.COMMAND_REGISTER)
+    chip = binary_to_decimal(binary_form_of_address[0:2])
+    register = binary_to_decimal(binary_form_of_address[2:4])
+    address = binary_to_decimal(binary_form_of_address[4:])
+    absolute_address = (crb * self.RAM_BANK_SIZE) + \
+        (chip * self.RAM_CHIP_SIZE) + \
+        (register * self.RAM_REGISTER_SIZE) + address
+    self.RAM[absolute_address] = value
+    self.increment_pc(1)
     return self.PROGRAM_COUNTER
 
 
