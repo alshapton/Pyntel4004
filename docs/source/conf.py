@@ -21,7 +21,7 @@ copyright = '2021, Andrew Shapton'
 author = 'Andrew Shapton'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = 'ENV_VERSION'
 
 
 # -- General configuration ---------------------------------------------------
