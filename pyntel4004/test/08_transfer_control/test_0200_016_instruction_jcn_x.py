@@ -6,13 +6,13 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.exceptions import ProgramCounterOutOfBounds  # noqa
 from hardware.processor import processor  # noqa
 
 from hardware.suboperation import decimal_to_binary  # noqa
 
 
-@pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+@pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                                   11, 12, 13, 14, 15])
 def test_validate_instruction(value):
     """Ensure instruction's characteristics are valid."""
     chip_test = processor()
@@ -29,23 +29,22 @@ def test_validate_instruction(value):
                                     [100, 0, 0, 0, 1, 1234, 0, 0, 0], [
                                         100, 0, 0, 0, 1, 102, 0, 0, 1],  # Pin10
                                     [100, 1, 0, 0, 1, 102, 0, 0, 0], [
-                                        100, 1, 0, 0, 1, 1234, 0, 0, 1],  #  Pin10 with invert
+                                        100, 1, 0, 0, 1, 102, 0, 0, 1],  #  Pin10 + invert
                                     [100, 0, 0, 1, 0, 1234, 0, 1, 0], [
                                         100, 0, 0, 1, 0, 102, 0, 1, 0],  # Carry
                                     [100, 1, 0, 1, 0, 102, 0, 1, 0], [
-                                        100, 1, 0, 1, 0, 1234, 0, 1, 0],  #  Carry with invert
+                                        100, 1, 0, 1, 0, 1234, 0, 1, 0],  #  Carry + invert
                                     [100, 0, 1, 0, 0, 1234, 0, 0, 0], [
                                         100, 0, 1, 0, 0, 102, 12, 0, 0],  # Accumulator
                                     [100, 1, 1, 0, 0, 102, 0, 0, 0], [
-                                        100, 1, 0, 1, 0, 1234, 12, 0, 0],  # Accumulator with invert
+                                        100, 1, 0, 1, 0, 1234, 12, 0, 0],  # Accumulator + invert
                                     [100, 0, 1, 1, 0, 1234, 13, 1, 0], [
                                         100, 0, 0, 1, 1, 102, 0, 1, 0],  # Combinations
                                     [100, 1, 1, 1, 0, 102, 13, 1, 0], [
-                                        100, 1, 0, 1, 1, 1234, 0, 1, 0],  # Combinations with invert
+                                        100, 1, 0, 1, 1, 1234, 0, 1, 0],  # Combinations + invert
                                     ])
 def test_scenario1(values):
     """Test JCN instruction functionality."""
-    from hardware.processor import processor
 
     chip_test = processor()
     chip_base = processor()

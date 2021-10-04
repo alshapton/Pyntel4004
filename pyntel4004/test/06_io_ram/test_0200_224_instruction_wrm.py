@@ -52,7 +52,7 @@ def test_wrm_scenario1(rambank, chip, register, address):
     chip_base.PROGRAM_COUNTER = 0
     chip_base.RAM[absolute_address] = value
     chip_base.set_accumulator(value)
-    chip_base.COMMAND_REGISTER = binary_to_decimal(decimal_to_binary(2, chip) +
+    chip_base.COMMAND_REGISTER = binary_to_decimal(decimal_to_binary(2, chip) + \
                                                    decimal_to_binary(2, register) + decimal_to_binary(4, address))
     chip_base.increment_pc(1)
     chip_base.CURRENT_RAM_BANK = rambank

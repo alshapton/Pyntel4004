@@ -10,7 +10,8 @@ from hardware.processor import processor  # noqa
 from hardware.suboperation import decimal_to_binary  # noqa
 
 
-@pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+@pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                                11, 12, 13, 14, 15])
 def test_validate_instruction(value):
     """Ensure instruction's characteristics are valid."""
     chip_test = processor()
@@ -20,11 +21,11 @@ def test_validate_instruction(value):
     assert op == known
 
 
-@pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+@pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                                      11, 12, 13, 14, 15])
 @pytest.mark.parametrize("values", [[0, 'Y'], [2, 'Y'], [10, 'Y'], [15, 'N']])
 def test_scenario1(values, register):
     """Test ISZ instruction functionality."""
-    from hardware.processor import processor
 
     chip_test = processor()
     chip_base = processor()
