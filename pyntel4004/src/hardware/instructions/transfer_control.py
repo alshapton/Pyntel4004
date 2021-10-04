@@ -116,11 +116,11 @@ def jcn(self, conditions: int, address: int):
     Several conditions can be tested simultaneously.
 
     The logic equation describing the condition for a jump is give below:
-    JUMP = ~C1 . ((ACC = 0) . C2 + (CY = 1) . C3 + ~TEST . C4) + 
+    JUMP = ~C1 . ((ACC = 0) . C2 + (CY = 1) . C3 + ~TEST . C4) +
                 C1 . ~((ACC != 0) . C2 + (CY = 1) . C3 + ~TEST . C4)
 
                         +---------+---------+
-                        | Symbol  | Logical |   
+                        | Symbol  | Logical |
                         +---------+---------+
                         |    ~    +   NOT   +
                         |    .    +   AND   +
