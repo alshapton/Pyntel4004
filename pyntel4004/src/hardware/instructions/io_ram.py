@@ -26,7 +26,7 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
 
 
 from hardware.suboperation import binary_to_decimal, decimal_to_binary, \
-                                  convert_to_absolute_address
+    convert_to_absolute_address
 
 
 def rdm(self):
