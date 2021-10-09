@@ -26,10 +26,10 @@ def convert_to_absolute_address(self, rambank, chip, register, address):
 
     register : integer, mandatory
         1 of 4 registers
-    
+
     address : integer, mandatory
         address within a page
-    
+
     Returns
     -------
     absolute_address
@@ -46,8 +46,9 @@ def convert_to_absolute_address(self, rambank, chip, register, address):
     """
     absolute_address = (rambank * self.RAM_BANK_SIZE) + \
         (chip * self.RAM_CHIP_SIZE) + \
-         - (register * self.RAM_REGISTER_SIZE) + address
+        - (register * self.RAM_REGISTER_SIZE) + address
     return absolute_address
+
 
 def set_carry(self):
     """

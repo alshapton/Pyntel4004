@@ -10,6 +10,7 @@ sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
 
+
 def test_validate_wrm_instruction():
     """Ensure instruction's characteristics are valid."""
     chip_test = processor()
@@ -35,7 +36,8 @@ def test_wrm_scenario1(rambank, chip, register, address):
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
     chip_test.CURRENT_RAM_BANK = rambank
-    absolute_address = convert_to_absolute_address(chip_test, rambank, chip, register, address)
+    absolute_address = convert_to_absolute_address(
+        chip_test, rambank, chip, register, address)
     chip_test.set_accumulator(value)
     b_chip = decimal_to_binary(2, chip)
     b_register = decimal_to_binary(2, register)
@@ -49,7 +51,7 @@ def test_wrm_scenario1(rambank, chip, register, address):
     chip_base.PROGRAM_COUNTER = 0
     chip_base.RAM[absolute_address] = value
     chip_base.set_accumulator(value)
-    chip_base.COMMAND_REGISTER = binary_to_decimal(decimal_to_binary(2, chip) + \
+    chip_base.COMMAND_REGISTER = binary_to_decimal(decimal_to_binary(2, chip) +
                                                    decimal_to_binary(2, register) + decimal_to_binary(4, address))
     chip_base.increment_pc(1)
     chip_base.CURRENT_RAM_BANK = rambank

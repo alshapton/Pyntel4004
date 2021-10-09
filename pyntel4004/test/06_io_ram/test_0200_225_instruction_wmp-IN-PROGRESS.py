@@ -19,6 +19,7 @@ def test_validate_wmp_instruction():
     known = {"opcode": 225, "mnemonic": "wmp()", "exe": 10.8, "bits": ["1110", '0001'], "words": 1}  # noqa
     assert op == known
 
+
 '''
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
 @pytest.mark.parametrize("chip", [0, 1, 2, 3])

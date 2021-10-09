@@ -172,10 +172,10 @@ def jcn(self, conditions: int, address: int):
     notc4 = True if c4 is False else True
 
     # Use symbolic logic to determine whether to jump
-    JUMP = notc1 and ((accumulator == 0) and c2 or (carry == 1) \
-        and c3 or notpin10 and c4) or \
-        c1 and (((accumulator != 0) or notc2) and \
-        ((carry == 0) or notc3) and (pin10 or notc4))
+    JUMP = notc1 and ((accumulator == 0) and c2 or (carry == 1)
+                      and c3 or notpin10 and c4) or \
+        c1 and (((accumulator != 0) or notc2) and
+                ((carry == 0) or notc3) and (pin10 or notc4))
 
     if JUMP is True:
         self.PROGRAM_COUNTER = address
