@@ -25,7 +25,8 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
 """
 
 
-from hardware.suboperation import binary_to_decimal, decimal_to_binary, convert_to_absolute_address
+from hardware.suboperation import binary_to_decimal, decimal_to_binary, \
+                                  convert_to_absolute_address
 
 
 def rdm(self):
@@ -44,9 +45,8 @@ def rdm(self):
     address = self.COMMAND_REGISTER
     chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
     register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    absolute_address = (crb * self.RAM_BANK_SIZE) + \
-                       (chip * self.RAM_CHIP_SIZE) + \
-                       (register * self.RAM_REGISTER_SIZE) + address
+    absolute_address = convert_to_absolute_address(
+        self, crb, chip, register, address)
     self.ACCUMULATOR = self.RAM[absolute_address]
     self.increment_pc(1)
     return self.ACCUMULATOR
@@ -443,9 +443,8 @@ def adm(self):
                [2:].zfill(8)[:2], 2)
     register = int(bin(int(cr))[2:].zfill(8)[2:4], 2)
     address = int(bin(int(cr))[2:].zfill(8)[4:8], 2)
-    absolute_address = (crb * self.RAM_BANK_SIZE) + \
-                       (chip * self.RAM_CHIP_SIZE) + \
-                       (register * self.RAM_REGISTER_SIZE) + address
+    absolute_address = convert_to_absolute_address(
+        self, crb, chip, register, address)
     # Perform addition
     self.ACCUMULATOR = (self.ACCUMULATOR + self.RAM[absolute_address] +
                         self.read_carry())
@@ -495,10 +494,9 @@ def sbm(self, register: int):
     address = self.COMMAND_REGISTER
     chip = int(bin(int(address))
                [2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    absolute_address = (crb * self.RAM_BANK_SIZE) + \
-                       (chip * self.RAM_CHIP_SIZE) + \
-                       (register * self.RAM_REGISTER_SIZE) + address
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)    
+    absolute_address = convert_to_absolute_address(
+        self, crb, chip, register, address)
     value = self.RAM[absolute_address]
 
     # Perform addition

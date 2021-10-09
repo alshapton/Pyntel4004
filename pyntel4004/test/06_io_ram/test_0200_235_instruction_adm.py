@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.suboperation import insert_registerpair  # noqa
+from hardware.suboperation import convert_to_absolute_address  # noqa
 from hardware.processor import processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
 
@@ -42,9 +42,8 @@ def test_adm_scenario1(values):
     chip_test.COMMAND_REGISTER = cr
 
     chip_test.CURRENT_RAM_BANK = rambank
-    absolute_address = (rambank * chip_test.RAM_BANK_SIZE) + \
-        (chip * chip_test.RAM_CHIP_SIZE) + \
-        (register * chip_test.RAM_REGISTER_SIZE) + address
+    absolute_address = convert_to_absolute_address(
+        chip_test, rambank, chip, register, address)
     chip_test.RAM[absolute_address] = value
     chip_test.set_accumulator(accumulator)
 
@@ -53,9 +52,8 @@ def test_adm_scenario1(values):
     # Simulate conditions at end of instruction in base chip
     chip_base.CARRY = 0
     chip_base.COMMAND_REGISTER = cr
-    absolute_address = (rambank * chip_base.RAM_BANK_SIZE) + \
-        (chip * chip_base.RAM_CHIP_SIZE) + \
-        (register * chip_base.RAM_REGISTER_SIZE) + address
+    absolute_address = convert_to_absolute_address(
+        chip_base, rambank, chip, register, address)
     chip_base.RAM[absolute_address] = value
     chip_base.increment_pc(1)
     chip_base.CURRENT_RAM_BANK = rambank

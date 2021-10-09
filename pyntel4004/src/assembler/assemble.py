@@ -252,8 +252,10 @@ def assemble(program_name: str, object_file: str, chip: processor):
 
                                     vl, vr = split_address8(
                                         label_addr)  # Under test
-                                    #vl = bin(int(label_addr))[2:].zfill(8)[:4]
-                                    #vr = bin(int(label_addr))[2:].zfill(8)[4:]
+                                    # vl = bin(int(label_addr))\
+                                    # [2:].zfill(8)[:4]
+                                    # vr = bin(int(label_addr))\
+                                    # [2:].zfill(8)[4:]
 
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']

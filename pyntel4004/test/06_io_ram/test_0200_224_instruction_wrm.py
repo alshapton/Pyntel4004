@@ -5,7 +5,9 @@ import sys
 import pickle
 import pytest
 
-from hardware.suboperation import decimal_to_binary, binary_to_decimal, convert_to_absolute_address
+from hardware.suboperation import decimal_to_binary as d2b, \
+                                  binary_to_decimal, \
+                                  convert_to_absolute_address
 sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
@@ -39,9 +41,9 @@ def test_wrm_scenario1(rambank, chip, register, address):
     absolute_address = convert_to_absolute_address(
         chip_test, rambank, chip, register, address)
     chip_test.set_accumulator(value)
-    b_chip = decimal_to_binary(2, chip)
-    b_register = decimal_to_binary(2, register)
-    b_address = decimal_to_binary(4, address)
+    b_chip = d2b(2, chip)
+    b_register = d2b(2, register)
+    b_address = d2b(4, address)
     chip_test.COMMAND_REGISTER = binary_to_decimal(
         b_chip + b_register + b_address)
 
@@ -51,8 +53,9 @@ def test_wrm_scenario1(rambank, chip, register, address):
     chip_base.PROGRAM_COUNTER = 0
     chip_base.RAM[absolute_address] = value
     chip_base.set_accumulator(value)
-    chip_base.COMMAND_REGISTER = binary_to_decimal(decimal_to_binary(2, chip) +
-                                                   decimal_to_binary(2, register) + decimal_to_binary(4, address))
+    chip_base.COMMAND_REGISTER = binary_to_decimal(d2b(2, chip) +
+                                                   d2b(2, register) +
+                                                   d2b(4, address))
     chip_base.increment_pc(1)
     chip_base.CURRENT_RAM_BANK = rambank
 
