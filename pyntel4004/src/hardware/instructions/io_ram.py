@@ -26,7 +26,7 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
 
 
 from hardware.suboperation import binary_to_decimal, decimal_to_binary, \
-                                  convert_to_absolute_address
+    convert_to_absolute_address
 
 
 def rdm(self):
@@ -494,7 +494,7 @@ def sbm(self, register: int):
     address = self.COMMAND_REGISTER
     chip = int(bin(int(address))
                [2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)    
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     absolute_address = convert_to_absolute_address(
         self, crb, chip, register, address)
     value = self.RAM[absolute_address]
