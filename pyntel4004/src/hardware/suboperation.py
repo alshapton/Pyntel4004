@@ -9,6 +9,36 @@ from .exceptions import IncompatibleChunkBit, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
+def split_address8(address):
+    """
+    Split a supplied decimal address into 2 4-bit words
+
+    Parameters
+    ----------
+    address : int, mandatory
+        An 8-bit address in decimal format
+
+    Returns
+    -------
+    address_left: str
+        left-most 4 bits
+
+    address_right: str
+        right-most 4 bits
+        
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    address_left = bin(address)[2:].zfill(8)[:4]
+    address_right = bin(address)[2:].zfill(8)[4:]
+    return address_left, address_right
+
 def set_carry(self):
     """
     Set the carry bit
