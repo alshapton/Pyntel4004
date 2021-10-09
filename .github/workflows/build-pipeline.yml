@@ -101,7 +101,8 @@ jobs:
         RELEASE_NAME="${BRANCH_NAME:8}"
         echo "Release Name: ${RELEASE_NAME}" ; 
         echo "Publishing Release ${RELEASE_NAME} to PyPi"
-        sed  "s/ENV_VERSION/$RELEASE_NAME/" setup.cfg
+        sed  "s/ENV_VERSION/$RELEASE_NAME/" setup.cfg > setup.new
+        mv setup.new setup.cfg
         python -m pip install build ;
         python -m pip install twine ;
         # python setup.py sdist bdist_wheel;
