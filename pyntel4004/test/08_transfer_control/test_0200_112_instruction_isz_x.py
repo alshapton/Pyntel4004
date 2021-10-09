@@ -26,7 +26,6 @@ def test_validate_instruction(value):
 @pytest.mark.parametrize("values", [[0, 'Y'], [2, 'Y'], [10, 'Y'], [15, 'N']])
 def test_scenario1(values, register):
     """Test ISZ instruction functionality."""
-
     chip_test = processor()
     chip_base = processor()
 
