@@ -1,25 +1,25 @@
 # Using pytest
-# Test the WRM instructions of an instance of an i4004(processor)
+# Test the WPM instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
 import pytest
 
-from hardware.suboperation import decimal_to_binary, binary_to_decimal, convert_to_absolute_address
+from hardware.suboperation import decimal_to_binary, binary_to_decimal
 sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
 
 
-def test_validate_wrm_instruction():
+def test_validate_wmp_instruction():
     """Ensure instruction's characteristics are valid."""
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
-    op = chip_test.INSTRUCTIONS[224]
-    known = {"opcode": 224, "mnemonic": "wrm()", "exe": 10.8, "bits": ["1110", '0000'], "words": 1}  # noqa
+    op = chip_test.INSTRUCTIONS[225]
+    known = {"opcode": 225, "mnemonic": "wmp()", "exe": 10.8, "bits": ["1110", '0001'], "words": 1}  # noqa
     assert op == known
 
-
+'''
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
 @pytest.mark.parametrize("chip", [0, 1, 2, 3])
 @pytest.mark.parametrize("register", [0, 1, 2, 3])
@@ -36,7 +36,9 @@ def test_wrm_scenario1(rambank, chip, register, address):
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
     chip_test.CURRENT_RAM_BANK = rambank
-    absolute_address = convert_to_absolute_address(chip_test, rambank, chip, address)
+    absolute_address = (rambank * chip_test.RAM_BANK_SIZE) + \
+        (chip * chip_test.RAM_CHIP_SIZE) + \
+        (register * chip_test.RAM_REGISTER_SIZE) + address
     chip_test.set_accumulator(value)
     b_chip = decimal_to_binary(2, chip)
     b_register = decimal_to_binary(2, register)
@@ -63,3 +65,5 @@ def test_wrm_scenario1(rambank, chip, register, address):
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
+
+'''

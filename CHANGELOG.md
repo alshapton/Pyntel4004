@@ -3,6 +3,7 @@
 |0.0.1-alpha.5  | XX-XXX-2021| 
 | **Changes** |
   * Improved code style
+| * Finally fixed ongoing bug with build pipeline
 <br>
 
 | Version | Release Date|
