@@ -9,6 +9,47 @@ from .exceptions import IncompatibleChunkBit, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
+def convert_to_absolute_address(self, rambank, chip, register, address):
+    """
+    Convert 
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    rambank: integer, mandatory
+        The currently selected RAM bank
+
+    chip : integer, mandatory
+        1 of 4 chips
+
+    register : integer, mandatory
+        1 of 4 registers
+
+    address : integer, mandatory
+        address within a page
+
+    Returns
+    -------
+    absolute_address
+        The address from 0 - 4095
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    absolute_address = (rambank * self.RAM_BANK_SIZE) + \
+        (chip * self.RAM_CHIP_SIZE) + \
+        - (register * self.RAM_REGISTER_SIZE) + address
+    return absolute_address
+
+
 def set_carry(self):
     """
     Set the carry bit
