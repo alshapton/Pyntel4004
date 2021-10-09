@@ -37,7 +37,7 @@ def convert_to_absolute_address(self, rambank, chip, register, address):
     """
     absolute_address = (rambank * self.RAM_BANK_SIZE) + \
         (chip * self.RAM_CHIP_SIZE) + \
-        - (register * self.RAM_REGISTER_SIZE) + address
+        (register * self.RAM_REGISTER_SIZE) + address
     return absolute_address
 
 

@@ -494,7 +494,7 @@ def sbm(self, register: int):
     address = self.COMMAND_REGISTER
     chip = int(bin(int(address))
                [2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)    
+    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
     absolute_address = convert_to_absolute_address(
         self, crb, chip, register, address)
     value = self.RAM[absolute_address]
