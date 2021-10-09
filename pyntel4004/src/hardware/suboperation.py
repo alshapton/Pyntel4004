@@ -35,6 +35,29 @@ def convert_to_absolute_address(self, rambank, chip, register, address):
     absolute_address
         The address from 0 - 4095
 
+    absolute_address = (rambank * self.RAM_BANK_SIZE) + \
+        (chip * self.RAM_CHIP_SIZE) + \
+        - (register * self.RAM_REGISTER_SIZE) + address
+    return absolute_address
+
+
+def split_address8(address):
+    """
+    Split a supplied decimal address into 2 4-bit words
+
+    Parameters
+    ----------
+    address : int, mandatory
+        An 8-bit address in decimal format
+
+    Returns
+    -------
+    address_left: str
+        left-most 4 bits
+
+    address_right: str
+        right-most 4 bits
+        
     Raises
     ------
     N/A
@@ -44,11 +67,10 @@ def convert_to_absolute_address(self, rambank, chip, register, address):
     N/A
 
     """
-    absolute_address = (rambank * self.RAM_BANK_SIZE) + \
-        (chip * self.RAM_CHIP_SIZE) + \
-        - (register * self.RAM_REGISTER_SIZE) + address
-    return absolute_address
 
+    address_left = bin(address)[2:].zfill(8)[:4]
+    address_right = bin(address)[2:].zfill(8)[4:]
+    return address_left, address_right
 
 def set_carry(self):
     """
