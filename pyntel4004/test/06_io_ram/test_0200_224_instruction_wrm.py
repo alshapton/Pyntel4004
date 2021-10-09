@@ -56,7 +56,6 @@ def test_wrm_scenario1(rambank, chip, register, address):
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
-    assert is_same(chip_test, chip_base,'RAM')
     assert chip_test.read_program_counter() == chip_base.read_program_counter()
     assert chip_test.read_accumulator() == chip_base.read_accumulator()
 
