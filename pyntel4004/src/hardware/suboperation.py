@@ -25,7 +25,7 @@ def split_address8(address):
 
     address_right: str
         right-most 4 bits
-        
+
     Raises
     ------
     N/A
@@ -38,6 +38,7 @@ def split_address8(address):
     address_left = bin(address)[2:].zfill(8)[:4]
     address_right = bin(address)[2:].zfill(8)[4:]
     return address_left, address_right
+
 
 def set_carry(self):
     """
