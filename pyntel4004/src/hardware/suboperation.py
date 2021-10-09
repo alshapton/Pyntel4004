@@ -11,7 +11,7 @@ from .exceptions import IncompatibleChunkBit, \
 
 def convert_to_absolute_address(self, rambank, chip, register, address):
     """
-    Convert 
+    Convert
 
     Parameters
     ----------
@@ -47,7 +47,7 @@ def split_address8(address):
 
     Parameters
     ----------
-    address : int, mandatory
+    address: int, mandatory
         An 8-bit address in decimal format
 
     Returns
@@ -57,7 +57,7 @@ def split_address8(address):
 
     address_right: str
         right-most 4 bits
-        
+
     Raises
     ------
     N/A
@@ -78,7 +78,7 @@ def set_carry(self):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -106,7 +106,7 @@ def reset_carry(self):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -134,7 +134,7 @@ def read_complement_carry(self):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -159,7 +159,7 @@ def insert_register(self, register: int, value: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     register: int, mandatory
@@ -198,7 +198,7 @@ def read_register(self, register: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     register: int, mandatory
@@ -230,7 +230,7 @@ def insert_registerpair(self, registerpair: int, value: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     registerpair: int, mandatory
@@ -275,7 +275,7 @@ def read_registerpair(self, registerpair: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     registerpair: int, mandatory
@@ -312,7 +312,7 @@ def increment_pc(self, words: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     words: int, mandatory
@@ -347,7 +347,7 @@ def inc_pc_by_page(self, pc: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     pc: int, mandatory
@@ -383,7 +383,7 @@ def is_end_of_page(self, address: int, word: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     address: int, mandatory
@@ -394,8 +394,8 @@ def is_end_of_page(self, address: int, word: int):
 
     Returns
     -------
-    True        if the instruction is at the end of the memory page
-    False       if the instruction is not at the end of the memory page
+    True if the instruction is at the end of the memory page
+    False if the instruction is not at the end of the memory page
 
     Raises
     ------
@@ -418,7 +418,7 @@ def increment_register(self, register: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     register: int, mandatory
@@ -453,7 +453,7 @@ def write_pin10(self, value: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     value: int, mandatory
@@ -485,7 +485,7 @@ def write_ram_status(self, char: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     char: int, mandatory
@@ -504,7 +504,7 @@ def write_ram_status(self, char: int):
     -----
     No error checking is done in this function
     All parameters cannot be out of range, since the functions to
-    place them in various registers etc all have range checking built in.
+    place them in various registers etc all have range checking built in .
 
     Eventually - there will be error checking here
 
@@ -528,7 +528,7 @@ def write_to_stack(self, value: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     value: int, mandatory
@@ -548,11 +548,11 @@ def write_to_stack(self, value: int):
     The stack pointer begins at 2, and then moves toward 0
 
       After 2 writes         After 3 writes         After 3 writes
-      +------------+         +------------+         +------------+
-      |     a      |         |      a     |  <--SP  |      d     |
-      |     b      |         |      b     |         |      b     |  <---SP
-      |            |  <--SP  |      c     |         |      c     |
-      +------------+         +------------+         +------------+
+      +------------+ +------------+ +------------+
+      |     a | |      a | <--SP | d |
+      |     b | |      b | |      b | <---SP
+      | | <--SP | c | |      c |
+      +------------+ +------------+ +------------+
 
     After 3 writes, address "a" is lost
     """
@@ -572,7 +572,7 @@ def read_from_stack(self):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -589,11 +589,11 @@ def read_from_stack(self):
     The stack pointer begins at 2, and then moves toward 0
 
         First Read             Second Read          Third Read
-        +------------+        +------------+        +------------+
-        |     d      |  <--SP |      d     |        |      d     |
-        |     b      |        |      b     |        |      b     |  <---SP
-        |     c      |        |      c     |  <--SP |      c     |
-        +------------+        +------------+        +------------+
+        +------------+ +------------+ +------------+
+        |     d | <--SP | d | |      d |
+        |     b | |      b | |      b | <---SP
+        |     c | |      c | <--SP | c |
+        +------------+ +------------+ +------------+
 
     """
     if self.STACK_POINTER == 2:
@@ -617,7 +617,7 @@ def ones_complement(value: str, bits: int):
     value: int: mandatory
         decimal value to convert
 
-    bits : int, mandatory
+    bits: int, mandatory
         number of bits required for the conversion
 
     Returns
@@ -626,8 +626,8 @@ def ones_complement(value: str, bits: int):
 
     Raises
     ------
-    InvalidBitValue        : When a bit value of not 4,8 or 12 is specified
-    ValueOutOfRangeForBits : If the value supplied is either negative or is
+    InvalidBitValue: When a bit value of not 4, 8 or 12 is specified
+    ValueOutOfRangeForBits: If the value supplied is either negative or is
                              out of range of the number of bits requested
 
     Notes
@@ -662,10 +662,10 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
 
     Parameters
     ----------
-    bits : int, mandatory
+    bits: int, mandatory
         number of bits of the source data
 
-    chunk : int, mandatory
+    chunk: int, mandatory
         number of bits required per chunk
 
     decimal: int: mandatory
@@ -681,10 +681,10 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
 
     Raises
     ------
-    IncompatibleChunkBit   : When the chunks do not fit exactly within the bits
-    InvalidBitValue        : When a bit value of not 4,8 or 12 is specified
-    InvalidChunkValue      : When a chunk value of not 4,8 or 12 is specified
-    ValueOutOfRangeForBits : If the value supplied is either negative or is
+    IncompatibleChunkBit: When the chunks do not fit exactly within the bits
+    InvalidBitValue: When a bit value of not 4, 8 or 12 is specified
+    InvalidChunkValue: When a chunk value of not 4, 8 or 12 is specified
+    ValueOutOfRangeForBits: If the value supplied is either negative or is
                              out of range of the number of bits requested
 
     Notes
@@ -722,7 +722,7 @@ def decimal_to_binary(bits: int, decimal: int):
 
     Parameters
     ----------
-    bits : int, mandatory
+    bits: int, mandatory
         number of bits required for the conversion
 
     decimal: int: mandatory
@@ -734,8 +734,8 @@ def decimal_to_binary(bits: int, decimal: int):
 
     Raises
     ------
-    InvalidBitValue        : When a bit value of not 4,8 or 12 is specified
-    ValueOutOfRangeForBits : If the value supplied is either negative or is
+    InvalidBitValue: When a bit value of not 4, 8 or 12 is specified
+    ValueOutOfRangeForBits: If the value supplied is either negative or is
                              out of range of the number of bits requested
 
     Notes
@@ -757,12 +757,12 @@ def decimal_to_binary(bits: int, decimal: int):
 
 def binary_to_decimal(binary: str):
     """
-    Converts a string value (which must be in binary form) to
+    Converts a string value(which must be in binary form) to
     a decimal value
 
     Parameters
     ----------
-    binary : str, mandatory
+    binary: str, mandatory
         a string which represents the binary value
 
     Returns
@@ -771,7 +771,7 @@ def binary_to_decimal(binary: str):
 
     Raises
     ------
-    NotABinaryNumber        : When a non-binary number is supplied
+    NotABinaryNumber: When a non-binary number is supplied
 
     Notes
     ------
@@ -791,7 +791,7 @@ def binary_to_decimal(binary: str):
 
 def flip_wpm_counter(self):
     """
-    Two WPM instructions must always appear in close succession; that is,
+    Two WPM instructions must always appear in close succession; that is ,
     each time one WPM instruction references a half byte of program RAM
     as indicated by an SRC address, another WPM must access the other half
     byte before the SRC address is altered.
@@ -801,13 +801,13 @@ def flip_wpm_counter(self):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
     -------
     self.WPM_COUNTER
-        The flipped value of the WPM counter (either "LEFT" or "RIGHT")
+        The flipped value of the WPM counter(either "LEFT" or "RIGHT")
 
     Raises
     ------
@@ -828,14 +828,14 @@ def flip_wpm_counter(self):
 def check_overflow(self):
     """
     Check for an overflow is detected
-    i.e. the result is more than a 4-bit number (MAX_4_BITS)
+    i.e. the result is more than a 4-bit number(MAX_4_BITS)
 
     If there is an overflow detected, set the carry bit,
     otherwise reset the carry bit.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -868,7 +868,7 @@ def set_accumulator(self, value: int):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self: processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     value: int, mandatory
