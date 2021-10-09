@@ -36,7 +36,7 @@ def test_wrm_scenario1(rambank, chip, register, address):
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
     chip_test.CURRENT_RAM_BANK = rambank
-    absolute_address = convert_to_absolute_address(chip_test, rambank, chip, address)
+    absolute_address = convert_to_absolute_address(chip_test, rambank, chip, register, address)
     chip_test.set_accumulator(value)
     b_chip = decimal_to_binary(2, chip)
     b_register = decimal_to_binary(2, register)
