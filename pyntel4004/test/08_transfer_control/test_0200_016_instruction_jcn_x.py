@@ -45,7 +45,6 @@ def test_validate_instruction(value):
                                     ])
 def test_scenario1(values):
     """Test JCN instruction functionality."""
-
     chip_test = processor()
     chip_base = processor()
 
