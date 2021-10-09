@@ -391,21 +391,13 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
         if opcode == 'src':
             register = x[1].lower().replace('p', '').replace('r', '')
             f_opcode = 'src(' + register + ')'
-            opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
-            bit1, bit2 = get_bits(opcodeinfo)
-            TPS[address] = opcodeinfo['opcode']
-            print_ln(address, label, address_left, address_right, bit1,
-                     bit2, '', '', TPS[address], '', '', str(count), opcode,
-                     str(x[1]), '', '', '')
-            address = address + opcodeinfo['words']
-        else:
-            opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
-            bit1, bit2 = get_bits(opcodeinfo)
-            TPS[address] = opcodeinfo['opcode']
-            print_ln(address, label, address_left, address_right, bit1, bit2,
-                     '', '', TPS[address], '', '', str(count), opcode,
-                     str(x[1]), '', '', '')
-            address = address + opcodeinfo['words']
+        opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
+        bit1, bit2 = get_bits(opcodeinfo)
+        TPS[address] = opcodeinfo['opcode']
+        print_ln(address, label, address_left, address_right, bit1,
+                 bit2, '', '', TPS[address], '', '', str(count), opcode,
+                 str(x[1]), '', '', '')
+        address = address + opcodeinfo['words']
     return address, TPS, _LABELS
 
 
