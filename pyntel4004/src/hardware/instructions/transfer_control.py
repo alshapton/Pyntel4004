@@ -150,22 +150,10 @@ def jcn(self, conditions: int, address: int):
     notpin10 = not pin10
     checks = str(processor.decimal_to_binary(4, conditions))
 
-    if checks[0:1] == '1':
-        c1 = True
-    else:
-        c1 = False
-    if checks[1:2] == '1':
-        c2 = True
-    else:
-        c2 = False
-    if checks[2:3] == '1':
-        c3 = True
-    else:
-        c3 = False
-    if checks[3:4] == '1':
-        c4 = True
-    else:
-        c4 = False
+    c1 = checks[0:1] == '1'
+    c2 = checks[1:2] == '1'
+    c3 = checks[2:3] == '1'
+    c4 = checks[3:4] == '1'
     notc1 = True if c1 is False else True
     notc2 = True if c2 is False else True
     notc3 = True if c3 is False else True
