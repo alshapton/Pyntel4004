@@ -9,6 +9,10 @@ from hardware.suboperation import decimal_to_binary, binary_to_decimal, convert_
 sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
+<<<<<<< HEAD
+=======
+from utils import is_same
+>>>>>>> test-wmp
 
 def test_validate_wrm_instruction():
     """Ensure instruction's characteristics are valid."""
