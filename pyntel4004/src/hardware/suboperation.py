@@ -72,6 +72,7 @@ def split_address8(address):
     address_right = bin(address)[2:].zfill(8)[4:]
     return address_left, address_right
 
+
 def set_carry(self):
     """
     Set the carry bit

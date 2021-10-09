@@ -208,7 +208,8 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                 x.pop(len([x])-1)
                             opcode = x[0]
 
-                            address_left,address_right = split_address8(address)
+                            address_left, address_right = split_address8(
+                                address)
 
                             # Check for operand(s)
                             # Operator & operand (generic)
@@ -248,8 +249,9 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                                                 f_opcode)
                                     label_addr = get_label_addr(_LABELS,
                                                                 dest_label)
-                                    
-                                    vl,vr = split_address8(label_addr) # Under test
+
+                                    vl, vr = split_address8(
+                                        label_addr)  # Under test
                                     #vl = bin(int(label_addr))[2:].zfill(8)[:4]
                                     #vr = bin(int(label_addr))[2:].zfill(8)[4:]
 
