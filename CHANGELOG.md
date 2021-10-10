@@ -1,8 +1,14 @@
 | Version | Release Date|
 |:----|:----:| 
-|0.0.1-alpha.5  | XX-XXX-2021| 
+|0.0.1-alpha.5  | 10-OCT-2021| 
 | **Changes** |
   * Improved code style
+  * Finally fixed ongoing bug with build pipeline
+  * Improved Assembler code by simplifying
+  * Simplified some low-level instruction code
+  * Corrected code styling
+  * Updated RDx and RDR functions
+  * Completed WMP, WRx and WRR functions
 <br>
 
 | Version | Release Date|

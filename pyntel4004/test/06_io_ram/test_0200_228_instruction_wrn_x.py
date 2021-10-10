@@ -1,5 +1,5 @@
 # Using pytest
-# Test the RDn instructions of an instance of an i4004(processor)
+# Test the WRn instructions of an instance of an i4004(processor)
 
 import sys
 import pickle
@@ -10,25 +10,25 @@ from hardware.processor import processor  # noqa
 from hardware.suboperation import encode_command_register  # noqa
 
 
-def test_validate_rdN_instruction():
+def test_validate_wrNinstruction():
     """Ensure instruction's characteristics are valid."""
     chip_test = processor()
     # Validate the instruction's opcode and characteristics:
-    # There are 4 rdN instructions.
-    op = chip_test.INSTRUCTIONS[236]
-    known = {"opcode": 236, "mnemonic": "rd0()", "exe": 10.8, "bits": ["1110", '1100'], "words": 1}  # noqa
+    # There are 4 wrN instructions.
+    op = chip_test.INSTRUCTIONS[228]
+    known = {"opcode": 228, "mnemonic": "wr0()", "exe": 10.8, "bits": ["1110", '0100'], "words": 1}  # noqa
     assert op == known
 
-    op = chip_test.INSTRUCTIONS[237]
-    known = {"opcode": 237, "mnemonic": "rd1()", "exe": 10.8, "bits": ["1110", '1101'], "words": 1}  # noqa
+    op = chip_test.INSTRUCTIONS[229]
+    known = {"opcode": 229, "mnemonic": "wr1()", "exe": 10.8, "bits": ["1110", '0101'], "words": 1}  # noqa
     assert op == known
 
-    op = chip_test.INSTRUCTIONS[238]
-    known = {"opcode": 238, "mnemonic": "rd2()", "exe": 10.8, "bits": ["1110", '1110'], "words": 1}  # noqa
+    op = chip_test.INSTRUCTIONS[230]
+    known = {"opcode": 230, "mnemonic": "wr2()", "exe": 10.8, "bits": ["1110", '0110'], "words": 1}  # noqa
     assert op == known
 
-    op = chip_test.INSTRUCTIONS[239]
-    known = {"opcode": 239, "mnemonic": "rd3()", "exe": 10.8, "bits": ["1110", '1111'], "words": 1}  # noqa
+    op = chip_test.INSTRUCTIONS[231]
+    known = {"opcode": 231, "mnemonic": "wr3()", "exe": 10.8, "bits": ["1110", '0111'], "words": 1}  # noqa
     assert op == known
 
 
@@ -36,8 +36,8 @@ def test_validate_rdN_instruction():
 @pytest.mark.parametrize("chip", [0, 1, 2, 3])
 @pytest.mark.parametrize("register", [0, 1, 2, 3])
 @pytest.mark.parametrize("char", [0, 1, 2, 3])
-def test_rdN_scenario1(rambank, chip, register, char):
-    """Test instruction RDn"""
+def test_wrN_scenario1(rambank, chip, register, char):
+    """Test instruction WRn"""
     from random import randint
 
     chip_test = processor()
@@ -49,17 +49,17 @@ def test_rdN_scenario1(rambank, chip, register, char):
                                       'DATA_RAM_STATUS_CHAR')
     chip_test.CURRENT_RAM_BANK = rambank
     chip_test.COMMAND_REGISTER = address
-    chip_test.STATUS_CHARACTERS[rambank][chip][register][char] = value
+    chip_test.set_accumulator(value)
 
     # Perform the instruction under test:
     if char == 0:
-        processor.rd0(chip_test)
+        processor.wr0(chip_test)
     if char == 1:
-        processor.rd1(chip_test)
+        processor.wr1(chip_test)
     if char == 2:
-        processor.rd2(chip_test)
+        processor.wr2(chip_test)
     if char == 3:
-        processor.rd3(chip_test)
+        processor.wr3(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.COMMAND_REGISTER = address
