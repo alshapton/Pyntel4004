@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.suboperation import convert_to_absolute_address  # noqa
+from hardware.suboperation import convert_to_absolute_address, encode_command_register  # noqa
 from hardware.processor import processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
 
@@ -36,7 +36,7 @@ def test_adm_scenario1(values):
     value = values[4]
     accumulator = 2
 
-    cr = (chip * 64) + (register * 16) + address
+    cr = encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
 
     chip_test.CARRY = 0
     chip_test.COMMAND_REGISTER = cr

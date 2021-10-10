@@ -25,8 +25,7 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
 """
 
 
-from hardware.suboperation import binary_to_decimal, \
-    convert_to_absolute_address, decimal_to_binary, \
+from hardware.suboperation import convert_to_absolute_address, \
     decode_command_register, rdx
 
 
@@ -208,10 +207,8 @@ def wrm(self):
     """
     value = self.ACCUMULATOR
     crb = self.read_current_ram_bank()
-    binary_form_of_address = decimal_to_binary(8, self.COMMAND_REGISTER)
-    chip = binary_to_decimal(binary_form_of_address[0:2])
-    register = binary_to_decimal(binary_form_of_address[2:4])
-    address = binary_to_decimal(binary_form_of_address[4:])
+    chip, register, address = \
+        decode_command_register(self.COMMAND_REGISTER, 'DATA_RAM_CHAR')
     absolute_address = convert_to_absolute_address(
         self, crb, chip, register, address)
     self.RAM[absolute_address] = value
@@ -352,14 +349,14 @@ def wmp(self):
 
     (Bits in this order : 12345678)
 
-    Bits 1 + 4 = The port associated with 1 of 4 DATA RAM
+    Bits 1 - 2 = The port associated with 1 of 4 DATA RAM
                  chips within the DATA RAM bank previously
                  selected by a DCL instruction
     Bits 3 - 8 = Not relevant
     """
     crb = self.read_current_ram_bank()
-    chip = int(bin(int(self.COMMAND_REGISTER))
-               [2:].zfill(8)[:2], 2)
+    chip, _none, _none = \
+        decode_command_register(self.COMMAND_REGISTER, 'RAM_PORT')
     self.RAM_PORT[crb][chip] = self.ACCUMULATOR
     self.increment_pc(1)
     return self.ACCUMULATOR
@@ -390,7 +387,8 @@ def wrr(self):
     Bits 1 - 4 = The ROM chip targetted
     Bits 5 - 8 = Not relevant
     """
-    rom = int(bin(int(self.COMMAND_REGISTER))[2:].zfill(8)[:4], 2)
+    rom, _none, _none = \
+        decode_command_register(self.COMMAND_REGISTER, 'ROM_PORT')
     self.ROM_PORT[rom] = self.ACCUMULATOR
     self.increment_pc(1)
     return self.ACCUMULATOR
@@ -415,11 +413,8 @@ def adm(self):
 
     # Get value
     crb = self.read_current_ram_bank()
-    cr = self.COMMAND_REGISTER
-    chip = int(bin(int(cr))
-               [2:].zfill(8)[:2], 2)
-    register = int(bin(int(cr))[2:].zfill(8)[2:4], 2)
-    address = int(bin(int(cr))[2:].zfill(8)[4:8], 2)
+    chip, register, address = \
+        decode_command_register(self.COMMAND_REGISTER, 'DATA_RAM_CHAR')
     absolute_address = convert_to_absolute_address(
         self, crb, chip, register, address)
     # Perform addition
@@ -468,10 +463,8 @@ def sbm(self, register: int):
 
     # Get value
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))
-               [2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    chip, register, address = \
+        decode_command_register(self.COMMAND_REGISTER, 'DATA_RAM_CHAR')
     absolute_address = convert_to_absolute_address(
         self, crb, chip, register, address)
     value = self.RAM[absolute_address]
@@ -479,7 +472,6 @@ def sbm(self, register: int):
     # Perform addition
     value_complement = int(ones_complement(value, 4), 2)
     carry_complement = self.read_complement_carry()
-
     self.ACCUMULATOR = (self.ACCUMULATOR + value_complement +
                         carry_complement)
     # Check for carry bit set/reset when an overflow is detected
