@@ -1,21 +1,28 @@
 class IncompatibleChunkBit(Exception):
     """
-    Raised when it a bit value is not a multiple of the chunk value
+    Raised when a bit value is not a multiple of the chunk value
     when attempting to convert from a decimal number to chunked numbers.
     """
 
 
 class InvalidBitValue(Exception):
     """
-    Raised when it a bit value of other than 4,8 or 12 is used to convert
+    Raised when a bit value of other than 4,8 or 12 is used to convert
     a decimal number to a binary number.
     """
 
 
 class InvalidChunkValue(Exception):
     """
-    Raised when it a chunk value of other than 4,8 or 12 is used to convert
+    Raised when a chunk value of other than 4,8 or 12 is used to convert
     a binary number into chunk.
+    """
+
+
+class InvalidCommandRegisterFormat(Exception):
+    """
+    Raised when a command register format for decoding is not
+    within the prescribed values.
     """
 
 

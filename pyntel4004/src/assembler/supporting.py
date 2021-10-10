@@ -1,4 +1,5 @@
 from hardware.processor import processor
+from hardware.suboperation import split_address8
 
 
 def add_label(_L, label: str):
@@ -268,8 +269,9 @@ def assemble_isz(chip: processor, register, dest_label, _LABELS):
         opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
     bit1, bit2 = get_bits(opcodeinfo)
     label_address = get_label_addr(_LABELS, dest_label)
-    val_left = bin(int(label_address))[2:].zfill(8)[:4]
-    val_right = bin(int(label_address))[2:].zfill(8)[4:]
+    val_left, val_right = split_address8(label_address)
+    # val_left = bin(int(label_address))[2:].zfill(8)[:4]
+    # val_right = bin(int(label_address))[2:].zfill(8)[4:]
     return n_opcode, label_address, opcodeinfo['words'], val_left, val_right, \
         bit1, bit2
 
@@ -391,21 +393,13 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
         if opcode == 'src':
             register = x[1].lower().replace('p', '').replace('r', '')
             f_opcode = 'src(' + register + ')'
-            opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
-            bit1, bit2 = get_bits(opcodeinfo)
-            TPS[address] = opcodeinfo['opcode']
-            print_ln(address, label, address_left, address_right, bit1,
-                     bit2, '', '', TPS[address], '', '', str(count), opcode,
-                     str(x[1]), '', '', '')
-            address = address + opcodeinfo['words']
-        else:
-            opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
-            bit1, bit2 = get_bits(opcodeinfo)
-            TPS[address] = opcodeinfo['opcode']
-            print_ln(address, label, address_left, address_right, bit1, bit2,
-                     '', '', TPS[address], '', '', str(count), opcode,
-                     str(x[1]), '', '', '')
-            address = address + opcodeinfo['words']
+        opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
+        bit1, bit2 = get_bits(opcodeinfo)
+        TPS[address] = opcodeinfo['opcode']
+        print_ln(address, label, address_left, address_right, bit1,
+                 bit2, '', '', TPS[address], '', '', str(count), opcode,
+                 str(x[1]), '', '', '')
+        address = address + opcodeinfo['words']
     return address, TPS, _LABELS
 
 

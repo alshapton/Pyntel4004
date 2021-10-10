@@ -1,7 +1,7 @@
 # Import i4004 processor
 
 from hardware.processor import processor
-
+from hardware.suboperation import split_address8
 
 # Assembler imports
 from assembler.supporting import add_label, assemble_isz, assemble_2, \
@@ -208,8 +208,8 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                 x.pop(len([x])-1)
                             opcode = x[0]
 
-                            address_left = bin(address)[2:].zfill(8)[:4]
-                            address_right = bin(address)[2:].zfill(8)[4:]
+                            address_left, address_right = split_address8(
+                                address)
 
                             # Check for operand(s)
                             # Operator & operand (generic)
@@ -249,8 +249,14 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                                                 f_opcode)
                                     label_addr = get_label_addr(_LABELS,
                                                                 dest_label)
-                                    vl = bin(int(label_addr))[2:].zfill(8)[:4]
-                                    vr = bin(int(label_addr))[2:].zfill(8)[4:]
+
+                                    vl, vr = split_address8(
+                                        label_addr)  # Under test
+                                    # vl = bin(int(label_addr))\
+                                    # [2:].zfill(8)[:4]
+                                    # vr = bin(int(label_addr))\
+                                    # [2:].zfill(8)[4:]
+
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address + 1] = label_addr
@@ -294,8 +300,10 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                     d_type = ''
                                     if int(x[2]) <= 256:
                                         d_type = 'data8'
-                                    val_left = bin(int(x[2]))[2:].zfill(8)[:4]
-                                    val_right = bin(int(x[2]))[2:].zfill(8)[4:]
+                                    val_left, val_right = split_address8(
+                                        int(x[2]))  # Under test
+                                    # val_left = bin(int(x[2]))[2:].zfill(8)[:4]
+                                    # val_right = bin(int(x[2]))[2:].zfill(8)[4:]
                                     f_opcode = opcode + "(" + \
                                         x[1] + "," + d_type + ")"
                                     opcodeinfo = get_opcodeinfo(chip, 'L',
