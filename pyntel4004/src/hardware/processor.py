@@ -69,8 +69,8 @@ class processor:
 
         # Set up RAM
         self.RAM = []                                # RAM
-        self.RAM_PORT = [[0 for _bank in range(8)]   # RAM Ports
-                         for _chip in range(4)]
+        self.RAM_PORT = [[0 for _bank in range(4)]   # RAM Ports
+                         for _chip in range(8)]
         # Set up ROM
         self.ROM = []                                # ROM
         self.ROM_PORT = [0 for _bank in range(self.NO_ROM_PORTS)]   # ROM ports

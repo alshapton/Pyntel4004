@@ -56,15 +56,15 @@ def encode_command_register(chip, register, address, shape):
     if shape == 'RAM_PORT':
         # Note that in this instance, "chip" refers to "port"
         i_chip = decimal_to_binary(2, chip)
-        i_register = '0000'
-        i_address = '0000'
+        i_register = '000'
+        i_address = '000'
         command_register = i_chip + i_register + i_address
 
     if shape == 'ROM_PORT':
         # Note that in this instance, "chip" refers to "port"
         i_chip = decimal_to_binary(4, chip)
-        i_register = '0000'
-        i_address = '0000'
+        i_register = '00'
+        i_address = '00'
         command_register = i_chip + i_register + i_address
 
     return command_register
