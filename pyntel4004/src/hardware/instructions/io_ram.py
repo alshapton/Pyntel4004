@@ -187,7 +187,8 @@ def rdr(self):
     Implementation  This software implementation of the i4004 will ALWAYS
                     return the values of the output lines as-is.
     """
-    rom = self.COMMAND_REGISTER >> 4
+    rom, _none, _none = \
+        decode_command_register(self.COMMAND_REGISTER, 'ROM_PORT')
     self.ACCUMULATOR = self.ROM_PORT[rom]
     self.increment_pc(1)
     return self.ACCUMULATOR
