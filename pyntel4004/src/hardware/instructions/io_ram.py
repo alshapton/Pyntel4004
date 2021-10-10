@@ -26,7 +26,7 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
 
 
 from hardware.suboperation import binary_to_decimal, decimal_to_binary, \
-    convert_to_absolute_address
+    convert_to_absolute_address, decode_command_register
 
 
 def rdm(self):
@@ -42,9 +42,8 @@ def rdm(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     """
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
+    chip, register, address = \
+        decode_command_register(self.COMMAND_REGISTER, 'DATA_RAM_CHAR')
     absolute_address = convert_to_absolute_address(
         self, crb, chip, register, address)
     self.ACCUMULATOR = self.RAM[absolute_address]

@@ -7,7 +7,7 @@ import pytest
 sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
-from hardware.suboperation import convert_to_absolute_address  # noqa
+from hardware.suboperation import convert_to_absolute_address, encode_command_register  # noqa
 
 
 def test_validate_rdm_instruction():
@@ -20,9 +20,9 @@ def test_validate_rdm_instruction():
 
 
 @pytest.mark.parametrize("values", [[0, 1, 0, 7, 3], [1, 3, 1, 6, 4],
-                                    [2, 5, 2, 5, 5], [3, 7, 3, 4, 6],
-                                    [4, 3, 4, 3, 7], [5, 2, 5, 2, 2],
-                                    [6, 0, 6, 1, 1], [7, 4, 7, 0, 0]])
+                                    [2, 1, 2, 5, 5], [3, 2, 0, 4, 6],
+                                    [4, 3, 3, 3, 7], [5, 2, 1, 2, 2],
+                                    [6, 0, 3, 1, 1], [7, 2, 2, 0, 0]])
 def test_rdm_scenario1(values):
     """Test RDM instruction functionality."""
     chip_test = processor()
@@ -34,20 +34,26 @@ def test_rdm_scenario1(values):
     address = values[3]
     value = values[4]
 
+    absolute_address = convert_to_absolute_address(
+        chip_test, rambank, chip, register, address)
+
     # Perform the instruction under test:
     chip_test.CURRENT_RAM_BANK = rambank
     absolute_address = convert_to_absolute_address(
         chip_test, rambank, chip, register, address)
     chip_test.RAM[absolute_address] = value
     chip_test.set_accumulator(0)
-    chip_test.COMMAND_REGISTER = absolute_address
+    chip_test.COMMAND_REGISTER = \
+        encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
+    chip_base.COMMAND_REGISTER = chip_test.COMMAND_REGISTER
+
     processor.rdm(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.RAM[absolute_address] = value
-    chip_base.COMMAND_REGISTER = absolute_address
     chip_base.increment_pc(1)
     chip_base.CURRENT_RAM_BANK = rambank
+    chip_base.set_accumulator(value)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

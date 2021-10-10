@@ -2,11 +2,78 @@
 
 from .exceptions import IncompatibleChunkBit, \
     InvalidBitValue, InvalidChunkValue, \
+    InvalidCommandRegisterFormat, \
     InvalidPin10Value, InvalidRegister, \
     InvalidRegisterPair, NotABinaryNumber, \
     ProgramCounterOutOfBounds, ValueOutOfRangeForBits, \
     ValueOutOfRangeForStack, ValueTooLargeForAccumulator, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
+
+
+def encode_command_register(chip, register, address, shape):
+    if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',
+                     'RAM_PORT', 'ROM_PORT'):
+        raise InvalidCommandRegisterFormat('"' + shape + '"')
+
+    if shape == 'DATA_RAM_CHAR':
+        i_chip = decimal_to_binary(2, chip)
+        i_register = decimal_to_binary(2, register)
+        i_address = decimal_to_binary(4, address)
+        command_register = i_chip + i_register + i_address
+
+    if shape == 'DATA_RAM_STATUS_CHAR':
+        i_chip = decimal_to_binary(2, chip)
+        i_register = decimal_to_binary(2, register)
+        i_address = '0000'
+        command_register = i_chip + i_register + i_address
+
+    if shape == 'RAM_PORT':
+        # Note that in this instance, "chip" refers to "port"
+        i_chip = decimal_to_binary(2, chip)
+        i_register = '0000'
+        i_address = '0000'
+        command_register = i_chip + i_register + i_address
+
+    if shape == 'ROM_PORT':
+        # Note that in this instance, "chip" refers to "port"
+        i_chip = decimal_to_binary(4, chip)
+        i_register = '0000'
+        i_address = '0000'
+        command_register = i_chip + i_register + i_address
+
+    return command_register
+
+
+def decode_command_register(command_register, shape):
+    if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',
+                     'RAM_PORT', 'ROM_PORT'):
+        raise InvalidCommandRegisterFormat('"' + shape + '"')
+
+    command_register = str(command_register)
+
+    if shape == 'DATA_RAM_CHAR':
+        chip = binary_to_decimal(command_register[:2])
+        register = binary_to_decimal(command_register[2:4])
+        address = binary_to_decimal(command_register[4:])
+
+    if shape == 'DATA_RAM_STATUS_CHAR':
+        chip = binary_to_decimal(command_register[:2])
+        register = binary_to_decimal(command_register[2:4])
+        address = '0'
+
+    if shape == 'RAM_PORT':
+        # Note that in this instance, "chip" refers to "port"
+        chip = binary_to_decimal(command_register[:2])
+        register = '0'
+        address = '0'
+
+    if shape == 'ROM_PORT':
+        # Note that in this instance, "chip" refers to "port"
+        chip = binary_to_decimal(command_register[:4])
+        register = '0'
+        address = '0'
+
+    return int(chip), int(register), int(address)
 
 
 def convert_to_absolute_address(self, rambank, chip, register, address):
