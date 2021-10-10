@@ -17,11 +17,13 @@ from hardware.exceptions import IncompatibleChunkBit, InvalidBitValue, \
         ValueOutOfRangeForBits, ValueOutOfRangeForStack,\
         ValueTooLargeForAccumulator, \
         ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
-
+from hardware.suboperation import encode_command_register  # noqa
 
 ##############################################################################
 #                      Set/Reset Carry Flag                                  #
 ##############################################################################
+
+
 def test_suboperation_set_carry():
     """Tests for SET Carry Flag."""
     chip_base = processor()
@@ -858,8 +860,12 @@ def test_suboperation_test_ones_complement_scenario3(bits):
 ##############################################################################
 #                Check Insert RAM Status Character                           #
 ##############################################################################
+@pytest.mark.parametrize("rambank", [0, 1, 2, 3])
+@pytest.mark.parametrize("chip", [0, 1, 2, 3])
+@pytest.mark.parametrize("register", [0, 1, 2, 3])
 @pytest.mark.parametrize("value", [[12, 0], [12, 1], [12, 2], [12, 3]])  # noqa
-def test_suboperation_test_insert_ram_status_scenario1(value):
+def test_suboperation_test_insert_ram_status_scenario1(
+            rambank, chip, register, value):
     """Test insert RAM status character."""
     chip_test = processor()
     chip_base = processor()
@@ -876,15 +882,16 @@ def test_suboperation_test_insert_ram_status_scenario1(value):
     #            Chip 3, Register 3
     #
 
-    address = 240
     chip_base.set_accumulator(value[0])
-    chip_base.CURRENT_RAM_BANK = 4
-    chip_base.COMMAND_REGISTERS[chip_base.CURRENT_RAM_BANK] = address
-    chip_base.STATUS_CHARACTERS[4][3][3][value[1]] = value[0]
+    chip_base.CURRENT_RAM_BANK = rambank
+    address = encode_command_register(chip, register, 0,
+                                      'DATA_RAM_STATUS_CHAR')
+    chip_base.COMMAND_REGISTER = address
+    chip_base.STATUS_CHARACTERS[rambank][chip][register][value[1]] = value[0]
 
     chip_test.set_accumulator(value[0])
-    chip_test.CURRENT_RAM_BANK = 4
-    chip_test.COMMAND_REGISTERS[chip_test.CURRENT_RAM_BANK] = address
+    chip_test.CURRENT_RAM_BANK = rambank
+    chip_test.COMMAND_REGISTER = address
 
     # Attempt to write to the RAM status character
 
@@ -893,7 +900,8 @@ def test_suboperation_test_insert_ram_status_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     #
-    assert chip_test.STATUS_CHARACTERS[4][3][3][value[1]] == value[0]
+    assert chip_test.STATUS_CHARACTERS[rambank][chip][register]
+    [value[1]] == value[0]
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)

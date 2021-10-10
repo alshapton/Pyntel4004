@@ -605,11 +605,10 @@ def write_ram_status(self, char: int):
     """
     value = self.read_accumulator()
     crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTERS[crb]
 
-    chip = int(decimal_to_binary(8, address)[:2], 2)
-    register = int(decimal_to_binary(8, address)[2:4], 2)
-
+    chip, register, _none = \
+        decode_command_register(self.COMMAND_REGISTER,
+                                'DATA_RAM_STATUS_CHAR')
     self.STATUS_CHARACTERS[crb][chip][register][char] = value
     return True
 
