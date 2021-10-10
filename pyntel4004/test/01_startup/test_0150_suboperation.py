@@ -865,7 +865,7 @@ def test_suboperation_test_ones_complement_scenario3(bits):
 @pytest.mark.parametrize("register", [0, 1, 2, 3])
 @pytest.mark.parametrize("value", [[12, 0], [12, 1], [12, 2], [12, 3]])  # noqa
 def test_suboperation_test_insert_ram_status_scenario1(
-            rambank, chip, register, value):
+        rambank, chip, register, value):
     """Test insert RAM status character."""
     chip_test = processor()
     chip_base = processor()
