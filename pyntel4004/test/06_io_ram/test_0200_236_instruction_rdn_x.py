@@ -7,7 +7,7 @@ import pytest
 sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
-from hardware.exceptions import InvalidRamBank  # noqa
+from hardware.suboperation import encode_command_register  # noqa
 
 
 def test_validate_rdN_instruction():
@@ -32,11 +32,12 @@ def test_validate_rdN_instruction():
     assert op == known
 
 
+@pytest.mark.parametrize("rambank", [0, 1, 2, 3])
 @pytest.mark.parametrize("chip", [0, 1, 2, 3])
 @pytest.mark.parametrize("register", [0, 1, 2, 3])
-def test_rdN_scenario1(chip, register):
+@pytest.mark.parametrize("char", [0, 1, 2, 3])
+def test_rdN_scenario1(rambank, chip, register, char):
     """Test instruction RDn"""
-    from random import seed
     from random import randint
 
     chip_test = processor()
@@ -44,27 +45,28 @@ def test_rdN_scenario1(chip, register):
 
     value = randint(0, 15)
 
-    address = (chip << 6) + (register << 4)
-    crb = chip_test.CURRENT_RAM_BANK
+    address = encode_command_register(chip, register, 0,
+                                      'DATA_RAM_STATUS_CHAR')
+    chip_test.CURRENT_RAM_BANK = rambank
     chip_test.COMMAND_REGISTER = address
-    chip_test.CURRENT_RAM_BANK = 0
-    chip_test.STATUS_CHARACTERS[crb][chip][register][register] = value
+    chip_test.STATUS_CHARACTERS[rambank][chip][register][char] = value
 
     # Perform the instruction under test:
-    if register == 0:
+    if char == 0:
         processor.rd0(chip_test)
-    if register == 1:
+    if char == 1:
         processor.rd1(chip_test)
-    if register == 2:
+    if char == 2:
         processor.rd2(chip_test)
-    if register == 3:
+    if char == 3:
         processor.rd3(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.COMMAND_REGISTER = address
+    chip_base.CURRENT_RAM_BANK = rambank
     chip_base.increment_pc(1)
     chip_base.set_accumulator(value)
-    chip_base.STATUS_CHARACTERS[crb][chip][register][register] = value
+    chip_base.STATUS_CHARACTERS[rambank][chip][register][char] = value
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

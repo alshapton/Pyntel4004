@@ -25,8 +25,9 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
 """
 
 
-from hardware.suboperation import binary_to_decimal, decimal_to_binary, \
-    convert_to_absolute_address, decode_command_register
+from hardware.suboperation import binary_to_decimal, \
+    convert_to_absolute_address, decimal_to_binary, \
+    decode_command_register, rdx
 
 
 def rdm(self):
@@ -73,13 +74,7 @@ def rd0(self):
     Bits 5-8   = Not relevant
 
     """
-    crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][0]
-    self.increment_pc(1)
-    return self.ACCUMULATOR
+    return rdx(self, 0)
 
 
 def rd1(self):
@@ -104,13 +99,7 @@ def rd1(self):
     Bits 5-8   = Not relevant
 
     """
-    crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][1]
-    self.increment_pc(1)
-    return self.ACCUMULATOR
+    return rdx(self, 1)
 
 
 def rd2(self):
@@ -135,13 +124,7 @@ def rd2(self):
     Bits 5-8   = Not relevant
 
     """
-    crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][2]
-    self.increment_pc(1)
-    return self.ACCUMULATOR
+    return rdx(self, 2)
 
 
 def rd3(self):
@@ -166,13 +149,7 @@ def rd3(self):
     Bits 5-8   = Not relevant
 
     """
-    crb = self.read_current_ram_bank()
-    address = self.COMMAND_REGISTER
-    chip = int(bin(int(address))[2:].zfill(8)[:2], 2)
-    register = int(bin(int(address))[2:].zfill(8)[2:4], 2)
-    self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][3]
-    self.increment_pc(1)
-    return self.ACCUMULATOR
+    return rdx(self, 3)
 
 
 def rdr(self):

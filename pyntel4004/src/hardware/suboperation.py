@@ -10,6 +10,32 @@ from .exceptions import IncompatibleChunkBit, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
+def rdx(self, character):
+    """
+    Name:           Read RAM status character X
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    character:
+        RAM STATUS CHARACTER to read
+
+    Returns
+    -------
+    self.ACCUMULATOR
+        The value read from the specified RAM STATUS CHARACTER
+
+    """
+    crb = self.read_current_ram_bank()
+    chip, register, _none = \
+        decode_command_register(self.COMMAND_REGISTER, 'DATA_RAM_STATUS_CHAR')
+    self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][character]
+    self.increment_pc(1)
+    return self.ACCUMULATOR
+
+
 def encode_command_register(chip, register, address, shape):
     if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',
                      'RAM_PORT', 'ROM_PORT'):
@@ -78,7 +104,8 @@ def decode_command_register(command_register, shape):
 
 def convert_to_absolute_address(self, rambank, chip, register, address):
     """
-    Convert
+    Convert a rambank, chip, register and address to an absolute 0 - 4095
+    RAM adddress
 
     Parameters
     ----------
