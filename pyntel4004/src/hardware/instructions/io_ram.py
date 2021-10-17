@@ -519,8 +519,8 @@ def wpm(self):
     from hardware.reads import read_wpm_counter
 
     chip, register, addr = decode_command_register(
-                           decimal_to_binary(8, self.COMMAND_REGISTER),
-                           'DATA_RAM_CHAR')
+        decimal_to_binary(8, self.COMMAND_REGISTER),
+        'DATA_RAM_CHAR')
     rambank = self.read_current_ram_bank()
     address = convert_to_absolute_address(self, rambank, chip, register, addr)
     # Get the value of the WPM Counter
