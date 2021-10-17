@@ -514,33 +514,43 @@ def wpm(self):
 
 
     """
-    from hardware.suboperation import flip_wpm_counter
+    from hardware.suboperation import convert_to_absolute_address, \
+        decimal_to_binary, flip_wpm_counter
     from hardware.reads import read_wpm_counter
 
-    address = self.COMMAND_REGISTER
-
+    chip, register, addr = decode_command_register(
+                           decimal_to_binary(8, self.COMMAND_REGISTER),
+                           'DATA_RAM_CHAR')
+    rambank = self.read_current_ram_bank()
+    address = convert_to_absolute_address(self, rambank, chip, register, addr)
     # Get the value of the WPM Counter
     wpm_counter = read_wpm_counter(self)
 
+    # Writing
     if self.ROM_PORT[14] == 1:
         # Write enabled, so store
         value = self.ACCUMULATOR
         if wpm_counter == 'LEFT':
+            print(wpm_counter)
             value = self.ACCUMULATOR << 4
             self.PRAM[address] = value
+            self.RAM[address] = value
         if wpm_counter == 'RIGHT':
             value = self.ACCUMULATOR
+            self.RAM[address] = self.RAM[address] + value
             self.PRAM[address] = self.PRAM[address] + value
 
+    # Reading
     if self.ROM_PORT[14] != 1:
         # read
         if wpm_counter == 'LEFT':
             self.ROM_PORT[14] = self.PRAM[address] >> 4 << 4
         if wpm_counter == 'RIGHT':
             value = self.ACCUMULATOR
-            self.ROM_PORT[14] = self.PRAM[address] << 4 >> 4
+            self.ROM_PORT[15] = self.PRAM[address] << 4 >> 4
 
     flip_wpm_counter(self)
 
-    self.increment_pc(2)
-    return True
+    self.increment_pc(1)
+
+    return self.ROM_PORT[14], self.ROM_PORT[15]
