@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1-alpha.6] - 2021-10-17 [Unreleased]
 
 ### Added
+- Tests for WPM instruction
 
 ### Changed
 - Switched to [KeepAChangeLog](https://keepchangelog.com) format.
@@ -14,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 ### Fixed
+- Some small bugs in the WPM instruction code
 
 ### Removed
 
