@@ -6,8 +6,8 @@ import pickle
 import pytest
 
 from hardware.suboperation import binary_to_decimal, \
-        convert_to_absolute_address, encode_command_register, \
-        convert_decimal_to_n_bit_slices as c2n
+    convert_to_absolute_address, encode_command_register, \
+    convert_decimal_to_n_bit_slices as c2n
 sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
