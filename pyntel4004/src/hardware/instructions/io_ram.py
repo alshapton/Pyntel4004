@@ -427,7 +427,7 @@ def adm(self):
     return self.ACCUMULATOR, self.CARRY
 
 
-def sbm(self, register: int):
+def sbm(self):
     """
     Name:           Subtract DATA RAM from memory with borrow
     Function:       The value of the DATA RAM character specified
