@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1-alpha.6] - 2021-10-17 [Unreleased]
+## [0.0.1-alpha.6] - 2021-10-24 [Unreleased]
 
 ### Added
 - Tests for WPM instruction
+- Tests for SBM instruction
+- Abstracted and tested new suboperations
 
 ### Changed
 - Switched to [KeepAChangeLog](https://keepchangelog.com) format.
@@ -16,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Some small bugs in the WPM instruction code
+- Abstracted some functions for readability
 
 ### Removed
 

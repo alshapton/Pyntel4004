@@ -301,9 +301,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                     if int(x[2]) <= 256:
                                         d_type = 'data8'
                                     val_left, val_right = split_address8(
-                                        int(x[2]))  # Under test
-                                    # val_left = bin(int(x[2]))[2:].zfill(8)[:4]
-                                    # val_right = bin(int(x[2]))[2:].zfill(8)[4:]
+                                        int(x[2]))
                                     f_opcode = opcode + "(" + \
                                         x[1] + "," + d_type + ")"
                                     opcodeinfo = get_opcodeinfo(chip, 'L',

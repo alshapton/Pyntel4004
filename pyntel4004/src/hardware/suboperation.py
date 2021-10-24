@@ -1,6 +1,7 @@
 #  Sub-operation methods
 
-from .exceptions import IncompatibleChunkBit, \
+from .exceptions import AddressOutOf8BitRange, \
+    IncompatibleChunkBit, \
     InvalidBitValue, InvalidChunkValue, \
     InvalidCommandRegisterFormat, \
     InvalidPin10Value, InvalidRegister, \
@@ -39,7 +40,7 @@ def rdx(self, character):
 def encode_command_register(chip, register, address, shape):
     if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',
                      'RAM_PORT', 'ROM_PORT'):
-        raise InvalidCommandRegisterFormat('"' + shape + '"')
+        raise InvalidCommandRegisterFormat('Shape: ' + shape)
 
     if shape == 'DATA_RAM_CHAR':
         i_chip = decimal_to_binary(2, chip)
@@ -73,7 +74,7 @@ def encode_command_register(chip, register, address, shape):
 def decode_command_register(command_register, shape):
     if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',
                      'RAM_PORT', 'ROM_PORT'):
-        raise InvalidCommandRegisterFormat('"' + shape + '"')
+        raise InvalidCommandRegisterFormat('Shape: ' + shape)
 
     command_register = str(command_register)
 
@@ -161,6 +162,9 @@ def split_address8(address):
     N/A
 
     """
+    if (address < 0) or (address > 255):
+        raise AddressOutOf8BitRange('Address: ' + str(address))
+
     address_left = bin(address)[2:].zfill(8)[:4]
     address_right = bin(address)[2:].zfill(8)[4:]
     return address_left, address_right

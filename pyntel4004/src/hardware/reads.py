@@ -226,8 +226,9 @@ def read_wpm_counter(self):
 
 def read_acbr(self):
     """
-    Return the value of the ACBR interim property used for swapping out accumulator
-    with register contents during an XCH instruction
+    Return the value of the ACBR interim property used for
+    swapping out accumulator with register contents during
+    an XCH instruction
 
     Parameters
     ----------
