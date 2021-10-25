@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tests for WPM instruction
 - Tests for SBM instruction
 - Abstracted and tested new suboperations
+- Tests now over 98% of opcode code
 
 ### Changed
 - Switched to [KeepAChangeLog](https://keepchangelog.com) format.

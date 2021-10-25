@@ -130,6 +130,11 @@ def test_suboperation_enc_dec_cr_scenario2(shape):
     assert str(e.value) == 'Shape: ' + shape
     assert e.type == InvalidCommandRegisterFormat
 
+
+@pytest.mark.parametrize("shape", ['', 'RoM_PORT', 'R0M_PORT'
+                                   'RAM_STATUS_CHAR', 'rom_port'])
+def test_suboperation_enc_dec_cr_scenario3(shape):
+    """Test encode/decode command failure (shape only)."""
     with pytest.raises(Exception) as e:
         assert processor.decode_command_register(0, 0, 0, shape)
         assert str(e.value) == 'Shape: ' + shape
