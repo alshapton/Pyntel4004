@@ -1,3 +1,9 @@
+class AddressOutOf8BitRange(Exception):
+    """
+    Raised when an address is out of range of an 8-bit Value
+    """
+
+
 class IncompatibleChunkBit(Exception):
     """
     Raised when a bit value is not a multiple of the chunk value
@@ -21,7 +27,7 @@ class InvalidChunkValue(Exception):
 
 class InvalidCommandRegisterFormat(Exception):
     """
-    Raised when a command register format for decoding is not
+    Raised when a command register format for decoding/encoding is not
     within the prescribed values.
     """
 

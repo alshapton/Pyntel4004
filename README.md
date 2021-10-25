@@ -1,7 +1,6 @@
 # Pyntel4004
 
-![Pyntel 4004 Logo](https://github.com/alshapton/Pyntel4004/blob/4afcf04365d6169ca6c1a86a10d70997c7583da6/images/pyntel4004.svg)
-
+![Pyntel 4004 Logo](https://github.com/alshapton/Pyntel4004/raw/4afcf04365d6169ca6c1a86a10d70997c7583da6/images/pyntel4004.svg)
 
 [![Build Pipeline](https://github.com/alshapton/Pyntel4004/actions/workflows/build-pipeline.yml/badge.svg)](https://github.com/alshapton/Pyntel4004/actions/workflows/build-pipeline.yml)
 [![Documentation Status](https://readthedocs.org/projects/pyntel4004/badge/?version=latest)](https://pyntel4004.readthedocs.io/en/latest/?badge=latest)
@@ -94,7 +93,7 @@ Assembler directives are not part of the program itself, but can control things 
 |  / | / Author: ALS | A comment |
 | label,| loop,| A label can be referred to in various control transfer statements. It MUST end in a comma (,)
 
-![Assemble and Run](https://github.com/alshapton/Pyntel4004/blob/4afcf04365d6169ca6c1a86a10d70997c7583da6/images/assemble-run.png)
+![Assemble and Run](https://github.com/alshapton/Pyntel4004/raw/4afcf04365d6169ca6c1a86a10d70997c7583da6/images/assemble-run.png)
 
 ## Monitor Commands
 

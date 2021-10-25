@@ -8,31 +8,33 @@ class processor:
         init_ram, init_registers, init_rom, init_stack, init_wpm_counter
 
     from hardware.instructions.accumulator import clb, clc, cma, cmc, \
-        daa, dac, iac, kbp, ral, rar, tcc, tcs, stc
+        daa, dac, iac, kbp, ral, rar, stc, tcc, tcs
     from hardware.instructions.idx import fin, inc
-    from hardware.instructions.idxacc import add, sub, ld, xch
+    from hardware.instructions.idxacc import add, ld, sub, xch
     from hardware.instructions.immediate import fim, ldm
     from hardware.instructions.io_ram import adm, rdm, rdr, rd0, rd1, rd2, \
-        rd3, wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
+        rd3, sbm, wmp, wpm, wrm, wrr, wr0, wr1, wr2, wr3
     from hardware.instructions.memory_select import dcl, src
     from hardware.instructions.nop import nop
     from hardware.instructions.subroutine import bbl, jms
-    from hardware.instructions.transfer_control import jun, jin, jcn, isz
+    from hardware.instructions.transfer_control import isz, jcn, jin, jun
 
-    from hardware.reads import read_all_registers, read_all_ram, \
-        read_all_rom, read_all_pram, read_accumulator, \
-        read_current_ram_bank, read_carry, read_pin10, read_all_stack, \
+    from hardware.reads import read_accumulator, read_all_ram, \
+        read_all_registers, read_all_pram, read_all_rom, \
+        read_all_stack, read_carry, read_current_ram_bank, read_pin10, \
         read_all_command_registers, read_wpm_counter, read_acbr, \
         read_program_counter, read_stack_pointer, read_all_rom_ports, \
         read_all_ram_ports, read_all_status_characters
     from hardware.suboperation import binary_to_decimal, check_overflow, \
-        convert_decimal_to_n_bit_slices, decimal_to_binary, flip_wpm_counter, \
+        convert_decimal_to_n_bit_slices, convert_to_absolute_address, \
+        decimal_to_binary, decode_command_register, \
+        encode_command_register, flip_wpm_counter, \
         increment_register, increment_pc, inc_pc_by_page, \
         insert_register, insert_registerpair, is_end_of_page, \
         ones_complement, reset_carry, read_complement_carry, \
-        read_from_stack, read_register, read_registerpair, \
-        set_accumulator, set_carry, write_pin10, write_ram_status, \
-        write_to_stack
+        read_from_stack, read_register, read_registerpair, rdx, \
+        set_accumulator, set_carry, split_address8, \
+        write_pin10, write_ram_status, write_to_stack
 
     # Operations to read the processor components
     # Some used internally,

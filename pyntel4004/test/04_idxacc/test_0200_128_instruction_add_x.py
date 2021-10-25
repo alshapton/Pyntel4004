@@ -29,7 +29,7 @@ def test_scenario1(values):
     chip_test = processor()
     chip_base = processor()
 
-    RANDOM_REG = random.randint(0, 15)  # Select a random register
+    RANDOM_REG = random.randint(0, 15)  # Select a random value
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
