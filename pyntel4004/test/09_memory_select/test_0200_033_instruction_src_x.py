@@ -42,7 +42,7 @@ def test_scenario1(values):
     chip_base.PROGRAM_COUNTER = 0
     chip_base.increment_pc(1)
     insert_registerpair(chip_base, registerpair, value)
-    chip_base.COMMAND_REGISTER = value
+    chip_base.COMMAND_REGISTER = processor.decimal_to_binary(8, value)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

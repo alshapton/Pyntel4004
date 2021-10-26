@@ -270,8 +270,6 @@ def assemble_isz(chip: processor, register, dest_label, _LABELS):
     bit1, bit2 = get_bits(opcodeinfo)
     label_address = get_label_addr(_LABELS, dest_label)
     val_left, val_right = split_address8(label_address)
-    # val_left = bin(int(label_address))[2:].zfill(8)[:4]
-    # val_right = bin(int(label_address))[2:].zfill(8)[4:]
     return n_opcode, label_address, opcodeinfo['words'], val_left, val_right, \
         bit1, bit2
 
@@ -368,7 +366,13 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
     # pad out for the only 2-character mnemonic
     if opcode == 'ld':
         opcode = 'ld '
-    f_opcode = opcode + '(' + x[1] + ')'
+    addx = get_label_addr(_LABELS, x[1])
+    print(addx)
+    if addx == -1:
+        addx = x[1]
+    f_opcode = opcode + '(' + addx + ')'
+    print(f_opcode)
+
     if opcode in ('jun', 'jms'):
         # Special case for JUN and JMS
         if opcode == 'jun':

@@ -110,7 +110,7 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
                     break
         custom_opcode = False
         OPCODE = _TPS[chip.PROGRAM_COUNTER]
-        print('opcode = ', OPCODE)
+        # print('opcode = ', OPCODE)
         if OPCODE == 255:  # pseudo-opcode (directive "end" - stop program)
             print('           end')
             break

@@ -1,8 +1,10 @@
 / Example program
         org     rom
+fff,    =       9
         ldm     2
         inc     1
-        jcn	6      lbl
+        ldm      fff
+        jcn	6      fff
         fim     0p     180
         src     0p
 lbl,    ldm     15

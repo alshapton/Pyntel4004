@@ -105,9 +105,15 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 # Attach value to a label
                 if '0' <= str(parts[1])[:1] <= '9':
                     constant = True
-                    match_label(_LABELS, parts[0], parts[1])
+                    label_content = parts[1]
                 else:
-                    match_label(_LABELS, parts[0], address)
+                    label_content = address
+                # An EQUATE statement (indicated by "=")
+                if parts[1] == '=':
+                    constant = True
+                    label_content = parts[2]
+
+                match_label(_LABELS, parts[0], label_content)
                 # Set opcode
                 opcode = parts[1][:3]
             else:
@@ -121,7 +127,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
             if not constant:
                 if (opcode == 'ld()' or opcode[:2] == 'ld'):
                     opcode = 'ld '
-                if opcode not in ('org', '/', 'end', 'pin'):
+                if opcode not in ('org', '/', 'end', 'pin', '='):
                     opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
                     address = address + opcodeinfo['words']
             TFILE[p_line] = line.strip()
@@ -169,8 +175,9 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 else:
                     opcode = x[0]
                 opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
-                if (opcode in ['org', 'end', 'pin']) or (opcode is not None):
-                    if (opcode in ['org', 'end', 'pin']):
+                if (opcode in ['org', 'end', 'pin', '=']) or \
+                   (opcode is not None):
+                    if (opcode in ['org', 'end', 'pin', '=']):
                         if opcode == 'org':
                             ORG_FOUND = True
                             print_ln('', label,  '', '', '', '', '', '', '',
@@ -198,6 +205,11 @@ def assemble(program_name: str, object_file: str, chip: processor):
                             print_ln('', label, '', '', '', '', '', '', '', '',
                                      '', '', '', '', str(count), opcode,
                                      str(x[1]))
+                        if opcode == '=':
+                            ORG_FOUND = True
+                            print_ln('', x[0],  '', '', '', '', '', '', '',
+                                     '', '', str(count), opcode, str(x[2]),
+                                     '', '', '',)
                     else:
                         if ORG_FOUND is True:
                             if x[0][-1] == ',':
@@ -214,6 +226,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                             # Check for operand(s)
                             # Operator & operand (generic)
                             if len(x) == 2:
+                                print(x)
                                 address, TPS, _LABELS = \
                                     assemble_2(chip, x, opcode, address, TPS,
                                                _LABELS, address_left,
@@ -247,16 +260,10 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                         + ',address8)'
                                     opcodeinfo = get_opcodeinfo(chip, 'L',
                                                                 f_opcode)
-                                    label_addr = get_label_addr(_LABELS,
-                                                                dest_label)
-
-                                    vl, vr = split_address8(
-                                        label_addr)  # Under test
-                                    # vl = bin(int(label_addr))\
-                                    # [2:].zfill(8)[:4]
-                                    # vr = bin(int(label_addr))\
-                                    # [2:].zfill(8)[4:]
-
+                                    label_addr = \
+                                        int(get_label_addr(_LABELS,
+                                                           dest_label))
+                                    vl, vr = split_address8(label_addr)
                                     bit1, bit2 = get_bits(opcodeinfo)
                                     TPS[address] = opcodeinfo['opcode']
                                     TPS[address + 1] = label_addr
