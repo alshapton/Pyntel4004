@@ -1,5 +1,6 @@
 from hardware.processor import processor
 from hardware.suboperation import split_address8
+from shared.shared import get_opcodeinfo
 
 
 def add_label(_L, label: str):
@@ -161,59 +162,6 @@ def do_error(message: str):
     print()
     print(message)
     return True
-
-
-def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
-    """
-    Given a mnemonic, retrieve information about the mnemonic from
-    the opcode table
-
-    Parameters
-    ----------
-    chip : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
-    ls: str, mandatory
-        's' or 'S' indicating whether the mnemonic contains the full mnemonic
-        or not - e.g.    nop   as a mnemonic would be found if ls = 'S' or 's'
-                         nop() as a mnemonic would be found if ls != 'S' or 's'
-
-    mnemonic: str, mandatory
-        The mnemonic to locate
-
-    Returns
-    -------
-    opcodeinfo
-        The information about the mnemonic required in JSON form,
-        or
-
-           {"opcode": -1, "mnemonic": "N/A"}
-
-        if the mnemonic is not found.
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    ------
-    N/A
-
-    """
-    opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
-    if ls.upper() == 'S':
-        try:
-            opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                               if str(item["mnemonic"][:3]) == mnemonic), None)
-        except:  # noqa
-            opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
-        return opcodeinfo
-    try:
-        opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                           if str(item["mnemonic"]) == mnemonic), None)
-    except:  # noqa
-        opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
-    return opcodeinfo
 
 
 def assemble_isz(chip: processor, register, dest_label, _LABELS):
