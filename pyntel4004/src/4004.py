@@ -9,7 +9,8 @@ import sys
 from assembler.assemble import assemble
 
 # Executer imports
-from executer.execute import execute, retrieve
+from executer.execute import execute
+from executer.supporting import retrieve
 
 
 def main(argv):

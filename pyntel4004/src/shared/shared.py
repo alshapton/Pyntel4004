@@ -51,3 +51,44 @@ def get_opcodeinfo(self, ls: str, mnemonic: str):
     except:  # noqa
         opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
     return opcodeinfo
+
+
+def get_opcodeinfobyopcode(self, OPCODE: int):
+    """
+    Given an opcode, retrieve information about the instruction from
+    the opcode table
+
+    Parameters
+    ----------
+    chip : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    OPCODE: int, mandatory
+        The mnemonic to locate
+
+    Returns
+    -------
+    opcodeinfo
+        The information about the mnemonic required in JSON form,
+        or
+
+           {"opcode": -1, "mnemonic": "N/A"}
+
+        if the mnemonic is not found.
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    opcodeinfo = {"opcode": -1, "mnemonic": "-"}
+    try:
+        opcodeinfo = next((item for item in self.INSTRUCTIONS
+                           if item['opcode'] == OPCODE), None)
+    except:  # noqa
+        opcodeinfo = {"opcode": -1, "mnemonic": "-"}
+    return opcodeinfo

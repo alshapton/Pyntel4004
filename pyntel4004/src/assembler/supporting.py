@@ -1,6 +1,44 @@
 from hardware.processor import processor
 from hardware.suboperation import split_address8
-from shared.shared import get_opcodeinfo
+from shared.shared import get_opcodeinfo, \
+     get_opcodeinfobyopcode
+
+
+def decode_conditions(conditions: str):
+    """
+    Decode the conditions from a JCN mnemonic to a decimal value.
+
+    Parameters
+    ----------
+    conditions: str, mandatory
+        List of a maximum of 4 conditions
+
+    Returns
+    -------
+    int_conditions: int
+        Integer value of the conditions
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    int_conditions = 0
+
+    if 'I' in conditions:
+        int_conditions = 8
+    if 'A' in conditions:
+        int_conditions = int_conditions + 4
+    if 'C' in conditions:
+        int_conditions = int_conditions + 2
+    if 'T' in conditions:
+        int_conditions = int_conditions + 1
+
+    return int_conditions
 
 
 def add_label(_L, label: str):
@@ -210,11 +248,7 @@ def assemble_isz(chip: processor, register, dest_label, _LABELS):
 
     """
     n_opcode = 112 + int(register)
-    try:
-        opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                          if item["opcode"] == n_opcode), None)
-    except:  # noqa
-        opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
+    opcodeinfo = get_opcodeinfobyopcode(chip, n_opcode)
     bit1, bit2 = get_bits(opcodeinfo)
     label_address = get_label_addr(_LABELS, dest_label)
     val_left, val_right = split_address8(label_address)
@@ -251,6 +285,150 @@ def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
     fmt = fmt + ' {:<3} {:<3} {} {}'
     print(fmt.format(f0, f1, f2, f3, f4, f5, f6, f7, f8,
                      f9, f10, f11, f12, f13, f14, f15, f16))
+
+
+def assemble_fim(self, x, _LABELS, TPS, address, address_left,
+                 address_right, label, count):
+    """
+    Function to assemble FIM instruction.
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    x: list, mandatory
+        The current line of code being assembled split into individual elements
+
+    _LABELS: list, mandatory
+        List of valid labels
+
+    TPS: list, mandatory
+        List representing the memory of the i4004 into which the
+        newly assembled instructions will be placed.
+
+    address: int, mandatory
+        Address in memory to place the newly assembled instruction
+
+    address_left, address_right: str, mandatory
+        Binary representation of 2 4-bit words representing "address"
+
+    label: str, mandatory
+        If there is a label associated with this instruction, it will be here,
+        "" otherwise.
+
+    count: int, mandatory
+        Assembly line number (used for printing during assembly)
+
+    Returns
+    -------
+    address: int
+        After the instruction has been assembled, the incoming address
+        is incremented by the number of words in the assembled instruction.
+
+    TPS: list
+        List representing the memory of the i4004 into which the newly
+        assembled instruction has just been placed.
+
+    _LABELS: list
+        Addresses of the labels (pass through only)
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+
+    f_opcode = x[0] + '(' + x[1] + ',data8)'
+    opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
+    TPS[address] = opcodeinfo['opcode']
+    TPS[address + 1] = int(x[2])
+    bit1, bit2 = get_bits(opcodeinfo)
+    print_ln(address, label, '' '', '', bit1, bit2, '', '',
+             str(TPS[address]) + "," + str(TPS[address + 1]),
+             str(count), x[0], str(x[1]),
+             str(x[2]), '', '', '', '')
+    address = address + opcodeinfo['words']
+    return address, TPS, _LABELS
+
+
+def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
+                 address_right, label, count):
+    """
+    Function to assemble JCN instructions.
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    x: list, mandatory
+        The current line of code being assembled split into individual elements
+
+    _LABELS: list, mandatory
+        List of valid labels
+
+    TPS: list, mandatory
+        List representing the memory of the i4004 into which the
+        newly assembled instructions will be placed.
+
+    address: int, mandatory
+        Address in memory to place the newly assembled instruction
+
+    address_left, address_right: str, mandatory
+        Binary representation of 2 4-bit words representing "address"
+
+    label: str, mandatory
+        If there is a label associated with this instruction, it will be here,
+        "" otherwise.
+
+    count: int, mandatory
+        Assembly line number (used for printing during assembly)
+
+    Returns
+    -------
+    address: int
+        After the instruction has been assembled, the incoming address
+        is incremented by the number of words in the assembled instruction.
+
+    TPS: list
+        List representing the memory of the i4004 into which the newly
+        assembled instruction has just been placed.
+
+    _LABELS: list
+        Addresses of the labels (pass through only)
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    conditions = x[1].upper()
+    dest_label = x[2]
+    if '0' <= conditions <= '9':
+        bin_conditions = conditions
+    else:
+        bin_conditions = decode_conditions(conditions)
+    f_opcode = 'jcn(' + str(bin_conditions) + ',address8)'
+    opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
+    label_addr = int(get_label_addr(_LABELS, dest_label))
+    vl, vr = split_address8(label_addr)
+    bit1, bit2 = get_bits(opcodeinfo)
+    TPS[address] = opcodeinfo['opcode']
+    TPS[address + 1] = label_addr
+    print_ln(address, label, address_left, address_right, bit1, bit2,
+             vl, vr, str(TPS[address]) + "," + str(TPS[address + 1]),
+             '', '', '', str(count), x[0], str(x[1]), str(x[2]), '')
+    address = address + opcodeinfo['words']
+    return address, TPS, _LABELS
 
 
 def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,

@@ -185,3 +185,36 @@ def deal_with_monitor_command(chip: processor, monitor_command: str,
         opcode = 255
         return None, monitor, monitor_command, opcode
     return -1
+
+
+def retrieve(inputfile, chip):
+    """
+    Pass-thru function for the "reload" function
+
+    Parameters
+    ----------
+    inputfile: str, mandatory
+        filename of a .obj file
+
+    chip : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    m: str
+        rom or ram (depending on the target memory space)
+
+    p: int
+        location to commence execution of the assembled program
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    No added value in this function, simply a pass-thru.
+
+    """
+    m, p = reload(inputfile, chip)
+    return m, p

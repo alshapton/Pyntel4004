@@ -1,8 +1,8 @@
 # Import i4004 processor
 
 from hardware.processor import processor
-from executer.supporting import deal_with_monitor_command, is_breakpoint,\
-    reload
+from executer.supporting import deal_with_monitor_command, is_breakpoint
+from shared.shared import get_opcodeinfobyopcode
 
 ##############################################################################
 #  _ _  _    ___   ___  _  _     ______                 _       _            #
@@ -13,39 +13,6 @@ from executer.supporting import deal_with_monitor_command, is_breakpoint,\
 # |_|  |_|  \___/ \___/   |_|   |______|_| |_| |_|\__,_|_|\__,_|\__\___/|_|  #
 #                                                                            #
 ##############################################################################
-
-
-def retrieve(inputfile, chip):
-    """
-    Pass-thru function for the "reload" function in  supporting.py
-
-    Parameters
-    ----------
-    inputfile: str, mandatory
-        filename of a .obj file
-
-    chip : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
-    Returns
-    -------
-    m: str
-        rom or ram (depending on the target memory space)
-
-    p: int
-        location to commence execution of the assembled program
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    ------
-    No added value in this function, simply a pass-thru.
-
-    """
-    m, p = reload(inputfile, chip)
-    return m, p
 
 
 def execute(chip: processor, location: str, PC: int, monitor: bool):
@@ -113,11 +80,8 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
         if OPCODE == 255:  # pseudo-opcode (directive "end" - stop program)
             print('           end')
             break
-        try:
-            opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                              if item['opcode'] == OPCODE), None)
-        except:  # noqa
-            opcodeinfo = {"opcode": -1, "mnemonic": "-"}
+        opcodeinfo = get_opcodeinfobyopcode(chip, OPCODE)
+
         exe = opcodeinfo['mnemonic']
         if exe == '-':
             break
@@ -143,6 +107,7 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
             custom_opcode = True
             address = _TPS[chip.PROGRAM_COUNTER + 1]
             conditions = (bin(_TPS[chip.PROGRAM_COUNTER])[2:].zfill(8)[4:])
+            print("C=",conditions)
             b10address = str(address)
             cop = exe.replace('address8', b10address)
             exe = exe[:4] + str(int(conditions, 2)) + ',' + b10address + ')'
