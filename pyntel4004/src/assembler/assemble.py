@@ -112,7 +112,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 # An EQUATE statement (indicated by "=")
                 if parts[1] == '=':
                     constant = True
-                    label_content = parts[2]
+                    label_content = int(parts[2])
 
                 match_label(_LABELS, parts[0], label_content)
                 # Set opcode
@@ -259,10 +259,11 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                                      count)
                                 if opcode == 'isz':
                                     address, TPS, _LABELS = \
-                                        assemble_isz(chip, x, _LABELS, TPS,
-                                                     address, address_left,
-                                                     address_right, label,
-                                                     count)
+                                        assemble_isz(chip, x, x[1], _LABELS,
+                                                     TPS, address,
+                                                     address_left,
+                                                     address_right,
+                                                     label, count)
                                 if opcode not in ('jcn', 'fim', 'isz'):
                                     d_type = ''
                                     if int(x[2]) <= 256:

@@ -2,7 +2,7 @@
         org     rom
 fff,    =       9
         ldm     2
-        inc     1
+        isz     1       fff
         ldm      fff
         jcn	6      fff
         fim     0p     180

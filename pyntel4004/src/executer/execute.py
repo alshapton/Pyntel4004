@@ -2,7 +2,7 @@
 
 from hardware.processor import processor
 from executer.supporting import deal_with_monitor_command, is_breakpoint
-from shared.shared import get_opcodeinfobyopcode
+from shared.shared import coredump, do_error, get_opcodeinfobyopcode
 
 ##############################################################################
 #  _ _  _    ___   ___  _  _     ______                 _       _            #
@@ -107,7 +107,6 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
             custom_opcode = True
             address = _TPS[chip.PROGRAM_COUNTER + 1]
             conditions = (bin(_TPS[chip.PROGRAM_COUNTER])[2:].zfill(8)[4:])
-            print("C=",conditions)
             b10address = str(address)
             cop = exe.replace('address8', b10address)
             exe = exe[:4] + str(int(conditions, 2)) + ',' + b10address + ')'
@@ -134,5 +133,17 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
         # the PROGRAM_COUNTER here)
         # Deliberately using eval here... skip checks in all code quality tools
         # skipcq: PYL-PYL-W0123
-        eval(exe)  # noqa
+        try:
+            eval(exe)  # noqa
+        except Exception as ex:
+            cls = str(type(ex))
+            x = cls.replace('<class ', '').replace('>', ''). \
+                replace("'", '').split('.')
+            ex_type = x[len(x)-1]
+            ex_args = str(ex.args).replace('(', '').replace(',)', '')
+            message = ex_type + ': ' + ex_args + ' at location ' + \
+                str(chip.PROGRAM_COUNTER)
+            do_error(message)
+            coredump(chip, 'fred')
+            return False
     return True

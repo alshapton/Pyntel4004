@@ -81,13 +81,14 @@ def main(argv):
         print()
         print('EXECUTING PROGRAM: ')
         print()
-        execute(chip, 'rom', pc, True)
-        print()
-        acc = chip.read_accumulator()
-        print('Accumulator : ' + str(acc) +
-              '  (0b ' + str(processor.decimal_to_binary(4, acc)) + ')')
-        print('Carry       :', chip.read_carry())
-        print()
+        did_execute = execute(chip, 'rom', pc, True)
+        if did_execute:
+            print()
+            acc = chip.read_accumulator()
+            print('Accumulator : ' + str(acc) +
+                  '  (0b ' + str(processor.decimal_to_binary(4, acc)) + ')')
+            print('Carry       :', chip.read_carry())
+            print()
 
 
 main(sys.argv[1:])
