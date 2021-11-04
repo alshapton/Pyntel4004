@@ -1,6 +1,6 @@
 from hardware.processor import processor
 from shared.shared import do_error, get_opcodeinfo, \
-     get_opcodeinfobyopcode
+    get_opcodeinfobyopcode
 from hardware.suboperation import split_address8
 
 
