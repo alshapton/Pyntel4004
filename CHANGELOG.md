@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1-alpha.6](https://pypi.org/project/Pyntel4004/0.0.1a7/) - 2021-11-04
 
 ### Added
+- 
+
+### Changed
+- 
+
+### Deprecated
+
+### Fixed
+- 
+
+### Removed
+
+### Security
+
+## [0.0.1-alpha.6](https://pypi.org/project/Pyntel4004/0.0.1a7/) - 2021-11-04
+
+### Added
 - EQUATE function (symbols only - no EXPressions yet)
 - Added functionality for option for JCN to specify flags numerically or alphabetically
 - First stage of core dump facility to help debug code

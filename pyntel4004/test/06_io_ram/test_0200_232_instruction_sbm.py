@@ -6,10 +6,9 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.suboperation import binary_to_decimal, check_overflow, convert_to_absolute_address, \
-    encode_command_register, ones_complement, read_complement_carry  # noqa
+from hardware.suboperation import convert_to_absolute_address, \
+    encode_command_register, ones_complement  # noqa
 from hardware.processor import processor  # noqa
-from hardware.exceptions import InvalidRamBank  # noqa
 
 
 def test_validate_sbm_instruction():

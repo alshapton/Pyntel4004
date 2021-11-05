@@ -135,7 +135,7 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
         # skipcq: PYL-PYL-W0123
         try:
             eval(exe)  # noqa
-        except Exception as ex:
+        except Exception as ex:  # noqa
             cls = str(type(ex))
             x = cls.replace('<class ', '').replace('>', ''). \
                 replace("'", '').split('.')

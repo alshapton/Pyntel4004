@@ -1,6 +1,7 @@
 class AddressOutOf8BitRange(Exception):
     """
-    Raised when an address is out of range of an 8-bit Value
+    Raised when an address is out of range of
+    an 8-bit Value.
     """
 
 
@@ -27,7 +28,8 @@ class InvalidChunkValue(Exception):
 
 class InvalidCommandRegisterContent(Exception):
     """
-    Raised when a command register contains an illegally formatted value.
+    Raised when a command register contains an illegally
+    formatted value.
     """
 
 

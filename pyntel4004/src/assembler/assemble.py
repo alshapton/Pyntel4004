@@ -254,8 +254,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                 if opcode[:3] == 'fim':
                                     address, TPS, _LABELS = \
                                         assemble_fim(chip, x, _LABELS, TPS,
-                                                     address, address_left,
-                                                     address_right, label,
+                                                     address, label,
                                                      count)
                                 if opcode == 'isz':
                                     address, TPS, _LABELS = \

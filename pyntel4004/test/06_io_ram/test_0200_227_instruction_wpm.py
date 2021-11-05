@@ -28,11 +28,10 @@ def test_validate_wpm_instruction():
 @pytest.mark.parametrize("address", [2, 5, 3])
 def test_wpm_scenario1_write(rambank, chip, register, address):
     """Test WPM instruction functionality."""
-
     chip_test = processor()
     chip_base = processor()
 
-    '''
+    """
     This piece of code writes an 8-bit value (consisting of 2 4-bit values)
     from the accumulator in 2 chunks. The setting up of this code and the
     execution of several WPM statements is key to the testing, although much
@@ -65,7 +64,8 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     24    SRC        0P          / Select ROM port 14.
     25    CLB
     26    WRR                    / Turn off write enable.
-    '''
+    """
+
     # Perform the instruction under test:
     # Preamble.....
     chip_test.PROGRAM_COUNTER = 0             # Set PC to be zero
@@ -193,11 +193,10 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
 @pytest.mark.parametrize("address", [2, 5, 3])
 def test_wpm_scenario1_read(rambank, chip, register, address):
     """Test WPM instruction functionality."""
-
     chip_test = processor()
     chip_base = processor()
 
-    '''
+    """
     This piece of code reads an 8-bit value (consisting of 2 4-bit values)
     from the program ram in 2 chunks. The setting up of this code and the
     execution of several WPM statements is key to the testing, although much
@@ -226,7 +225,7 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     19    SRC        0P          / Select ROM port 15
     20    RDR                    / Read to accumulator
     21    XCH        3           / Save in register 2
-    '''
+    """
     # Perform the instruction under test:
     # Preamble.....
     chip_test.PROGRAM_COUNTER = 0             # Set PC to be zero

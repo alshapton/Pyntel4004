@@ -21,7 +21,6 @@ sys.path.insert(1, '../src')
                                     ])
 def test_suboperation_get_opcodeinfo_scenario1(values):
     """Tests for get_opcodeinfo function."""
-
     chip = processor()
 
     opcode = values[0]
@@ -43,7 +42,6 @@ def test_suboperation_get_opcodeinfo_scenario1(values):
 @pytest.mark.parametrize("mnemonic", ['amd()', 'adding', 'clock'])
 def test_suboperation_get_opcodeinfo_scenario2(mnemonic):
     """Tests for get_opcodeinfo function."""
-
     chip = processor()
     opcode = '{"opcode": -1, "mnemonic": "N/A"}'
 

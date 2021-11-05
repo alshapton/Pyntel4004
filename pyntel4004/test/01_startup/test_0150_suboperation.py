@@ -80,7 +80,7 @@ def test_suboperation_rdx(rambank, chip, register, address, character):
                                    'RAM_PORT', 'ROM_PORT'])
 def test_suboperation_enc_dec_cr_scenario1(chip, register,
                                            address, shape):
-    """Test Convert to absolute address. """
+    """Test Convert to absolute address."""
     chip_2 = processor.decimal_to_binary(2, chip)
     chip_4 = processor.decimal_to_binary(4, chip)
     register_2 = processor.decimal_to_binary(2, register)
@@ -151,7 +151,7 @@ def test_suboperation_enc_dec_cr_scenario3(shape):
 @pytest.mark.parametrize("address", [0, 6, 15])
 def test_suboperation_convert_to_abs_addressscenario1(rambank,
                                                       chip, register, address):
-    """Test Convert to absolute address. """
+    """Test Convert to absolute address."""
     chip_test = processor()
 
     base_rambank = rambank * chip_test.RAM_BANK_SIZE
@@ -178,7 +178,6 @@ def test_suboperation_convert_to_abs_addressscenario1(rambank,
                                     [255, '1111', '1111'], [65, '0100', '0001']])  # noqa
 def test_suboperation_test_split8scenario1(values):
     """Test Split 8 bits. """
-
     in_address = values[0]
     in_left_4 = values[1]
     in_right_4 = values[2]
@@ -192,7 +191,6 @@ def test_suboperation_test_split8scenario1(values):
 @pytest.mark.parametrize("address", [-1, -100, 2, 4098])  # noqa
 def test_suboperation_test_split8scenario2(address):
     """Test Split 8 bits failure."""
-
     # Simulate conditions at end of operation in base chip
     # N/A
 
@@ -1085,8 +1083,8 @@ def test_suboperation_test_insert_ram_status_scenario1(
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     #
-    assert chip_test.STATUS_CHARACTERS[rambank][chip][register]
-    [value[1]] == value[0]
+    assert chip_test.STATUS_CHARACTERS[rambank][chip][register][value[1]] \
+        == value[0]
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)

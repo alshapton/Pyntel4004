@@ -186,7 +186,7 @@ def rdr(self):
     Implementation  This software implementation of the i4004 will ALWAYS
                     return the values of the output lines as-is.
     """
-    rom, _none, _none = \
+    rom, _unused1, _unused2 = \
         decode_command_register(self.COMMAND_REGISTER, 'ROM_PORT')
     self.ACCUMULATOR = self.ROM_PORT[rom]
     self.increment_pc(1)
@@ -355,7 +355,7 @@ def wmp(self):
     Bits 3 - 8 = Not relevant
     """
     crb = self.read_current_ram_bank()
-    chip, _none, _none = \
+    chip, _unused1, _unused2 = \
         decode_command_register(self.COMMAND_REGISTER, 'RAM_PORT')
     self.RAM_PORT[crb][chip] = self.ACCUMULATOR
     self.increment_pc(1)
@@ -387,7 +387,7 @@ def wrr(self):
     Bits 1 - 4 = The ROM chip targetted
     Bits 5 - 8 = Not relevant
     """
-    rom, _none, _none = \
+    rom, _unused1, _unused2 = \
         decode_command_register(self.COMMAND_REGISTER, 'ROM_PORT')
     self.ROM_PORT[rom] = self.ACCUMULATOR
     self.increment_pc(1)
@@ -514,8 +514,7 @@ def wpm(self):
 
 
     """
-    from hardware.suboperation import convert_to_absolute_address, \
-        decimal_to_binary, flip_wpm_counter
+    from hardware.suboperation import decimal_to_binary, flip_wpm_counter
     from hardware.reads import read_wpm_counter
 
     chip, register, addr = decode_command_register(

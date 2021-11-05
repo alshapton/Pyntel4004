@@ -6,8 +6,8 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.suboperation import convert_to_absolute_address, encode_command_register, \
-    ones_complement  # noqa
+from hardware.suboperation import convert_to_absolute_address, \
+    encode_command_register  # noqa
 from hardware.processor import processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
 

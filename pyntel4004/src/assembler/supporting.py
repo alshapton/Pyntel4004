@@ -1,7 +1,7 @@
 from hardware.processor import processor
+from hardware.suboperation import split_address8
 from shared.shared import do_error, get_opcodeinfo, \
      get_opcodeinfobyopcode
-from hardware.suboperation import split_address8
 
 
 def decode_conditions(conditions: str):
@@ -280,8 +280,7 @@ def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
                      f9, f10, f11, f12, f13, f14, f15, f16))
 
 
-def assemble_fim(self, x, _LABELS, TPS, address, address_left,
-                 address_right, label, count):
+def assemble_fim(self, x, _LABELS, TPS, address, label, count):
     """
     Function to assemble FIM instruction.
 
@@ -299,12 +298,6 @@ def assemble_fim(self, x, _LABELS, TPS, address, address_left,
     TPS: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
-
-    address: int, mandatory
-        Address in memory to place the newly assembled instruction
-
-    address_left, address_right: str, mandatory
-        Binary representation of 2 4-bit words representing "address"
 
     label: str, mandatory
         If there is a label associated with this instruction, it will be here,
@@ -335,7 +328,6 @@ def assemble_fim(self, x, _LABELS, TPS, address, address_left,
     N/A
 
     """
-
     f_opcode = x[0] + '(' + x[1] + ',data8)'
     opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
     TPS[address] = opcodeinfo['opcode']
