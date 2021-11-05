@@ -5,10 +5,11 @@ from hardware.suboperation import split_address8
 
 # Assembler imports
 from assembler.supporting import add_label, assemble_isz, assemble_2, \
-    do_error, get_bits, get_label_addr, \
-    get_opcodeinfo, match_label, print_ln, \
+    assemble_fim, assemble_jcn, do_error, get_bits, \
+    match_label, print_ln, \
     validate_inc, write_program_to_file
 
+from shared.shared import get_opcodeinfo
 
 ###############################################################################
 #  _ _  _    ___   ___  _  _                                _     _           #
@@ -105,9 +106,15 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 # Attach value to a label
                 if '0' <= str(parts[1])[:1] <= '9':
                     constant = True
-                    match_label(_LABELS, parts[0], parts[1])
+                    label_content = parts[1]
                 else:
-                    match_label(_LABELS, parts[0], address)
+                    label_content = address
+                # An EQUATE statement (indicated by "=")
+                if parts[1] == '=':
+                    constant = True
+                    label_content = int(parts[2])
+
+                match_label(_LABELS, parts[0], label_content)
                 # Set opcode
                 opcode = parts[1][:3]
             else:
@@ -121,7 +128,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
             if not constant:
                 if (opcode == 'ld()' or opcode[:2] == 'ld'):
                     opcode = 'ld '
-                if opcode not in ('org', '/', 'end', 'pin'):
+                if opcode not in ('org', '/', 'end', 'pin', '='):
                     opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
                     address = address + opcodeinfo['words']
             TFILE[p_line] = line.strip()
@@ -169,8 +176,9 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 else:
                     opcode = x[0]
                 opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
-                if (opcode in ['org', 'end', 'pin']) or (opcode is not None):
-                    if (opcode in ['org', 'end', 'pin']):
+                if (opcode in ['org', 'end', 'pin', '=']) or \
+                   (opcode is not None):
+                    if (opcode in ['org', 'end', 'pin', '=']):
                         if opcode == 'org':
                             ORG_FOUND = True
                             print_ln('', label,  '', '', '', '', '', '', '',
@@ -198,6 +206,11 @@ def assemble(program_name: str, object_file: str, chip: processor):
                             print_ln('', label, '', '', '', '', '', '', '', '',
                                      '', '', '', '', str(count), opcode,
                                      str(x[1]))
+                        if opcode == '=':
+                            ORG_FOUND = True
+                            print_ln('', x[0],  '', '', '', '', '', '', '',
+                                     '', '', str(count), opcode, str(x[2]),
+                                     '', '', '',)
                     else:
                         if ORG_FOUND is True:
                             if x[0][-1] == ',':
@@ -214,6 +227,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
                             # Check for operand(s)
                             # Operator & operand (generic)
                             if len(x) == 2:
+                                print(x)
                                 address, TPS, _LABELS = \
                                     assemble_2(chip, x, opcode, address, TPS,
                                                _LABELS, address_left,
@@ -232,70 +246,24 @@ def assemble(program_name: str, object_file: str, chip: processor):
                                 opcode = x[0]
                                 # Operator and 2 operands
                                 if opcode == 'jcn':
-                                    conditions = x[1].upper()
-                                    dest_label = x[2]
-                                    bin_conditions = 0
-                                    if 'I' in conditions:
-                                        bin_conditions = 8
-                                    if 'A' in conditions:
-                                        bin_conditions = bin_conditions + 4
-                                    if 'C' in conditions:
-                                        bin_conditions = bin_conditions + 2
-                                    if 'T' in conditions:
-                                        bin_conditions = bin_conditions + 1
-                                    f_opcode = 'jcn(' + str(bin_conditions) \
-                                        + ',address8)'
-                                    opcodeinfo = get_opcodeinfo(chip, 'L',
-                                                                f_opcode)
-                                    label_addr = get_label_addr(_LABELS,
-                                                                dest_label)
-
-                                    vl, vr = split_address8(
-                                        label_addr)  # Under test
-                                    # vl = bin(int(label_addr))\
-                                    # [2:].zfill(8)[:4]
-                                    # vr = bin(int(label_addr))\
-                                    # [2:].zfill(8)[4:]
-
-                                    bit1, bit2 = get_bits(opcodeinfo)
-                                    TPS[address] = opcodeinfo['opcode']
-                                    TPS[address + 1] = label_addr
-                                    print_ln(address, label, address_left,
-                                             address_right, bit1, bit2,
-                                             vl, vr, str(TPS[address]) + "," +
-                                             str(TPS[address + 1]), '', '', '',
-                                             str(count), opcode, str(x[1]),
-                                             str(x[2]), '')
-                                    address = address + opcodeinfo['words']
+                                    address, TPS, _LABELS = \
+                                        assemble_jcn(chip, x, _LABELS, TPS,
+                                                     address, address_left,
+                                                     address_right, label,
+                                                     count)
                                 if opcode[:3] == 'fim':
-                                    f_opcode = x[0] + '(' + x[1] + ',data8)'
-                                    opcodeinfo = get_opcodeinfo(chip, 'L',
-                                                                f_opcode)
-                                    TPS[address] = opcodeinfo['opcode']
-                                    TPS[address + 1] = int(x[2])
-                                    bit1, bit2 = get_bits(opcodeinfo)
-                                    print_ln(address, label, '' '',
-                                             '', bit1, bit2, '',
-                                             '',  str(TPS[address]) +
-                                             "," + str(TPS[address + 1]),
-                                             str(count), opcode, str(x[1]),
-                                             str(x[2]), '', '', '', '')
-                                    address = address + opcodeinfo['words']
+                                    address, TPS, _LABELS = \
+                                        assemble_fim(chip, x, _LABELS, TPS,
+                                                     address, address_left,
+                                                     address_right, label,
+                                                     count)
                                 if opcode == 'isz':
-                                    n_opcode, label_addr, words, \
-                                        addr_left, addr_right, \
-                                        bit1, bit2 = \
-                                        assemble_isz(chip, x[1], x[2],
-                                                     _LABELS)
-                                    TPS[address] = n_opcode
-                                    TPS[address + 1] = label_addr
-                                    print_ln(address, label, addr_left,
-                                             addr_right, bit1, bit2, vl,
-                                             vr, str(TPS[address]) +
-                                             "," + str(TPS[address + 1]),
-                                             str(count), opcode, str(x[1]),
-                                             str(x[2]), '', '', '', '')
-                                    address = address + words
+                                    address, TPS, _LABELS = \
+                                        assemble_isz(chip, x, x[1], _LABELS,
+                                                     TPS, address,
+                                                     address_left,
+                                                     address_right,
+                                                     label, count)
                                 if opcode not in ('jcn', 'fim', 'isz'):
                                     d_type = ''
                                     if int(x[2]) <= 256:

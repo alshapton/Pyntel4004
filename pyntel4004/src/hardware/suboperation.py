@@ -3,7 +3,7 @@
 from .exceptions import AddressOutOf8BitRange, \
     IncompatibleChunkBit, \
     InvalidBitValue, InvalidChunkValue, \
-    InvalidCommandRegisterFormat, \
+    InvalidCommandRegisterContent, InvalidCommandRegisterFormat, \
     InvalidPin10Value, InvalidRegister, \
     InvalidRegisterPair, NotABinaryNumber, \
     ProgramCounterOutOfBounds, ValueOutOfRangeForBits, \
@@ -77,24 +77,31 @@ def decode_command_register(command_register, shape):
         raise InvalidCommandRegisterFormat('Shape: ' + shape)
 
     command_register = str(command_register)
-
     if shape == 'DATA_RAM_CHAR':
+        if command_register == '0':
+            raise InvalidCommandRegisterContent('Content: ' + command_register)
         chip = binary_to_decimal(command_register[:2])
         register = binary_to_decimal(command_register[2:4])
         address = binary_to_decimal(command_register[4:])
 
     if shape == 'DATA_RAM_STATUS_CHAR':
+        if command_register == '0':
+            raise InvalidCommandRegisterContent('Content: ' + command_register)
         chip = binary_to_decimal(command_register[:2])
         register = binary_to_decimal(command_register[2:4])
         address = '0'
 
     if shape == 'RAM_PORT':
+        if command_register == '0':
+            raise InvalidCommandRegisterContent('Content: ' + command_register)
         # Note that in this instance, "chip" refers to "port"
         chip = binary_to_decimal(command_register[:2])
         register = '0'
         address = '0'
 
     if shape == 'ROM_PORT':
+        if command_register == '0':
+            raise InvalidCommandRegisterContent('Content: ' + command_register)
         # Note that in this instance, "chip" refers to "port"
         chip = binary_to_decimal(command_register[:4])
         register = '0'

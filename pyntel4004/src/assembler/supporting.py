@@ -1,5 +1,44 @@
 from hardware.processor import processor
+from shared.shared import do_error, get_opcodeinfo, \
+    get_opcodeinfobyopcode
 from hardware.suboperation import split_address8
+
+
+def decode_conditions(conditions: str):
+    """
+    Decode the conditions from a JCN mnemonic to a decimal value.
+
+    Parameters
+    ----------
+    conditions: str, mandatory
+        List of a maximum of 4 conditions
+
+    Returns
+    -------
+    int_conditions: int
+        Integer value of the conditions
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    int_conditions = 0
+
+    if 'I' in conditions:
+        int_conditions = 8
+    if 'A' in conditions:
+        int_conditions = int_conditions + 4
+    if 'C' in conditions:
+        int_conditions = int_conditions + 2
+    if 'T' in conditions:
+        int_conditions = int_conditions + 1
+
+    return int_conditions
 
 
 def add_label(_L, label: str):
@@ -136,87 +175,8 @@ def get_bits(opcodeinfo):
     return bit1, bit2
 
 
-def do_error(message: str):
-    """
-    Print an assembly error message
-
-    Parameters
-    ----------
-    message: str, mandatory
-        The error message to display
-
-    Returns
-    -------
-    N/A
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    ------
-    N/A
-
-    """
-    print()
-    print(message)
-    return True
-
-
-def get_opcodeinfo(chip: processor, ls: str, mnemonic: str):
-    """
-    Given a mnemonic, retrieve information about the mnemonic from
-    the opcode table
-
-    Parameters
-    ----------
-    chip : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
-    ls: str, mandatory
-        's' or 'S' indicating whether the mnemonic contains the full mnemonic
-        or not - e.g.    nop   as a mnemonic would be found if ls = 'S' or 's'
-                         nop() as a mnemonic would be found if ls != 'S' or 's'
-
-    mnemonic: str, mandatory
-        The mnemonic to locate
-
-    Returns
-    -------
-    opcodeinfo
-        The information about the mnemonic required in JSON form,
-        or
-
-           {"opcode": -1, "mnemonic": "N/A"}
-
-        if the mnemonic is not found.
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    ------
-    N/A
-
-    """
-    opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
-    if ls.upper() == 'S':
-        try:
-            opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                               if str(item["mnemonic"][:3]) == mnemonic), None)
-        except:  # noqa
-            opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
-        return opcodeinfo
-    try:
-        opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                           if str(item["mnemonic"]) == mnemonic), None)
-    except:  # noqa
-        opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
-    return opcodeinfo
-
-
-def assemble_isz(chip: processor, register, dest_label, _LABELS):
+def assemble_isz(chip: processor, x, register, _LABELS, TPS,
+                 address, a_l, a_r, label, count):
     """
     Function to correctly assemble the ISZ instruction.
 
@@ -225,32 +185,43 @@ def assemble_isz(chip: processor, register, dest_label, _LABELS):
     chip : processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
+    x: list, mandatory
+        The current line of code being assembled split into individual elements
+
     register: int, mandatory
         The register which will be compared in this instruction
-
-    dest_label: str, mandatory
-        The label to jump to if the conditions are met
-
-    _LABELS: list, mandatory
+   _LABELS: list, mandatory
         List of valid labels
+
+    TPS: list, mandatory
+        List representing the memory of the i4004 into which the
+        newly assembled instructions will be placed.
+
+    address: int, mandatory
+        Address in memory to place the newly assembled instruction
+
+    a_l, a_r: str, mandatory
+        Binary representation of 2 4-bit words representing "address"
+
+    label: str, mandatory
+        If there is a label associated with this instruction, it will be here,
+        "" otherwise.
+
+    count: int, mandatory
+        Assembly line number (used for printing during assembly)
 
     Returns
     -------
-    n_opcode: int
-        Decimal representation of the opcode (changes depending on conditions)
+    address: int
+        After the instruction has been assembled, the incoming address
+        is incremented by the number of words in the assembled instruction.
 
-    label_address: int
-        Address of the label in memory
+    TPS: list
+        List representing the memory of the i4004 into which the newly
+        assembled instruction has just been placed.
 
-    opcodeinfo['words']: int
-        Length of the instruction in words
-
-    val_left,val_right: str
-        2 4-bit binary values - MSB and LSB of the memory address to jump to
-        within this page.
-
-    bit1, bit2: str
-        2 4-bit binary values representing the two words of the opcode
+    _LABELS: list
+        Addresses of the labels (pass through only)
 
     Raises
     ------
@@ -262,18 +233,20 @@ def assemble_isz(chip: processor, register, dest_label, _LABELS):
 
     """
     n_opcode = 112 + int(register)
-    try:
-        opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                          if item["opcode"] == n_opcode), None)
-    except:  # noqa
-        opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
+    opcodeinfo = get_opcodeinfobyopcode(chip, n_opcode)
     bit1, bit2 = get_bits(opcodeinfo)
-    label_address = get_label_addr(_LABELS, dest_label)
-    val_left, val_right = split_address8(label_address)
-    # val_left = bin(int(label_address))[2:].zfill(8)[:4]
-    # val_right = bin(int(label_address))[2:].zfill(8)[4:]
-    return n_opcode, label_address, opcodeinfo['words'], val_left, val_right, \
-        bit1, bit2
+    label_address = get_label_addr(_LABELS, x[2])
+    vl, vr = split_address8(int(label_address))
+    TPS[address] = n_opcode
+    TPS[address + 1] = label_address
+    print_ln(address, label, a_l,
+             a_r, bit1, bit2, vl,
+             vr, str(TPS[address]) +
+             "," + str(TPS[address + 1]), '',
+             '', str(count), x[0], str(x[1]),
+             str(x[2]), '', '')
+    address = address + opcodeinfo['words']
+    return address, TPS, _LABELS
 
 
 def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
@@ -305,6 +278,150 @@ def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
     fmt = fmt + ' {:<3} {:<3} {} {}'
     print(fmt.format(f0, f1, f2, f3, f4, f5, f6, f7, f8,
                      f9, f10, f11, f12, f13, f14, f15, f16))
+
+
+def assemble_fim(self, x, _LABELS, TPS, address, address_left,
+                 address_right, label, count):
+    """
+    Function to assemble FIM instruction.
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    x: list, mandatory
+        The current line of code being assembled split into individual elements
+
+    _LABELS: list, mandatory
+        List of valid labels
+
+    TPS: list, mandatory
+        List representing the memory of the i4004 into which the
+        newly assembled instructions will be placed.
+
+    address: int, mandatory
+        Address in memory to place the newly assembled instruction
+
+    address_left, address_right: str, mandatory
+        Binary representation of 2 4-bit words representing "address"
+
+    label: str, mandatory
+        If there is a label associated with this instruction, it will be here,
+        "" otherwise.
+
+    count: int, mandatory
+        Assembly line number (used for printing during assembly)
+
+    Returns
+    -------
+    address: int
+        After the instruction has been assembled, the incoming address
+        is incremented by the number of words in the assembled instruction.
+
+    TPS: list
+        List representing the memory of the i4004 into which the newly
+        assembled instruction has just been placed.
+
+    _LABELS: list
+        Addresses of the labels (pass through only)
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+
+    f_opcode = x[0] + '(' + x[1] + ',data8)'
+    opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
+    TPS[address] = opcodeinfo['opcode']
+    TPS[address + 1] = int(x[2])
+    bit1, bit2 = get_bits(opcodeinfo)
+    print_ln(address, label, '' '', '', bit1, bit2, '', '',
+             str(TPS[address]) + "," + str(TPS[address + 1]),
+             str(count), x[0], str(x[1]),
+             str(x[2]), '', '', '', '')
+    address = address + opcodeinfo['words']
+    return address, TPS, _LABELS
+
+
+def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
+                 address_right, label, count):
+    """
+    Function to assemble JCN instructions.
+
+    Parameters
+    ----------
+    self : processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    x: list, mandatory
+        The current line of code being assembled split into individual elements
+
+    _LABELS: list, mandatory
+        List of valid labels
+
+    TPS: list, mandatory
+        List representing the memory of the i4004 into which the
+        newly assembled instructions will be placed.
+
+    address: int, mandatory
+        Address in memory to place the newly assembled instruction
+
+    address_left, address_right: str, mandatory
+        Binary representation of 2 4-bit words representing "address"
+
+    label: str, mandatory
+        If there is a label associated with this instruction, it will be here,
+        "" otherwise.
+
+    count: int, mandatory
+        Assembly line number (used for printing during assembly)
+
+    Returns
+    -------
+    address: int
+        After the instruction has been assembled, the incoming address
+        is incremented by the number of words in the assembled instruction.
+
+    TPS: list
+        List representing the memory of the i4004 into which the newly
+        assembled instruction has just been placed.
+
+    _LABELS: list
+        Addresses of the labels (pass through only)
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+    conditions = x[1].upper()
+    dest_label = x[2]
+    if '0' <= conditions <= '9':
+        bin_conditions = conditions
+    else:
+        bin_conditions = decode_conditions(conditions)
+    f_opcode = 'jcn(' + str(bin_conditions) + ',address8)'
+    opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
+    label_addr = int(get_label_addr(_LABELS, dest_label))
+    vl, vr = split_address8(label_addr)
+    bit1, bit2 = get_bits(opcodeinfo)
+    TPS[address] = opcodeinfo['opcode']
+    TPS[address + 1] = label_addr
+    print_ln(address, label, address_left, address_right, bit1, bit2,
+             vl, vr, str(TPS[address]) + "," + str(TPS[address + 1]),
+             '', '', '', str(count), x[0], str(x[1]), str(x[2]), '')
+    address = address + opcodeinfo['words']
+    return address, TPS, _LABELS
 
 
 def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
@@ -368,7 +485,13 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
     # pad out for the only 2-character mnemonic
     if opcode == 'ld':
         opcode = 'ld '
-    f_opcode = opcode + '(' + x[1] + ')'
+    addx = get_label_addr(_LABELS, x[1])
+    print(addx)
+    if addx == -1:
+        addx = x[1]
+    f_opcode = opcode + '(' + str(addx) + ')'
+    print(f_opcode)
+
     if opcode in ('jun', 'jms'):
         # Special case for JUN and JMS
         if opcode == 'jun':
@@ -477,7 +600,6 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
                datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '"'
     labels = '"labels":' + str(_LABELS).replace("'", '"')
     memorycontent = '"memory":['
-
     for location in program:
         content = str(hex(location)[2:])
         memorycontent = memorycontent + '"' + content + '", '

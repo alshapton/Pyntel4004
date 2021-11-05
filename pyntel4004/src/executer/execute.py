@@ -1,8 +1,8 @@
 # Import i4004 processor
 
 from hardware.processor import processor
-from executer.supporting import deal_with_monitor_command, is_breakpoint,\
-    reload
+from executer.supporting import deal_with_monitor_command, is_breakpoint
+from shared.shared import coredump, do_error, get_opcodeinfobyopcode
 
 ##############################################################################
 #  _ _  _    ___   ___  _  _     ______                 _       _            #
@@ -13,39 +13,6 @@ from executer.supporting import deal_with_monitor_command, is_breakpoint,\
 # |_|  |_|  \___/ \___/   |_|   |______|_| |_| |_|\__,_|_|\__,_|\__\___/|_|  #
 #                                                                            #
 ##############################################################################
-
-
-def retrieve(inputfile, chip):
-    """
-    Pass-thru function for the "reload" function in  supporting.py
-
-    Parameters
-    ----------
-    inputfile: str, mandatory
-        filename of a .obj file
-
-    chip : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
-    Returns
-    -------
-    m: str
-        rom or ram (depending on the target memory space)
-
-    p: int
-        location to commence execution of the assembled program
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    ------
-    No added value in this function, simply a pass-thru.
-
-    """
-    m, p = reload(inputfile, chip)
-    return m, p
 
 
 def execute(chip: processor, location: str, PC: int, monitor: bool):
@@ -110,15 +77,11 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
                     break
         custom_opcode = False
         OPCODE = _TPS[chip.PROGRAM_COUNTER]
-        print('opcode = ', OPCODE)
         if OPCODE == 255:  # pseudo-opcode (directive "end" - stop program)
             print('           end')
             break
-        try:
-            opcodeinfo = next((item for item in chip.INSTRUCTIONS
-                              if item['opcode'] == OPCODE), None)
-        except:  # noqa
-            opcodeinfo = {"opcode": -1, "mnemonic": "-"}
+        opcodeinfo = get_opcodeinfobyopcode(chip, OPCODE)
+
         exe = opcodeinfo['mnemonic']
         if exe == '-':
             break
@@ -170,5 +133,17 @@ def execute(chip: processor, location: str, PC: int, monitor: bool):
         # the PROGRAM_COUNTER here)
         # Deliberately using eval here... skip checks in all code quality tools
         # skipcq: PYL-PYL-W0123
-        eval(exe)  # noqa
+        try:
+            eval(exe)  # noqa
+        except Exception as ex:
+            cls = str(type(ex))
+            x = cls.replace('<class ', '').replace('>', ''). \
+                replace("'", '').split('.')
+            ex_type = x[len(x)-1]
+            ex_args = str(ex.args).replace('(', '').replace(',)', '')
+            message = ex_type + ': ' + ex_args + ' at location ' + \
+                str(chip.PROGRAM_COUNTER)
+            do_error(message)
+            coredump(chip, 'fred')
+            return False
     return True
