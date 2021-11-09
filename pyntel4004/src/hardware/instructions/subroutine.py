@@ -11,7 +11,9 @@
 ###########################################################################
 
 """
-Commands:   BBL -   BRANCH BACK AND LOAD
+Commands in this module.
+
+            BBL -   BRANCH BACK AND LOAD
             JMS -   JUMP TO SUBROUTINE
 
 
@@ -46,7 +48,8 @@ from hardware.exceptions import ValueOutOfRangeForStack
 
 def bbl(self, accumulator: int):
     """
-    Name:           Branch back and load data to the accumulator
+    Name:           Branch back and load data to the accumulator.
+
     Function:       The program counter (address stack) is pushed down one
                     level.
                     Program control transfers to the next instruction
@@ -70,7 +73,8 @@ def bbl(self, accumulator: int):
 
 def jms(self, address: int):
     """
-    Name:           Jump to Subroutine
+    Name:           Jump to Subroutine.
+
     Function:       The address of the next instruction in sequence following
                     JMS (return address) is saved in the push down stack.
                     Program control is transferred to the instruction located

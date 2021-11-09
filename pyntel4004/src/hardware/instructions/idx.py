@@ -9,7 +9,9 @@
 ###########################################################
 
 """
-Commands:   INC -   INCREMENT REGISTER
+Commands in this module.
+
+            INC -   INCREMENT REGISTER
             FIN -   FETCH INDIRECT
 
 
@@ -36,13 +38,14 @@ Commands:   INC -   INCREMENT REGISTER
     Additional Abbreviations:
             ~           Inverse (1's complement)
             .           logical OR
-            
+
 """
 
 
 def inc(self, register: int):
     """
-    Name:           Increment index register
+    Name:           Increment index register.
+
     Function:       The 4 bit content of the designated index register is
                     incremented by 1.
                     The index register is set to zero in case of overflow.
@@ -59,7 +62,8 @@ def inc(self, register: int):
 
 def fin(self, registerpair: int):
     """
-    Name:           Fetch indirect from ROM
+    Name:           Fetch indirect from ROM.
+
     Function:       The 8 bit content of the 0 index register
                     pair (0000) (0001) is sent out as an address
                     in the same page where the FIN instruction is located.

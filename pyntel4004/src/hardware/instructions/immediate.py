@@ -11,7 +11,9 @@
 ##########################################################################
 
 """
-Commands:   FIM -   FETCH IMMEDIATE
+Commands in this module.
+
+            FIM -   FETCH IMMEDIATE
             LDM -   LOAD ACCUMULATOR IMMEDIATE
 
 
@@ -38,13 +40,14 @@ Commands:   FIM -   FETCH IMMEDIATE
     Additional Abbreviations:
             ~           Inverse (1's complement)
             .           logical OR
-            
+
 """
 
 
 def fim(self, registerpair: int, value: int):
     """
-    Name:           Fetched immediate from ROM
+    Name:           Fetched immediate from ROM.
+
     Function:       The 2nd word represents 8-bits of data
                     which are loaded into the designated index register pair.
     Syntax:         FIM
@@ -61,7 +64,8 @@ def fim(self, registerpair: int, value: int):
 
 def ldm(self, operand: int):
     """
-    Name:           Load Accumulator Immediate
+    Name:           Load Accumulator Immediate.
+
     Function:       The 4 bits of immediate data are loaded into
                     the accumulator.
     Syntax:         LDM <value>

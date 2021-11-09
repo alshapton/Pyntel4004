@@ -11,7 +11,9 @@
 ##########################################################################
 
 """
-Commands:   DCL -   DESIGNATE COMMAND LINE
+Commands in this module.
+
+            DCL -   DESIGNATE COMMAND LINE
             SRC -   SEND REGISTER CONTROL
 
 
@@ -43,11 +45,13 @@ Commands:   DCL -   DESIGNATE COMMAND LINE
 """
 
 from hardware.exceptions import InvalidRamBank, InvalidRegisterPair
+from hardware.suboperation import decimal_to_binary
 
 
 def dcl(self):
     """
-    Name:           Designate command line
+    Name:           Designate command line.
+
     Function:       The content of the three least significant accumulator
                     bits is transferred to the command control register
                     within the CPU. This instruction provides RAM bank
@@ -85,7 +89,8 @@ def dcl(self):
 
 def src(self, registerpair: int):
     """
-    Name:           Send register control
+    Name:           Send register control.
+
     Function:       The 8 bit content of the designated index register pair
                     is sent to the RAM address register at X2 and X3.
                     A subsequent read, write, or I/O operation of the RAM will
@@ -108,7 +113,6 @@ def src(self, registerpair: int):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec..
     Side-effects:   Not Applicable
     """
-    from hardware.suboperation import decimal_to_binary
     if registerpair > 7:
         raise InvalidRegisterPair('Register pair : ' + str(registerpair))
 

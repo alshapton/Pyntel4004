@@ -13,7 +13,9 @@
 #####################################################
 
 """
-  Commands:   NOP -   NO OPERATION
+Commands in this module.
+
+            NOP -   NO OPERATION
 
  Abbreviations used in the descriptions of each instruction's actions:
 
@@ -38,13 +40,14 @@
     Additional Abbreviations:
             ~           Inverse (1's complement)
             .           logical OR
-            
+
 """
 
 
 def nop(self):
     """
-    Name:           No Operation
+    Name:           No Operation.
+
     Function:       No operation performed.
     Syntax:         NOP
     Assembled:      0000 0000

@@ -12,7 +12,9 @@
 ##########################################################################
 
 """
-Commands:   RDM -   READ DATA RAM DATA CHARACTER
+Commands in this module.
+
+            RDM -   READ DATA RAM DATA CHARACTER
             RDn -   READ DATA RAM STATUS CHARACTER
             RDR -   READ DATA ROM PORT
             WRM -   WRITE DATA RAM CHARACTER
@@ -50,14 +52,16 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
 
 """
 
-
-from hardware.suboperation import convert_to_absolute_address, \
-    decode_command_register, rdx
+from hardware.suboperation import check_overflow, \
+    convert_to_absolute_address, decimal_to_binary, decode_command_register, \
+    flip_wpm_counter, ones_complement, rdx
+from hardware.reads import read_wpm_counter
 
 
 def rdm(self):
     """
-    Name:           Read Data RAM data character
+    Name:           Read Data RAM data character.
+
     Function:       The content of the previously selected RAM main memory
                     character is transferred to the accumulator
                     The carry/link is unaffected.
@@ -79,7 +83,8 @@ def rdm(self):
 
 def rd0(self):
     """
-    Name:           Read RAM status character 0
+    Name:           Read RAM status character 0.
+
     Function:       The 4-bits of status character 0 for the previously
                     selected RAM register are transferred to the
                     accumulator.
@@ -104,7 +109,8 @@ def rd0(self):
 
 def rd1(self):
     """
-    Name:           Read RAM status character 1
+    Name:           Read RAM status character 1.
+
     Function:       The 4-bits of status character 1 for the previously
                     selected RAM register are transferred to the
                     accumulator.
@@ -129,7 +135,8 @@ def rd1(self):
 
 def rd2(self):
     """
-    Name:           Read RAM status character 2
+    Name:           Read RAM status character 2.
+
     Function:       The 4-bits of status character 2 for the previously
                     selected RAM register are transferred to the
                     accumulator.
@@ -154,7 +161,8 @@ def rd2(self):
 
 def rd3(self):
     """
-    Name:           Read RAM status character 3
+    Name:           Read RAM status character 3.
+
     Function:       The 4-bits of status character 3 for the previously
                     selected RAM register are transferred to the
                     accumulator.
@@ -179,7 +187,8 @@ def rd3(self):
 
 def rdr(self):
     """
-    Name:           Read ROM Port
+    Name:           Read ROM Port.
+
     Function:       The ROM port specified by the last SRC instruction is read.
                     When using the 4001 ROM,each of the 4 lines of the port may
                     be an input or an output line; the data on the input lines
@@ -221,7 +230,8 @@ def rdr(self):
 
 def wrm(self):
     """
-    Name:           Write accumulator into RAM character
+    Name:           Write accumulator into RAM character.
+
     Function:       The accumulator content is written into the previously
                     selected RAM main memory character location.
                     The accumulator and carry/link are unaffected.
@@ -244,7 +254,8 @@ def wrm(self):
 
 def wr0(self):
     """
-    Name:           Write accumulator into RAM status character 0
+    Name:           Write accumulator into RAM status character 0.
+
     Function:       The content of the accumulator is written into the
                     RAM status character 0 of the previously selected
                     RAM register.
@@ -271,7 +282,8 @@ def wr0(self):
 
 def wr1(self):
     """
-    Name:           Write accumulator into RAM status character 1
+    Name:           Write accumulator into RAM status character 1.
+
     Function:       The content of the accumulator is written into the
                     RAM status character 1 of the previously selected
                     RAM register.
@@ -298,7 +310,8 @@ def wr1(self):
 
 def wr2(self):
     """
-    Name:           Write accumulator into RAM status character 2
+    Name:           Write accumulator into RAM status character 2.
+
     Function:       The content of the accumulator is written into the
                     RAM status character 2 of the previously selected
                     RAM register.
@@ -325,7 +338,8 @@ def wr2(self):
 
 def wr3(self):
     """
-    Name:           Write accumulator into RAM status character 3
+    Name:           Write accumulator into RAM status character 3.
+
     Function:       The content of the accumulator is written into the
                     RAM status character 3 of the previously selected
                     RAM register.
@@ -352,7 +366,8 @@ def wr3(self):
 
 def wmp(self):
     """
-    Name:           Write memory port
+    Name:           Write memory port.
+
     Function:       The content of the accumulator is transferred to the
                     RAM output port of the previously selected RAM chip.
                     The data is available on the output pins until a new
@@ -390,7 +405,8 @@ def wmp(self):
 
 def wrr(self):
     """
-    Name:           Write ROM port
+    Name:           Write ROM port.
+
     Function:       The content of the accumulator is transferred to the ROM
                     output port of the previously selected ROM chip.
                     The data is available on the output pins until a new WRR
@@ -422,7 +438,8 @@ def wrr(self):
 
 def adm(self):
     """
-    Name:           Add from memory with carry
+    Name:           Add from memory with carry.
+
     Function:       The DATA RAM data character specified by the
                     last SRC instruction, plus the carry bit, are
                     added to the accumulator.
@@ -435,8 +452,6 @@ def adm(self):
                     MAX_4_BITS was generated to indicate a carry out;
                     otherwise, the carry/link is set to 0.
     """
-    from hardware.suboperation import check_overflow
-
     # Get value
     crb = self.read_current_ram_bank()
     chip, register, address = \
@@ -455,7 +470,8 @@ def adm(self):
 
 def sbm(self):
     """
-    Name:           Subtract DATA RAM from memory with borrow
+    Name:           Subtract DATA RAM from memory with borrow.
+
     Function:       The value of the DATA RAM character specified
                     by the last SRC instruction is subtracted from
                     the accumulator with borrow.
@@ -485,8 +501,6 @@ def sbm(self):
                     be complemented by the program between each required
                     subtraction operation.
     """
-    from hardware.suboperation import check_overflow, ones_complement
-
     # Get value
     crb = self.read_current_ram_bank()
     chip, register, address = \
@@ -509,7 +523,8 @@ def sbm(self):
 
 def wpm(self):
     """
-    Name:           Write program RAM
+    Name:           Write program RAM.
+
     Function:       This is a special instruction which may be used to write
                     the contents of the accumulator into a half byte of
                     program RAM, or read the contents of a half byte of program
@@ -540,9 +555,6 @@ def wpm(self):
 
 
     """
-    from hardware.suboperation import decimal_to_binary, flip_wpm_counter
-    from hardware.reads import read_wpm_counter
-
     chip, register, addr = decode_command_register(
         decimal_to_binary(8, self.COMMAND_REGISTER),
         'DATA_RAM_CHAR')

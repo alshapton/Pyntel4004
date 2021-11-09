@@ -8,7 +8,9 @@
 ##########################################################################
 
 """
-Commands:   CLB -   CLEAR BOTH
+Commands in this module.
+
+            CLB -   CLEAR BOTH
             CLC -   CLEAR CARRY
             IAC -   INCREMENT ACCUMULATOR
             CMC -   COMPLEMENT CARRY
@@ -52,7 +54,8 @@ Commands:   CLB -   CLEAR BOTH
 
 def clb(self):
     """
-    Name:           Clear Both
+    Name:           Clear Both.
+
     Function:       Set accumulator and carry/link to 0.
     Syntax:         CLB
     Assembled:      1111 0000
@@ -68,7 +71,8 @@ def clb(self):
 
 def clc(self):
     """
-    Name:           Clear Carry
+    Name:           Clear Carry.
+
     Function:       Set carry/link to 0.
     Syntax:         CLC
     Assembled:      1111 0001
@@ -83,7 +87,8 @@ def clc(self):
 
 def iac(self):
     """
-    Name:           Increment accumulator
+    Name:           Increment accumulator.
+
     Function:       The content of the accumulator is incremented by 1.
     Syntax:         IAC
     Assembled:      1111 0010
@@ -104,7 +109,8 @@ def iac(self):
 
 def cmc(self):
     """
-    Name:           Complement carry
+    Name:           Complement carry.
+
     Function:       The carry/link content is complemented.
     Syntax:         CLC
     Assembled:      1111 0011
@@ -122,7 +128,8 @@ def cmc(self):
 
 def cma(self):
     """
-    Name:           Complement Accumulator
+    Name:           Complement Accumulator.
+
     Function:       The content of the accumulator is complemented.
                     The carry/link is unaffected.
     Syntax:         CMA
@@ -131,7 +138,7 @@ def cma(self):
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-    from hardware.suboperation import ones_complement
+    from hardware.suboperation import ones_complement  # noqa
 
     ONES_ACC = int(ones_complement(self.ACCUMULATOR, 4), 2)
     self.ACCUMULATOR = ONES_ACC
@@ -141,7 +148,8 @@ def cma(self):
 
 def ral(self):
     """
-    Name:           Rotate left
+    Name:           Rotate left.
+
     Function:       The content of the accumulator and carry/link
                     are rotated left.
     Syntax:         RAL
@@ -170,7 +178,8 @@ def ral(self):
 
 def rar(self):
     """
-    Name:           Rotate right
+    Name:           Rotate right.
+
     Function:       The content of the accumulator and carry/link
                     are rotated right.
     Syntax:         RAR
@@ -196,7 +205,8 @@ def rar(self):
 
 def tcc(self):
     """
-    Name:           Transmit carry and clear
+    Name:           Transmit carry and clear.
+
     Function:       The accumulator is cleared.
                     The least significant position of the accumulator
                     is set to the value of the carry/link.
@@ -215,7 +225,8 @@ def tcc(self):
 
 def dac(self):
     """
-    Name:           Decrement accumulator
+    Name:           Decrement accumulator.
+
     Function:       The content of the accumulator is decremented by 1.
     Syntax:         DAC
     Assembled:      1111 1000
@@ -236,7 +247,8 @@ def dac(self):
 
 def tcs(self):
     """
-    Name:           Transfer Carry Subtract
+    Name:           Transfer Carry Subtract.
+
     Function:       The accumulator is set to 9 if the carry/link is 0.
                     The accumulator is set to 10 if the carry/link is a 1.
     Syntax:         TCS
@@ -258,7 +270,8 @@ def tcs(self):
 
 def stc(self):
     """
-    Name:           Set Carry
+    Name:           Set Carry.
+
     Function:       Set carry/link to 1.
     Syntax:         STC
     Assembled:      1111 1010
@@ -273,7 +286,8 @@ def stc(self):
 
 def daa(self):
     """
-    Name:           Decimal adjust accumulator
+    Name:           Decimal adjust accumulator.
+
     Function:       The accumulator is incremented by 6 if
                     either the carry/link is 1 or if the accumulator
                     content is greater than 9.
@@ -295,7 +309,8 @@ def daa(self):
 
 def kbp(self):
     """
-    Name:           Keyboard process
+    Name:           Keyboard process.
+
     Function:       A code conversion is performed on the accumulator content,
                     from 1 out of n to binary code.
                     If the accumulator content has more than one bit on, the

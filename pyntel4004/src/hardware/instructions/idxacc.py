@@ -10,7 +10,9 @@
 #############################################################
 
 """
-Commands:   ADD -   ADD REGISTER TO ACCUMULATOR WITH CARRY
+Commands in this module.
+
+            ADD -   ADD REGISTER TO ACCUMULATOR WITH CARRY
             SUB -   SUBTRACT REGISTER FROM ACCUMULATOR WITH BORROW
             LD  -   LOAD ACCUMULATOR
             XCH -   EXCHANGE REGISTER AND ACCUMULATOR
@@ -45,7 +47,8 @@ Commands:   ADD -   ADD REGISTER TO ACCUMULATOR WITH CARRY
 
 def add(self, register: int):
     """
-    Name:           Add index register to accumulator with carry
+    Name:           Add index register to accumulator with carry.
+
     Function:       The 4 bit content of the designated index register
                     is added to the content of the accumulator with carry.
                     The result is stored in the accumulator. (Note this
@@ -59,7 +62,7 @@ def add(self, register: int):
                     otherwise, the carry/link is set to 0. The 4 bit
                     content of the index register is unaffected.
     """
-    from hardware.suboperation import check_overflow
+    from hardware.suboperation import check_overflow  # noqa
 
     self.ACCUMULATOR = (self.ACCUMULATOR + self.REGISTERS[register] +
                         self.read_carry())
@@ -72,7 +75,8 @@ def add(self, register: int):
 
 def sub(self, register: int):
     """
-    Name:           Subtract index register from accumulator with borrow
+    Name:           Subtract index register from accumulator with borrow.
+
     Function:       The 4 bit content of the designated index register is
                     complemented (ones complement) and added to content of
                     the accumulator with borrow and the result is stored
@@ -85,7 +89,7 @@ def sub(self, register: int):
                     otherwise, it is set to 1.
                     The 4 bit content of the index register is unaffected.
     """
-    from hardware.suboperation import ones_complement, binary_to_decimal
+    from hardware.suboperation import ones_complement, binary_to_decimal   # noqa
 
     carry = self.read_complement_carry()
 
@@ -105,7 +109,8 @@ def sub(self, register: int):
 
 def ld(self, register: int):
     """
-    Name:           Load index register to Accumulator
+    Name:           Load index register to Accumulator.
+
     Function:       The 4 bit content of the designated index register
                     (RRRR) is loaded into accumulator.
                     The previous contents of the accumulator are lost.
@@ -122,7 +127,8 @@ def ld(self, register: int):
 
 def xch(self, register: int):
     """
-    Name:           Exchange index register and accumulator
+    Name:           Exchange index register and accumulator.
+
     Function:       The 4 bit content of designated index register is
                     loaded into the accumulator. The prior content of the
                     accumulator is loaded into the designed register.
