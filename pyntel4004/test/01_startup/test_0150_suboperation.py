@@ -1065,7 +1065,7 @@ def test_suboperation_test_insert_ram_status_scenario1(
     chip_base.set_accumulator(value[0])
     chip_base.CURRENT_RAM_BANK = rambank
     address = encode_command_register(chip, register, 0,
-                                                'DATA_RAM_STATUS_CHAR')
+                                      'DATA_RAM_STATUS_CHAR')
     chip_base.COMMAND_REGISTER = address
     chip_base.STATUS_CHARACTERS[rambank][chip][register][value[1]] = value[0]
 
