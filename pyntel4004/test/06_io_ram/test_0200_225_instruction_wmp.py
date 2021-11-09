@@ -5,16 +5,17 @@ import sys
 import pickle
 import pytest
 
-from hardware.suboperation import encode_command_register
 
 sys.path.insert(1, '../src')
+sys.path.insert(1, '../test')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
+from utils import encode_command_register  # noqa
 
 
 def test_validate_wmp_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[225]
     known = {"opcode": 225, "mnemonic": "wmp()", "exe": 10.8, "bits": ["1110", '0001'], "words": 1}  # noqa
@@ -27,8 +28,8 @@ def test_wmp_scenario1(rambank, chip):
     """Test WMP instruction functionality."""
     import random
 
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     value = random.randint(0, 15)  # Select a random value
 
@@ -38,7 +39,7 @@ def test_wmp_scenario1(rambank, chip):
     chip_test.set_accumulator(value)
     chip_test.COMMAND_REGISTER = \
         encode_command_register(chip, 0, 0, 'RAM_PORT')
-    processor.wmp(chip_test)
+    Processor.wmp(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0

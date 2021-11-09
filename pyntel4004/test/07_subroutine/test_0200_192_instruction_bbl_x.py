@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 from hardware.suboperation import decimal_to_binary, write_to_stack  # noqa
 from hardware.exceptions import ValueOutOfRangeForStack  # noqa
 
@@ -15,7 +15,7 @@ from hardware.exceptions import ValueOutOfRangeForStack  # noqa
                                        12, 13, 14, 15])
 def test_validate_instruction(increment):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[192 + increment]
     known = {"opcode": 192 + increment, "mnemonic": "bbl(" + str(increment) + ")", "exe": 10.8, "bits": ["1100", decimal_to_binary(4, increment)], "words": 1}  # noqa
@@ -26,8 +26,8 @@ def test_validate_instruction(increment):
                                    12, 13, 14, 15])
 def test_bbl_scenario1(value):
     """Test BBL instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     PC = 300
 
@@ -44,7 +44,7 @@ def test_bbl_scenario1(value):
 
     # Perform the instruction under test:
     # Return from a subroutine and load a value into the accumulator
-    processor.bbl(chip_test, value)
+    Processor.bbl(chip_test, value)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

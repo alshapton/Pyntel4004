@@ -1,5 +1,4 @@
-#  Sub-operation methods
-
+"""Suboperations."""
 from .exceptions import AddressOutOf8BitRange, \
     IncompatibleChunkBit, \
     InvalidBitValue, InvalidChunkValue, \
@@ -13,12 +12,12 @@ from .exceptions import AddressOutOf8BitRange, \
 
 def rdx(self, character):
     """
-    Name:           Read RAM status character X
+    Read RAM status character X.
 
     Parameters
     ----------
-    self : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
+    self : Processor, mandatory
+        The instance of the Processor containing the registers, accumulator etc
 
     character:
         RAM STATUS CHARACTER to read
@@ -35,40 +34,6 @@ def rdx(self, character):
     self.ACCUMULATOR = self.STATUS_CHARACTERS[crb][chip][register][character]
     self.increment_pc(1)
     return self.ACCUMULATOR
-
-
-def encode_command_register(chip, register, address, shape):
-    if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',
-                     'RAM_PORT', 'ROM_PORT'):
-        raise InvalidCommandRegisterFormat('Shape: ' + shape)
-
-    if shape == 'DATA_RAM_CHAR':
-        i_chip = decimal_to_binary(2, chip)
-        i_register = decimal_to_binary(2, register)
-        i_address = decimal_to_binary(4, address)
-        command_register = i_chip + i_register + i_address
-
-    if shape == 'DATA_RAM_STATUS_CHAR':
-        i_chip = decimal_to_binary(2, chip)
-        i_register = decimal_to_binary(2, register)
-        i_address = '0000'
-        command_register = i_chip + i_register + i_address
-
-    if shape == 'RAM_PORT':
-        # Note that in this instance, "chip" refers to "port"
-        i_chip = decimal_to_binary(2, chip)
-        i_register = '000'
-        i_address = '000'
-        command_register = i_chip + i_register + i_address
-
-    if shape == 'ROM_PORT':
-        # Note that in this instance, "chip" refers to "port"
-        i_chip = decimal_to_binary(4, chip)
-        i_register = '00'
-        i_address = '00'
-        command_register = i_chip + i_register + i_address
-
-    return command_register
 
 
 def decode_command_register(command_register, shape):
@@ -112,12 +77,11 @@ def decode_command_register(command_register, shape):
 
 def convert_to_absolute_address(self, rambank, chip, register, address):
     """
-    Convert a rambank, chip, register and address to an absolute 0 - 4095
-    RAM adddress
+    Convert a rambank, chip, register and address to an absolute RAM address.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     rambank: integer, mandatory
@@ -136,6 +100,15 @@ def convert_to_absolute_address(self, rambank, chip, register, address):
     -------
     absolute_address
         The address from 0 - 4095
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
     """
     absolute_address = (rambank * self.RAM_BANK_SIZE) + \
         (chip * self.RAM_CHIP_SIZE) + \
@@ -145,7 +118,7 @@ def convert_to_absolute_address(self, rambank, chip, register, address):
 
 def split_address8(address):
     """
-    Split a supplied decimal address into 2 4-bit words
+    Split a supplied decimal address into 2 4-bit words.
 
     Parameters
     ----------
@@ -165,7 +138,7 @@ def split_address8(address):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -179,11 +152,11 @@ def split_address8(address):
 
 def set_carry(self):
     """
-    Set the carry bit
+    Set the carry bit.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -196,7 +169,7 @@ def set_carry(self):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -207,11 +180,11 @@ def set_carry(self):
 
 def reset_carry(self):
     """
-    Resets the carry bit
+    Resets the carry bit.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -224,7 +197,7 @@ def reset_carry(self):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -235,11 +208,11 @@ def reset_carry(self):
 
 def read_complement_carry(self):
     """
-    Reads the complement of the carry bit, but doesn't change the value
+    Reads the complement of the carry bit, but doesn't change the value.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -251,7 +224,7 @@ def read_complement_carry(self):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -260,11 +233,11 @@ def read_complement_carry(self):
 
 def insert_register(self, register: int, value: int):
     """
-    Insert a value into a specific register
+    Insert a value into a specific register.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     register: int, mandatory
@@ -284,7 +257,7 @@ def insert_register(self, register: int, value: int):
     ValueTooLargeForRegister
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -299,11 +272,11 @@ def insert_register(self, register: int, value: int):
 
 def read_register(self, register: int):
     """
-    Read a specific register
+    Read a specific register.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     register: int, mandatory
@@ -319,7 +292,7 @@ def read_register(self, register: int):
     InvalidRegister
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -331,11 +304,11 @@ def read_register(self, register: int):
 
 def insert_registerpair(self, registerpair: int, value: int):
     """
-    Insert a value into a specific register
+    Insert a value into a specific register.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     registerpair: int, mandatory
@@ -355,7 +328,7 @@ def insert_registerpair(self, registerpair: int, value: int):
     ValueTooLargeForRegisterPair
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -376,11 +349,11 @@ def insert_registerpair(self, registerpair: int, value: int):
 
 def read_registerpair(self, registerpair: int):
     """
-    Read a specific register pair
+    Read a specific register pair.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     registerpair: int, mandatory
@@ -396,7 +369,7 @@ def read_registerpair(self, registerpair: int):
     InvalidRegister
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -413,11 +386,11 @@ def read_registerpair(self, registerpair: int):
 
 def increment_pc(self, words: int):
     """
-    Increment the Program Counter by a specific number of words
+    Increment the Program Counter by a specific number of words.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     words: int, mandatory
@@ -433,7 +406,7 @@ def increment_pc(self, words: int):
     ProgramCounterOutOfBounds
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -447,12 +420,11 @@ def increment_pc(self, words: int):
 
 def inc_pc_by_page(self, pc: int):
     """
-    Retrieve the Program Counter's new value after being incremented
-    by a page
+    Retrieve the PC's new value after being incremented by a page.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     pc: int, mandatory
@@ -468,7 +440,7 @@ def inc_pc_by_page(self, pc: int):
     ProgramCounterOutOfBounds
 
     Notes
-    ------
+    -----
     This function DOES NOT MODIFY the program counter, simply
     calculates the new  value of the counter. It is up to the
     calling  function to determine what to  do with the value.
@@ -484,11 +456,11 @@ def inc_pc_by_page(self, pc: int):
 
 def is_end_of_page(self, address: int, word: int):
     """
-    Determine if an instruction is located at the end of a memory page
+    Determine if an instruction is located at the end of a memory page.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     address: int, mandatory
@@ -507,7 +479,7 @@ def is_end_of_page(self, address: int, word: int):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -519,11 +491,11 @@ def is_end_of_page(self, address: int, word: int):
 
 def increment_register(self, register: int):
     """
-    Increment the value in a register by 1
+    Increment the value in a register by 1.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     register: int, mandatory
@@ -539,7 +511,7 @@ def increment_register(self, register: int):
     InvalidRegister
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -554,11 +526,11 @@ def increment_register(self, register: int):
 
 def write_pin10(self, value: int):
     """
-    Write to pin 10 (reset pin)
+    Write to pin 10 (reset pin).
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     value: int, mandatory
@@ -574,7 +546,7 @@ def write_pin10(self, value: int):
     InvalidPin10Value
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -586,11 +558,11 @@ def write_pin10(self, value: int):
 
 def write_ram_status(self, char: int):
     """
-    Write to a RAM status character
+    Write to a RAM status character.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     char: int, mandatory
@@ -628,11 +600,11 @@ def write_ram_status(self, char: int):
 
 def write_to_stack(self, value: int):
     """
-    Write to the stack
+    Write to the stack.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     value: int, mandatory
@@ -648,17 +620,18 @@ def write_to_stack(self, value: int):
     ValueOutOfRangeForStack
 
     Notes
-    ------
+    -----
     The stack pointer begins at 2, and then moves toward 0
 
       After 2 writes         After 3 writes         After 3 writes
-      +------------+ +------------+ +------------+
-      |     a | |      a | <--SP | d |
-      |     b | |      b | |      b | <---SP
-      | | <--SP | c | |      c |
-      +------------+ +------------+ +------------+
+      +------------+         +------------+        +------------+
+      |     a      |         |      a     | <--SP  |      d     |
+      |     b      |         |      b     |        |      b     | <---SP
+      |            | <--SP   |      c     |        |      c     |
+      +------------+         +------------+        +------------+
 
     After 3 writes, address "a" is lost
+
     """
     if (value < 0 or value > 4095):
         raise ValueOutOfRangeForStack(' Value: ' + str(value))
@@ -672,11 +645,11 @@ def write_to_stack(self, value: int):
 
 def read_from_stack(self):
     """
-    Read from the stack
+    Read from the stack.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -689,15 +662,15 @@ def read_from_stack(self):
     N/A
 
     Notes
-    ------
+    -----
     The stack pointer begins at 2, and then moves toward 0
 
         First Read             Second Read          Third Read
-        +------------+ +------------+ +------------+
-        |     d | <--SP | d | |      d |
-        |     b | |      b | |      b | <---SP
-        |     c | |      c | <--SP | c |
-        +------------+ +------------+ +------------+
+        +------------+       +------------+        +------------+
+        |     d      | <--SP |      d     |        |      d     |
+        |     b      |       |      b     |        |      b     | <---SP
+        |     c      |       |      c     | <--SP  |      c     |
+        +------------+       +------------+        +------------+
 
     """
     if self.STACK_POINTER == 2:
@@ -713,8 +686,7 @@ def read_from_stack(self):
 
 def ones_complement(value: str, bits: int):
     """
-    Converts a decimal value into its one's compliment value
-    of a specified bit length
+    Converts a decimal into a one's compliment value of a specified bit length.
 
     Parameters
     ----------
@@ -735,7 +707,7 @@ def ones_complement(value: str, bits: int):
                              out of range of the number of bits requested
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -761,8 +733,7 @@ def ones_complement(value: str, bits: int):
 
 def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result: str = 'b'):  # noqa
     """
-    Converts a decimal value into several binary or decimal values of specific
-    bit lengths
+    Converts a decimal to several binary or decimal values of specific lengths.
 
     Parameters
     ----------
@@ -792,7 +763,7 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
                              out of range of the number of bits requested
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -822,7 +793,7 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
 
 def decimal_to_binary(bits: int, decimal: int):
     """
-    Converts a decimal value into a binary value of a specified bit length
+    Converts a decimal value into a binary value of a specified bit length.
 
     Parameters
     ----------
@@ -843,7 +814,7 @@ def decimal_to_binary(bits: int, decimal: int):
                              out of range of the number of bits requested
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -861,8 +832,7 @@ def decimal_to_binary(bits: int, decimal: int):
 
 def binary_to_decimal(binary: str):
     """
-    Converts a string value(which must be in binary form) to
-    a decimal value
+    Converts a string value(which must be in binary form) to a decimal value.
 
     Parameters
     ----------
@@ -878,7 +848,7 @@ def binary_to_decimal(binary: str):
     NotABinaryNumber: When a non-binary number is supplied
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -895,7 +865,9 @@ def binary_to_decimal(binary: str):
 
 def flip_wpm_counter(self):
     """
-    Two WPM instructions must always appear in close succession; that is ,
+    Flip the WPM counter.
+
+    Two WPM instructions must always appear in close succession; that is,
     each time one WPM instruction references a half byte of program RAM
     as indicated by an SRC address, another WPM must access the other half
     byte before the SRC address is altered.
@@ -905,7 +877,7 @@ def flip_wpm_counter(self):
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -918,7 +890,7 @@ def flip_wpm_counter(self):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -931,15 +903,17 @@ def flip_wpm_counter(self):
 
 def check_overflow(self):
     """
-    Check for an overflow is detected
-    i.e. the result is more than a 4-bit number(MAX_4_BITS)
+    Check if an overflow is detected.
+
+    If the result is more than a 4-bit number(MAX_4_BITS),
+    then an overflow is detected.
 
     If there is an overflow detected, set the carry bit,
     otherwise reset the carry bit.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -954,7 +928,7 @@ def check_overflow(self):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -968,11 +942,11 @@ def check_overflow(self):
 
 def set_accumulator(self, value: int):
     """
-    Insert a value into the Accumulator
+    Insert a value into the Accumulator.
 
     Parameters
     ----------
-    self: processor, mandatory
+    self: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     value: int, mandatory
@@ -988,7 +962,7 @@ def set_accumulator(self, value: int):
     ValueTooLargeForAccumulator
 
     Notes
-    ------
+    -----
     N/A
 
     """

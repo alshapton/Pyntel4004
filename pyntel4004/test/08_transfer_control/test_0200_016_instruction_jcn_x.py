@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 
 from hardware.suboperation import decimal_to_binary  # noqa
 
@@ -15,7 +15,7 @@ from hardware.suboperation import decimal_to_binary  # noqa
                                    11, 12, 13, 14, 15])
 def test_validate_instruction(value):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[16 + value]
     known = {"opcode": 16 + value, "mnemonic": "jcn(" + str(value) + ",address8)", "exe": 21.6, "bits": ["0001", decimal_to_binary(4,  value), "xxxx", "xxxx"], "words": 2}  # noqa
@@ -46,8 +46,8 @@ def test_validate_instruction(value):
                                     ])
 def test_scenario1(values):
     """Test JCN instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     PC = values[0]
     C1 = values[1]
@@ -81,7 +81,7 @@ def test_scenario1(values):
     chip_base.PROGRAM_COUNTER = PC
 
     # Perform the instruction under test:
-    processor.jcn(chip_test, CONDITION, FA)
+    Processor.jcn(chip_test, CONDITION, FA)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = FA

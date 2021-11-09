@@ -1,8 +1,10 @@
+"""Definition of an i4004 processor."""
 
-class processor:
-    """Definition of an i4004 processor."""
 
-    # Import processor internals
+class Processor:
+
+    """Functionality and chracteristics of an i4004 processor."""
+
     from hardware import opcodes
     from hardware.reset import init_command_registers, init_pram, \
         init_ram, init_registers, init_rom, init_stack, init_wpm_counter
@@ -28,8 +30,7 @@ class processor:
     from hardware.suboperation import binary_to_decimal, check_overflow, \
         convert_decimal_to_n_bit_slices, convert_to_absolute_address, \
         decimal_to_binary, decode_command_register, \
-        encode_command_register, flip_wpm_counter, \
-        increment_register, increment_pc, inc_pc_by_page, \
+        flip_wpm_counter, increment_register, increment_pc, inc_pc_by_page, \
         insert_register, insert_registerpair, is_end_of_page, \
         ones_complement, reset_carry, read_complement_carry, \
         read_from_stack, read_register, read_registerpair, rdx, \
@@ -65,7 +66,7 @@ class processor:
     # Initialise processor
 
     def __init__(self):
-
+        """Initialise an instance of the processor."""
         # Set up all the internals of the processor
         self.COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
 
@@ -87,7 +88,7 @@ class processor:
         self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
                                     for _reg in range(4)]
                                    for _chip in range(4)]
-                                  for _bank in range(8)]
+                                  for _bank in range(self.NO_DRB)]
 
         # Creation of processor simulated hardware
         # Pin 10 on the physical chip is the "test" pin

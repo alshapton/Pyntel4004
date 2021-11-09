@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 from hardware.suboperation import convert_decimal_to_n_bit_slices, \
      decimal_to_binary, insert_register   # noqa
 
@@ -14,7 +14,7 @@ from hardware.suboperation import convert_decimal_to_n_bit_slices, \
 @pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])
 def test_validate_instruction(registerpair):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[48 + (registerpair * 2)]
     known = {"opcode": 48 + (registerpair * 2), "mnemonic": "fin(" + str(registerpair) + ")", "exe": 21.6, "bits": ["0011", decimal_to_binary(4, registerpair * 2)], "words": 1}  # noqa
@@ -26,8 +26,8 @@ def test_validate_instruction(registerpair):
                                     [5, 44, 100], [6, 15, 48], [7, 255, 0]])
 def test_scenario1(values):
     """Test FIN instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 256
@@ -43,7 +43,7 @@ def test_scenario1(values):
 
     # Perform the instruction under test:
     # Fetch indirect from..... (command at end of page)
-    left, right = processor.fin(chip_test, values[0])
+    left, right = Processor.fin(chip_test, values[0])
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
@@ -64,8 +64,8 @@ def test_scenario1(values):
                                     [5, 44, 100], [6, 15, 48], [7, 255, 0]])
 def test_scenario2(values):
     """Test DCL instruction functionality (scenario 2)."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 11
@@ -81,7 +81,7 @@ def test_scenario2(values):
 
     # Perform the instruction under test:
     # Fetch indirect from
-    left, right = processor.fin(chip_test, values[0])
+    left, right = Processor.fin(chip_test, values[0])
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

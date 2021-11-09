@@ -1,6 +1,6 @@
 # Import i4004 processor
 
-from hardware.processor import processor
+from hardware.processor import Processor
 from hardware.suboperation import split_address8
 
 # Assembler imports
@@ -22,25 +22,28 @@ from shared.shared import get_opcodeinfo
 ###############################################################################
 
 
-def assemble(program_name: str, object_file: str, chip: processor):
+def pass0(chip):
     """
-    Main two-pass assembler for i4004 code
+    Initialise storage for assembly
 
     Parameters
     ----------
-    program_name: str, mandatory
-        Name of the source file to load
-
-    object_file: str, mandatory
-        Name of the output file in which to place the object code
-
-    chip: processor, mandatory
+    chip: Processor, mandatory
         Instance of a processor to place the assembled code in.
 
     Returns
     -------
-    True if the code assembles correctly
-    False if there are errors in the code
+    _LABELS: List
+        List for containing labels
+
+    TPS_SIZE: Integer
+        Maximum size of program memory
+
+    TPS: List
+        Program store
+
+    TPS_FILE: List
+        Assembly language store
 
     Raises
     ------
@@ -68,6 +71,42 @@ def assemble(program_name: str, object_file: str, chip: processor):
     TFILE = []
     for _i in range(TPS_SIZE * 2):
         TFILE.append('')
+
+    return _LABELS, TPS_SIZE, TPS, TFILE
+
+
+def assemble(program_name: str, object_file: str, chip: Processor):
+    """
+    Main two-pass assembler for i4004 code
+
+    Parameters
+    ----------
+    program_name: str, mandatory
+        Name of the source file to load
+
+    object_file: str, mandatory
+        Name of the output file in which to place the object code
+
+    chip: Processor, mandatory
+        Instance of a processor to place the assembled code in.
+
+    Returns
+    -------
+    True if the code assembles correctly
+    False if there are errors in the code
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    ------
+    N/A
+
+    """
+
+    # Initialise label tables, program storage etc
+    _LABELS, TPS_SIZE, TPS, TFILE = pass0(chip)
 
     # Pass 1
 
@@ -137,9 +176,8 @@ def assemble(program_name: str, object_file: str, chip: processor):
         program.close()
 
     if ERR:
-        print(ERR)
-        print("Program Assembly halted @ Pass 1")
-        print()
+        do_error(ERR + "\nProgram Assembly halted @ Pass 1\n\n")
+
         return False
 
     # Pass 2

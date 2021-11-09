@@ -52,6 +52,3 @@ The optional flag **-o <output file>** will store the assembled program in a nam
 - More background info
 - Add ability to load pre-assembled code and run
 - Add ability to turn the monitor off prior to running
-
-
-

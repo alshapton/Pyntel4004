@@ -70,7 +70,7 @@ from one page of memory to another.
           xch 0
 
 
-  LAB     inc 1 
+  LAB     inc 1
 
 
           bbl 6

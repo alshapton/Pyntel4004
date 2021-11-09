@@ -1,6 +1,6 @@
 # Import i4004 processor
 
-from hardware.processor import processor
+from hardware.processor import Processor
 from executer.supporting import deal_with_monitor_command, is_breakpoint
 from shared.shared import coredump, do_error, get_opcodeinfobyopcode
 
@@ -15,13 +15,13 @@ from shared.shared import coredump, do_error, get_opcodeinfobyopcode
 ##############################################################################
 
 
-def execute(chip: processor, location: str, PC: int, monitor: bool):
+def execute(chip: Processor, location: str, PC: int, monitor: bool):
     """
     Control the execution of a previously assembled program.
 
     Parameters
     ----------
-    chip : processor, mandatory
+    chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     location : str, mandatory

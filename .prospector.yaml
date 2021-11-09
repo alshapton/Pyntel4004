@@ -1,0 +1,53 @@
+strictness: medium
+test-warnings: false
+doc-warnings: true
+
+ignore-paths:
+  - .git
+  - .github
+  - .vscode
+  - docs
+  - images
+  - pyntel4004/dist
+  - pyntel4004/docs
+  - pyntel4004/test
+  
+  
+
+bandit:
+  run: true
+
+dodgy:
+  run: true
+
+frosted:
+  run: false
+
+mccabe:
+  run: true
+
+mypy:
+  run: true
+
+pep257:
+  run: true
+
+  disable:
+    - D212
+    - D211
+
+pep8:
+  run: true
+
+pyflakes:
+  run: true
+
+pylint:
+  run: true
+
+pyroma:
+  run: true
+
+vulture:
+  run: true
+

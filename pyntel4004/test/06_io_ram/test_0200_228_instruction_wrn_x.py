@@ -5,14 +5,15 @@ import sys
 import pickle
 import pytest
 sys.path.insert(1, '../src')
+sys.path.insert(2, '../test')
 
-from hardware.processor import processor  # noqa
-from hardware.suboperation import encode_command_register  # noqa
+from hardware.processor import Processor  # noqa
+from utils import encode_command_register  # noqa
 
 
 def test_validate_wrNinstruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     # There are 4 wrN instructions.
     op = chip_test.INSTRUCTIONS[228]
@@ -40,8 +41,8 @@ def test_wrN_scenario1(rambank, chip, register, char):
     """Test instruction WRn"""
     from random import randint
 
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     value = randint(0, 15)
 
@@ -53,13 +54,13 @@ def test_wrN_scenario1(rambank, chip, register, char):
 
     # Perform the instruction under test:
     if char == 0:
-        processor.wr0(chip_test)
+        Processor.wr0(chip_test)
     if char == 1:
-        processor.wr1(chip_test)
+        Processor.wr1(chip_test)
     if char == 2:
-        processor.wr2(chip_test)
+        Processor.wr2(chip_test)
     if char == 3:
-        processor.wr3(chip_test)
+        Processor.wr3(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.COMMAND_REGISTER = address

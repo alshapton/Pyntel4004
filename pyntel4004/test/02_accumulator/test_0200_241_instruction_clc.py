@@ -5,13 +5,13 @@ import sys
 import pickle
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
 
 
 def test_validate_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[241]
     known = {"opcode": 241, "mnemonic": "clc()", "exe": 10.8, "bits": ["1111", '0001'], "words": 1}  # noqa
@@ -20,8 +20,8 @@ def test_validate_instruction():
 
 def test_scenario1():
     """Test CLC instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
@@ -35,7 +35,7 @@ def test_scenario1():
     # Carry out the instruction under test
     # Perform a CLC operation
 
-    processor.clc(chip_test)
+    Processor.clc(chip_test)
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 

@@ -1,4 +1,4 @@
-from hardware.processor import processor
+from hardware.processor import Processor
 import json
 
 
@@ -11,7 +11,7 @@ def reload(inputfile, chip):
     inputfile: str, mandatory
         filename of a .obj file
 
-    chip : processor, mandatory
+    chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns
@@ -82,14 +82,14 @@ def is_breakpoint(BREAKPOINTS, PC):
     return False
 
 
-def deal_with_monitor_command(chip: processor, monitor_command: str,
+def deal_with_monitor_command(chip: Processor, monitor_command: str,
                               BREAKPOINTS, monitor: bool, opcode: str):
     """
     Take appropriate action depending on the command supplied.
 
     Parameters
     ----------
-    chip : processor, mandatory
+    chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     monitor_command: str, mandatory
@@ -196,7 +196,7 @@ def retrieve(inputfile, chip):
     inputfile: str, mandatory
         filename of a .obj file
 
-    chip : processor, mandatory
+    chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Returns

@@ -6,14 +6,14 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
 
 
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
 def test_validate_dcl_instruction(rambank):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[253]
     known = {"opcode": 253, "mnemonic": "dcl()", "exe": 10.8, "bits": ["1111", '1101'], "words": 1}  # noqa
@@ -23,8 +23,8 @@ def test_validate_dcl_instruction(rambank):
 @pytest.mark.parametrize("rambank", [0, 1, 2, 3, 4, 5, 6, 7])
 def test_dcl_scenario1(rambank):
     """Test DCL instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Perform the instruction under test:
     chip_test.set_accumulator(rambank)
@@ -48,8 +48,8 @@ def test_dcl_scenario1(rambank):
 @pytest.mark.parametrize("rambank", [8, 9])
 def test_dcl_scenario2(rambank):
     """Test DCL instruction failure."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at START of operation in base chip
     # chip should have not had any changes as the operations will fail
@@ -61,7 +61,7 @@ def test_dcl_scenario2(rambank):
 
     # attempting to use an invalid RAM Bank
     with pytest.raises(Exception) as e:
-        assert processor.dcl(chip_test)
+        assert Processor.dcl(chip_test)
     assert str(e.value) == 'RAM bank : ' + str(rambank)
     assert e.type == InvalidRamBank
 

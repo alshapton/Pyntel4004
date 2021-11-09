@@ -53,7 +53,7 @@ represented in the opcode.
    :scale: 50%
    :align: center
 
-The register specified in the lower 4 bits of the instruction is incremented by 1. 
+The register specified in the lower 4 bits of the instruction is incremented by 1.
 The carry bit will remain unchanged. If the register specified contains a value of 0b1111
 and an INC instruction is applied, the register will contain a value of 0b0000, but
 the carry bit will remain unchanged

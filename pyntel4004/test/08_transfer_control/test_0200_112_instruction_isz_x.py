@@ -6,7 +6,7 @@ import pickle
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 from hardware.suboperation import decimal_to_binary  # noqa
 
 
@@ -14,7 +14,7 @@ from hardware.suboperation import decimal_to_binary  # noqa
                                    11, 12, 13, 14, 15])
 def test_validate_instruction(value):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[112 + value]
     known = {"opcode": 112 + value, "mnemonic": "isz(" + str(value) + ",address8)", "exe": 10.8, "bits": ["0111", decimal_to_binary(4,  value)], "words": 2}  # noqa
@@ -26,8 +26,8 @@ def test_validate_instruction(value):
 @pytest.mark.parametrize("values", [[0, 'Y'], [2, 'Y'], [10, 'Y'], [15, 'N']])
 def test_scenario1(values, register):
     """Test ISZ instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     PC = 100
     PCaftjump = 150
@@ -51,7 +51,7 @@ def test_scenario1(values, register):
     chip_base.increment_register(REGISTER)
 
     # Perform the instruction under test:
-    processor.isz(chip_test, REGISTER, PCaftjump)
+    Processor.isz(chip_test, REGISTER, PCaftjump)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = PCaft

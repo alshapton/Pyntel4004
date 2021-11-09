@@ -1,6 +1,6 @@
 # Import i4004 processor
 
-from hardware.processor import processor
+from hardware.processor import Processor
 import getopt
 import sys
 
@@ -39,7 +39,7 @@ def main(argv):
     pc = 0
 
     # Create new instance of a processor
-    chip = processor()
+    chip = Processor()
 
     RUN = False
     ASSEMBLE = False
@@ -86,7 +86,7 @@ def main(argv):
             print()
             acc = chip.read_accumulator()
             print('Accumulator : ' + str(acc) +
-                  '  (0b ' + str(processor.decimal_to_binary(4, acc)) + ')')
+                  '  (0b ' + str(Processor.decimal_to_binary(4, acc)) + ')')
             print('Carry       :', chip.read_carry())
             print()
 

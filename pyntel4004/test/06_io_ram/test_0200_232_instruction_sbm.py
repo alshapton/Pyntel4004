@@ -5,15 +5,17 @@ import sys
 import pickle
 import pytest
 sys.path.insert(1, '../src')
+sys.path.insert(2, '../test')
 
 from hardware.suboperation import convert_to_absolute_address, \
-    encode_command_register, ones_complement  # noqa
-from hardware.processor import processor  # noqa
+    ones_complement  # noqa
+from hardware.processor import Processor  # noqa
+from utils import encode_command_register  # noqa
 
 
 def test_validate_sbm_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[232]
     known = {"opcode": 232, "mnemonic": "sbm()", "exe": 10.8, "bits": ["1110", "0110"], "words": 1}  # noqa
@@ -30,8 +32,8 @@ def test_validate_sbm_instruction():
 def test_adm_scenario1(rambank, chip, register, address, value,
                        accumulator, carry):
     """Test ADM instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     cr = encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
 
@@ -44,7 +46,7 @@ def test_adm_scenario1(rambank, chip, register, address, value,
     chip_test.RAM[absolute_address] = value
     chip_test.set_accumulator(accumulator)
 
-    processor.sbm(chip_test)
+    Processor.sbm(chip_test)
 
     # Simulate conditions at end of instruction in base chip
 
@@ -60,7 +62,7 @@ def test_adm_scenario1(rambank, chip, register, address, value,
     carry_complement = chip_base.read_complement_carry()
     chip_base.ACCUMULATOR = (chip_base.ACCUMULATOR + value_complement +
                              carry_complement)
-    processor.check_overflow(chip_base)
+    Processor.check_overflow(chip_base)
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 

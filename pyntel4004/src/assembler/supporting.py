@@ -1,4 +1,4 @@
-from hardware.processor import processor
+from hardware.processor import Processor
 from hardware.suboperation import split_address8
 from shared.shared import do_error, get_opcodeinfo, \
      get_opcodeinfobyopcode
@@ -175,14 +175,14 @@ def get_bits(opcodeinfo):
     return bit1, bit2
 
 
-def assemble_isz(chip: processor, x, register, _LABELS, TPS,
+def assemble_isz(chip: Processor, x, register, _LABELS, TPS,
                  address, a_l, a_r, label, count):
     """
     Function to correctly assemble the ISZ instruction.
 
     Parameters
     ----------
-    chip : processor, mandatory
+    chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     x: list, mandatory
@@ -286,7 +286,7 @@ def assemble_fim(self, x, _LABELS, TPS, address, label, count):
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     x: list, mandatory
@@ -348,7 +348,7 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     x: list, mandatory
@@ -416,14 +416,14 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
     return address, TPS, _LABELS
 
 
-def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
+def assemble_2(chip: Processor, x, opcode, address, TPS, _LABELS, address_left,
                address_right, label, count):
     """
     Function to assemble specific instructions.
 
     Parameters
     ----------
-    chip : processor, mandatory
+    chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     x: list, mandatory

@@ -7,7 +7,7 @@ import pytest
 sys.path.insert(1, '../src')
 
 from hardware.exceptions import ProgramCounterOutOfBounds  # noqa
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 
 from hardware.suboperation import decimal_to_binary  # noqa
 
@@ -16,7 +16,7 @@ from hardware.suboperation import decimal_to_binary  # noqa
                                    10, 11, 12, 13, 14, 15])
 def test_validate_instruction(value):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[64 + value]
     known = {"opcode": 64 + value, "mnemonic": "jun(address12)", "exe": 21.6, "bits": ["0100", decimal_to_binary(4, value)], "words": 2}  # noqa
@@ -26,14 +26,14 @@ def test_validate_instruction(value):
 @pytest.mark.parametrize("address12", [0, 100, 99, 256, 512, 4095, 4094, 2048])
 def test_scenario1(address12):
     """Test JUN instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Set chip to initial status
     chip_test.PROGRAM_COUNTER = 0
 
     # Perform the instruction under test:
-    processor.jun(chip_test, address12)
+    Processor.jun(chip_test, address12)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = address12
@@ -50,8 +50,8 @@ def test_scenario1(address12):
 @pytest.mark.parametrize("address12", [-1, 4096])
 def test_scenario2(address12):
     """Test JUN instruction failure."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at START of operation in base chip
     # chip should have not had any changes as the operations will fail
@@ -63,7 +63,7 @@ def test_scenario2(address12):
 
     # attempting to use an invalid address
     with pytest.raises(Exception) as e:
-        assert processor.jun(chip_test, address12)
+        assert Processor.jun(chip_test, address12)
     assert str(e.value) == 'Program counter attempted to be set to ' + str(address12)  # noqa
     assert e.type == ProgramCounterOutOfBounds
 

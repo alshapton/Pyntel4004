@@ -22,6 +22,32 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
             ADM -   ADD DATA RAM TO ACCUMULATOR WITH CARRY
             SBM -   SUBTRACT DATA RAM FROM ACCUMULATOR WITH BORROW
             WPM -   WRITE PROGRAM RAM
+
+
+ Abbreviations used in the descriptions of each instruction's actions:
+
+            (    )      the content of
+            -->         is transferred to
+            ACC	        Accumulator (4-bit)
+            CY	        Carry/link Flip-Flop
+            ACBR	    Accumulator Buffer Register (4-bit)
+            RRRR	    Index register address
+            RPn	        Index register pair address
+            PL	        Low order program counter Field (4-bit)
+            PM	        Middle order program counter Field (4-bit)
+            PH	        High order program counter Field (4-bit)
+            ai	        Order i content of the accumulator
+            CMi	        Order i content of the command register
+            M	        RAM main character location
+            MSi	        RAM status character i
+            DB (T)	    Data bus content at time T
+            Stack	    The 3 registers in the address register
+                        other than the program counter
+
+    Additional Abbreviations:
+            ~           Inverse (1's complement)
+            .           logical OR
+
 """
 
 

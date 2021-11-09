@@ -3,17 +3,14 @@
 
 import sys
 import pickle
-
 import pytest
 
-from hardware.suboperation import encode_command_register
-
-# from hardware.suboperation import convert_to_absolute_address
-
 sys.path.insert(1, '../src')
+sys.path.insert(2, '../test')
 
-# import hardware.suboperation  # noqa
-from hardware.processor import processor  # noqa
+
+from hardware.processor import Processor  # noqa
+from utils import encode_command_register  # noqa
 from hardware.exceptions import AddressOutOf8BitRange, \
         IncompatibleChunkBit, InvalidBitValue, \
         InvalidChunkValue, InvalidCommandRegisterFormat, \
@@ -37,8 +34,8 @@ from hardware.exceptions import AddressOutOf8BitRange, \
 def test_suboperation_rdx(rambank, chip, register, address, character):
     """Tests for RDx generic function."""
     import random
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     RANDOM_VALUE = random.randint(0, 15)  # Select a random value
 
@@ -59,7 +56,7 @@ def test_suboperation_rdx(rambank, chip, register, address, character):
         = RANDOM_VALUE
 
     # Perform the operation under test:
-    processor.rdx(chip_test, character)
+    Processor.rdx(chip_test, character)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -81,10 +78,10 @@ def test_suboperation_rdx(rambank, chip, register, address, character):
 def test_suboperation_enc_dec_cr_scenario1(chip, register,
                                            address, shape):
     """Test Convert to absolute address."""
-    chip_2 = processor.decimal_to_binary(2, chip)
-    chip_4 = processor.decimal_to_binary(4, chip)
-    register_2 = processor.decimal_to_binary(2, register)
-    address_4 = processor.decimal_to_binary(4, address)
+    chip_2 = Processor.decimal_to_binary(2, chip)
+    chip_4 = Processor.decimal_to_binary(4, chip)
+    register_2 = Processor.decimal_to_binary(2, register)
+    address_4 = Processor.decimal_to_binary(4, address)
 
     if shape == 'DATA_RAM_CHAR':
         command_register = chip_2 + register_2 + address_4
@@ -111,10 +108,10 @@ def test_suboperation_enc_dec_cr_scenario1(chip, register,
         command_register = chip_4 + '0000'
 
     assert command_register == \
-        processor.encode_command_register(chip, register, address, shape)
+        encode_command_register(chip, register, address, shape)
 
     dchip, dregister, daddress = \
-        processor.decode_command_register(command_register, shape)
+        Processor.decode_command_register(command_register, shape)
 
     assert dchip == tchip
     assert dregister == tregister
@@ -126,7 +123,7 @@ def test_suboperation_enc_dec_cr_scenario1(chip, register,
 def test_suboperation_enc_dec_cr_scenario2(shape):
     """Test encode/decode command failure (shape only)."""
     with pytest.raises(Exception) as e:
-        assert processor.encode_command_register(0, 0, 0, shape)
+        assert encode_command_register(0, 0, 0, shape)
     assert str(e.value) == 'Shape: ' + shape
     assert e.type == InvalidCommandRegisterFormat
 
@@ -136,7 +133,7 @@ def test_suboperation_enc_dec_cr_scenario2(shape):
 def test_suboperation_enc_dec_cr_scenario3(shape):
     """Test encode/decode command failure (shape only)."""
     with pytest.raises(Exception) as e:
-        assert processor.decode_command_register(0, 0, 0, shape)
+        assert Processor.decode_command_register(0, 0, 0, shape)
         assert str(e.value) == 'Shape: ' + shape
         assert e.type == InvalidCommandRegisterFormat
 
@@ -152,7 +149,7 @@ def test_suboperation_enc_dec_cr_scenario3(shape):
 def test_suboperation_convert_to_abs_addressscenario1(rambank,
                                                       chip, register, address):
     """Test Convert to absolute address."""
-    chip_test = processor()
+    chip_test = Processor()
 
     base_rambank = rambank * chip_test.RAM_BANK_SIZE
     base_chip = chip * chip_test.RAM_CHIP_SIZE
@@ -163,7 +160,7 @@ def test_suboperation_convert_to_abs_addressscenario1(rambank,
         address
 
     assert absolute_address == \
-        processor.convert_to_absolute_address(chip_test,
+        Processor.convert_to_absolute_address(chip_test,
                                               rambank, chip, register, address)
 
 ##############################################################################
@@ -181,7 +178,7 @@ def test_suboperation_test_split8scenario1(values):
     in_address = values[0]
     in_left_4 = values[1]
     in_right_4 = values[2]
-    lcl_left_4, lcl_right_4 = processor.split_address8(in_address)
+    lcl_left_4, lcl_right_4 = Processor.split_address8(in_address)
 
     # Make assertions that the output is as required
     assert in_left_4 == lcl_left_4
@@ -198,7 +195,7 @@ def test_suboperation_test_split8scenario2(address):
     # N/A - chip should have not had any changes as the operations will fail
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert processor.split_address8(address)
+        assert Processor.split_address8(address)
         assert str(e.value) == 'Address: ' + str(address)
         assert e.type == AddressOutOf8BitRange
 
@@ -209,15 +206,15 @@ def test_suboperation_test_split8scenario2(address):
 
 def test_suboperation_set_carry():
     """Tests for SET Carry Flag."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.CARRY = 1
 
     # Perform the operation under test:
     # setting carry
-    processor.set_carry(chip_test)
+    Processor.set_carry(chip_test)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -229,15 +226,15 @@ def test_suboperation_set_carry():
 
 def test_suboperation_reset_carry():
     """Tests for RESET Carry Flag."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.CARRY = 0
 
     # Perform the operation under test:
     # resetting carry
-    processor.reset_carry(chip_test)
+    Processor.reset_carry(chip_test)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -253,7 +250,7 @@ def test_suboperation_reset_carry():
 @pytest.mark.parametrize("carry", [0, 1])
 def test_suboperation_read_complement_carry(carry):
     """Read Complement of Carry Flag."""
-    chip_test = processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_test.CARRY = carry
@@ -279,15 +276,15 @@ def test_suboperation_read_complement_carry(carry):
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_suboperation_insert_register_scenario1(register):
     """Test Insert Registerr functionality."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.REGISTERS[register] = 5
 
     # Perform the operation under test:
     # insert a value of 5 into each register
-    processor.insert_register(chip_test, register, 5)
+    Processor.insert_register(chip_test, register, 5)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -299,13 +296,13 @@ def test_suboperation_insert_register_scenario1(register):
 
 def test_suboperation_insert_register_scenario2():
     """Test Insert Register failure case #1."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Perform the operation under test:
     # attempting to insert a value larger than the register can hold
     with pytest.raises(Exception) as e:
-        assert processor.insert_register(chip_test, 3, 25)
+        assert Processor.insert_register(chip_test, 3, 25)
     assert str(e.value) == "Register: 3,Value: 25"
     assert e.type == ValueTooLargeForRegister
 
@@ -319,13 +316,13 @@ def test_suboperation_insert_register_scenario2():
 
 def test_suboperation_insert_register_scenario3():
     """Test Insert Register failure case #2."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Perform the operation under test:
     # attempting to insert a value into an invalid register
     with pytest.raises(Exception) as e:
-        assert processor.insert_register(chip_test, 25, 3)
+        assert Processor.insert_register(chip_test, 25, 3)
     assert str(e.value) == "Register: 25"
     assert e.type == InvalidRegister
 
@@ -346,7 +343,7 @@ def test_suboperation_insert_register_scenario3():
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_suboperation_read_register_scenario1(register):
     """Test Read Register function."""
-    chip_test = processor()
+    chip_test = Processor()
 
     # Perform the operation under test:
     # insert a value of 5 into each register
@@ -363,13 +360,13 @@ def test_suboperation_read_register_scenario1(register):
 @pytest.mark.parametrize("register", [-1, 16])  # noqa
 def test_suboperation_read_register_scenario2(register):
     """Test Read Register failure case #1."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Perform the operation under test:
     # attempting to read from a non-existent register
     with pytest.raises(Exception) as e:
-        assert processor.read_register(chip_test, register)
+        assert Processor.read_register(chip_test, register)
     assert str(e.value) == "Register:" + str(register)
     assert e.type == InvalidRegister
 
@@ -383,15 +380,15 @@ def test_suboperation_read_register_scenario2(register):
 @pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])  # noqa
 def test_suboperation_insert_registerpair_scenario1(registerpair):
     """Test Insert Register Pair function."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.REGISTERS[registerpair * 2] = 15
     chip_base.REGISTERS[(registerpair * 2) + 1] = 14
 
     # Insert a value of 254 into a registerpair
-    processor.insert_registerpair(chip_test, registerpair, 254)
+    Processor.insert_registerpair(chip_test, registerpair, 254)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -403,13 +400,13 @@ def test_suboperation_insert_registerpair_scenario1(registerpair):
 
 def test_suboperation_insert_registerpair_scenario2():
     """Test Insert Register Pair failure case #1."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Perform the operation under test:
     # attempting to insert a value larger than the register pair can hold
     with pytest.raises(Exception) as e:
-        assert processor.insert_registerpair(chip_test, 3, 300)
+        assert Processor.insert_registerpair(chip_test, 3, 300)
     assert str(e.value) == "Register Pair: 3,Value: 300"
     assert e.type == ValueTooLargeForRegisterPair
 
@@ -423,13 +420,13 @@ def test_suboperation_insert_registerpair_scenario2():
 
 def test_suboperation_insert_registerpair_scenario3():
     """Test Insert Register Pair failure case #2."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Perform the operation under test:
     # attempting to insert a value into an invalid registerpair
     with pytest.raises(Exception) as e:
-        assert processor.insert_registerpair(chip_test, 9, 3)
+        assert Processor.insert_registerpair(chip_test, 9, 3)
     assert str(e.value) == "Register Pair: 9"
     assert e.type == InvalidRegisterPair
 
@@ -448,7 +445,7 @@ def test_suboperation_insert_registerpair_scenario3():
 ##############################################################################
 def test_suboperation_read_registerpair():
     """Test Read Register Pair function."""
-    chip_test = processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_test.REGISTERS[6] = 15
@@ -466,13 +463,13 @@ def test_suboperation_read_registerpair():
 @pytest.mark.parametrize("registerpair", [-1, 8])  # noqa
 def test_suboperation_read_registerpair_scenario2(registerpair):
     """Test Read Register Pair failure case #1."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Perform the operation under test:
     # attempting to read from a non-existent register pair
     with pytest.raises(Exception) as e:
-        assert processor.read_registerpair(chip_test, registerpair)
+        assert Processor.read_registerpair(chip_test, registerpair)
     assert str(e.value) == "Register Pair: " + str(registerpair)
     assert e.type == InvalidRegisterPair
 
@@ -487,8 +484,8 @@ def test_suboperation_read_registerpair_scenario2(registerpair):
 @pytest.mark.parametrize("words", [0, 1, 2])  # noqa
 def test_suboperation_increment_pc_scenario1(words):
     """Test increment PC scenario 1."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.PROGRAM_COUNTER = chip_test.MEMORY_SIZE_RAM - 10 + words
@@ -497,7 +494,7 @@ def test_suboperation_increment_pc_scenario1(words):
     chip_test.PROGRAM_COUNTER = chip_test.MEMORY_SIZE_RAM - 10
 
     # Increment the Program Counter by 0, then 1, then 2 words
-    processor.increment_pc(chip_test, words)
+    Processor.increment_pc(chip_test, words)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -509,8 +506,8 @@ def test_suboperation_increment_pc_scenario1(words):
 
 def test_suboperation_increment_pc_scenario2():
     """Test Increment PC scenario 2 (failure case)."""
-    chip_base = processor()
-    chip_test = processor()
+    chip_base = Processor()
+    chip_test = Processor()
 
     chip_test.PROGRAM_COUNTER = chip_test.MEMORY_SIZE_RAM - 1
     chip_base.PROGRAM_COUNTER = chip_test.PROGRAM_COUNTER
@@ -518,7 +515,7 @@ def test_suboperation_increment_pc_scenario2():
     # Perform the operation under test:
     # attempting to increment the Program Counter beyond the end of memory
     with pytest.raises(Exception) as e:
-        assert processor.increment_pc(chip_test, 2)
+        assert Processor.increment_pc(chip_test, 2)
     assert str(e.value) == "Program counter attempted to be set to 4097"
     assert e.type == ProgramCounterOutOfBounds
 
@@ -534,8 +531,8 @@ def test_suboperation_increment_pc_scenario2():
 @pytest.mark.parametrize("pc", [45, 2045])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
     """Test Increment PC by page function."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -545,7 +542,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
     chip_base.PROGRAM_COUNTER = pc + chip_base.PAGE_SIZE - 1
 
     # Increment the Program Counter by 1 page
-    chip_test.PROGRAM_COUNTER = processor.inc_pc_by_page(chip_test, pc)
+    chip_test.PROGRAM_COUNTER = Processor.inc_pc_by_page(chip_test, pc)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -558,8 +555,8 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
 @pytest.mark.parametrize("pc", [3841, 4090])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
     """Test Increment PC by page failure."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -570,7 +567,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
 
     # attempting to increment the Program Counter beyond the end of memory
     with pytest.raises(Exception) as e:
-        assert processor.inc_pc_by_page(chip_test, pc)
+        assert Processor.inc_pc_by_page(chip_test, pc)
     assert str(e.value) == "Program counter attempted to be set to " + str(pc + chip_base.PAGE_SIZE)  # noqa
     assert e.type == ProgramCounterOutOfBounds
 
@@ -587,7 +584,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
 ##############################################################################
 def test_suboperation_is_at_end_of_page_scenario1():
     """Test to see if the PC is at the end of the page."""
-    chip_test = processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -596,17 +593,17 @@ def test_suboperation_is_at_end_of_page_scenario1():
     # N/A
 
     # Check for end of page (5 different page values)
-    assert processor.is_end_of_page(chip_test, 0, 1) is False
-    assert processor.is_end_of_page(chip_test, 0, 2) is False
+    assert Processor.is_end_of_page(chip_test, 0, 1) is False
+    assert Processor.is_end_of_page(chip_test, 0, 2) is False
 
-    assert processor.is_end_of_page(chip_test, 2209, 1) is False
-    assert processor.is_end_of_page(chip_test, 2209, 2) is False
+    assert Processor.is_end_of_page(chip_test, 2209, 1) is False
+    assert Processor.is_end_of_page(chip_test, 2209, 2) is False
 
-    assert processor.is_end_of_page(chip_test, 254, 1) is False
-    assert processor.is_end_of_page(chip_test, 254, 2) is False
+    assert Processor.is_end_of_page(chip_test, 254, 1) is False
+    assert Processor.is_end_of_page(chip_test, 254, 2) is False
 
-    assert processor.is_end_of_page(chip_test, 255, 1) is True
-    assert processor.is_end_of_page(chip_test, 255, 2) is False
+    assert Processor.is_end_of_page(chip_test, 255, 1) is True
+    assert Processor.is_end_of_page(chip_test, 255, 2) is False
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -618,8 +615,8 @@ def test_suboperation_is_at_end_of_page_scenario1():
 
 def test_suboperation_is_at_end_of_page_scenario2():
     """Test failure scenarios for "is PC at end of page" function."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
     pc = -1
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -631,11 +628,11 @@ def test_suboperation_is_at_end_of_page_scenario2():
     # attempting to increment the Program Counter beyond the end of memory -
     # use negative numbers, zeros etc to try and "trip up" the function
     try:
-        processor.is_end_of_page(chip_test, -1, -222)
-        processor.is_end_of_page(chip_test, 0, 0)
-        processor.is_end_of_page(chip_test, -22222, 30000)
-        processor.is_end_of_page(chip_test, 4096, 0)
-        processor.is_end_of_page(chip_test, 4096, -1)
+        Processor.is_end_of_page(chip_test, -1, -222)
+        Processor.is_end_of_page(chip_test, 0, 0)
+        Processor.is_end_of_page(chip_test, -22222, 30000)
+        Processor.is_end_of_page(chip_test, 4096, 0)
+        Processor.is_end_of_page(chip_test, 4096, -1)
 
     except pytest.raises(Exception) as e:
         assert False, (e.type == InvalidEndOfPage)
@@ -654,8 +651,8 @@ def test_suboperation_is_at_end_of_page_scenario2():
 @pytest.mark.parametrize("values", [[16, 2, 1], [15, 15, 0], [0, 0, 0], [99, 85, 1]])  # noqa
 def test_suboperation_check_for_overflow(values):
     """Test check for overflow function."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.ACCUMULATOR = values[1]
@@ -666,7 +663,7 @@ def test_suboperation_check_for_overflow(values):
     # the test chip which has been operated on by the operation under test.
     # Check for overflow
 
-    acc, carry = processor.check_overflow(chip_test)
+    acc, carry = Processor.check_overflow(chip_test)
     assert acc == values[1]
     assert carry == values[2]
 
@@ -680,8 +677,8 @@ def test_suboperation_check_for_overflow(values):
 @pytest.mark.parametrize("value", [-1, 0, 14, 15])  # noqa
 def test_suboperation_set_accumulator_scenario1(value):
     """Test set accumulator."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.ACCUMULATOR = value
@@ -698,8 +695,8 @@ def test_suboperation_set_accumulator_scenario1(value):
 @pytest.mark.parametrize("value", [16, 20, 257])
 def test_suboperation_set_accumulator_scenario2(value):
     """Test set accumulator function failure."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -709,7 +706,7 @@ def test_suboperation_set_accumulator_scenario2(value):
 
     # attempting to set the accumulator to an invalid value
     with pytest.raises(Exception) as e:
-        assert processor.set_accumulator(chip_test, value)
+        assert Processor.set_accumulator(chip_test, value)
     assert str(e.value) == ' Value: ' + str(value)
     assert e.type == ValueTooLargeForAccumulator
 
@@ -727,8 +724,8 @@ def test_suboperation_set_accumulator_scenario2(value):
 @pytest.mark.parametrize("value", [0, 3, 9, 14])  # noqa
 def test_suboperation_test_inc_register_scenario1(value):
     """Test increment register scenario 1."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip (use R4)
     chip_test.REGISTERS[4] = value
@@ -737,7 +734,7 @@ def test_suboperation_test_inc_register_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     chip_test.increment_register(4)
-    assert processor.read_register(chip_test, 4) == value + 1
+    assert Processor.read_register(chip_test, 4) == value + 1
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
@@ -745,8 +742,8 @@ def test_suboperation_test_inc_register_scenario1(value):
 
 def test_suboperation_test_inc_register_scenario2():
     """Test increment register scenario 2."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A    # Simulate conditions at end of operation in base chip (use R4)
@@ -758,8 +755,8 @@ def test_suboperation_test_inc_register_scenario2():
 
     # This is a rollover - i.e. 15 incremented becomes 0
 
-    processor.increment_register(chip_test, 4)
-    assert processor.read_register(chip_test, 4) == 0
+    Processor.increment_register(chip_test, 4)
+    assert Processor.read_register(chip_test, 4) == 0
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
@@ -768,8 +765,8 @@ def test_suboperation_test_inc_register_scenario2():
 @pytest.mark.parametrize("value", [16, 20, 257])
 def test_suboperation_test_increment_register_scenario3(value):
     """Test increment register failure."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -779,7 +776,7 @@ def test_suboperation_test_increment_register_scenario3(value):
 
     # attempting to use an invalid register
     with pytest.raises(Exception) as e:
-        assert processor.increment_register(chip_test, value)
+        assert Processor.increment_register(chip_test, value)
     assert str(e.value) == 'Register: ' + str(value)
     assert e.type == InvalidRegister
 
@@ -793,8 +790,8 @@ def test_suboperation_test_increment_register_scenario3(value):
 @pytest.mark.parametrize("value", [0, 1])  # noqa
 def test_suboperation_test_write_pin10_scenario1(value):
     """Test reading of PIN 10."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.PIN_10_SIGNAL_TEST = value
@@ -811,8 +808,8 @@ def test_suboperation_test_write_pin10_scenario1(value):
 @pytest.mark.parametrize("value", [-1, 2, 23, 98, -3])
 def test_suboperation_test_write_pin_10_scenario2(value):
     """Test PIN 10 failure."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -822,7 +819,7 @@ def test_suboperation_test_write_pin_10_scenario2(value):
 
     # attempting to use an invalid PIN10 value
     with pytest.raises(Exception) as e:
-        assert processor.write_pin10(chip_test, value)
+        assert Processor.write_pin10(chip_test, value)
     assert str(e.value) == 'PIN 10 attempted to be set to ' + str(value)
     assert e.type == InvalidPin10Value
 
@@ -836,8 +833,8 @@ def test_suboperation_test_write_pin_10_scenario2(value):
 @pytest.mark.parametrize("value", ['LEFT', 'RIGHT'])  # noqa
 def test_suboperation_test_flip_wpm_counter_scenario1(value):
     """Test WPM counter flip function."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     chip_base.WPM_COUNTER = value
@@ -867,12 +864,12 @@ def test_suboperation_test_flip_wpm_counter_scenario1(value):
                                    ['111111111111', '4095']])  # noqa
 def test_suboperation_test_binary_decimal_scenario1(value):
     """Test binary to decimal function #1."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Call the binary_to_decimal method - the rest of the chip should
     # stay unchanged
-    assert str(processor.binary_to_decimal(value[0])) == value[1]
+    assert str(Processor.binary_to_decimal(value[0])) == value[1]
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
@@ -882,8 +879,8 @@ def test_suboperation_test_binary_decimal_scenario1(value):
                                    'IOIOIOIOI', ' Intel4004'])
 def test_suboperation_test_binary_decimal_scenario2(value):
     """Test binary to decimal function failure #2."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -893,7 +890,7 @@ def test_suboperation_test_binary_decimal_scenario2(value):
 
     # attempting to use an invalid binary number
     with pytest.raises(Exception) as e:
-        assert processor.binary_to_decimal(value)
+        assert Processor.binary_to_decimal(value)
     if value != '':
         assert str(e.value) == '"' + value + '"'
     else:
@@ -921,15 +918,15 @@ def test_suboperation_test_binary_decimal_scenario2(value):
                                    ])  # noqa
 def test_suboperation_test_decimal_to_binaryscenario1(value):
     """Test decimal to binary function."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # Attempt to convert decimal to binary (chip status should not change)
-    assert processor.decimal_to_binary(value[1], value[0]) == value[2]
+    assert Processor.decimal_to_binary(value[1], value[0]) == value[2]
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
@@ -941,8 +938,8 @@ def test_suboperation_test_decimal_to_binaryscenario1(value):
                                    [4096, 12], [2322442, 12]])
 def test_suboperation_test_decimal_to_binary_scenario2(value):
     """Test decimal to binary function failure #2."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -952,7 +949,7 @@ def test_suboperation_test_decimal_to_binary_scenario2(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert processor.decimal_to_binary(value[0], value[1])
+        assert Processor.decimal_to_binary(value[0], value[1])
         assert str(e.value) == 'Value: ' + str(value[0]) + \
                                'Bits: ' + str(value[1])
         assert e.type == ValueOutOfRangeForBits
@@ -965,8 +962,8 @@ def test_suboperation_test_decimal_to_binary_scenario2(value):
                                    10, 11, 13, 14, 15, 16, 17])
 def test_suboperation_test_decimal_to_binary_scenario3(value):
     """Test decimal to binary function failure #3."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -976,7 +973,7 @@ def test_suboperation_test_decimal_to_binary_scenario3(value):
 
     # attempting to use a bit value which is illegal
     with pytest.raises(Exception) as e:
-        assert processor.decimal_to_binary(value[0], 3)
+        assert Processor.decimal_to_binary(value[0], 3)
         assert str(e.value) == 'Bits: ' + str(value[1])
         assert e.type == InvalidBitValue
 
@@ -1000,7 +997,7 @@ def test_suboperation_test_ones_complement_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # Attempt to convert decimal to binary (chip status should not change)
-    assert processor.ones_complement(value[0], value[2]) == value[1]
+    assert Processor.ones_complement(value[0], value[2]) == value[1]
 
 
 @pytest.mark.parametrize("value", [[-1, 4], [-1, 8], [-1, 12],
@@ -1017,7 +1014,7 @@ def test_suboperation_test_ones_complement_scenario2(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert processor.ones_complement(value[0], value[1])
+        assert Processor.ones_complement(value[0], value[1])
         assert str(e.value) == 'Value: ' + str(value[0]) + \
                                'Bits: ' + str(value[1])
         assert e.type == ValueOutOfRangeForBits
@@ -1034,7 +1031,7 @@ def test_suboperation_test_ones_complement_scenario3(bits):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert processor.ones_complement(2, bits)
+        assert Processor.ones_complement(2, bits)
         assert str(e.value) == 'Value: ' + str(2) + \
                                'Bits: ' + str(bits)
         assert e.type == InvalidBitValue
@@ -1050,8 +1047,8 @@ def test_suboperation_test_ones_complement_scenario3(bits):
 def test_suboperation_test_insert_ram_status_scenario1(
         rambank, chip, register, value):
     """Test insert RAM status character."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of operation in base chip
 
@@ -1067,7 +1064,7 @@ def test_suboperation_test_insert_ram_status_scenario1(
 
     chip_base.set_accumulator(value[0])
     chip_base.CURRENT_RAM_BANK = rambank
-    address = processor.encode_command_register(chip, register, 0,
+    address = encode_command_register(chip, register, 0,
                                                 'DATA_RAM_STATUS_CHAR')
     chip_base.COMMAND_REGISTER = address
     chip_base.STATUS_CHARACTERS[rambank][chip][register][value[1]] = value[0]
@@ -1078,7 +1075,7 @@ def test_suboperation_test_insert_ram_status_scenario1(
 
     # Attempt to write to the RAM status character
 
-    processor.write_ram_status(chip_test, value[1])
+    Processor.write_ram_status(chip_test, value[1])
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -1096,7 +1093,7 @@ def test_suboperation_test_insert_ram_status_scenario1(
 @pytest.mark.parametrize("value", [-1, -100, -4096, 4096, 4098])  # noqa
 def test_suboperation_test_write_to_stackscenario1(value):
     """Test Write to Stack scenario 1."""
-    chip_test = processor()
+    chip_test = Processor()
 
     # Simulate conditions at end of operation in base chip
     # N/A
@@ -1106,15 +1103,15 @@ def test_suboperation_test_write_to_stackscenario1(value):
 
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-        assert processor.write_to_stack(chip_test, value)
+        assert Processor.write_to_stack(chip_test, value)
         assert str(e.value) == 'Value: ' + str(value)
         assert e.type == ValueOutOfRangeForStack
 
 
 def test_suboperation_test_write_to_stack_scenario2():
     """Test Write to Stack scenario 2."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Scenario 2.0
 
@@ -1133,7 +1130,7 @@ def test_suboperation_test_write_to_stack_scenario2():
     chip_base.STACK_POINTER = 1
     chip_base.STACK[2] = 14
 
-    processor.write_to_stack(chip_test, 14)
+    Processor.write_to_stack(chip_test, 14)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -1153,7 +1150,7 @@ def test_suboperation_test_write_to_stack_scenario2():
     chip_base.STACK[2] = 14
     chip_base.STACK[1] = 22
 
-    processor.write_to_stack(chip_test, 22)
+    Processor.write_to_stack(chip_test, 22)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -1175,7 +1172,7 @@ def test_suboperation_test_write_to_stack_scenario2():
     chip_base.STACK[1] = 22
     chip_base.STACK[0] = 33
 
-    processor.write_to_stack(chip_test, 33)
+    Processor.write_to_stack(chip_test, 33)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -1196,7 +1193,7 @@ def test_suboperation_test_write_to_stack_scenario2():
     chip_base.STACK[1] = 22
     chip_base.STACK[0] = 33
 
-    processor.write_to_stack(chip_test, 44)
+    Processor.write_to_stack(chip_test, 44)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -1215,18 +1212,18 @@ def test_suboperation_test_write_to_stack_scenario2():
 ##############################################################################
 def test_suboperation_test_read_from_stack_scenarios():
     """Test Read from Stack."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Initialize the stack for further testing
 
-    processor.write_to_stack(chip_test, 11)
-    processor.write_to_stack(chip_test, 22)
-    processor.write_to_stack(chip_test, 33)
+    Processor.write_to_stack(chip_test, 11)
+    Processor.write_to_stack(chip_test, 22)
+    Processor.write_to_stack(chip_test, 33)
 
-    processor.write_to_stack(chip_base, 11)
-    processor.write_to_stack(chip_base, 22)
-    processor.write_to_stack(chip_base, 33)
+    Processor.write_to_stack(chip_base, 11)
+    Processor.write_to_stack(chip_base, 22)
+    Processor.write_to_stack(chip_base, 33)
 
     # Assert that the stack is in a position that is known
     assert chip_test.STACK_POINTER == 2
@@ -1236,32 +1233,32 @@ def test_suboperation_test_read_from_stack_scenarios():
 
     # Scenario (a)
 
-    processor.read_from_stack(chip_base)
-    assert processor.read_from_stack(chip_test) == 33
+    Processor.read_from_stack(chip_base)
+    assert Processor.read_from_stack(chip_test) == 33
     assert chip_test.STACK_POINTER == 0
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
     # Scenario (b)
-    processor.read_from_stack(chip_base)
-    assert processor.read_from_stack(chip_test) == 22
+    Processor.read_from_stack(chip_base)
+    assert Processor.read_from_stack(chip_test) == 22
     assert chip_test.STACK_POINTER == 1
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
     # Scenario (c)
-    processor.read_from_stack(chip_base)
-    assert processor.read_from_stack(chip_test) == 11
+    Processor.read_from_stack(chip_base)
+    assert Processor.read_from_stack(chip_test) == 11
     assert chip_test.STACK_POINTER == 2
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
     # Scenario (d) (Wrap-around)
-    processor.read_from_stack(chip_base)
-    assert processor.read_from_stack(chip_test) == 33
+    Processor.read_from_stack(chip_base)
+    assert Processor.read_from_stack(chip_test) == 33
     assert chip_test.STACK_POINTER == 0
 
     # Pickling each chip and comparing will show equality or not.
@@ -1280,12 +1277,12 @@ def test_suboperation_test_read_from_stack_scenarios():
                                    ])  # noqa
 def test_suboperation_convert_decimal_to_n_bit_slices_scenario1(value):
     """Test convert decimal to n bit slices #1."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Attempt to convert decimal to binary or decimal chunks
     # (chip status should not change)
-    chunks = processor.convert_decimal_to_n_bit_slices(value[0],
+    chunks = Processor.convert_decimal_to_n_bit_slices(value[0],
                 value[1], value[2], value[3])  # noqa
     assert chunks == [value[4], value[5]]
 
@@ -1309,12 +1306,12 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario1(value):
                                    ])  # noqa
 def test_suboperation_convert_decimal_to_n_bit_slices_scenario2(value):
     """Test convert decimal to n bit slices #2."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Attempt to convert decimal to binary or decimal chunks
     # (chip status should not change)
-    chunks = processor.convert_decimal_to_n_bit_slices(value[0],
+    chunks = Processor.convert_decimal_to_n_bit_slices(value[0],
                 value[1], value[2], value[3])  # noqa
     assert chunks == [value[4], value[5], value[6]]
 
@@ -1335,19 +1332,19 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario3():
 
     # attempting to use an invalid bit value (1)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(3, 1, 12, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(3, 1, 12, 'd')  # noqa
         assert str(e.value) == 'Bits: 3'
         assert e.type == InvalidBitValue
 
     # attempting to use an invalid bit value (2)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(0, 1, 12, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(0, 1, 12, 'd')  # noqa
         assert str(e.value) == 'Bits: 0'
         assert e.type == InvalidBitValue
 
     # attempting to use an invalid chunk value (1)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(12, 1, 12, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(12, 1, 12, 'd')  # noqa
         assert str(e.value) == 'Chunk: 1'
         assert e.type == InvalidChunkValue
 
@@ -1356,36 +1353,36 @@ def test_suboperation_convert_decimal_to_n_bit_slices_scenario4():
     """Test convert decimal to n bit slices #4."""
     # attempting to use an invalid bit value (2)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(12, 0, 12, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(12, 0, 12, 'd')  # noqa
         assert str(e.value) == 'Chunk: 0'
         assert e.type == InvalidChunkValue
 
     # attempting to use an incompatible bit/chunk combination (1)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(12, 8, 12, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(12, 8, 12, 'd')  # noqa
         assert str(e.value) == 'Bits: 12 Chunk: 8'
         assert e.type == IncompatibleChunkBit
 
     # attempting to use an incompatible bit/chunk combination (2)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(4, 8, 12, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(4, 8, 12, 'd')  # noqa
         assert str(e.value) == 'Bits: 4 Chunk: 8'
         assert e.type == IncompatibleChunkBit
 
     # attempting to use an out of range value (1)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(12, 4, -1, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(12, 4, -1, 'd')  # noqa
         assert str(e.value) == 'Value: -1 Bits: 12'
         assert e.type == ValueOutOfRangeForBits
 
     # attempting to use an out of range value (2)
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(8, 8, 257, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(8, 8, 257, 'd')  # noqa
         assert str(e.value) == 'Value: 12 Bits: 8'
         assert e.type == ValueOutOfRangeForBits
 
     # attempting to use a large value
     with pytest.raises(Exception) as e:
-        assert processor.convert_decimal_to_n_bit_slices(8, 8, 8192, 'd')  # noqa
+        assert Processor.convert_decimal_to_n_bit_slices(8, 8, 8192, 'd')  # noqa
         assert str(e.value) == 'Value: 8192 Bits: 8'
         assert e.type == ValueOutOfRangeForBits

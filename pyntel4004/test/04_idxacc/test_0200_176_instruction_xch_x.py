@@ -7,7 +7,7 @@ import pytest
 import random
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 from hardware.suboperation import decimal_to_binary, insert_register  # noqa
 
 
@@ -15,7 +15,7 @@ from hardware.suboperation import decimal_to_binary, insert_register  # noqa
                                       8, 9, 10, 11, 12, 13, 14, 15])
 def test_validate_instruction(register):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[176 + register]
     known = {"opcode": 176 + register, "mnemonic": "xch(" + str(register) + ")", "exe": 10.8, "bits": ["1011", decimal_to_binary(4, register)], "words": 1}  # noqa
@@ -26,8 +26,8 @@ def test_validate_instruction(register):
                                       8, 9, 10, 11, 12, 13, 14, 15])
 def test_scenario1(register):
     """Test XCH instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     RANDOM_VALUE = random.randint(0, 15)  # Select a random 4-bit value
 
@@ -44,7 +44,7 @@ def test_scenario1(register):
 
     # Carry out the instruction under test
     # Perform an XCH operation
-    processor.xch(chip_test, register)
+    Processor.xch(chip_test, register)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

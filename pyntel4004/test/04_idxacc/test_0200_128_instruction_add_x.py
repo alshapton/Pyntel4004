@@ -7,7 +7,7 @@ import pytest
 import random
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 from hardware.suboperation import decimal_to_binary, insert_register  # noqa
 
 
@@ -15,7 +15,7 @@ from hardware.suboperation import decimal_to_binary, insert_register  # noqa
                                       8, 9, 10, 11, 12, 13, 14, 15])
 def test_validate_instruction(register):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[128 + register]
     known = {"opcode": 128 + register, "mnemonic": "add(" + str(register) + ")", "exe": 10.8, "bits": ["1000", decimal_to_binary(4, register)], "words": 1}  # noqa
@@ -26,8 +26,8 @@ def test_validate_instruction(register):
                                     [0, 4, 5, 9, 0]])
 def test_scenario1(values):
     """Test ADD instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     RANDOM_REG = random.randint(0, 15)  # Select a random value
 
@@ -46,7 +46,7 @@ def test_scenario1(values):
 
     # Carry out the instruction under test
     # Perform aN ADD operation
-    processor.add(chip_test, RANDOM_REG)
+    Processor.add(chip_test, RANDOM_REG)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

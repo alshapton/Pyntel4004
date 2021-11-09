@@ -1,13 +1,13 @@
-# Initialisation methods
+"""Initialisation methods."""
 
 
 def init_ram(self):
     """
-    Initialise the RAM with zeroes in all locations
+    Initialise the RAM with zeroes in all locations.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     """
@@ -17,11 +17,11 @@ def init_ram(self):
 
 def init_command_registers(self):
     """
-    Initialise the command registers with zeroes
+    Initialise the command registers with zeroes.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     """
@@ -31,11 +31,11 @@ def init_command_registers(self):
 
 def init_registers(self):
     """
-    Initialise the registers with zeroes
+    Initialise the registers with zeroes.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     """
@@ -45,11 +45,11 @@ def init_registers(self):
 
 def init_stack(self):
     """
-    Initialise the stack
+    Initialise the stack.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     """
@@ -59,11 +59,11 @@ def init_stack(self):
 
 def init_rom(self):
     """
-    Initialise the ROM with zeroes in all locations
+    Initialise the ROM with zeroes in all locations.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     """
@@ -73,11 +73,11 @@ def init_rom(self):
 
 def init_pram(self):
     """
-    Initialise the PRAM with zeroes in all locations
+    Initialise the PRAM with zeroes in all locations.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     """
@@ -87,16 +87,17 @@ def init_pram(self):
 
 def init_wpm_counter(self):
     """
-    Initialise the WPM Counter
+    Initialise the WPM Counter.
 
     Parameters
     ----------
-    self : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     Notes
     -----
     The WPM counter is required to allow WPM instructions to track which
     4-bit portion of an 8-bit byte is being transferred.
+
     """
     self.WPM_COUNTER = 'LEFT'

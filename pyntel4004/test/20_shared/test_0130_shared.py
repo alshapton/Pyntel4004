@@ -4,7 +4,7 @@
 import sys
 
 import pytest
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 from shared.shared import get_opcodeinfo
 
 
@@ -21,7 +21,7 @@ sys.path.insert(1, '../src')
                                     ])
 def test_suboperation_get_opcodeinfo_scenario1(values):
     """Tests for get_opcodeinfo function."""
-    chip = processor()
+    chip = Processor()
 
     opcode = values[0]
     mnemonic = values[1]
@@ -42,7 +42,7 @@ def test_suboperation_get_opcodeinfo_scenario1(values):
 @pytest.mark.parametrize("mnemonic", ['amd()', 'adding', 'clock'])
 def test_suboperation_get_opcodeinfo_scenario2(mnemonic):
     """Tests for get_opcodeinfo function."""
-    chip = processor()
+    chip = Processor()
     opcode = '{"opcode": -1, "mnemonic": "N/A"}'
 
     chip_opcode = str(get_opcodeinfo(chip, '',  mnemonic)).replace('\'', '"')

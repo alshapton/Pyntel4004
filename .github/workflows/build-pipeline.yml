@@ -1,5 +1,5 @@
-# This Github Action will: 
-#     jobs: 
+# This Github Action will:
+#     jobs:
 #        build:                 install Python dependencies
 #                               run tests and lint with a single version of Python
 #                               run code coverage tools
@@ -11,7 +11,7 @@ name: Build Pipeline
 on:
   push:
     branches:
-      # Push events to main branch 
+      # Push events to main branch
       - main
       # Push events to develop branch
       - develop
@@ -21,7 +21,7 @@ on:
       - feature/*
   pull_request:
     branches:
-      # PR events to main branch 
+      # PR events to main branch
       - main
       # PR events to develop branch
       - develop
@@ -61,7 +61,7 @@ jobs:
       working-directory: ./pyntel4004/test
       run: |
         # Run all tests
-        pytest 
+        pytest
     - name: Generate code coverage report
       working-directory: ./pyntel4004/test
       run: |
@@ -69,7 +69,7 @@ jobs:
         coverage run `which pytest`
         coverage xml -o .coverage.xml
     - name: Upload code coverage report
-      env: 
+      env:
         CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
       run: |
         # Upload coverage to codacy dashboard
@@ -77,7 +77,7 @@ jobs:
         export CODACY_USERNAME=alshapton
         export CODACY_PROJECT_NAME=Pyntel4004
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r pyntel4004/test/.coverage.xml
-  pypi-publish:    
+  pypi-publish:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -96,10 +96,10 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_DEPLOY }}
       run: |
-        BRANCH_NAME="${{ steps.branch_name.outputs.branch }}" 
-        if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then 
+        BRANCH_NAME="${{ steps.branch_name.outputs.branch }}"
+        if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then
         RELEASE_NAME="${BRANCH_NAME:8}"
-        echo "Release Name: ${RELEASE_NAME}" ; 
+        echo "Release Name: ${RELEASE_NAME}" ;
         echo "Publishing Release ${RELEASE_NAME} to PyPi"
         sed  "s/ENV_VERSION/$RELEASE_NAME/" setup.cfg > setup.new
         mv setup.new setup.cfg
@@ -110,7 +110,7 @@ jobs:
         python -m build ;
         python -m twine upload dist/* ;
         fi
-  documentation-publish:    
+  documentation-publish:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -126,13 +126,13 @@ jobs:
     - name: Build documentation only if on release branch
       working-directory: ./docs
       run: |
-        BRANCH_NAME="${{ steps.branch_name.outputs.branch }}" 
-        if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then 
-        RELEASE_NAME="${BRANCH_NAME:8}"  
-        echo "Release Name: ${RELEASE_NAME}" ; 
+        BRANCH_NAME="${{ steps.branch_name.outputs.branch }}"
+        if [[ "${BRANCH_NAME:0:8}" = "release/" ]]; then
+        RELEASE_NAME="${BRANCH_NAME:8}"
+        echo "Release Name: ${RELEASE_NAME}" ;
         echo "Building Documentation for Release ${RELEASE_NAME}"
-        sed  "s/ENV_VERSION/$RELEASE_NAME/" source/conf.py 
-        python -m pip install --user sphinx; 
-        python -m pip install --user faculty_sphinx_theme; 
+        sed  "s/ENV_VERSION/$RELEASE_NAME/" source/conf.py
+        python -m pip install --user sphinx;
+        python -m pip install --user faculty_sphinx_theme;
         make html;
         fi

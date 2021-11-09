@@ -11,16 +11,44 @@
 ##########################################################################
 
 """
-Commands:   JUN -   JUMP UNCONDITIONALLY
+Commands in this module.
+
+            JUN -   JUMP UNCONDITIONALLY
             JIN -   JUMP INDIRECT
             JCN -   JUMP ON CONDITION
             ISZ -   INCREMENT AND SKIP IF ZERO
+
+ Abbreviations used in the descriptions of each instruction's actions:
+
+            (    )      the content of
+            -->         is transferred to
+            ACC	        Accumulator (4-bit)
+            CY	        Carry/link Flip-Flop
+            ACBR	    Accumulator Buffer Register (4-bit)
+            RRRR	    Index register address
+            RPn	        Index register pair address
+            PL	        Low order program counter Field (4-bit)
+            PM	        Middle order program counter Field (4-bit)
+            PH	        High order program counter Field (4-bit)
+            ai	        Order i content of the accumulator
+            CMi	        Order i content of the command register
+            M	        RAM main character location
+            MSi	        RAM status character i
+            DB (T)	    Data bus content at time T
+            Stack	    The 3 registers in the address register
+                        other than the program counter
+
+    Additional Abbreviations:
+            ~           Inverse (1's complement)
+            .           logical OR
+
 """
 
 
 def jun(self, address: int):
     """
-    Name:           Jump unconditional
+    Name:           Jump unconditional.
+
     Function:       Program control is unconditionally
                     transferred to the instruction located
                     at the address AAAA3, AAAA2, AAAA1.
@@ -33,7 +61,7 @@ def jun(self, address: int):
     Execution:      2 words, 16-bit code and an execution time of 21.6 usec.
     Side-effects:   Not Applicable
     """
-    from hardware.exceptions import ProgramCounterOutOfBounds
+    from hardware.exceptions import ProgramCounterOutOfBounds  # noqa
 
     if (address >= self.MEMORY_SIZE_RAM or address < 0):
         raise ProgramCounterOutOfBounds('Program counter attempted to be' +
@@ -45,7 +73,8 @@ def jun(self, address: int):
 
 def jin(self, registerpair: int):
     """
-    Name:           Jump Indirect
+    Name:           Jump Indirect.
+
     Function:       The 8 bit content of the designated index register pair
                     is loaded into the low order 8 positions of the program
                     counter.
@@ -60,7 +89,7 @@ def jin(self, registerpair: int):
                     PH unchanged
     Execution:      1 words, 16-bit code and an execution time of 10.8 usec.
     """
-    from hardware.exceptions import ProgramCounterOutOfBounds
+    from hardware.exceptions import ProgramCounterOutOfBounds  # noqa
 
     address = self.read_registerpair(registerpair)
     PCB = self.PROGRAM_COUNTER
@@ -87,7 +116,8 @@ def jin(self, registerpair: int):
 
 def jcn(self, conditions: int, address: int):
     """
-    Name:           Jump conditional
+    Name:           Jump conditional.
+
     Function:       If the designated condition code is true, program control
                     is transferred to the instruction located at the 8 bit
                     address AAAA2, AAAA1 on the same page (ROM) where JCN is
@@ -108,9 +138,10 @@ def jcn(self, conditions: int, address: int):
                     if C1C2C3C4 is false,
                     (PH) --> PH, (PM) --> PM, (PL + 2) --> PL
     Execution:      2 words, 16-bit code and an execution time of 21.6 usec.
-    Example:
+
+    Sample:
+
     OPR     OPA
-    ----    ----
     0001    0110  Jump if accumulator is zero or carry = 1
 
     Several conditions can be tested simultaneously.
@@ -141,14 +172,12 @@ def jcn(self, conditions: int, address: int):
     T - Test Signal on Intel4004 Pin 10 = 0
 
     Need to do "if JCN at end of page" code
-    """
-    from hardware.processor import processor
 
-    carry = self.read_carry()
+    """
+    from hardware.processor import Processor  # noqa
+
     accumulator = self.read_accumulator()
-    pin10 = self.read_pin10()
-    notpin10 = not pin10
-    checks = str(processor.decimal_to_binary(4, conditions))
+    checks = str(Processor.decimal_to_binary(4, conditions))
 
     c1 = checks[0:1] == '1'
     c2 = checks[1:2] == '1'
@@ -160,12 +189,13 @@ def jcn(self, conditions: int, address: int):
     notc4 = True if c4 is False else True
 
     # Use symbolic logic to determine whether to jump
-    JUMP = notc1 and ((accumulator == 0) and c2 or (carry == 1)
-                      and c3 or notpin10 and c4) or \
+    jump = notc1 and ((accumulator == 0) and c2 or (self.read_carry() == 1)
+                      and c3 or (not self.read_pin10()) and c4) or \
         c1 and (((accumulator != 0) or notc2) and
-                ((carry == 0) or notc3) and (pin10 or notc4))
+                ((self.read_carry() == 0) or notc3) and
+                ((not self.read_pin10()) or notc4))
 
-    if JUMP is True:
+    if jump is True:
         self.PROGRAM_COUNTER = address
     else:
         self.increment_pc(2)
@@ -174,7 +204,8 @@ def jcn(self, conditions: int, address: int):
 
 def isz(self, register: int, address: int):
     """
-    Name:           Increment index register skip if zero
+    Name:           Increment index register skip if zero.
+
     Function:       The content of the designated index register is
                     incremented by 1.
                     The accumulator and carry/link are unaffected.

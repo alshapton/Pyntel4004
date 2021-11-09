@@ -1,8 +1,50 @@
 
-from hardware.processor import processor
+from hardware.processor import Processor
+
+###############################################################################
+# Only used during testing to construct a command register of varying formats #
+###############################################################################
 
 
-def is_same(chip1: processor, chip2: processor, component: str):
+def encode_command_register(chip, register, address, shape):
+
+    from hardware.suboperation import decimal_to_binary  # noqa
+    from hardware.exceptions import InvalidCommandRegisterFormat
+
+    if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',
+                     'RAM_PORT', 'ROM_PORT'):
+        raise InvalidCommandRegisterFormat('Shape: ' + shape)
+
+    if shape == 'DATA_RAM_CHAR':
+        i_chip = decimal_to_binary(2, chip)
+        i_register = decimal_to_binary(2, register)
+        i_address = decimal_to_binary(4, address)
+        command_register = i_chip + i_register + i_address
+
+    if shape == 'DATA_RAM_STATUS_CHAR':
+        i_chip = decimal_to_binary(2, chip)
+        i_register = decimal_to_binary(2, register)
+        i_address = '0000'
+        command_register = i_chip + i_register + i_address
+
+    if shape == 'RAM_PORT':
+        # Note that in this instance, "chip" refers to "port"
+        i_chip = decimal_to_binary(2, chip)
+        i_register = '000'
+        i_address = '000'
+        command_register = i_chip + i_register + i_address
+
+    if shape == 'ROM_PORT':
+        # Note that in this instance, "chip" refers to "port"
+        i_chip = decimal_to_binary(4, chip)
+        i_register = '00'
+        i_address = '00'
+        command_register = i_chip + i_register + i_address
+
+    return command_register
+
+
+def is_same(chip1: Processor, chip2: Processor, component: str):
     """Individual assertions that the two supplied chips are identical."""
     if component != '':
         # skipcq: PYL-PYL-W0123

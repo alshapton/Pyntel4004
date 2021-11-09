@@ -2,19 +2,19 @@
 # Test the WRM instructions of an instance of an i4004(processor)
 
 import sys
-import pickle
-import pytest
-
-from hardware.suboperation import convert_to_absolute_address, \
-    encode_command_register
 sys.path.insert(1, '../src')
+sys.path.insert(2, '../test')
 
-from hardware.processor import processor  # noqa
+import pickle  # noqa
+import pytest  # noqa
+from hardware.processor import Processor  # noqa
+from hardware.suboperation import convert_to_absolute_address
+from utils import encode_command_register  # noqa
 
 
 def test_validate_wrm_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[224]
     known = {"opcode": 224, "mnemonic": "wrm()", "exe": 10.8, "bits": ["1110", '0000'], "words": 1}  # noqa
@@ -29,8 +29,8 @@ def test_wrm_scenario1(rambank, chip, register, address):
     """Test WRM instruction functionality."""
     import random
 
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     value = random.randint(0, 15)  # Select a random value
 
@@ -42,7 +42,7 @@ def test_wrm_scenario1(rambank, chip, register, address):
     chip_test.set_accumulator(value)
     chip_test.COMMAND_REGISTER = \
         encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
-    processor.wrm(chip_test)
+    Processor.wrm(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0

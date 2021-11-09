@@ -31,7 +31,7 @@ A Python software implementation of the Intel 4004 processor.
 Pyntel4004’s git repo is available on GitHub, which can be browsed [here](https://github.com/alshapton/pyntel4004) and cloned using:
 
 ```bash
- 
+
     $ git clone https://github.com/alshapton/pyntel4004 pyntel4004
 ```
 

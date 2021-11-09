@@ -7,7 +7,7 @@ import sys
 import pytest
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
 
 
 @pytest.mark.withoutread
@@ -229,4 +229,4 @@ def test_full_opcodes():
     assert len(chip.INSTRUCTIONS) == 256
 
 
-chip = processor()
+chip = Processor()

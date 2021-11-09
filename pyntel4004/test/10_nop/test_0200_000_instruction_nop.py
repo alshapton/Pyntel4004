@@ -5,7 +5,7 @@ import sys
 import pickle
 sys.path.insert(1, '../src')
 
-from hardware.processor import processor            # noqa
+from hardware.processor import Processor            # noqa
 
 
 def test_validate_instruction():
@@ -19,7 +19,7 @@ def test_validate_instruction():
 def test_post_nop_chip():
     """Test NOP instruction."""
     # Perform the instruction under test:
-    processor.nop(chip_test)
+    Processor.nop(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.increment_pc(1)
@@ -32,5 +32,5 @@ def test_post_nop_chip():
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
-chip_base = processor()
-chip_test = processor()
+chip_base = Processor()
+chip_test = Processor()

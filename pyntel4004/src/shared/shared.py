@@ -1,10 +1,13 @@
+"""Shared operations (between assembly and execution."""
+
+
 def coredump(chip, filename):
     """
-    Take the assembled program and write to a given filename.
+    Take the memory and write to a given filename.
 
     Parameters
     ----------
-    chip : processor
+    chip : Processor
         The chip targetted for the coredump
 
     filename: str, mandatory
@@ -19,7 +22,7 @@ def coredump(chip, filename):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -96,7 +99,7 @@ def coredump(chip, filename):
 
 def do_error(message: str):
     """
-    Print an assembly/runtime error message
+    Print an assembly/runtime error message.
 
     Parameters
     ----------
@@ -112,7 +115,7 @@ def do_error(message: str):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -123,12 +126,11 @@ def do_error(message: str):
 
 def get_opcodeinfo(self, ls: str, mnemonic: str):
     """
-    Given a mnemonic, retrieve information about the mnemonic from
-    the opcode table
+    Given a mnemonic retrieve details about the it from the opcode table.
 
     Parameters
     ----------
-    chip : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
     ls: str, mandatory
@@ -154,7 +156,7 @@ def get_opcodeinfo(self, ls: str, mnemonic: str):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -176,17 +178,16 @@ def get_opcodeinfo(self, ls: str, mnemonic: str):
     return opcodeinfo
 
 
-def get_opcodeinfobyopcode(self, OPCODE: int):
+def get_opcodeinfobyopcode(self, opcode: int):
     """
-    Given an opcode, retrieve information about the instruction from
-    the opcode table
+    Given an opcode, retrieve details about it from the opcode table.
 
     Parameters
     ----------
-    chip : processor, mandatory
+    self : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
-    OPCODE: int, mandatory
+    opcode: int, mandatory
         The mnemonic to locate
 
     Returns
@@ -204,14 +205,14 @@ def get_opcodeinfobyopcode(self, OPCODE: int):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
     opcodeinfo = {"opcode": -1, "mnemonic": "-"}
     try:
         opcodeinfo = next((item for item in self.INSTRUCTIONS
-                           if item['opcode'] == OPCODE), None)
+                           if item['opcode'] == opcode), None)
     except:  # noqa
         opcodeinfo = {"opcode": -1, "mnemonic": "-"}
     return opcodeinfo
