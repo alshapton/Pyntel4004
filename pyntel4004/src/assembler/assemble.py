@@ -715,7 +715,7 @@ def assemble_opcodes(chip, x, _LABELS, address, TPS, opcodeinfo, label, count):
     return chip, x, _LABELS, address, TPS, opcodeinfo, label, count
 
 
-def asm_main(chip, x, _LABELS, address, TPS, opcode, opcodeinfo,\
+def asm_main(chip, x, _LABELS, address, TPS, opcode, opcodeinfo,
              label, count, org_found, location):
     """
     Assemble the program (opcode components).
@@ -814,7 +814,7 @@ def asm_main(chip, x, _LABELS, address, TPS, opcode, opcodeinfo,\
                 chip, x, _LABELS, address, TPS, opcodeinfo, label, \
                     count = assemble_opcodes(chip, x, _LABELS,
                                              address, TPS, opcodeinfo,
-                                            label, count)
+                                             label, count)
             else:
                 err = "FATAL: Pass 2: No 'org'" + \
                     " found at line: " + str(count + 1)
