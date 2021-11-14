@@ -4,43 +4,6 @@ from shared.shared import do_error, get_opcodeinfo, \
     get_opcodeinfobyopcode
 
 
-def decode_conditions(conditions: str):
-    """
-    Decode the conditions from a JCN mnemonic to a decimal value.
-
-    Parameters
-    ----------
-    conditions: str, mandatory
-        List of a maximum of 4 conditions
-
-    Returns
-    -------
-    int_conditions: int
-        Integer value of the conditions
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    ------
-    N/A
-
-    """
-    int_conditions = 0
-
-    if 'I' in conditions:
-        int_conditions = 8
-    if 'A' in conditions:
-        int_conditions = int_conditions + 4
-    if 'C' in conditions:
-        int_conditions = int_conditions + 2
-    if 'T' in conditions:
-        int_conditions = int_conditions + 1
-
-    return int_conditions
-
-
 def add_label(_L, label: str):
     """
     Add a label to the label table (if it does not exist already).
@@ -63,7 +26,7 @@ def add_label(_L, label: str):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -79,19 +42,85 @@ def add_label(_L, label: str):
     return _L
 
 
+def decode_conditions(conditions: str):
+    """
+    Decode the conditions from a JCN mnemonic to a decimal value.
+
+    Parameters
+    ----------
+    conditions: str, mandatory
+        List of a maximum of 4 conditions
+
+    Returns
+    -------
+    int_conditions: int
+        Integer value of the conditions
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    int_conditions = 0
+
+    if 'I' in conditions:
+        int_conditions = 8
+    if 'A' in conditions:
+        int_conditions = int_conditions + 4
+    if 'C' in conditions:
+        int_conditions = int_conditions + 2
+    if 'T' in conditions:
+        int_conditions = int_conditions + 1
+
+    return int_conditions
+
+
+def get_bits(opcodeinfo):
+    """
+    Return an opcode 2x 4-bit nibbles.
+
+    Parameters
+    ----------
+    opcodeinfo: str, mandatory
+        JSON string containing the opcode info retrieved from the
+        opcode table.
+
+    Returns
+    -------
+    bit1, bit2
+        2 strings containing 4 binary digits each
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    bit1 = opcodeinfo['bits'][0]
+    bit2 = opcodeinfo['bits'][1]
+    return bit1, bit2
+
+
 def match_label(_L, label: str, address):
     """
     Given a label and an address, add it (if required) to the list of labels.
 
     Parameters
     ----------
-    _L : list, mandatory
+    _L: list, mandatory
         A list of the known labels and their addresses
 
     label: str, mandatory
         The potential new label
 
-    label: int, mandatory
+    address: int, mandatory
         The address of the potential new label
 
     Returns
@@ -104,7 +133,7 @@ def match_label(_L, label: str, address):
     N/A
 
     Notes
-    ------
+    -----
     This will return -1 if the label is not found
 
     """
@@ -135,7 +164,7 @@ def get_label_addr(_L, label: str):
     N/A
 
     Notes
-    ------
+    -----
     This will return -1 if the label is not found
 
     """
@@ -144,35 +173,6 @@ def get_label_addr(_L, label: str):
         if _i['label'] == label + ',':
             label_address = _i['address']
     return label_address
-
-
-def get_bits(opcodeinfo):
-    """
-    Return an opcode 2x 4-bit nibbles
-
-    Parameters
-    ----------
-    opcodeinfo: str, mandatory
-        JSON string containing the opcode info retrieved from the
-        opcode table.
-
-    Returns
-    -------
-    bit1, bit2
-        2 strings containing 4 binary digits each
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    ------
-    N/A
-
-    """
-    bit1 = opcodeinfo['bits'][0]
-    bit2 = opcodeinfo['bits'][1]
-    return bit1, bit2
 
 
 def assemble_isz(chip: Processor, x, register, _LABELS, TPS,
@@ -190,7 +190,7 @@ def assemble_isz(chip: Processor, x, register, _LABELS, TPS,
 
     register: int, mandatory
         The register which will be compared in this instruction
-   _LABELS: list, mandatory
+    _LABELS: list, mandatory
         List of valid labels
 
     TPS: list, mandatory
@@ -228,7 +228,7 @@ def assemble_isz(chip: Processor, x, register, _LABELS, TPS,
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -249,35 +249,57 @@ def assemble_isz(chip: Processor, x, register, _LABELS, TPS,
     return address, TPS, _LABELS
 
 
-def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
-             f9, f10, f11, f12, f13, f14, f15, f16):
+def pass0(chip):
     """
-    Given a set of items, print them to the screen in a standard, columnar
-    fashion.
+    Initialise storage for assembly.
 
     Parameters
     ----------
-    f0 ....... f16 : str, all optional
-        Parameters to print
+    chip: Processor, mandatory
+        Instance of a processor to place the assembled code in.
 
     Returns
     -------
-    N/A
+    _LABELS: List
+        List for containing labels
+
+    TPS_SIZE: Integer
+        Maximum size of program memory
+
+    TPS: List
+        Program store
+
+    TPS_FILE: List
+        Assembly language store
 
     Raises
     ------
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
-    fmt = '{:>4} {:<10} {:>4} {:>4}  {:>4} {:>4} {:>4} '
-    fmt = fmt + '{:>4} {:>7} {:<4} {:<4}{:<8}{:<3}'
-    fmt = fmt + ' {:<3} {:<3} {} {}'
-    print(fmt.format(f0, f1, f2, f3, f4, f5, f6, f7, f8,
-                     f9, f10, f11, f12, f13, f14, f15, f16))
+    # Reset label table for this program
+    _LABELS = []
+
+    # Maximum size of program memory
+    TPS_SIZE = max([chip.MEMORY_SIZE_ROM,
+                    chip.MEMORY_SIZE_PRAM, chip.MEMORY_SIZE_RAM])
+
+    # Reset temporary_program_store
+    TPS = []
+    for _i in range(TPS_SIZE):
+        TPS.append(0)
+
+    # Initialise assembly language line store to
+    # twice the size of the potential program size.
+    TFILE = []
+    for _i in range(TPS_SIZE * 2):
+        TFILE.append('')
+
+    return _LABELS, TPS_SIZE, TPS, TFILE
 
 
 def assemble_fim(self, x, _LABELS, TPS, address, label, count):
@@ -298,6 +320,9 @@ def assemble_fim(self, x, _LABELS, TPS, address, label, count):
     TPS: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
+
+    address: int, mandatory
+        Current program counter address
 
     label: str, mandatory
         If there is a label associated with this instruction, it will be here,
@@ -324,7 +349,7 @@ def assemble_fim(self, x, _LABELS, TPS, address, label, count):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -392,7 +417,7 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -470,7 +495,7 @@ def assemble_2(chip: Processor, x, opcode, address, TPS, _LABELS, address_left,
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -518,9 +543,87 @@ def assemble_2(chip: Processor, x, opcode, address, TPS, _LABELS, address_left,
     return address, TPS, _LABELS
 
 
+def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
+             f9, f10, f11, f12, f13, f14, f15, f16):
+    """
+    Print a set of items to the screen in a standard, columnar fashion.
+
+    Parameters
+    ----------
+    f0 : str, optional
+        Parameter to print
+
+    f1 : str, optional
+        Parameter to print
+
+    f2 : str, optional
+        Parameter to print
+
+    f3 : str, optional
+        Parameter to print
+
+    f4 : str, optional
+        Parameter to print
+
+    f5 : str, optional
+        Parameter to print
+
+    f6 : str, optional
+        Parameter to print
+
+    f7 : str, optional
+        Parameter to print
+
+    f8 : str, optional
+        Parameter to print
+
+    f9 : str, optional
+        Parameter to print
+
+    f10 : str, optional
+        Parameter to print
+
+    f11 : str, optional
+        Parameter to print
+
+    f12 : str, optional
+        Parameter to print
+
+    f13 : str, optional
+        Parameter to print
+
+    f14 : str, optional
+        Parameter to print
+
+    f15 : str, optional
+        Parameter to print
+
+    f16 : str, optional
+        Parameter to print
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    fmt = '{:>4} {:<10} {:>4} {:>4}  {:>4} {:>4} {:>4} '
+    fmt = fmt + '{:>4} {:>7} {:<4} {:<4}{:<8}{:<3}'
+    fmt = fmt + ' {:<3} {:<3} {} {}'
+    print(fmt.format(f0, f1, f2, f3, f4, f5, f6, f7, f8,
+                     f9, f10, f11, f12, f13, f14, f15, f16))
+
+
 def validate_inc(parts, line):
     """
-    Validate the contents (i.e. the parameters) of an INC command
+    Validate the contents (i.e. the parameters) of an INC command.
 
     Parameters
     ----------
@@ -541,7 +644,7 @@ def validate_inc(parts, line):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -557,18 +660,117 @@ def validate_inc(parts, line):
     return False
 
 
+def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
+    """
+    Analyse a single line of code.
+
+    Parameters
+    ----------
+    chip: Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    line: str, mandatory
+        line of assembly code read in from a file
+
+    _LABELS: List, Mandatory
+        List for containing labels
+
+    p_line: int, mandatory
+        numbered line of assembly language program
+
+    address: int, Mandatory
+        Current address of memory for assembly
+
+    TFILE: List, Mandatory
+        Assembly language store
+
+    Returns
+    -------
+    err:
+        False if no error, error text if error
+
+    TFILE: List
+        Assembly language store
+
+    p_line: int
+        numbered line of assembly language program
+
+    address: int
+        Current address of memory for assembly
+
+    _LABELS: List, Mandatory
+        List for containing labels
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    constant = False
+    err = False
+    # Work with a line of assembly code
+    parts = line.split()
+    if parts[0][-1] == ',':
+        # Found a label, now add it to the label table
+        if add_label(_LABELS, parts[0]) == -1:
+            err = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
+                   ' at line ' + str(p_line + 1))
+            return err, TFILE, p_line, 0, _LABELS
+        # Attach value to a label
+        if '0' <= str(parts[1])[:1] <= '9':
+            constant = True
+            label_content = parts[1]
+        else:
+            label_content = address
+        # An EQUATE statement (indicated by "=")
+        if parts[1] == '=':
+            constant = True
+            label_content = int(parts[2])
+
+        match_label(_LABELS, parts[0], label_content)
+        # Set opcode
+        opcode = parts[1][:3]
+    else:
+        # Set opcode
+        opcode = parts[0][:3]
+    if opcode[:3] == 'inc':
+        err = validate_inc(parts, p_line + 1)
+        return err, TFILE, p_line, 0, _LABELS
+    # Custom opcodes
+    if not constant:
+        if (opcode == 'ld()' or opcode[:2] == 'ld'):
+            opcode = 'ld '
+        if opcode not in ('org', '/', 'end', 'pin', '='):
+            opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+            if opcodeinfo == {'opcode': -1, 'mnemonic': 'N/A'}:
+                err = "FATAL: Pass 1:  Invalid mnemonic '" + \
+                      opcode + "' at line: " + str(p_line + 1)
+            else:
+                address = address + opcodeinfo['words']
+    TFILE[p_line] = line.strip()
+    p_line = p_line + 1
+    return err, TFILE, p_line, address, _LABELS
+
+
 def write_program_to_file(program, filename, memory_location, _LABELS):
     """
     Take the assembled program and write to a given filename.
 
     Parameters
     ----------
-    program : list, mandatory
+    program: list, mandatory
         The compiled program
+
     filename: str, mandatory
         The filename to write to
+
     memory_location: str, mandatory
         Location in memory of the first word of the program
+
     _LABELS: list, mandatory
         Label table
 
@@ -581,7 +783,7 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """

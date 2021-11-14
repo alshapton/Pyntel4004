@@ -212,7 +212,8 @@ def get_opcodeinfobyopcode(self, opcode: int):
     opcodeinfo = {"opcode": -1, "mnemonic": "-"}
     try:
         opcodeinfo = next((item for item in self.INSTRUCTIONS
-                           if item['opcode'] == opcode), None)
+                           if item['opcode'] == opcode),
+                          {"opcode": -1, "mnemonic": "N/A"})
     except:  # noqa
         opcodeinfo = {"opcode": -1, "mnemonic": "-"}
     return opcodeinfo

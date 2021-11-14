@@ -174,10 +174,10 @@ def jcn(self, conditions: int, address: int):
     Need to do "if JCN at end of page" code
 
     """
-    from hardware.processor import Processor  # noqa
+    from hardware.suboperation import decimal_to_binary  # noqa 
 
     accumulator = self.read_accumulator()
-    checks = str(Processor.decimal_to_binary(4, conditions))
+    checks = str(decimal_to_binary(4, conditions))
 
     c1 = checks[0:1] == '1'
     c2 = checks[1:2] == '1'

@@ -37,6 +37,33 @@ def rdx(self, character):
 
 
 def decode_command_register(command_register, shape):
+    """
+    Convert the supplied CR into its component parts.
+
+    Parameters
+    ----------
+    command_register : str, mandatory
+        Content of the command register to convert
+
+    shape:
+        The shape/purpose of the command_register
+
+    Returns
+    -------
+    chip: int
+        The chip referred to
+
+    register: int
+        register
+
+    address: int
+        address referred to
+
+    Raises
+    ------
+    InvalidCommandRegisterFormat
+
+    """
     if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',
                      'RAM_PORT', 'ROM_PORT'):
         raise InvalidCommandRegisterFormat('Shape: ' + shape)
@@ -690,7 +717,7 @@ def ones_complement(value: str, bits: int):
 
     Parameters
     ----------
-    value: int: mandatory
+    value: str: mandatory
         decimal value to convert
 
     bits: int, mandatory
@@ -714,14 +741,15 @@ def ones_complement(value: str, bits: int):
     if (bits not in [2, 4, 8, 12]):
         raise InvalidBitValue(' Bits: ' + str(bits))
 
-    if (value > ((2 ** bits) - 1)) or (value < 0):
+    if (int(value) > ((2 ** bits) - 1)) or (int(value) < 0):
         raise ValueOutOfRangeForBits(' Value: ' + str(value) +
                                      ' Bits: ' + str(bits))
 
     # Perform a one's complement
     # i.e. invert all the bits
 
-    binary = bin(value)[2:].zfill(bits)
+    binary = decimal_to_binary(bits, int(value))
+    # binary = str(bin(value))[2:].zfill(bits)
     ones = ''
     for x in range(bits):
         if binary[x] == '1':

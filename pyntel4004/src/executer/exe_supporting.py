@@ -4,7 +4,7 @@ import json
 
 def reload(inputfile, chip):
     """
-    Reload an already assembled program and execute it
+    Reload an already assembled program and execute it.
 
     Parameters
     ----------
@@ -27,7 +27,7 @@ def reload(inputfile, chip):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
@@ -50,15 +50,15 @@ def reload(inputfile, chip):
     return memory_space, pc
 
 
-def is_breakpoint(BREAKPOINTS, PC):
+def is_breakpoint(breakpoints, PC):
     """
-    Determine if the current programme counter is at a predetermined
-    breakpoint.
+    Determine if the current programme counter is at a breakpoint.
 
     Parameters
     ----------
-    BREAKPOINT : list, mandatory
+    breakpoints : list, mandatory
         A list of the predetermined breakpoints
+
     PC: int, mandatory
         The current value of the program counter
 
@@ -72,18 +72,19 @@ def is_breakpoint(BREAKPOINTS, PC):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
-    for i in BREAKPOINTS:
+    for i in breakpoints:
         if str(i) == str(PC):
             return True
     return False
 
 
 def deal_with_monitor_command(chip: Processor, monitor_command: str,
-                              BREAKPOINTS, monitor: bool, opcode: str):
+                              breakpoints
+                              , monitor: bool, opcode: str):
     """
     Take appropriate action depending on the command supplied.
 
@@ -95,7 +96,7 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
     monitor_command: str, mandatory
         Command given by the user.
 
-    BREAKPOINTS : list, mandatory
+    breakpoints : list, mandatory
         A list of the predetermined breakpoints
 
     monitor: bool, mandatory
@@ -123,7 +124,7 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
     N/A
 
     Notes
-    ------
+    -----
     Function will return a value of -1 if the monitor command is invalid.
 
     """
@@ -173,7 +174,7 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
         return True, monitor, monitor_command, opcode
     if monitor_command[:1] == 'b':
         bp = monitor_command.split()[1]
-        BREAKPOINTS.append(bp)
+        breakpoints.append(bp)
         print('Breakpoint set at address ' + bp)
         return True, monitor, monitor_command, opcode
     if monitor_command == 'off':
@@ -189,7 +190,7 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
 
 def retrieve(inputfile, chip):
     """
-    Pass-thru function for the "reload" function
+    Pass-thru function for the "reload" function.
 
     Parameters
     ----------
@@ -212,7 +213,7 @@ def retrieve(inputfile, chip):
     N/A
 
     Notes
-    ------
+    -----
     No added value in this function, simply a pass-thru.
 
     """

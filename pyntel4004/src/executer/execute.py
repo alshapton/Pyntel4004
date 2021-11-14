@@ -1,8 +1,10 @@
 # Import i4004 processor
+import sys
+sys.path.insert(1, '../src')
 
-from hardware.processor import Processor
-from executer.supporting import deal_with_monitor_command, is_breakpoint
-from shared.shared import coredump, do_error, get_opcodeinfobyopcode
+from hardware.processor import Processor  # noqa
+from executer.exe_supporting import deal_with_monitor_command, is_breakpoint  # noqa
+from shared.shared import coredump, do_error, get_opcodeinfobyopcode  # noqa
 
 ##############################################################################
 #  _ _  _    ___   ___  _  _     ______                 _       _            #
@@ -42,11 +44,11 @@ def execute(chip: Processor, location: str, PC: int, monitor: bool):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
-    BREAKPOINTS = []
+    breakpoints = []  # noqa
     _TPS = []
     if location == 'rom':
         _TPS = chip.ROM
@@ -61,7 +63,7 @@ def execute(chip: Processor, location: str, PC: int, monitor: bool):
     while opcode != 255:  # pseudo-opcode (directive) for "end"
         monitor_command = 'none'
 
-        if is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER):
+        if is_breakpoint(breakpoints, chip.PROGRAM_COUNTER):
             monitor_command = 'none'
             monitor = True
             prompt = breakout_prompt
@@ -70,7 +72,7 @@ def execute(chip: Processor, location: str, PC: int, monitor: bool):
                 monitor_command = input(prompt).lower()
                 result, monitor, monitor_command, opcode = \
                     deal_with_monitor_command(chip, monitor_command,
-                                              BREAKPOINTS, monitor, opcode)
+                                              breakpoints, monitor, opcode)
                 if result is False:
                     prompt = classic_prompt
                 if result is None:

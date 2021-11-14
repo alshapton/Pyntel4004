@@ -6,11 +6,11 @@ import sys
 
 # Assembler imports
 
-from assembler.assemble import assemble
+from assembler.assemble import assemble  # noqa
 
 # Executer imports
-from executer.execute import execute
-from executer.supporting import retrieve
+from executer.execute import execute  # noqa
+from executer.exe_supporting import retrieve  # noqa
 
 
 def main(argv):
@@ -19,7 +19,8 @@ def main(argv):
 
     Parameters
     ----------
-    argv: list of command line arguments
+    argv: list, mandatory
+        list of command line arguments
 
     Returns
     -------
@@ -30,7 +31,7 @@ def main(argv):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """

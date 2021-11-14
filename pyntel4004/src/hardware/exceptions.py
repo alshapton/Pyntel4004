@@ -1,3 +1,6 @@
+"""Exceptions to raise when issues occur."""
+
+
 class AddressOutOf8BitRange(Exception):
 
     """Raised when an address is out of range of an 8-bit Value."""

@@ -5,9 +5,12 @@ class Processor:
 
     """Functionality and chracteristics of an i4004 processor."""
 
+    #  pylint: disable=import-outside-toplevel
+    # Turn off import-outside-toplevel warning for this class
     from hardware import opcodes
     from hardware.reset import init_command_registers, init_pram, \
-        init_ram, init_registers, init_rom, init_stack, init_wpm_counter
+        init_ram, init_registers, init_rom, init_stack, \
+        init_wpm_counter
 
     from hardware.instructions.accumulator import clb, clc, cma, cmc, \
         daa, dac, iac, kbp, ral, rar, stc, tcc, tcs
@@ -36,6 +39,7 @@ class Processor:
         read_from_stack, read_register, read_registerpair, rdx, \
         set_accumulator, set_carry, split_address8, \
         write_pin10, write_ram_status, write_to_stack
+    #  pylint: enable=import-outside-toplevel
 
     # Operations to read the processor components
     # Some used internally,
