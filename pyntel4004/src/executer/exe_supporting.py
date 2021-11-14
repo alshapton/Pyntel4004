@@ -83,8 +83,7 @@ def is_breakpoint(breakpoints, PC):
 
 
 def deal_with_monitor_command(chip: Processor, monitor_command: str,
-                              breakpoints
-                              , monitor: bool, opcode: str):
+                              breakpoints, monitor: bool, opcode: str):
     """
     Take appropriate action depending on the command supplied.
 
