@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1-beta.1](https://pypi.org/project/Pyntel4004/0.0.1b1/) - 2021-XX-XX
+## [0.0.1-beta.1](https://pypi.org/project/Pyntel4004/0.0.1b1/) - 2021-11-19
 
 ### Notes
 
@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 ### Fixed
-- Code Style, Documentation, Bug Risks, Anti-Patterns,
+- Code Style, Documentation, Bug Risks, Anti-Patterns
 
 ### Removed
 - machine.py - no longer needed
