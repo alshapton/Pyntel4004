@@ -174,7 +174,7 @@ def jcn(self, conditions: int, address: int):
     Need to do "if JCN at end of page" code
 
     """
-    from hardware.suboperation import decimal_to_binary  # noqa 
+    from hardware.suboperation import decimal_to_binary  # noqa
 
     accumulator = self.read_accumulator()
     checks = str(decimal_to_binary(4, conditions))
