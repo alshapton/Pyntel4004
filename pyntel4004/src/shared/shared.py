@@ -26,10 +26,11 @@ def coredump(chip, filename):
     N/A
 
     """
-    from datetime import datetime
+    from datetime import datetime  # noqa
+    filename = datetime.now().strftime("%d/%m/%Y-%H:%M:%S") + '.core'
     errordate = 'Date/Time:' + \
         datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n\n'
-    with open(filename + '.core', "w") as output:
+    with open(filename, "w", encoding='utf-8') as output:
         output.write('\n\n' + errordate)
         output.write('Processor Characteristics:\n\n')
         output.write('MAX_4_BITS :           ' + str(chip.MAX_4_BITS) +
@@ -94,6 +95,7 @@ def coredump(chip, filename):
         for i in chip.REGISTERS:
             output.write(spaces + str(i) + '\t\t')
 
+        print('Core dump to: ' + filename)
         return True
 
 

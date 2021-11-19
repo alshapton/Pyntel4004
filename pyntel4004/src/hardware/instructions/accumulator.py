@@ -140,8 +140,8 @@ def cma(self):
     """
     from hardware.suboperation import ones_complement  # noqa
 
-    ONES_ACC = int(ones_complement(self.ACCUMULATOR, 4), 2)
-    self.ACCUMULATOR = ONES_ACC
+    ones_acc = int(ones_complement(self.ACCUMULATOR, 4), 2)
+    self.ACCUMULATOR = ones_acc
     self.increment_pc(1)
     return self.ACCUMULATOR
 
@@ -159,7 +159,7 @@ def ral(self):
     Side-effects:   The carry bit will be set to the highest significant
                     bit of the accumulator.
     """
-    C0 = self.read_carry()
+    c0 = self.read_carry()
     # Shift left
     self.ACCUMULATOR = self.ACCUMULATOR * 2
     # Set carry bit correctly
@@ -171,7 +171,7 @@ def ral(self):
     if self.ACCUMULATOR > self.MAX_4_BITS:
         self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
     # Add original carry bit
-    self.ACCUMULATOR = self.ACCUMULATOR + C0
+    self.ACCUMULATOR = self.ACCUMULATOR + c0
     self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
@@ -189,7 +189,7 @@ def rar(self):
     Side-effects:   The carry bit will be set to the lowest significant
                     bit of the accumulator.
     """
-    C0 = self.read_carry()
+    c0 = self.read_carry()
     # Set carry bit correctly
     if self.ACCUMULATOR % 2 == 0:
         self.reset_carry()
@@ -198,7 +198,7 @@ def rar(self):
     # Shift right
     self.ACCUMULATOR = self.ACCUMULATOR // 2
     # Add carry to high-order bit of accumulator
-    self.ACCUMULATOR = self.ACCUMULATOR + (C0 * self.MSB)
+    self.ACCUMULATOR = self.ACCUMULATOR + (c0 * self.MSB)
     self.increment_pc(1)
     return self.ACCUMULATOR, self.CARRY
 
@@ -343,16 +343,16 @@ def kbp(self):
                         1110	---->	1111    Error
                         1111	---->	1111    Error
     """
-    ACC = self.read_accumulator()
+    acc = self.read_accumulator()
     self.increment_pc(1)
-    if ACC in (0, 1, 2):
-        return ACC
+    if acc in (0, 1, 2):
+        return acc
 
-    if ACC == 4:
+    if acc == 4:
         self.set_accumulator(3)
         return self.read_accumulator()
 
-    if ACC == 8:
+    if acc == 8:
         self.set_accumulator(4)
         return self.read_accumulator()
 

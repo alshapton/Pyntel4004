@@ -1,5 +1,11 @@
-# Import i4004 processor
+"""Assembler supporting functions."""
 
+# Disable pylint's too-many-locals warnings,
+# since there are large numbers of local variables.
+
+# pylint: disable=too-many-locals
+
+# Import i4004 processor
 from hardware.processor import Processor
 import getopt
 import sys
@@ -42,8 +48,8 @@ def main(argv):
     # Create new instance of a processor
     chip = Processor()
 
-    RUN = False
-    ASSEMBLE = False
+    run = False
+    do_assemble = False
     try:
         opts, args = getopt.getopt(argv, "i:o:r:x", ["ifile=", "ofile=", "s"])  # noqa
     except getopt.GetoptError:
@@ -60,12 +66,12 @@ def main(argv):
                 outputfile = arg
         if opt in ("-i", "--ifile"):
             inputfile = arg
-            ASSEMBLE = True
+            do_assemble = True
         if opt == "-x":
-            RUN = True
+            run = True
         if opt == "-r":
             reloadfile = arg
-            RUN = True
+            run = True
             result = retrieve(reloadfile, chip)
             pc = result[1]
             memory_space = result[0]
@@ -75,10 +81,10 @@ def main(argv):
             print()
             execute(chip, memory_space, pc, True)
     print(opts, args)
-    if ASSEMBLE is True:
+    if do_assemble is True:
         result = assemble(inputfile, outputfile, chip)
 
-    if RUN is True and result is True:
+    if run is True and result is True:
         print()
         print('EXECUTING PROGRAM: ')
         print()

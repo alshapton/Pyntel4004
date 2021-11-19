@@ -29,7 +29,7 @@ def test_bbl_scenario1(value):
     chip_test = Processor()
     chip_base = Processor()
 
-    PC = 300
+    pc = 300
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 300
@@ -49,7 +49,7 @@ def test_bbl_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 
-    assert chip_test.PROGRAM_COUNTER == PC + 2
+    assert chip_test.PROGRAM_COUNTER == pc + 2
     assert chip_test.STACK_POINTER == 2
     assert chip_test.STACK[chip_test.STACK_POINTER] == 302  # Return
     assert chip_test.PROGRAM_COUNTER == 302

@@ -49,42 +49,42 @@ def test_scenario1(values):
     chip_test = Processor()
     chip_base = Processor()
 
-    PC = values[0]
-    C1 = values[1]
-    C2 = values[2]
-    C3 = values[3]
-    C4 = values[4]
-    FA = values[5]
+    pc = values[0]
+    c1 = values[1]
+    c2 = values[2]
+    c3 = values[3]
+    c4 = values[4]
+    fa = values[5]
 
-    ACCUMULATOR = values[6]
-    CARRY_BIT = values[7]
-    TEST_SIGNAL = values[8]
+    accumulator = values[6]
+    carry_bit = values[7]
+    test_signal = values[8]
 
-    CONDITION = int((C1 * 8) + (C2 * 4) + (C3 * 2) + C4)
+    condition = int((c1 * 8) + (c2 * 4) + (c3 * 2) + c4)
     # Set both chips to initial status
 
     # Set accumulator value on both chips
-    chip_test.set_accumulator(ACCUMULATOR)
-    chip_base.set_accumulator(ACCUMULATOR)
+    chip_test.set_accumulator(accumulator)
+    chip_base.set_accumulator(accumulator)
     # Set carry bit on both chips
-    if CARRY_BIT == 0:
+    if carry_bit == 0:
         chip_test.reset_carry()
         chip_base.reset_carry()
     else:
         chip_test.set_carry()
         chip_base.set_carry()
     # Set test signal on both chips
-    chip_test.write_pin10(TEST_SIGNAL)
-    chip_base.write_pin10(TEST_SIGNAL)
+    chip_test.write_pin10(test_signal)
+    chip_base.write_pin10(test_signal)
 
-    chip_test.PROGRAM_COUNTER = PC
-    chip_base.PROGRAM_COUNTER = PC
+    chip_test.PROGRAM_COUNTER = pc
+    chip_base.PROGRAM_COUNTER = pc
 
     # Perform the instruction under test:
-    Processor.jcn(chip_test, CONDITION, FA)
+    Processor.jcn(chip_test, condition, fa)
 
     # Simulate conditions at end of instruction in base chip
-    chip_base.PROGRAM_COUNTER = FA
+    chip_base.PROGRAM_COUNTER = fa
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
@@ -93,4 +93,3 @@ def test_scenario1(values):
 
     # Pickling each chip and comparing will show equality or not.
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
-    print(CONDITION, chip_base.PROGRAM_COUNTER, chip_test.PROGRAM_COUNTER)

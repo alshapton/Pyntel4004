@@ -1,3 +1,5 @@
+"""Assembly process supporting functions."""
+
 from hardware.processor import Processor
 import json
 
@@ -31,7 +33,7 @@ def reload(inputfile, chip):
     N/A
 
     """
-    with open(inputfile, "r") as programfile:
+    with open(inputfile, "r", encoding='utf-8') as programfile:
         data = json.loads(programfile)
 
     # Get data for memory load from JSON
@@ -50,7 +52,7 @@ def reload(inputfile, chip):
     return memory_space, pc
 
 
-def is_breakpoint(breakpoints, PC):
+def is_breakpoint(breakpoints, pc):
     """
     Determine if the current programme counter is at a breakpoint.
 
@@ -59,7 +61,7 @@ def is_breakpoint(breakpoints, PC):
     breakpoints : list, mandatory
         A list of the predetermined breakpoints
 
-    PC: int, mandatory
+    pc: int, mandatory
         The current value of the program counter
 
     Returns
@@ -77,14 +79,106 @@ def is_breakpoint(breakpoints, PC):
 
     """
     for i in breakpoints:
-        if str(i) == str(PC):
+        if str(i) == str(pc):
             return True
     return False
 
 
+def print_stack(chip: Processor):
+    """
+    Print the stack values (along with the pointer).
+
+    Parameters
+    ----------
+    chip : Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    for _i in range(chip.STACK_SIZE-1, -1, -1):
+        if _i == chip.STACK_POINTER:
+            pointer = '==>'
+        else:
+            pointer = '-->'
+        print("[ " + str(_i) + "] " + pointer + "[ " +
+              str(chip.STACK[_i]) + ' ]')
+
+
+def process_simple_monitor_command(chip, monitor_command, monitor, opcode):
+    """
+    Take appropriate action depending on the command supplied.
+
+    Parameters
+    ----------
+    chip : Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    monitor_command: str, mandatory
+        Command given by the user.
+
+    monitor: bool, mandatory
+        Whether or not the monitor is currently "on" or "off"
+
+    opcode: str, mandatory
+        Opcode of the current instruction
+
+    Returns
+    -------
+    True/False: bool  if the code should continue with monitor on or off
+    None              if the monitor should be disabled
+
+    monitor: bool
+        Whether or not the monitor is currently "on" or "off"
+
+    monitor_command: str
+        The command that was entered by the user
+
+    opcode: str,
+        Opcode of the current instruction
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    if monitor_command == 'stack':
+        print_stack(chip)
+    elif monitor_command == 'pc':
+        print('PC = ', chip.PROGRAM_COUNTER)
+    elif monitor_command == 'carry':
+        print('CARRY = ', chip.read_carry())
+    elif monitor_command == 'ram':
+        print('RAM = ', chip.RAM)
+    elif monitor_command == 'pram':
+        print('PRAM = ', chip.PRAM)
+    elif monitor_command == 'rom':
+        print('ROM = ', chip.ROM)
+    elif monitor_command == 'acc':
+        print('ACC =', chip.read_accumulator())
+    elif monitor_command == 'pin10':
+        print('PIN10 = ', chip.read_pin10())
+    elif monitor_command == 'crb':
+        print('CURRENT RAM BANK = ', chip.read_current_ram_bank())
+    return True, monitor, monitor_command, opcode
+
+
 def deal_with_monitor_command(chip: Processor, monitor_command: str,
-                              breakpoints
-                              , monitor: bool, opcode: str):
+                              breakpoints, monitor: bool, opcode: str):
     """
     Take appropriate action depending on the command supplied.
 
@@ -128,49 +222,25 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
     Function will return a value of -1 if the monitor command is invalid.
 
     """
+#   mccabe: MC0001 / deal_with_monitor_command is too complex (18) - start
+#   mccabe: MC0001 / deal_with_monitor_command is too complex (16)
+#   mccabe: MC0001 / deal_with_monitor_command is too complex (5)
+
     if monitor_command == '':
         return True, monitor, monitor_command, opcode
-
     if monitor_command == 'regs':
         print('0-> ' + str(chip.REGISTERS) + ' <-15')
         return True, monitor, monitor_command, opcode
-    if monitor_command == 'stack':
-        for _i in range(chip.STACK_SIZE-1, -1, -1):
-            if _i == chip.STACK_POINTER:
-                pointer = '==>'
-            else:
-                pointer = '-->'
-            print("[ " + str(_i) + "] " + pointer + "[ " +
-                  str(chip.STACK[_i]) + ' ]')
-        return True, monitor, monitor_command, opcode
-    if monitor_command == 'pc':
-        print('PC = ', chip.PROGRAM_COUNTER)
-        return True, monitor, monitor_command, opcode
-    if monitor_command == 'carry':
-        print('CARRY = ', chip.read_carry())
-        return True, monitor, monitor_command, opcode
-    if monitor_command == 'ram':
-        print('RAM = ', chip.RAM)
-        return True, monitor, monitor_command, opcode
-    if monitor_command == 'pram':
-        print('PRAM = ', chip.PRAM)
-        return True, monitor, monitor_command, opcode
-    if monitor_command == 'rom':
-        print('ROM = ', chip.ROM)
-        return True, monitor, monitor_command, opcode
+    if monitor_command in (['stack', 'pc', 'carry', 'ram', 'pram',
+                            'rom', 'acc', 'pin10', 'crb']):
+        result, monitor, monitor_command, opcode = \
+            process_simple_monitor_command(chip, monitor_command,
+                                           monitor, opcode)
+        return result, monitor, monitor_command, opcode
     if monitor_command[:3] == 'reg':
         register = int(monitor_command[3:])
         print('REG[' + monitor_command[3:].strip()+'] = ' +
               str(chip.REGISTERS[register]))
-        return True, monitor, monitor_command, opcode
-    if monitor_command == 'acc':
-        print('ACC =', chip.read_accumulator())
-        return True, monitor, monitor_command, opcode
-    if monitor_command == 'pin10':
-        print('PIN10 = ', chip.read_pin10())
-        return True, monitor, monitor_command, opcode
-    if monitor_command == 'crb':
-        print('CURRENT RAM BANK = ', chip.read_current_ram_bank())
         return True, monitor, monitor_command, opcode
     if monitor_command[:1] == 'b':
         bp = monitor_command.split()[1]
@@ -178,14 +248,11 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
         print('Breakpoint set at address ' + bp)
         return True, monitor, monitor_command, opcode
     if monitor_command == 'off':
-        monitor_command = ''
-        monitor = False
-        return False, monitor, monitor_command, opcode
+        return False, False, '', opcode
     if monitor_command == 'q':
-        monitor = False
-        opcode = 255
-        return None, monitor, monitor_command, opcode
-    return -1
+        return None, False, monitor_command, 255
+
+    return -1, '', '', 0
 
 
 def retrieve(inputfile, chip):

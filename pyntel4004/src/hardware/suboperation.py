@@ -447,7 +447,7 @@ def increment_pc(self, words: int):
 
 def inc_pc_by_page(self, pc: int):
     """
-    Retrieve the PC's new value after being incremented by a page.
+    Retrieve the pc's new value after being incremented by a page.
 
     Parameters
     ----------

@@ -28,7 +28,7 @@ def test_scenario1(values):
     chip_test = Processor()
     chip_base = Processor()
 
-    PCB = values[0]
+    pcb = values[0]
     RP = values[1]
     REG = RP * 2
     RP_CONTENT = values[2]
@@ -37,7 +37,7 @@ def test_scenario1(values):
     PCE = values[3]
 
     # Set chip to initial status
-    chip_test.PROGRAM_COUNTER = PCB
+    chip_test.PROGRAM_COUNTER = pcb
     chip_test.REGISTERS[REG] = RPL
     chip_test.REGISTERS[REG + 1] = RPM
 
@@ -63,7 +63,7 @@ def test_scenario2(values):
     """Test JIN instruction failure."""
     chip_test = Processor()
 
-    PCB = values[0]
+    pcb = values[0]
     RP = values[1]
     REG = RP * 2
     RP_CONTENT = values[2]
@@ -74,7 +74,7 @@ def test_scenario2(values):
     # Simulate conditions at START of operation in base chip
     # chip should have not had any changes as the operations will fail
 
-    chip_test.PROGRAM_COUNTER = PCB
+    chip_test.PROGRAM_COUNTER = pcb
     chip_test.REGISTERS[REG] = RPL
     chip_test.REGISTERS[REG + 1] = RPM
     # Simulate conditions at END of operation in test chip

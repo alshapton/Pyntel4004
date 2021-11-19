@@ -29,21 +29,21 @@ def test_scenario1(values, register):
     chip_test = Processor()
     chip_base = Processor()
 
-    PC = 100
-    PCaftjump = 150
-    PCaftnojump = 102
+    pc = 100
+    pcaftjump = 150
+    pcaftnojump = 102
 
     REGISTER = register
     VALUE = values[0]
     if values[1] == 'Y':
-        PCaft = PCaftjump
+        pcaft = pcaftjump
     else:
-        PCaft = PCaftnojump
+        pcaft = pcaftnojump
 
     # Set both chips to initial status
     # Program Counter
-    chip_test.PROGRAM_COUNTER = PC
-    chip_base.PROGRAM_COUNTER = PC
+    chip_test.PROGRAM_COUNTER = pc
+    chip_base.PROGRAM_COUNTER = pc
 
     # Registers
     chip_test.insert_register(REGISTER, VALUE)
@@ -51,10 +51,10 @@ def test_scenario1(values, register):
     chip_base.increment_register(REGISTER)
 
     # Perform the instruction under test:
-    Processor.isz(chip_test, REGISTER, PCaftjump)
+    Processor.isz(chip_test, REGISTER, pcaftjump)
 
     # Simulate conditions at end of instruction in base chip
-    chip_base.PROGRAM_COUNTER = PCaft
+    chip_base.PROGRAM_COUNTER = pcaft
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
