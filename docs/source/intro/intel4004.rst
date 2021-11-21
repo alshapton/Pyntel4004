@@ -12,7 +12,7 @@ The 4000 Family (A.K.A. Busicom Chip Set / MCS-4 Chip Set)
 
 The 4000 family consisted of four different chips:
 
- - a 2048-bit ROM with a 4-bit programmable input-output port (4001)
+ - a 2048-bit ROM with a 4-bit programmable input-output port (4001) :ref:`4001`
  - a 4-registers x 20-locations x 4-bit RAM data memory with a 4-bit output port (4002)
  - an input-output expansion chip, consisting of a static shift register with serial input and serial and parallel output (4003)
  - a 4-bit CPU chip (4004)

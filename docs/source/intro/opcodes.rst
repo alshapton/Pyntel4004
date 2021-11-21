@@ -5,9 +5,11 @@ Intel 4004 Op-Codes
 .. toctree::
    :hidden:
 
+   ../hardware/machine/add
    ../hardware/machine/fim
    ../hardware/machine/fin
    ../hardware/machine/inc
+   ../hardware/machine/isz
    ../hardware/machine/jin
    ../hardware/machine/jms
    ../hardware/machine/jun
@@ -69,12 +71,12 @@ Intel 4004 Op-Codes
      -
      - R
    * - Increment and Skip
-     - ISZ
+     - :ref:`hardware-machine-isz`
      - 0111RRRR
      - AAAAAAAA
      - R, A
    * - Add
-     - ADD
+     - :ref:`hardware-machine-add`
      - 1000RRRR
      -
      - R
