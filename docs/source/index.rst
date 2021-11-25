@@ -12,6 +12,7 @@ Pyntel4004 Documentation
       4001 <intro/4001>
       4002 <intro/4002>
       4003 <intro/4003>
+      4004 <intro/4004>
    MCS-4 Manual <intro/mcs4>
    Overview and Instructions <intro/usage>
    Intel 4004 OpCodes <intro/opcodes>

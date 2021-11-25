@@ -7,12 +7,20 @@ Intel 4004 Chip History
 .. image:: images/intel4004chip.png
           :scale: 50%
 
+Background
+
+In 1969 Busicom contracted Intel to design a set of chips to be used in a new high perfomance calculator.
+Ted Hoff, Federico Faggin and Stan Mazor came up with a design that involved four different chips.
+The CPU was eventually to be called a microprocessor.
+
+Later Intel negotiated for a return of the rights for the chips, which had gone to Busicom in the original contract.
+
 
 The 4000 Family (A.K.A. Busicom Chip Set / MCS-4 Chip Set)
 
 The 4000 family consisted of four different chips:
 
- - a 2048-bit ROM with a 4-bit programmable input-output port (4001) :ref:`4001`
+ - a 2048-bit ROM with a 4-bit programmable input-output port (4001) 
  - a 4-registers x 20-locations x 4-bit RAM data memory with a 4-bit output port (4002)
  - an input-output expansion chip, consisting of a static shift register with serial input and serial and parallel output (4003)
  - a 4-bit CPU chip (4004)
@@ -24,7 +32,9 @@ that 40-pin packages were widely used by other semiconductor companies.
 
 This unfortunate choice considerably constrained the performance of the system.
 Address and data had to be multiplexed onto the pins (one of the claims of
-patent no. 3,821,715), causing a major penalty in the instruction cycle execution.
+:download:`Patent number US3821785 <resources/US3821715.pdf>`), causing a major
+penalty in the instruction cycle execution.
+
 The instruction cycle of 10.8 microseconds could have been easily reduced to
 4 microseconds by a more appropriate package choice.
 
