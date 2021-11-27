@@ -6,7 +6,7 @@ sys.path.insert(1, '../src')
 
 from hardware.processor import Processor  # noqa
 from executer.exe_supporting import deal_with_monitor_command, is_breakpoint  # noqa
-from shared.shared import coredump, do_error, get_opcodeinfobyopcode  # noqa
+from shared.shared import coredump, do_error, get_opcodeinfobyopcode, retrieve_program  # noqa
 
 ##############################################################################
 #  _ _  _    ___   ___  _  _     ______                 _       _            #
@@ -133,38 +133,6 @@ def process_coredump(chip, ex):
         str(chip.PROGRAM_COUNTER)
     do_error(message)
     coredump(chip, 'core')
-
-
-def retrieve_program(chip, location):
-    """
-    Retrieve the assembled program from the specified location.
-
-    Parameters
-    ----------
-    chip : Processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
-    location : str, mandatory
-        The location to which the program should be loaded
-
-    Returns
-    -------
-    The program from the location specified
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    -----
-    N/A
-
-    """
-    if location == 'rom':
-        loc = chip.ROM
-    if location == 'ram':
-        loc = chip.PRAM
-    return loc
 
 
 def process_instruction(chip, breakpoints, _tps, monitor,

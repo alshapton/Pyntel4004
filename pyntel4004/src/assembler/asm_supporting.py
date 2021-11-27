@@ -89,7 +89,8 @@ def assemble_1(opcodeinfo, label, tps, address, count):
     print_ln(address, label, address_left,
              address_right, bit1, bit2, '', '',
              tps[address], '', '', str(count),
-             opcodeinfo['opcode'], '', '', '', '')
+             opcodeinfo['mnemonic'].replace('(', '').replace(')', ''),
+             '', '', '', '')
     address = address + opcodeinfo['words']
     return tps, address
 
@@ -1186,7 +1187,6 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
     N/A
 
     """
-    print(x, 'labels = ', _LABELS)
     conditions = x[1].upper()
     dest_label = x[2]
     if '0' <= conditions <= '9':
@@ -1202,7 +1202,7 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
     TPS[address + 1] = label_addr
     print_ln(address, label, address_left, address_right, bit1, bit2,
              vl, vr, str(TPS[address]) + "," + str(TPS[address + 1]),
-             '', '', '', str(count), x[0], str(x[1]), str(x[2]), '')
+             '', '', str(count), x[0], str(x[1]), str(x[2]), '', '')
     address = address + opcodeinfo['words']
     return address, TPS, _LABELS
 
@@ -1269,11 +1269,9 @@ def assemble_2(chip: Processor, x, opcode, address, tps, _LABELS, address_left,
     if opcode == 'ld':
         opcode = 'ld '
     addx = get_label_addr(_LABELS, x[1])
-    print(addx)
     if addx == -1:
         addx = x[1]
     f_opcode = opcode + '(' + str(addx) + ')'
-    print(f_opcode)
 
     if opcode in ('jun', 'jms'):
         # Special case for JUN and JMS
@@ -1292,8 +1290,8 @@ def assemble_2(chip: Processor, x, opcode, address, tps, _LABELS, address_left,
         tps[address+1] = int(str(bit2), 2)
         print_ln(address, label, address_left, address_right, bit1[:4],
                  bit1[4:], bit2[:4], bit2[4:], str(tps[address]) + ',' +
-                 str(tps[address + 1]), str(count), opcode, str(x[1]),
-                 '', '', '', '', '')
+                 str(tps[address + 1]), '', '', str(count), opcode, str(x[1]),
+                 '', '', '')
         address = address + opcodeinfo['words']
     else:
         if opcode == 'src':
@@ -1530,13 +1528,15 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
     N/A
 
     """
-    print(line)
+    
+    print(line, address)
     constant = False
     err = False
     # Work with a line of assembly code
     parts = line.split()
     if parts[0][len(parts[0])-1] == ',':
         # Found a label, now add it to the label table
+        print(_LABELS, '    ', parts[0], '   ', address)
         if add_label(_LABELS, parts[0]) == -1:
             err = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
                    ' at line ' + str(p_line + 1))
@@ -1555,6 +1555,8 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
         match_label(_LABELS, parts[0], label_content)
         # Set opcode
         opcode = parts[1][:3]
+        opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+        address = address + opcodeinfo['words']
     else:
         # Set opcode
         opcode = parts[0][:3]
@@ -1573,6 +1575,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
                         opcode + "' at line: " + str(p_line + 1)
                 else:
                     address = address + opcodeinfo['words']
+    
     TFILE[p_line] = line.strip()
     p_line = p_line + 1
     return err, TFILE, p_line, address, _LABELS

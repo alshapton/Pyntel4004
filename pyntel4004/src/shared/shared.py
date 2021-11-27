@@ -1,42 +1,6 @@
 """Shared operations (between assembly, disassembly and execution."""
 
 
-def determine_filetype(inputfile):
-    """
-    Determine the filetype of a specific input file.
-
-    In the context of reloading a previously assembled file for
-    execution or disassembly.
-
-    Parameters
-    ----------
-    inputfile: str, mandatory
-        The filename to examine
-
-    Returns
-    -------
-    filetype: str
-        OBJ if an object file complete with metadata
-        BIN if a binary assembled file.
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    -----
-    N/A
-
-    """
-    file = open(inputfile, "rb")
-    bytes = file.read(12)[2:9]
-    if bytes == b'program':
-        filetype = 'OBJ'
-    else:
-        filetype = 'BIN'
-    return filetype
-
-
 def coredump(chip, filename):
     """
     Take the memory and write to a given filename.
@@ -133,6 +97,42 @@ def coredump(chip, filename):
 
         print('Core dump to: ' + filename)
         return True
+
+
+def determine_filetype(inputfile):
+    """
+    Determine the filetype of a specific input file.
+
+    In the context of reloading a previously assembled file for
+    execution or disassembly.
+
+    Parameters
+    ----------
+    inputfile: str, mandatory
+        The filename to examine
+
+    Returns
+    -------
+    filetype: str
+        OBJ if an object file complete with metadata
+        BIN if a binary assembled file.
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    file = open(inputfile, "rb")
+    bytes = file.read(12)[2:9]
+    if bytes == b'program':
+        filetype = 'OBJ'
+    else:
+        filetype = 'BIN'
+    return filetype
 
 
 def do_error(message: str):
@@ -255,3 +255,35 @@ def get_opcodeinfobyopcode(self, opcode: int):
     except:  # noqa
         opcodeinfo = {"opcode": -1, "mnemonic": "-"}
     return opcodeinfo
+
+
+def retrieve_program(chip, location):
+    """
+    Retrieve the assembled program from the specified location.
+
+    Parameters
+    ----------
+    chip : Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    location : str, mandatory
+        The location to which the program should be loaded
+
+    Returns
+    -------
+    The program from the location specified
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    if location == 'rom':
+        loc = chip.ROM
+    if location == 'ram':
+        loc = chip.PRAM
+    return loc

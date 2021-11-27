@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.1-beta.2](https://pypi.org/project/Pyntel4004/0.0.1b2/) - 2021-XX-XX
+
+### Notes
+
+- Includes first release of a disassembler
+
+### Added
+- Additional documentation about the Intel 4004 and its' companion chipset
+- Initial version of a disassembler
+- Mechanism to determine loading mechanism - either from an .OBJ or a .BIN file
+### Changed
+-
+### Deprecated
+-
+### Fixed
+- Error in assembler when the second label in a program had a corresponding
+  operator with more than one operand; that and subsequent labels were being
+  assigned incorrectly.
+
+### Removed
+-
+### Security
+-
 ## [0.0.1-beta.1](https://pypi.org/project/Pyntel4004/0.0.1b1/) - 2021-11-19
 
 ### Notes
@@ -17,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -
 
 ### Deprecated
-
+-
 ### Fixed
 - Code Style, Documentation, Bug Risks, Anti-Patterns
 
@@ -39,14 +62,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved exception handling
 
 ### Deprecated
-
+-
 ### Fixed
 - Bug in SRC function where decimal number was used instead of binary number
 
 ### Removed
-
+-
 ### Security
-
+-
 ## [0.0.1-alpha.6](https://pypi.org/project/Pyntel4004/0.0.1a6/) - 2021-10-24
 
 ### Added
@@ -59,15 +82,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched to [KeepAChangeLog](https://keepchangelog.com) format.
 
 ### Deprecated
-
+-
 ### Fixed
 - Some small bugs in the WPM instruction code
 - Abstracted some functions for readability
 
 ### Removed
-
+-
 ### Security
-
+-
 ## [0.0.1-alpha.5](https://pypi.org/project/Pyntel4004/0.0.1a5/) - 2021-10-10
 
 ### Added

@@ -11,7 +11,7 @@ import getopt
 import sys
 
 # Assembler imports
-from disassembler.disassembler import disassemble
+from disassembler.disassemble import disassemble
 from assembler.assemble import assemble  # noqa
 
 # Executer imports
@@ -21,7 +21,7 @@ from executer.exe_supporting import retrieve  # noqa
 
 def main(argv):
     """
-    Control the assembly and execution of a named assembly language file.
+    Control the assembly, disasembly and/or execution of a named assembly language file.
 
     Parameters
     ----------
@@ -50,6 +50,7 @@ def main(argv):
 
     run = False
     do_assemble = False
+    do_disassemble = False
     try:
         opts, args = getopt.getopt(argv, "i:o:r:x:d", ["ifile=", "ofile=", "s"])  # noqa
     except getopt.GetoptError:
