@@ -261,7 +261,6 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool):
 #    mccabe: MC0001 / execute is too complex (11)
 #    mccabe: MC0001 / execute is too complex (5)
 
-
     breakpoints = []  # noqa
     chip.PROGRAM_COUNTER = pc
     opcode = 0
