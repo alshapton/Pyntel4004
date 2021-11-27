@@ -1,7 +1,7 @@
 # Using pytest
 # Test the WRM instructions of an instance of an i4004(processor)
 
-from hardware.suboperation import convert_to_absolute_address
+
 import sys
 sys.path.insert(1, '../src')
 sys.path.insert(2, '../test')
@@ -9,6 +9,7 @@ sys.path.insert(2, '../test')
 import pickle  # noqa
 import pytest  # noqa
 from hardware.processor import Processor  # noqa
+from hardware.suboperation import convert_to_absolute_address  # noqa
 from utils import encode_command_register  # noqa
 
 

@@ -7,10 +7,10 @@ import pytest
 sys.path.insert(1, '../src')
 sys.path.insert(2, '../test')
 
+from hardware.exceptions import InvalidRamBank  # noqa
+from hardware.processor import Processor  # noqa
 from hardware.suboperation import convert_to_absolute_address  # noqa
 from utils import encode_command_register  # noqa
-from hardware.processor import Processor  # noqa
-from hardware.exceptions import InvalidRamBank  # noqa
 
 
 def test_validate_adm_instruction():

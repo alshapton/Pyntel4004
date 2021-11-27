@@ -8,9 +8,6 @@ import pytest
 sys.path.insert(1, '../src')
 sys.path.insert(2, '../test')
 
-
-from hardware.processor import Processor  # noqa
-from utils import encode_command_register  # noqa
 from hardware.exceptions import AddressOutOf8BitRange, \
         IncompatibleChunkBit, InvalidBitValue, \
         InvalidChunkValue, InvalidCommandRegisterFormat, \
@@ -20,7 +17,9 @@ from hardware.exceptions import AddressOutOf8BitRange, \
         ValueOutOfRangeForBits, ValueOutOfRangeForStack,\
         ValueTooLargeForAccumulator, \
         ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
+from hardware.processor import Processor  # noqa
 
+from utils import encode_command_register  # noqa
 ##############################################################################
 #                      RDx generic function                                  #
 ##############################################################################
@@ -37,7 +36,7 @@ def test_suboperation_rdx(rambank, chip, register, address, character):
     chip_base = Processor()
     chip_test = Processor()
 
-    RANDOM_VALUE = random.randint(0, 15)  # Select a random value
+    random_value = random.randint(0, 15)  # Select a random value
 
     command_register = encode_command_register(chip, register, 0,
                                                'DATA_RAM_STATUS_CHAR')
@@ -45,15 +44,15 @@ def test_suboperation_rdx(rambank, chip, register, address, character):
     chip_base.CURRENT_RAM_BANK = rambank
     chip_base.COMMAND_REGISTER = command_register
     chip_base.STATUS_CHARACTERS[rambank][chip][register][character] \
-        = RANDOM_VALUE
-    chip_base.set_accumulator(RANDOM_VALUE)
+        = random_value
+    chip_base.set_accumulator(random_value)
     chip_base.increment_pc(1)
 
     # Set preconditions
     chip_test.CURRENT_RAM_BANK = rambank
     chip_test.COMMAND_REGISTER = command_register
     chip_test.STATUS_CHARACTERS[rambank][chip][register][character] \
-        = RANDOM_VALUE
+        = random_value
 
     # Perform the operation under test:
     Processor.rdx(chip_test, character)
