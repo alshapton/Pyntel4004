@@ -1528,7 +1528,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
     N/A
 
     """
-    
+
     print(line, address)
     constant = False
     err = False
@@ -1575,7 +1575,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
                         opcode + "' at line: " + str(p_line + 1)
                 else:
                     address = address + opcodeinfo['words']
-    
+
     TFILE[p_line] = line.strip()
     p_line = p_line + 1
     return err, TFILE, p_line, address, _LABELS
