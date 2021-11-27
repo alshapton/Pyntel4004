@@ -1574,10 +1574,6 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
                         opcode + "' at line: " + str(p_line + 1)
                 else:
                     address = address + opcodeinfo['words']
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     TFILE[p_line] = line.strip()
     p_line = p_line + 1
     return err, TFILE, p_line, address, _LABELS
