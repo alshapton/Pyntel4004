@@ -1,4 +1,40 @@
-"""Shared operations (between assembly and execution."""
+"""Shared operations (between assembly, disassembly and execution."""
+
+
+def determine_filetype(inputfile):
+    """
+    Determine the filetype of a specific input file.
+
+    In the context of reloading a previously assembled file for
+    execution or disassembly.
+
+    Parameters
+    ----------
+    inputfile: str, mandatory
+        The filename to examine
+
+    Returns
+    -------
+    filetype: str
+        OBJ if an object file complete with metadata
+        BIN if a binary assembled file.
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    file = open(inputfile, "rb")
+    bytes = file.read(12)[2:9]
+    if bytes == b'program':
+        filetype = 'OBJ'
+    else:
+        filetype = 'BIN'
+    return filetype
 
 
 def coredump(chip, filename):
@@ -190,7 +226,7 @@ def get_opcodeinfobyopcode(self, opcode: int):
         The instance of the processor containing the registers, accumulator etc
 
     opcode: int, mandatory
-        The mnemonic to locate
+        The opcode to locate
 
     Returns
     -------

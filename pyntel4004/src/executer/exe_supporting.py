@@ -2,6 +2,7 @@
 
 from hardware.processor import Processor
 import json
+from shared.shared import determine_filetype
 
 
 def reload(inputfile, chip):
@@ -11,7 +12,7 @@ def reload(inputfile, chip):
     Parameters
     ----------
     inputfile: str, mandatory
-        filename of a .obj file
+        filename of a .obj or a .bin file
 
     chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
@@ -33,21 +34,50 @@ def reload(inputfile, chip):
     N/A
 
     """
-    with open(inputfile, "r", encoding='utf-8') as programfile:
-        data = json.loads(programfile)
 
-    # Get data for memory load from JSON
-    memory_space = data['location']
+    filetype = determine_filetype(inputfile)
+
     location = 0
     pc = location
+    if filetype == 'OBJ':
+        print(' Filetype: Object module with label tables etc.\n')
+        with open(inputfile, "r", encoding='utf-8') as programfile:
+            data = json.load(programfile)
 
-    # Place program in memory
-    for i in data['memory']:
-        if memory_space == 'rom':
-            chip.ROM[location] = int(i, 16)
-        else:
-            chip.PRAM[location] = int(i, 16)
-        location = location + 1
+        # Get data for memory load
+        memory_space = data['location']
+
+        # Place program in memory
+        for i in data['memory']:
+            if memory_space == 'rom':
+                chip.ROM[location] = int(i, 16)
+            else:
+                chip.PRAM[location] = int(i, 16)
+            location = location + 1
+
+    if filetype == 'BIN':
+        print(' Filetype: Binary assembled machine code\n')
+        location = 0
+        memory_space = 'ram'
+        programbytearray = bytearray()
+        try:
+            with open(inputfile, "rb") as f:
+                byte = f.read(1)
+                while byte:
+                    programbytearray += byte
+                    byte = f.read(1)
+                    location = location + 1
+
+        except IOError:
+            print('Error While Opening the file!')
+
+        # Place program in memory
+        location = 0
+        memory_space = 'ram'
+
+        for i in programbytearray:
+            chip.PRAM[location] = i
+            location = location + 1
 
     return memory_space, pc
 

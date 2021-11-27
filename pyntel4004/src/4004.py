@@ -11,7 +11,7 @@ import getopt
 import sys
 
 # Assembler imports
-
+from disassembler.disassembler import disassemble
 from assembler.assemble import assemble  # noqa
 
 # Executer imports
@@ -51,11 +51,15 @@ def main(argv):
     run = False
     do_assemble = False
     try:
-        opts, args = getopt.getopt(argv, "i:o:r:x", ["ifile=", "ofile=", "s"])  # noqa
+        opts, args = getopt.getopt(argv, "i:o:r:x:d", ["ifile=", "ofile=", "s"])  # noqa
     except getopt.GetoptError:
         print('4004 -i <inputfile>\n -o <outputfile> -x')
         sys.exit(2)
     for opt, arg in opts:
+        if opt == '-d':
+            reloadfile = str(args[0])
+            do_disassemble = True
+            run = False
         if opt == '-h':
             print('4004 -i <inputfile> -o <outputfile> -x')
             sys.exit()
@@ -80,9 +84,15 @@ def main(argv):
             print('From         : ' + str(pc))
             print()
             execute(chip, memory_space, pc, True)
-    print(opts, args)
+
     if do_assemble is True:
         result = assemble(inputfile, outputfile, chip)
+
+    if do_disassemble is True:
+        result = retrieve(reloadfile, chip)
+        pc = result[1]
+        memory_space = result[0]
+        result = disassemble(chip, memory_space, 0)
 
     if run is True and result is True:
         print()
