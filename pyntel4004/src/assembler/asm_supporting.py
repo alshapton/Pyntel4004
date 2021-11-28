@@ -7,12 +7,13 @@
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
 
+from typing import Tuple
 from hardware.processor import Processor
 from hardware.suboperation import split_address8
 from shared.shared import do_error, get_opcodeinfo, get_opcodeinfobyopcode  # noqa
 
 
-def asm_comment(label, count, line):
+def asm_comment(label: str, count: int, line: str) -> None:
     """
     Output the assembled comment.
 
@@ -44,7 +45,8 @@ def asm_comment(label, count, line):
              ' ', str(count), line, ' ', '', '', '',)
 
 
-def assemble_1(opcodeinfo, label, tps, address, count):
+def assemble_1(opcodeinfo: dict, label: str, tps: list,
+               address: int, count: int) -> Tuple[list, str]:
     """
     Output the assembled operator (no operand(s)).
 
@@ -56,7 +58,7 @@ def assemble_1(opcodeinfo, label, tps, address, count):
     label: str, mandatory
         Any label on this line
 
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
     address: int, mandatory
@@ -67,7 +69,7 @@ def assemble_1(opcodeinfo, label, tps, address, count):
 
     Returns
     -------
-    tps: List
+    tps: list
         Assembled code
 
     address: int
@@ -95,8 +97,9 @@ def assemble_1(opcodeinfo, label, tps, address, count):
     return tps, address
 
 
-def assemble_3(chip, x, _LABELS, tps, address, address_left,
-               address_right, label, count):
+def assemble_3(chip: Processor, x: list, _labels: list, tps: list,
+               address: int, address_left: str, address_right: str,
+               label: str, count: int) -> Tuple[int, list, list]:
     """
     Assemble code with 3 components.
 
@@ -105,13 +108,13 @@ def assemble_3(chip, x, _LABELS, tps, address, address_left,
     chip: Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
-    x: List, mandatory
+    x: list, mandatory
         Line of program code (split into component parts).
 
-    _LABELS: List, mandatory
+    _labels: list, mandatory
         List for containing labels
 
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
     address: int, mandatory
@@ -131,10 +134,10 @@ def assemble_3(chip, x, _LABELS, tps, address, address_left,
     address: int
         Current address of memory for assembly
 
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
-    _LABELS: List, Mandatory
+    _labels: list, Mandatory
         List for containing labels
 
     Raises
@@ -148,36 +151,37 @@ def assemble_3(chip, x, _LABELS, tps, address, address_left,
     """
     # Operator and 2 operands
     if x[0] == 'jcn':
-        address, tps, _LABELS = assemble_jcn(chip, x, _LABELS, tps,
+        address, tps, _labels = assemble_jcn(chip, x, _labels, tps,
                                              address, address_left,
                                              address_right, label,
                                              count)
     if x[0][:3] == 'fim':
-        address, tps, _LABELS = assemble_fim(chip, x, _LABELS, tps,
+        address, tps, _labels = assemble_fim(chip, x, _labels, tps,
                                              address, label, count)
     if x[0] == 'isz':
-        address, tps, _LABELS = assemble_isz(chip, x, x[1], _LABELS, tps,
+        address, tps, _labels = assemble_isz(chip, x, x[1], _labels, tps,
                                              address, address_left,
                                              address_right, label, count)
     if x[0] not in ('jcn', 'fim', 'isz'):
         tps, address = asm_others(chip, x, count, x[0], tps, address, label)
 
-    return address, tps, _LABELS
+    return address, tps, _labels
 
 
-def asm_label(tps, address, x, count, label):
+def asm_label(tps: list, address: int, x: list,
+              count: int, label: str) -> list:
     """
     Output the assembled label.
 
     Parameters
     ----------
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
     address: int, mandatory
         address to assemble to
 
-    x: List, mandatory
+    x: list, mandatory
         Line of program code (split into component parts).
 
     count: int, mandatory
@@ -483,7 +487,7 @@ def asm_pseudo(chip, opcode, label, count, x, tps, address,
     return err, org_found, tps, location, address
 
 
-def asm_main(chip, x, _LABELS, address, tps, opcode, opcodeinfo,
+def asm_main(chip, x, _labels, address, tps, opcode, opcodeinfo,
              label, count, org_found, location):
     """
     Assemble the program (opcode components).
@@ -496,7 +500,7 @@ def asm_main(chip, x, _LABELS, address, tps, opcode, opcodeinfo,
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _LABELS: List, mandatory
+    _labels: List, mandatory
         List for containing labels
 
     address: int
@@ -532,7 +536,7 @@ def asm_main(chip, x, _LABELS, address, tps, opcode, opcodeinfo,
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _LABELS: List
+    _labels: List
         List for containing labels
 
     address: int
@@ -579,8 +583,8 @@ def asm_main(chip, x, _LABELS, address, tps, opcode, opcodeinfo,
                 return False
         else:
             if org_found is True:
-                chip, x, _LABELS, address, tps, opcodeinfo, label, \
-                    count = assemble_opcodes(chip, x, _LABELS,
+                chip, x, _labels, address, tps, opcodeinfo, label, \
+                    count = assemble_opcodes(chip, x, _labels,
                                              address, tps, opcodeinfo,
                                              label, count)
             else:
@@ -590,11 +594,11 @@ def asm_main(chip, x, _LABELS, address, tps, opcode, opcodeinfo,
         err = "'FATAL: Pass 2:  Invalid mnemonic '" + \
             opcode + "' at line: " + str(count + 1)
 
-    return chip, x, _LABELS, address, tps, opcodeinfo, label, count, err, \
+    return chip, x, _labels, address, tps, opcodeinfo, label, count, err, \
         org_found, location
 
 
-def assemble_opcodes(chip, x, _LABELS, address, tps, opcodeinfo, label, count):
+def assemble_opcodes(chip, x, _labels, address, tps, opcodeinfo, label, count):
     """
     Assemble the opcodes.
 
@@ -606,7 +610,7 @@ def assemble_opcodes(chip, x, _LABELS, address, tps, opcodeinfo, label, count):
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _LABELS: List, mandatory
+    _labels: List, mandatory
         List for containing labels
 
     address: int
@@ -633,7 +637,7 @@ def assemble_opcodes(chip, x, _LABELS, address, tps, opcodeinfo, label, count):
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _LABELS: List
+    _labels: List
         List for containing labels
 
     address: int
@@ -663,7 +667,7 @@ def assemble_opcodes(chip, x, _LABELS, address, tps, opcodeinfo, label, count):
     """
     if x[0][-1] == ',':
         label = x[0]
-        match_label(_LABELS, label, address)
+        match_label(_labels, label, address)
         for _i in range(len([x])-1):
             x[_i] = x[_i + 1]
         x.pop(len([x])-1)
@@ -677,18 +681,18 @@ def assemble_opcodes(chip, x, _LABELS, address, tps, opcodeinfo, label, count):
         tps, address = assemble_1(opcodeinfo, label, tps, address, count)  # noqa
     if len(x) == 2:
         # Operator & operand (generic)
-        address, tps, _LABELS = assemble_2(chip, x, opcode, address, tps,
-                                           _LABELS, address_left,
+        address, tps, _labels = assemble_2(chip, x, opcode, address, tps,
+                                           _labels, address_left,
                                            address_right, label, count)
     if len(x) == 3:
         # Operator and 2 operands
-        address, tps, _LABELS = assemble_3(chip, x, _LABELS, tps,
+        address, tps, _labels = assemble_3(chip, x, _labels, tps,
                                            address, address_left,
                                            address_right, label, count)
-    return chip, x, _LABELS, address, tps, opcodeinfo, label, count
+    return chip, x, _labels, address, tps, opcodeinfo, label, count
 
 
-def pass1(chip, program_name, _LABELS, tps, TFILE):
+def pass1(chip, program_name, _labels, tps, tfile):
     """
     Pass 1 of the two-pass assembly process.
 
@@ -700,13 +704,13 @@ def pass1(chip, program_name, _LABELS, tps, TFILE):
     program_name: str, mandatory
         Name of the assembly language program file.
 
-    _LABELS: List, Mandatory
+    _labels: List, Mandatory
         List for containing labels
 
     tps: List, mandatory
         Assembled code
 
-    TFILE: List, Mandatory
+    tfile: List, Mandatory
         Assembly language store
 
 
@@ -715,10 +719,10 @@ def pass1(chip, program_name, _LABELS, tps, TFILE):
     err:
         False if no error, error text if error
 
-    _LABELS: List
+    _labels: List
         List for containing labels
 
-    TFILE: List
+    tfile: List
         Assembly language store
 
     tps: List
@@ -745,7 +749,7 @@ def pass1(chip, program_name, _LABELS, tps, TFILE):
     except IOError:
         err = ('FATAL: Pass 1: File "' + program_name +
                '" does not exist.')
-        return err,  _LABELS, tps, TFILE, address
+        return err,  _labels, tps, tfile, address
 
     else:
         print()
@@ -759,17 +763,17 @@ def pass1(chip, program_name, _LABELS, tps, TFILE):
             if (not line) or (line == '') or len(line) == 0:
                 # Completed reading program into memory
                 break
-            err, TFILE, p_line, address, _LABELS = \
-                work_with_a_line_of_asm(chip, line, _LABELS,
-                                        p_line, address, TFILE)
+            err, tfile, p_line, address, _labels = \
+                work_with_a_line_of_asm(chip, line, _labels,
+                                        p_line, address, tfile)
             if err:
                 break
         # Completed reading program into memory (or errored-out)
         program.close()
-        return err,  _LABELS, tps, TFILE, address
+        return err,  _labels, tps, tfile, address
 
 
-def wrap_up(chip, location, tps, _LABELS, object_file):
+def wrap_up(chip, location, tps, _labels, object_file):
     """
     Pass 1 of the two-pass assembly process.
 
@@ -784,7 +788,7 @@ def wrap_up(chip, location, tps, _LABELS, object_file):
     tps: List, mandatory
         Assembled code
 
-    _LABELS: List, mandatory
+    _labels: List, mandatory
         List for containing labels
 
     object_file: str, mandatory
@@ -814,9 +818,9 @@ def wrap_up(chip, location, tps, _LABELS, object_file):
     print()
     print('Labels:')
     print('Address   Label')
-    for _i in range(len(_LABELS)):  # noqa
-        print('{:>5}     {}'.format(_LABELS[_i]['address'], _LABELS[_i]['label']))  # noqa
-    write_program_to_file(tps, object_file, location, _LABELS)
+    for _i in range(len(_labels)):  # noqa
+        print('{:>5}     {}'.format(_labels[_i]['address'], _labels[_i]['label']))  # noqa
+    write_program_to_file(tps, object_file, location, _labels)
     return chip
 
 
@@ -1068,7 +1072,7 @@ def assemble_isz(chip: Processor, x, register, _lbls, tps,
     return address, tps, _lbls
 
 
-def assemble_fim(self, x, _LABELS, TPS, address, label, count):
+def assemble_fim(self, x, _labels, tps, address, label, count):
     """
     Function to assemble FIM instruction.
 
@@ -1080,10 +1084,10 @@ def assemble_fim(self, x, _LABELS, TPS, address, label, count):
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _LABELS: list, mandatory
+    _labels: list, mandatory
         List of valid labels
 
-    TPS: list, mandatory
+    tps: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
 
@@ -1103,11 +1107,11 @@ def assemble_fim(self, x, _LABELS, TPS, address, label, count):
         After the instruction has been assembled, the incoming address
         is incremented by the number of words in the assembled instruction.
 
-    TPS: list
+    tps: list
         List representing the memory of the i4004 into which the newly
         assembled instruction has just been placed.
 
-    _LABELS: list
+    _labels: list
         Addresses of the labels (pass through only)
 
     Raises
@@ -1121,18 +1125,18 @@ def assemble_fim(self, x, _LABELS, TPS, address, label, count):
     """
     f_opcode = x[0] + '(' + x[1] + ',data8)'
     opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
-    TPS[address] = opcodeinfo['opcode']
-    TPS[address + 1] = int(x[2])
+    tps[address] = opcodeinfo['opcode']
+    tps[address + 1] = int(x[2])
     bit1, bit2 = get_bits(opcodeinfo)
     print_ln(address, label, '' '', '', bit1, bit2, '', '',
-             str(TPS[address]) + "," + str(TPS[address + 1]),
+             str(tps[address]) + "," + str(tps[address + 1]),
              str(count), x[0], str(x[1]),
              str(x[2]), '', '', '', '')
     address = address + opcodeinfo['words']
-    return address, TPS, _LABELS
+    return address, tps, _labels
 
 
-def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
+def assemble_jcn(self, x, _labels, tps, address, address_left,
                  address_right, label, count):
     """
     Function to assemble JCN instructions.
@@ -1145,10 +1149,10 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _LABELS: list, mandatory
+    _labels: list, mandatory
         List of valid labels
 
-    TPS: list, mandatory
+    tps: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
 
@@ -1171,11 +1175,11 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
         After the instruction has been assembled, the incoming address
         is incremented by the number of words in the assembled instruction.
 
-    TPS: list
+    tps: list
         List representing the memory of the i4004 into which the newly
         assembled instruction has just been placed.
 
-    _LABELS: list
+    _labels: list
         Addresses of the labels (pass through only)
 
     Raises
@@ -1195,19 +1199,19 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
         bin_conditions = decode_conditions(conditions)
     f_opcode = 'jcn(' + str(bin_conditions) + ',address8)'
     opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
-    label_addr = int(get_label_addr(_LABELS, dest_label))
+    label_addr = int(get_label_addr(_labels, dest_label))
     vl, vr = split_address8(label_addr)
     bit1, bit2 = get_bits(opcodeinfo)
-    TPS[address] = opcodeinfo['opcode']
-    TPS[address + 1] = label_addr
+    tps[address] = opcodeinfo['opcode']
+    tps[address + 1] = label_addr
     print_ln(address, label, address_left, address_right, bit1, bit2,
-             vl, vr, str(TPS[address]) + "," + str(TPS[address + 1]),
+             vl, vr, str(tps[address]) + "," + str(tps[address + 1]),
              '', '', str(count), x[0], str(x[1]), str(x[2]), '', '')
     address = address + opcodeinfo['words']
-    return address, TPS, _LABELS
+    return address, tps, _labels
 
 
-def assemble_2(chip: Processor, x, opcode, address, tps, _LABELS, address_left,
+def assemble_2(chip: Processor, x, opcode, address, tps, _labels, address_left,
                address_right, label, count):
     """
     Function to assemble specific instructions.
@@ -1230,7 +1234,7 @@ def assemble_2(chip: Processor, x, opcode, address, tps, _LABELS, address_left,
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
 
-    _LABELS: list, mandatory
+    _labels: list, mandatory
         List of valid labels
 
     address_left, address_right: str, mandatory
@@ -1253,7 +1257,7 @@ def assemble_2(chip: Processor, x, opcode, address, tps, _LABELS, address_left,
         List representing the memory of the i4004 into which the newly
         assembled instruction has just been placed.
 
-    _LABELS: list
+    _labels: list
         Addresses of the labels (pass through only)
 
     Raises
@@ -1268,7 +1272,7 @@ def assemble_2(chip: Processor, x, opcode, address, tps, _LABELS, address_left,
     # pad out for the only 2-character mnemonic
     if opcode == 'ld':
         opcode = 'ld '
-    addx = get_label_addr(_LABELS, x[1])
+    addx = get_label_addr(_labels, x[1])
     if addx == -1:
         addx = x[1]
     f_opcode = opcode + '(' + str(addx) + ')'
@@ -1281,7 +1285,7 @@ def assemble_2(chip: Processor, x, opcode, address, tps, _LABELS, address_left,
             decimal_code = 80
         f_opcode = opcode + '(address12)'
         opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
-        label_addr = get_label_addr(_LABELS, x[1])
+        label_addr = get_label_addr(_labels, x[1])
         label_addr12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + \
             str(bin(label_addr)[2:].zfill(12))
         bit1 = label_addr12[:8]
@@ -1304,7 +1308,7 @@ def assemble_2(chip: Processor, x, opcode, address, tps, _LABELS, address_left,
                  bit2, '', '', tps[address], '', '', str(count), opcode,
                  str(x[1]), '', '', '')
         address = address + opcodeinfo['words']
-    return address, tps, _LABELS
+    return address, tps, _labels
 
 
 def pass0(chip):
@@ -1343,26 +1347,27 @@ def pass0(chip):
     _lbls = []
 
     # Maximum size of program memory
-    TPS_SIZE = max([chip.MEMORY_SIZE_ROM,
+    tps_size = max([chip.MEMORY_SIZE_ROM,
                     chip.MEMORY_SIZE_PRAM,
                     chip.MEMORY_SIZE_RAM])
 
     # Reset temporary_program_store
     tps = []
-    for _i in range(TPS_SIZE):
+    for _i in range(tps_size):
         tps.append(0)
 
     # Initialise assembly language line store to
     # twice the size of the potential program size.
-    TFILE = []
-    for _i in range(TPS_SIZE * 2):
-        TFILE.append('')
+    tfile = []
+    for _i in range(tps_size * 2):
+        tfile.append('')
 
-    return _lbls, tps, TFILE
+    return _lbls, tps, tfile
 
 
-def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
-             f9, f10, f11, f12, f13, f14, f15, f16):
+def print_ln(f0: str, f1: str, f2: str, f3: str, f4: str, f5: str, f6: str,
+             f7: str, f8: str, f9: str, f10: str, f11: str, f12: str,
+             f13: str, f14: str, f15: str, f16: str) -> None:
     """
     Print a set of items to the screen in a standard, columnar fashion.
 
@@ -1478,7 +1483,7 @@ def validate_inc(parts, line):
     return False
 
 
-def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
+def work_with_a_line_of_asm(chip, line, _labels, p_line, address, tfile):
     """
     Analyse a single line of code.
 
@@ -1490,7 +1495,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
     line: str, mandatory
         line of assembly code read in from a file
 
-    _LABELS: List, Mandatory
+    _labels: List, Mandatory
         List for containing labels
 
     p_line: int, mandatory
@@ -1499,7 +1504,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
     address: int, Mandatory
         Current address of memory for assembly
 
-    TFILE: List, Mandatory
+    tfile: List, Mandatory
         Assembly language store
 
     Returns
@@ -1507,7 +1512,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
     err:
         False if no error, error text if error
 
-    TFILE: List
+    tfile: List
         Assembly language store
 
     p_line: int
@@ -1516,7 +1521,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
     address: int
         Current address of memory for assembly
 
-    _LABELS: List, Mandatory
+    _labels: List, Mandatory
         List for containing labels
 
     Raises
@@ -1535,11 +1540,11 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
     parts = line.split()
     if parts[0][len(parts[0])-1] == ',':
         # Found a label, now add it to the label table
-        print(_LABELS, '    ', parts[0], '   ', address)
-        if add_label(_LABELS, parts[0]) == -1:
+        print(_labels, '    ', parts[0], '   ', address)
+        if add_label(_labels, parts[0]) == -1:
             err = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
                    ' at line ' + str(p_line + 1))
-            return err, TFILE, p_line, 0, _LABELS
+            return err, tfile, p_line, 0, _labels
         # Attach value to a label
         if '0' <= str(parts[1])[:1] <= '9':
             constant = True
@@ -1551,7 +1556,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
             constant = True
             label_content = int(parts[2])
 
-        match_label(_LABELS, parts[0], label_content)
+        match_label(_labels, parts[0], label_content)
         # Set opcode
         opcode = parts[1][:3]
         opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
@@ -1561,7 +1566,7 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
         opcode = parts[0][:3]
     if opcode[:3] == 'inc':
         err = validate_inc(parts, p_line + 1)
-        return err, TFILE, p_line, 0, _LABELS
+        return err, tfile, p_line, 0, _labels
     # Custom opcodes
     if parts[0][len(parts[0])-1] != ',':
         if not constant:
@@ -1574,12 +1579,12 @@ def work_with_a_line_of_asm(chip, line, _LABELS, p_line, address, TFILE):
                         opcode + "' at line: " + str(p_line + 1)
                 else:
                     address = address + opcodeinfo['words']
-    TFILE[p_line] = line.strip()
+    tfile[p_line] = line.strip()
     p_line = p_line + 1
-    return err, TFILE, p_line, address, _LABELS
+    return err, tfile, p_line, address, _labels
 
 
-def write_program_to_file(program, filename, memory_location, _LABELS):
+def write_program_to_file(program, filename, memory_location, _labels) -> bool:
     """
     Take the assembled program and write to a given filename.
 
@@ -1594,7 +1599,7 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
     memory_location: str, mandatory
         Location in memory of the first word of the program
 
-    _LABELS: list, mandatory
+    _labels: list, mandatory
         Label table
 
     Returns
@@ -1615,7 +1620,7 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
     m_location = '"location":"' + memory_location + '"'
     compdate = '"compile_date":"' + \
                datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '"'
-    labels = '"labels":' + str(_LABELS).replace("'", '"')
+    labels = '"labels":' + str(_labels).replace("'", '"')
     memorycontent = '"memory":['
     for location in program:
         content = str(hex(location)[2:])

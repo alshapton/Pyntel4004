@@ -1,5 +1,6 @@
-"""Assembler main module."""
+"""Disssembler main module."""
 
+# Import System modules
 import sys
 sys.path.insert(1, '../src')
 
@@ -7,9 +8,9 @@ sys.path.insert(1, '../src')
 from hardware.processor import Processor  # noqa
 
 # Import supporting functions
-from disassembler.dis_supporting import disassemble_instruction, disassemble_mnemonic  # noqa
+from disassembler.dis_supporting import disassemble_instruction  # noqa
 # Shared imports
-from shared.shared import retrieve_program  # noqa
+from shared.shared import retrieve_program, translate_mnemonic  # noqa
 
 
 ###############################################################################################  # noqa
@@ -60,5 +61,5 @@ def disassemble(chip: Processor, location: str, pc: int):
             return True
         exe, opcode, words = disassemble_instruction(chip, _tps,  opcode)
         # Translate and print instruction
-        disassemble_mnemonic(chip, _tps, exe, opcode, words)
+        translate_mnemonic(chip, _tps, exe, opcode, 'D', words)
     return True
