@@ -1,8 +1,9 @@
 """Disssembler main module."""
 
 # Import System modules
+import os
 import sys
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
 
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
@@ -24,7 +25,7 @@ from shared.shared import retrieve_program, translate_mnemonic  # noqa
 ###############################################################################################  # noqa
 
 
-def disassemble(chip: Processor, location: str, pc: int):
+def disassemble(chip: Processor, location: str, pc: int) -> bool:
     """
     Control the dissassembly of a previously assembled program.
 

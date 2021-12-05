@@ -1,9 +1,11 @@
 # Using pytest
 # Test the "empty" instructions of an instance of an i4004(processor)
 
+import os
 import sys
-import pytest
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pytest  # noqa
 
 from hardware.processor import Processor  # noqa
 

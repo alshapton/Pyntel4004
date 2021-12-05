@@ -1,10 +1,14 @@
 # Using pytest
 # Test the FIN instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pickle  # noqa
+import pytest  # noqa
+
 
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import convert_decimal_to_n_bit_slices, \

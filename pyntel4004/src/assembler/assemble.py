@@ -10,7 +10,8 @@
 from hardware.processor import Processor
 
 # Assembler imports
-from assembler.asm_supporting import asm_comment, asm_label, asm_main, do_error, pass0, pass1, wrap_up   # noqa
+from assembler.asm_supporting import asm_comment, asm_label, asm_main, \
+        do_error, pass0, pass1, wrap_up  # noqa
 
 # Shared imports
 from shared.shared import get_opcodeinfo  # noqa
@@ -55,6 +56,7 @@ def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
     N/A
 
     """
+
     #     mccabe: MC0001 / assemble is too complex (44) - start
     #     mccabe: MC0001 / assemble is too complex (35)
     #     mccabe: MC0001 / assemble is too complex (30)

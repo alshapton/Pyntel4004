@@ -1,11 +1,14 @@
 # Using pytest
 # Test the ld instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-import random
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pickle  # noqa
+import pytest  # noqa
+import random  # noqa
 
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import decimal_to_binary, insert_register  # noqa

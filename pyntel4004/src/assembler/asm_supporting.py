@@ -7,7 +7,7 @@
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
 
-from typing import Tuple
+from typing import Tuple, Any
 from hardware.processor import Processor
 from hardware.suboperation import split_address8
 from shared.shared import do_error, get_opcodeinfo, get_opcodeinfobyopcode  # noqa
@@ -210,13 +210,13 @@ def asm_label(tps: list, address: int, x: list,
     return tps
 
 
-def asm_end(tps, address, count, label):
+def asm_end(tps: list, address: int, count: int, label: str) -> list:
     """
     Output the assembled "end" pseudo-opcode.
 
     Parameters
     ----------
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
     address: int, mandatory
@@ -249,7 +249,8 @@ def asm_end(tps, address, count, label):
     return tps
 
 
-def asm_org(label, count, x, opcode):
+def asm_org(label: str, count: int, x: list,
+            opcode: str) -> Tuple[bool, str, int]:
     """
     Output the assembled "org" pseudo-opcode.
 
@@ -261,7 +262,7 @@ def asm_org(label, count, x, opcode):
     count: int, mandatory
         Current assembly program line
 
-    x: List, mandatory
+    x: list, mandatory
         Line of program code (split into component parts).
 
     opcode: str, mandatory
@@ -305,7 +306,8 @@ def asm_org(label, count, x, opcode):
     return True, location, address
 
 
-def asm_others(chip, x, count, opcode, tps, address, label):
+def asm_others(chip: Processor, x: list, count: int, opcode: str,
+               tps: list, address: int, label: str) -> Tuple[list, int]:
     """
     Assemble othe instructions.
 
@@ -314,7 +316,7 @@ def asm_others(chip, x, count, opcode, tps, address, label):
     chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
-    x: List, mandatory
+    x: list, mandatory
         Line of program code (split into component parts).
 
     count: int, mandatory
@@ -323,7 +325,7 @@ def asm_others(chip, x, count, opcode, tps, address, label):
     opcode: int, mandatory
        Value of the opcode for assembly
 
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
     address: int, mandatory
@@ -334,7 +336,7 @@ def asm_others(chip, x, count, opcode, tps, address, label):
 
     Returns
     -------
-    tps: List
+    tps: list
         Assembled code
 
     address: int
@@ -367,7 +369,7 @@ def asm_others(chip, x, count, opcode, tps, address, label):
     return tps, address
 
 
-def asm_pin(chip, value, label, count):
+def asm_pin(chip: Processor, value: int, label: str, count: int) -> Any:
     """
     Manage the PIN10 (Signal pin).
 
@@ -412,8 +414,9 @@ def asm_pin(chip, value, label, count):
     return err
 
 
-def asm_pseudo(chip, opcode, label, count, x, tps, address,
-               org_found, location):
+def asm_pseudo(chip: Processor, opcode: int, label: str, count: int,
+               x: list, tps: list, address: int, org_found: bool,
+               location: str) -> Tuple[Any, bool, list, str, int]:
     """
     Assemble pseudo-opcodes.
 
@@ -431,10 +434,10 @@ def asm_pseudo(chip, opcode, label, count, x, tps, address,
     count: int, mandatory
         Current assembly program line
 
-    x: List, mandatory
+    x: list, mandatory
         Line of program code (split into component parts).
 
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
     address: int, mandatory
@@ -454,7 +457,7 @@ def asm_pseudo(chip, opcode, label, count, x, tps, address,
     org_found: Boolean, mandatory
         Whether an "org" directive has been found
 
-    tps: List
+    tps: list
         Assembled code
 
     location: str
@@ -487,8 +490,11 @@ def asm_pseudo(chip, opcode, label, count, x, tps, address,
     return err, org_found, tps, location, address
 
 
-def asm_main(chip, x, _labels, address, tps, opcode, opcodeinfo,
-             label, count, org_found, location):
+def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
+             opcode: str, opcodeinfo: dict,
+             label: str, count: int, org_found: bool, location: str) \
+             -> Tuple[Processor, list, list, int, list,
+                      dict, str, int, Any, bool, str]:
     """
     Assemble the program (opcode components).
 
@@ -500,13 +506,13 @@ def asm_main(chip, x, _labels, address, tps, opcode, opcodeinfo,
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _labels: List, mandatory
+    _labels: list, mandatory
         List for containing labels
 
     address: int
         the address to assemble to
 
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
     opcode: str, mandatory
@@ -530,22 +536,22 @@ def asm_main(chip, x, _labels, address, tps, opcode, opcodeinfo,
 
     Returns
     -------
-    chip: Processor, mandatory
+    chip: Processor
         Instance of a processor to place the assembled code in.
 
-    x: list, mandatory
+    x: list
         The current line of code being assembled split into individual elements
 
-    _labels: List
+    _labels: list
         List for containing labels
 
     address: int
         the address to assemble to
 
-    tps: List
+    tps: list
         Assembled code
 
-    opcodeinfo: str
+    opcodeinfo: dict
         JSON string containing an opcode's information
 
     label: str
@@ -557,7 +563,7 @@ def asm_main(chip, x, _labels, address, tps, opcode, opcodeinfo,
 
     err: Bool/Text depending on whether an error is raised,
 
-    org_found: Boolean
+    org_found: bool
         Whether an "org" directive has been found
 
     location: str
@@ -598,7 +604,10 @@ def asm_main(chip, x, _labels, address, tps, opcode, opcodeinfo,
         org_found, location
 
 
-def assemble_opcodes(chip, x, _labels, address, tps, opcodeinfo, label, count):
+def assemble_opcodes(chip: Processor, x: list, _labels: list, address: int,
+                     tps: list, opcodeinfo: dict, label: str, count: int) \
+                     -> Tuple[Processor, list, list,
+                              int, list, dict, str, int]:
     """
     Assemble the opcodes.
 
@@ -619,7 +628,7 @@ def assemble_opcodes(chip, x, _labels, address, tps, opcodeinfo, label, count):
     tps: List, mandatory
         Assembled code
 
-    opcodeinfo: str, mandatory
+    opcodeinfo: dict, mandatory
         JSON string containing an opcode's information
 
     label: str, mandatory
@@ -637,16 +646,16 @@ def assemble_opcodes(chip, x, _labels, address, tps, opcodeinfo, label, count):
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _labels: List
+    _labels: list
         List for containing labels
 
     address: int
         the address to assemble to
 
-    tps: List
+    tps: list
         Assembled code
 
-    opcodeinfo: str, mandatory
+    opcodeinfo: dict, mandatory
         JSON string containing an opcode's information
 
     label: str, mandatory
@@ -692,7 +701,8 @@ def assemble_opcodes(chip, x, _labels, address, tps, opcodeinfo, label, count):
     return chip, x, _labels, address, tps, opcodeinfo, label, count
 
 
-def pass1(chip, program_name, _labels, tps, tfile):
+def pass1(chip: Processor, program_name: str, _labels: list,
+          tps: list, tfile: list) -> Tuple[Any, list, list, list, int]:
     """
     Pass 1 of the two-pass assembly process.
 
@@ -704,13 +714,13 @@ def pass1(chip, program_name, _labels, tps, tfile):
     program_name: str, mandatory
         Name of the assembly language program file.
 
-    _labels: List, Mandatory
+    _labels: list, Mandatory
         List for containing labels
 
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
-    tfile: List, Mandatory
+    tfile: list, mandatory
         Assembly language store
 
 
@@ -719,13 +729,13 @@ def pass1(chip, program_name, _labels, tps, tfile):
     err:
         False if no error, error text if error
 
-    _labels: List
+    _labels: list
         List for containing labels
 
-    tfile: List
+    tfile: list
         Assembly language store
 
-    tps: List
+    tps: list
         Assembled code
 
     address: int
@@ -750,7 +760,6 @@ def pass1(chip, program_name, _labels, tps, tfile):
         err = ('FATAL: Pass 1: File "' + program_name +
                '" does not exist.')
         return err,  _labels, tps, tfile, address
-
     else:
         print()
         print()
@@ -773,7 +782,8 @@ def pass1(chip, program_name, _labels, tps, tfile):
         return err,  _labels, tps, tfile, address
 
 
-def wrap_up(chip, location, tps, _labels, object_file):
+def wrap_up(chip: Processor, location: str, tps: list, _labels: list,
+            object_file: str) -> Processor:
     """
     Pass 1 of the two-pass assembly process.
 
@@ -785,10 +795,10 @@ def wrap_up(chip, location, tps, _labels, object_file):
     location: str, mandatory
         either 'ram' or 'rom'
 
-    tps: List, mandatory
+    tps: list, mandatory
         Assembled code
 
-    _labels: List, mandatory
+    _labels: list, mandatory
         List for containing labels
 
     object_file: str, mandatory
@@ -796,7 +806,7 @@ def wrap_up(chip, location, tps, _labels, object_file):
 
     Returns
     -------
-    chip : Processor, mandatory
+    chip : Processor
         The instance of the processor containing the registers, accumulator etc
 
     Raises
@@ -863,7 +873,7 @@ def add_label(_lbls, label: str):
     return _lbls
 
 
-def decode_conditions(conditions: str):
+def decode_conditions(conditions: str) -> int:
     """
     Decode the conditions from a JCN mnemonic to a decimal value.
 
@@ -900,7 +910,7 @@ def decode_conditions(conditions: str):
     return int_conditions
 
 
-def get_bits(opcodeinfo):
+def get_bits(opcodeinfo: dict) -> Tuple[str, str]:
     """
     Return an opcode 2x 4-bit nibbles.
 
@@ -929,7 +939,7 @@ def get_bits(opcodeinfo):
     return bit1, bit2
 
 
-def match_label(_lbls, label: str, address):
+def match_label(_lbls: list, label: str, address: int) -> list:
     """
     Given a label and an address, add it (if required) to the list of labels.
 
@@ -964,7 +974,7 @@ def match_label(_lbls, label: str, address):
     return _lbls
 
 
-def get_label_addr(_lbls, label: str):
+def get_label_addr(_lbls: list, label: str) -> int:
     """
     Given a label, get the address for that label.
 
@@ -997,8 +1007,9 @@ def get_label_addr(_lbls, label: str):
     return label_address
 
 
-def assemble_isz(chip: Processor, x, register, _lbls, tps,
-                 address, a_l, a_r, label, count):
+def assemble_isz(chip: Processor, x: list, register: int, _lbls: list,
+                 tps: list, address: int, a_l: str, a_r: str,
+                 label: str, count: int) -> Tuple[int, list, list]:
     """
     Function to correctly assemble the ISZ instruction.
 
@@ -1072,7 +1083,9 @@ def assemble_isz(chip: Processor, x, register, _lbls, tps,
     return address, tps, _lbls
 
 
-def assemble_fim(self, x, _labels, tps, address, label, count):
+def assemble_fim(self: Processor, x: list, _labels: list,
+                 tps: list, address: int, label: str,
+                 count: int) -> Tuple[int, list, list]:
     """
     Function to assemble FIM instruction.
 
@@ -1136,8 +1149,10 @@ def assemble_fim(self, x, _labels, tps, address, label, count):
     return address, tps, _labels
 
 
-def assemble_jcn(self, x, _labels, tps, address, address_left,
-                 address_right, label, count):
+def assemble_jcn(self: Processor, x: list, _labels: list,
+                 tps: list, address: int, address_left: str,
+                 address_right: str, label: str,
+                 count: int) -> Tuple[int, list, list]:
     """
     Function to assemble JCN instructions.
 
@@ -1211,8 +1226,10 @@ def assemble_jcn(self, x, _labels, tps, address, address_left,
     return address, tps, _labels
 
 
-def assemble_2(chip: Processor, x, opcode, address, tps, _labels, address_left,
-               address_right, label, count):
+def assemble_2(chip: Processor, x: list, opcode: str, address: int,
+               tps: list, _labels: list, address_left: str,
+               address_right: str, label: str, count: int) \
+               -> Tuple[int, list, list]:
     """
     Function to assemble specific instructions.
 
@@ -1311,7 +1328,7 @@ def assemble_2(chip: Processor, x, opcode, address, tps, _labels, address_left,
     return address, tps, _labels
 
 
-def pass0(chip):
+def pass0(chip: Processor) -> Tuple[list, int, list, list]:
     """
     Initialise storage for assembly.
 
@@ -1322,16 +1339,16 @@ def pass0(chip):
 
     Returns
     -------
-    _LABELS: List
+    _labels: list
         List for containing labels
 
-    TPS_SIZE: Integer
+    tps_size: int
         Maximum size of program memory
 
-    TPS: List
+    tps: list
         Program store
 
-    TPS_FILE: List
+    tps_file: list
         Assembly language store
 
     Raises
@@ -1444,7 +1461,7 @@ def print_ln(f0: str, f1: str, f2: str, f3: str, f4: str, f5: str, f6: str,
                      f9, f10, f11, f12, f13, f14, f15, f16))
 
 
-def validate_inc(parts, line):
+def validate_inc(parts: list, line: str) -> bool:
     """
     Validate the contents (i.e. the parameters) of an INC command.
 
@@ -1483,7 +1500,10 @@ def validate_inc(parts, line):
     return False
 
 
-def work_with_a_line_of_asm(chip, line, _labels, p_line, address, tfile):
+def work_with_a_line_of_asm(chip: Processor, line: str,
+                            _labels: list, p_line: int,
+                            address: int, tfile: list) \
+                            -> Tuple[Any, list, int, int, list]:
     """
     Analyse a single line of code.
 
@@ -1495,7 +1515,7 @@ def work_with_a_line_of_asm(chip, line, _labels, p_line, address, tfile):
     line: str, mandatory
         line of assembly code read in from a file
 
-    _labels: List, Mandatory
+    _labels: list, Mandatory
         List for containing labels
 
     p_line: int, mandatory
@@ -1504,7 +1524,7 @@ def work_with_a_line_of_asm(chip, line, _labels, p_line, address, tfile):
     address: int, Mandatory
         Current address of memory for assembly
 
-    tfile: List, Mandatory
+    tfile: list, Mandatory
         Assembly language store
 
     Returns
@@ -1512,7 +1532,7 @@ def work_with_a_line_of_asm(chip, line, _labels, p_line, address, tfile):
     err:
         False if no error, error text if error
 
-    tfile: List
+    tfile: list
         Assembly language store
 
     p_line: int
@@ -1521,7 +1541,7 @@ def work_with_a_line_of_asm(chip, line, _labels, p_line, address, tfile):
     address: int
         Current address of memory for assembly
 
-    _labels: List, Mandatory
+    _labels: list
         List for containing labels
 
     Raises

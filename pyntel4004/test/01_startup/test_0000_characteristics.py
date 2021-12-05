@@ -1,8 +1,11 @@
 # Using pytest
 # Test the characteristics of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+
 from hardware.processor import Processor  # noqa
 
 

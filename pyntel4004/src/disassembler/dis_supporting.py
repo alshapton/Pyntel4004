@@ -2,11 +2,14 @@
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
 
+from typing import Tuple
+
 # Shared imports
 from shared.shared import get_opcodeinfobyopcode  # noqa
 
 
-def disassemble_instruction(chip, _tps, opcode):
+def disassemble_instruction(chip: Processor, _tps: list,
+                            opcode: str) -> Tuple[str, str, int]:
     """
     Process a single instruction.
 

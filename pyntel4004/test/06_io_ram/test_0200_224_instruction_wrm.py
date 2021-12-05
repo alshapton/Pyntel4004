@@ -2,12 +2,15 @@
 # Test the WRM instructions of an instance of an i4004(processor)
 
 
+# Import system modules
+import os
 import sys
-sys.path.insert(1, '../src')
-sys.path.insert(2, '../test')
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'src')
 
 import pickle  # noqa
 import pytest  # noqa
+
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import convert_to_absolute_address  # noqa
 from utils import encode_command_register  # noqa

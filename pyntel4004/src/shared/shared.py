@@ -1,10 +1,17 @@
 """Shared operations (between assembly, disassembly and execution."""
 
+# Import system library
+import os
+
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
 
+# OS file path separator
+global sep
+sep = os.sep
 
-def coredump(chip, filename):
+
+def coredump(chip: Processor, filename: str) -> bool:
     """
     Take the memory and write to a given filename.
 
@@ -102,7 +109,7 @@ def coredump(chip, filename):
         return True
 
 
-def determine_filetype(inputfile):
+def determine_filetype(inputfile: str) -> str:
     """
     Determine the filetype of a specific input file.
 
@@ -138,7 +145,7 @@ def determine_filetype(inputfile):
     return filetype
 
 
-def do_error(message: str):
+def do_error(message: str) -> bool:
     """
     Print an assembly/runtime error message.
 
@@ -165,7 +172,7 @@ def do_error(message: str):
     return True
 
 
-def get_opcodeinfo(self, ls: str, mnemonic: str):
+def get_opcodeinfo(self: Processor, ls: str, mnemonic: str) -> dict:
     """
     Given a mnemonic retrieve details about the it from the opcode table.
 
@@ -219,7 +226,7 @@ def get_opcodeinfo(self, ls: str, mnemonic: str):
     return opcodeinfo
 
 
-def get_opcodeinfobyopcode(self, opcode: int):
+def get_opcodeinfobyopcode(self: Processor, opcode: int) -> dict:
     """
     Given an opcode, retrieve details about it from the opcode table.
 
@@ -260,7 +267,7 @@ def get_opcodeinfobyopcode(self, opcode: int):
     return opcodeinfo
 
 
-def retrieve_program(chip, location):
+def retrieve_program(chip: Processor, location: str) -> list:
     """
     Retrieve the assembled program from the specified location.
 
@@ -274,7 +281,8 @@ def retrieve_program(chip, location):
 
     Returns
     -------
-    The program from the location specified
+    loc: list
+        The program from the location specified
 
     Raises
     ------
@@ -292,7 +300,8 @@ def retrieve_program(chip, location):
     return loc
 
 
-def translate_mnemonic(chip: Processor, _tps, exe, opcode, task, words):
+def translate_mnemonic(chip: Processor, _tps: list, exe: str,
+                       opcode: str, task: str, words: int) -> str:
     """
     Formulate the opcodes into mnemonics ready for execution.
 
@@ -301,12 +310,12 @@ def translate_mnemonic(chip: Processor, _tps, exe, opcode, task, words):
     chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
-    exe: str, mandatory
-        pre-formatted exe mnemonic ready for processing
-
     _tps: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
+
+    exe: str, mandatory
+        pre-formatted exe mnemonic ready for processing
 
     opcode: str, mandatory
         Opcode of the current instruction

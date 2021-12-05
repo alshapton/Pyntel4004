@@ -1,11 +1,14 @@
 # Using pytest
 # Test the ldm instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-import random
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pickle  # noqa
+import pytest  # noqa
+import random  # noqa
 
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import decimal_to_binary, insert_register  # noqa
@@ -29,11 +32,11 @@ def test_scenario1(value):
     chip_test = Processor()
     chip_base = Processor()
 
-    RANDOM_VALUE = random.randint(0, 15)  # Select a random 4-bit value
+    rv = random.randint(0, 15)  # Select a random 4-bit value
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
-    chip_test.ACCUMULATOR = RANDOM_VALUE
+    chip_test.ACCUMULATOR = rv
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0

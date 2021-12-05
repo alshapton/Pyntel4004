@@ -12,7 +12,8 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../pyntel4004/src'))
+src = '..' + os.sep + '..' + os.sep + 'pyntel4004' + os.sep + 'src'
+sys.path.insert(0, os.path.abspath(src))
 
 # -- Project information -----------------------------------------------------
 

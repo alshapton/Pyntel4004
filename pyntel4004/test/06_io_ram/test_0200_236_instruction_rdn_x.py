@@ -1,17 +1,20 @@
 # Using pytest
 # Test the RDn instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-sys.path.insert(1, '../src')
-sys.path.insert(2, '../test')
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'test')
+
+import pickle  # noqa
+import pytest  # noqa
 
 from hardware.processor import Processor  # noqa
 from utils import encode_command_register  # noqa
 
 
-def test_validate_rdN_instruction():
+def test_validate_rdn_instruction():
     """Ensure instruction's characteristics are valid."""
     chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
@@ -37,7 +40,7 @@ def test_validate_rdN_instruction():
 @pytest.mark.parametrize("chip", [0, 1, 2, 3])
 @pytest.mark.parametrize("register", [0, 1, 2, 3])
 @pytest.mark.parametrize("char", [0, 1, 2, 3])
-def test_rdN_scenario1(rambank, chip, register, char):
+def test_rdn_scenario1(rambank, chip, register, char):
     """Test instruction RDn"""
     from random import randint
 

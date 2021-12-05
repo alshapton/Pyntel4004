@@ -5,23 +5,25 @@
 
 # pylint: disable=too-many-locals
 
-# Import i4004 processor
-from hardware.processor import Processor
+# Import system libraries
 import getopt
 import sys
 
-# Assembler imports
-from disassembler.disassemble import disassemble
+# Import i4004 processor
+from hardware.processor import Processor
+
+# Assembler/disassembler imports
 from assembler.assemble import assemble  # noqa
+from disassembler.disassemble import disassemble  # noqa
 
 # Executer imports
 from executer.execute import execute  # noqa
 from executer.exe_supporting import retrieve  # noqa
 
 
-def main(argv):
+def main(argv: list) -> None:
     """
-    Control the assembly, disasembly and/or execution of a named assembly language file.
+    Control the assembly,disasembly and execution of an assembly language file.
 
     Parameters
     ----------
@@ -41,6 +43,7 @@ def main(argv):
     N/A
 
     """
+
     inputfile = ''
     outputfile = 'default'
     pc = 0

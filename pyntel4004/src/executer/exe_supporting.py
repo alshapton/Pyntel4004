@@ -1,11 +1,13 @@
 """Assembly process supporting functions."""
 
-from hardware.processor import Processor
 import json
+from typing import Tuple
+
+from hardware.processor import Processor
 from shared.shared import determine_filetype
 
 
-def reload(inputfile, chip):
+def reload(inputfile: str, chip: Processor) -> Tuple[str, int]:
     """
     Reload an already assembled program and execute it.
 
@@ -82,7 +84,7 @@ def reload(inputfile, chip):
     return memory_space, pc
 
 
-def is_breakpoint(breakpoints, pc):
+def is_breakpoint(breakpoints: list, pc: int) -> bool:
     """
     Determine if the current programme counter is at a breakpoint.
 
@@ -114,7 +116,7 @@ def is_breakpoint(breakpoints, pc):
     return False
 
 
-def print_stack(chip: Processor):
+def print_stack(chip: Processor) -> None:
     """
     Print the stack values (along with the pointer).
 
@@ -145,7 +147,9 @@ def print_stack(chip: Processor):
               str(chip.STACK[_i]) + ' ]')
 
 
-def process_simple_monitor_command(chip, monitor_command, monitor, opcode):
+def process_simple_monitor_command(chip: Processor, monitor_command: str,
+                                   monitor: bool, opcode: str) \
+                                   -> Tuple[bool, bool, str, str]:
     """
     Take appropriate action depending on the command supplied.
 
@@ -174,7 +178,7 @@ def process_simple_monitor_command(chip, monitor_command, monitor, opcode):
     monitor_command: str
         The command that was entered by the user
 
-    opcode: str,
+    opcode: str
         Opcode of the current instruction
 
     Raises
@@ -208,7 +212,8 @@ def process_simple_monitor_command(chip, monitor_command, monitor, opcode):
 
 
 def deal_with_monitor_command(chip: Processor, monitor_command: str,
-                              breakpoints, monitor: bool, opcode: str):
+                              breakpoints, monitor: bool, opcode: str) \
+                              -> Tuple[bool, bool, str, str]:
     """
     Take appropriate action depending on the command supplied.
 
@@ -285,7 +290,7 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
     return -1, '', '', 0
 
 
-def retrieve(inputfile, chip):
+def retrieve(inputfile: str, chip: Processor) -> Tuple[str, int]:
     """
     Pass-thru function for the "reload" function.
 

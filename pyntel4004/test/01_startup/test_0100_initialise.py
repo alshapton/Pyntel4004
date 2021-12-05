@@ -3,9 +3,14 @@
 # Using the functions from the reset.py module (via processor.py)
 # Also testing the functions of the reads.py module (via processor.py)
 
+# Import system modules
+import os
 import sys
-import pytest
-sys.path.insert(1, '../src')
+
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pytest  # noqa
+
 
 from hardware.processor import Processor  # noqa
 

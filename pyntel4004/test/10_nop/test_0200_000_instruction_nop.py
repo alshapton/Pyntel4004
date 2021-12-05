@@ -1,9 +1,12 @@
 # Using pytest
 # Test the initialisation of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pickle  # noqa
 
 from hardware.processor import Processor            # noqa
 

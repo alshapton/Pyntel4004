@@ -1,14 +1,17 @@
 # Using pytest
 # Test the shared operations between assembler and executer
 
+# Import system modules
+import os
 import sys
+sys.path.insert(1, '..' + os.sep + 'src')
 
-import pytest
+import pickle  # noqa
+import pytest  # noqa
+
 from hardware.processor import Processor  # noqa
-from shared.shared import get_opcodeinfo
+from shared.shared import get_opcodeinfo  # noqa
 
-
-sys.path.insert(1, '../src')
 
 ##############################################################################
 #                      Test get_opcodeinfo                                   #

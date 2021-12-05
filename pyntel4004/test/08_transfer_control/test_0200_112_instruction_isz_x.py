@@ -1,10 +1,14 @@
 # Using pytest
 # Test the ISZ instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pickle  # noqa
+import pytest  # noqa
+
 
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import decimal_to_binary  # noqa
@@ -33,8 +37,8 @@ def test_scenario1(values, register):
     pcaftjump = 150
     pcaftnojump = 102
 
-    REGISTER = register
-    VALUE = values[0]
+    reg = register
+    value = values[0]
     if values[1] == 'Y':
         pcaft = pcaftjump
     else:
@@ -46,12 +50,12 @@ def test_scenario1(values, register):
     chip_base.PROGRAM_COUNTER = pc
 
     # Registers
-    chip_test.insert_register(REGISTER, VALUE)
-    chip_base.insert_register(REGISTER, VALUE)
-    chip_base.increment_register(REGISTER)
+    chip_test.insert_register(reg, value)
+    chip_base.insert_register(reg, value)
+    chip_base.increment_register(reg)
 
     # Perform the instruction under test:
-    Processor.isz(chip_test, REGISTER, pcaftjump)
+    Processor.isz(chip_test, reg, pcaftjump)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = pcaft

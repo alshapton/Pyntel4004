@@ -1,10 +1,15 @@
 """Module for running i4004 assembled code."""
 
-# Import i4004 processor
+# Import system modules
+import os
 import sys
-sys.path.insert(1, '../src')
+from typing import Tuple
+sys.path.insert(1, '..' + os.sep + 'src')
 
+# Import i4004 processor
 from hardware.processor import Processor  # noqa
+
+# Import executer and shared functions
 from executer.exe_supporting import deal_with_monitor_command, is_breakpoint  # noqa
 from shared.shared import coredump, do_error, get_opcodeinfobyopcode, retrieve_program, \
     translate_mnemonic  # noqa
@@ -20,7 +25,7 @@ from shared.shared import coredump, do_error, get_opcodeinfobyopcode, retrieve_p
 ##############################################################################
 
 
-def process_coredump(chip, ex):
+def process_coredump(chip: Processor, ex) -> None:
     """
     Formulate the opcodes into mnemonics ready for execution.
 
@@ -56,8 +61,9 @@ def process_coredump(chip, ex):
     coredump(chip, 'core')
 
 
-def process_instruction(chip, breakpoints, _tps, monitor,
-                        monitor_command, opcode):
+def process_instruction(chip: Processor, breakpoints: list, _tps: list,
+                        monitor: bool, monitor_command: str,
+                        opcode: str) -> Tuple[bool, str, bool, list, str, str]:
     """
     Process a single instruction.
 
@@ -73,14 +79,14 @@ def process_instruction(chip, breakpoints, _tps, monitor,
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
 
-    opcode: str, mandatory
-        Opcode of the current instruction
-
     monitor: bool, mandatory
         Whether or not the monitor is currently "on" or "off"
 
     monitor_command: str, mandatory
         Command given by the user.
+
+    opcode: str, mandatory
+        Opcode of the current instruction
 
     Returns
     -------
@@ -146,7 +152,7 @@ def process_instruction(chip, breakpoints, _tps, monitor,
     return result, monitor_command, monitor, breakpoints, exe, opcode
 
 
-def execute(chip: Processor, location: str, pc: int, monitor: bool):
+def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
     """
     Control the execution of a previously assembled program.
 

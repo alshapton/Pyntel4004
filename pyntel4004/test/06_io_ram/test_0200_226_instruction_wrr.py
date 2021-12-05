@@ -1,13 +1,15 @@
 # Using pytest
 # Test the WRR instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'test')
 
+import pickle  # noqa
+import pytest  # noqa
 
-sys.path.insert(1, '../src')
-sys.path.insert(2, '../test')
 from hardware.processor import Processor  # noqa
 from utils import encode_command_register  # noqa
 

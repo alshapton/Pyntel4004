@@ -12,17 +12,17 @@ Commands in this module.
 
             CLB -   CLEAR BOTH
             CLC -   CLEAR CARRY
-            IAC -   INCREMENT ACCUMULATOR
-            CMC -   COMPLEMENT CARRY
             CMA -   COMPLEMENT ACCUMULATOR
+            CMC -   COMPLEMENT CARRY
+            DAA -   DECIMAL ADJUST ACCUMULATOR
+            DAC -   DECREMENT ACCUMULATOR
+            IAC -   INCREMENT ACCUMULATOR
+            KBP -   KEYBOARD PROCESS
             RAL -   ROTATE ACCUMULATOR LEFT THROUGH CARRY
             RAR -   ROTATE ACCUMULATOR RIGHT THROUGH CARRY
-            TCC -   TRANSMIT CARRY AND CLEAR
-            DAC -   DECREMENT ACCUMULATOR
-            TCS -   TRANSFER CARRY SUBTRACT
             STC -   SET CARRY
-            DAA -   DECIMAL ADJUST ACCUMULATOR
-            KBP -   KEYBOARD PROCESS
+            TCC -   TRANSMIT CARRY AND CLEAR
+            TCS -   TRANSFER CARRY SUBTRACT
 
 
  Abbreviations used in the descriptions of each instruction's actions:
@@ -51,8 +51,11 @@ Commands in this module.
 
 """
 
+# Import typing library
+from typing import Tuple, Any
 
-def clb(self):
+
+def clb(self: Any) -> Tuple[int, int]:
     """
     Name:           Clear Both.
 
@@ -69,7 +72,7 @@ def clb(self):
     return self.read_accumulator(), self.read_carry()
 
 
-def clc(self):
+def clc(self: Any) -> int:
     """
     Name:           Clear Carry.
 
@@ -85,48 +88,7 @@ def clc(self):
     return self.read_carry()
 
 
-def iac(self):
-    """
-    Name:           Increment accumulator.
-
-    Function:       The content of the accumulator is incremented by 1.
-    Syntax:         IAC
-    Assembled:      1111 0010
-    Symbolic:       (ACC) +1 --> ACC
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   No overflow sets the carry/link to 0;
-                    overflow sets the carry/link to a 1.
-    """
-    self.ACCUMULATOR = self.ACCUMULATOR + 1
-    if self.ACCUMULATOR == self.MAX_4_BITS + 1:
-        self.ACCUMULATOR = 0
-        self.set_carry()
-    else:
-        self.reset_carry()
-    self.increment_pc(1)
-    return self.read_accumulator(), self.read_carry()
-
-
-def cmc(self):
-    """
-    Name:           Complement carry.
-
-    Function:       The carry/link content is complemented.
-    Syntax:         CLC
-    Assembled:      1111 0011
-    Symbolic:       ~(CY) --> CY
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   Not Applicable
-    """
-    if self.CARRY == 1:
-        self.reset_carry()
-    else:
-        self.set_carry()
-    self.increment_pc(1)
-    return self.CARRY
-
-
-def cma(self):
+def cma(self: Any) -> int:
     """
     Name:           Complement Accumulator.
 
@@ -146,145 +108,26 @@ def cma(self):
     return self.ACCUMULATOR
 
 
-def ral(self):
+def cmc(self: Any) -> int:
     """
-    Name:           Rotate left.
+    Name:           Complement carry.
 
-    Function:       The content of the accumulator and carry/link
-                    are rotated left.
-    Syntax:         RAL
-    Assembled:      1111 0101
-    Symbolic:       C0 --> a0, a(i) --> a(i+1), a3 -->CY
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   The carry bit will be set to the highest significant
-                    bit of the accumulator.
-    """
-    c0 = self.read_carry()
-    # Shift left
-    self.ACCUMULATOR = self.ACCUMULATOR * 2
-    # Set carry bit correctly
-    if self.ACCUMULATOR >= self.MAX_4_BITS:
-        self.set_carry()
-    else:
-        self.reset_carry()
-    # If necessary remove non-existent bit 5
-    if self.ACCUMULATOR > self.MAX_4_BITS:
-        self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
-    # Add original carry bit
-    self.ACCUMULATOR = self.ACCUMULATOR + c0
-    self.increment_pc(1)
-    return self.ACCUMULATOR, self.CARRY
-
-
-def rar(self):
-    """
-    Name:           Rotate right.
-
-    Function:       The content of the accumulator and carry/link
-                    are rotated right.
-    Syntax:         RAR
-    Assembled:      1111 0110
-    Symbolic:       a0 --> CY, a(i) --> a(i-1), C0 -->a3
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   The carry bit will be set to the lowest significant
-                    bit of the accumulator.
-    """
-    c0 = self.read_carry()
-    # Set carry bit correctly
-    if self.ACCUMULATOR % 2 == 0:
-        self.reset_carry()
-    else:
-        self.set_carry()
-    # Shift right
-    self.ACCUMULATOR = self.ACCUMULATOR // 2
-    # Add carry to high-order bit of accumulator
-    self.ACCUMULATOR = self.ACCUMULATOR + (c0 * self.MSB)
-    self.increment_pc(1)
-    return self.ACCUMULATOR, self.CARRY
-
-
-def tcc(self):
-    """
-    Name:           Transmit carry and clear.
-
-    Function:       The accumulator is cleared.
-                    The least significant position of the accumulator
-                    is set to the value of the carry/link.
-    Syntax:         TCC
-    Assembled:      1111 0111
-    Symbolic:       0 --> ACC, (CY) --> a0, 0 --> CY
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   The carry bit will be reset..
-    """
-    self.set_accumulator(0)
-    self.ACCUMULATOR = self.read_carry()
-    self.reset_carry()
-    self.increment_pc(1)
-    return self.ACCUMULATOR, self.CARRY
-
-
-def dac(self):
-    """
-    Name:           Decrement accumulator.
-
-    Function:       The content of the accumulator is decremented by 1.
-    Syntax:         DAC
-    Assembled:      1111 1000
-    Symbolic:       (ACC) -1 --> ACC
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   A borrow sets the carry/link to 0;
-                    No borrow sets the carry/link to a 1.
-    """
-    self.ACCUMULATOR = self.ACCUMULATOR + 15
-    if self.ACCUMULATOR >= self.MAX_4_BITS:
-        self.ACCUMULATOR = self.MSB
-        self.set_carry()
-    else:
-        self.reset_carry()
-    self.increment_pc(1)
-    return self.ACCUMULATOR, self.CARRY
-
-
-def tcs(self):
-    """
-    Name:           Transfer Carry Subtract.
-
-    Function:       The accumulator is set to 9 if the carry/link is 0.
-                    The accumulator is set to 10 if the carry/link is a 1.
-    Syntax:         TCS
-    Assembled:      1111 1001
-    Symbolic:       1001 --> ACC if (CY) = 0
-                    1010 --> ACC if (CY) = 1
-                    0 --> CY
-    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
-    Side-effects:   The carry/link is set to 0.
-    """
-    if self.read_carry() == 0:
-        self.set_accumulator(9)
-    else:
-        self.set_accumulator(10)
-    self.reset_carry()
-    self.increment_pc(1)
-    return self.read_accumulator(), self.read_carry()
-
-
-def stc(self):
-    """
-    Name:           Set Carry.
-
-    Function:       Set carry/link to 1.
-    Syntax:         STC
-    Assembled:      1111 1010
-    Symbolic:       1 --> CY
+    Function:       The carry/link content is complemented.
+    Syntax:         CLC
+    Assembled:      1111 0011
+    Symbolic:       ~(CY) --> CY
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-    self.set_carry()
+    if self.CARRY == 1:
+        self.reset_carry()
+    else:
+        self.set_carry()
     self.increment_pc(1)
-    return self.read_carry()
+    return self.CARRY
 
 
-def daa(self):
+def daa(self: Any) -> Tuple[int, int]:
     """
     Name:           Decimal adjust accumulator.
 
@@ -307,7 +150,51 @@ def daa(self):
     return self.ACCUMULATOR, self.CARRY
 
 
-def kbp(self):
+def dac(self: Any) -> Tuple[int, int]:
+    """
+    Name:           Decrement accumulator.
+
+    Function:       The content of the accumulator is decremented by 1.
+    Syntax:         DAC
+    Assembled:      1111 1000
+    Symbolic:       (ACC) -1 --> ACC
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   A borrow sets the carry/link to 0;
+                    No borrow sets the carry/link to a 1.
+    """
+    self.ACCUMULATOR = self.ACCUMULATOR + 15
+    if self.ACCUMULATOR >= self.MAX_4_BITS:
+        self.ACCUMULATOR = self.MSB
+        self.set_carry()
+    else:
+        self.reset_carry()
+    self.increment_pc(1)
+    return self.ACCUMULATOR, self.CARRY
+
+
+def iac(self: Any) -> Tuple[int, int]:
+    """
+    Name:           Increment accumulator.
+
+    Function:       The content of the accumulator is incremented by 1.
+    Syntax:         IAC
+    Assembled:      1111 0010
+    Symbolic:       (ACC) +1 --> ACC
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   No overflow sets the carry/link to 0;
+                    overflow sets the carry/link to a 1.
+    """
+    self.ACCUMULATOR = self.ACCUMULATOR + 1
+    if self.ACCUMULATOR == self.MAX_4_BITS + 1:
+        self.ACCUMULATOR = 0
+        self.set_carry()
+    else:
+        self.reset_carry()
+    self.increment_pc(1)
+    return self.read_accumulator(), self.read_carry()
+
+
+def kbp(self: Any) -> int:
     """
     Name:           Keyboard process.
 
@@ -323,9 +210,9 @@ def kbp(self):
     Side-effects:   The carry/link is unaffected.
 
 
-                    (ACC)           (ACC)
-                    before          after
-                        KBP	  	     KBP
+                       (ACC)           (ACC)
+                       before          after
+                        KBP	  	        KBP
                         0000	---->	0000
                         0001	---->	0001
                         0010	---->	0010
@@ -359,3 +246,119 @@ def kbp(self):
     # Error
     self.set_accumulator(15)
     return self.read_accumulator()
+
+
+def ral(self: Any) -> Tuple[int, int]:
+    """
+    Name:           Rotate left.
+
+    Function:       The content of the accumulator and carry/link
+                    are rotated left.
+    Syntax:         RAL
+    Assembled:      1111 0101
+    Symbolic:       C0 --> a0, a(i) --> a(i+1), a3 -->CY
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   The carry bit will be set to the highest significant
+                    bit of the accumulator.
+    """
+    c0 = self.read_carry()
+    # Shift left
+    self.ACCUMULATOR = self.ACCUMULATOR * 2
+    # Set carry bit correctly
+    if self.ACCUMULATOR >= self.MAX_4_BITS:
+        self.set_carry()
+    else:
+        self.reset_carry()
+    # If necessary remove non-existent bit 5
+    if self.ACCUMULATOR > self.MAX_4_BITS:
+        self.ACCUMULATOR = self.ACCUMULATOR - self.MAX_4_BITS - 1
+    # Add original carry bit
+    self.ACCUMULATOR = self.ACCUMULATOR + c0
+    self.increment_pc(1)
+    return self.ACCUMULATOR, self.CARRY
+
+
+def rar(self: Any) -> Tuple[int, int]:
+    """
+    Name:           Rotate right.
+
+    Function:       The content of the accumulator and carry/link
+                    are rotated right.
+    Syntax:         RAR
+    Assembled:      1111 0110
+    Symbolic:       a0 --> CY, a(i) --> a(i-1), C0 -->a3
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   The carry bit will be set to the lowest significant
+                    bit of the accumulator.
+    """
+    c0 = self.read_carry()
+    # Set carry bit correctly
+    if self.ACCUMULATOR % 2 == 0:
+        self.reset_carry()
+    else:
+        self.set_carry()
+    # Shift right
+    self.ACCUMULATOR = self.ACCUMULATOR // 2
+    # Add carry to high-order bit of accumulator
+    self.ACCUMULATOR = self.ACCUMULATOR + (c0 * self.MSB)
+    self.increment_pc(1)
+    return self.ACCUMULATOR, self.CARRY
+
+
+def stc(self: Any) -> int:
+    """
+    Name:           Set Carry.
+
+    Function:       Set carry/link to 1.
+    Syntax:         STC
+    Assembled:      1111 1010
+    Symbolic:       1 --> CY
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   Not Applicable
+    """
+    self.set_carry()
+    self.increment_pc(1)
+    return self.read_carry()
+
+
+def tcc(self: Any) -> Tuple[int, int]:
+    """
+    Name:           Transmit carry and clear.
+
+    Function:       The accumulator is cleared.
+                    The least significant position of the accumulator
+                    is set to the value of the carry/link.
+    Syntax:         TCC
+    Assembled:      1111 0111
+    Symbolic:       0 --> ACC, (CY) --> a0, 0 --> CY
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   The carry bit will be reset..
+    """
+    self.set_accumulator(0)
+    self.ACCUMULATOR = self.read_carry()
+    self.reset_carry()
+    self.increment_pc(1)
+    return self.ACCUMULATOR, self.CARRY
+
+
+def tcs(self: Any) -> Tuple[int, int]:
+    """
+    Name:           Transfer Carry Subtract.
+
+    Function:       The accumulator is set to 9 if the carry/link is 0.
+                    The accumulator is set to 10 if the carry/link is a 1.
+    Syntax:         TCS
+    Assembled:      1111 1001
+    Symbolic:       1001 --> ACC if (CY) = 0
+                    1010 --> ACC if (CY) = 1
+                    0 --> CY
+    Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
+    Side-effects:   The carry/link is set to 0.
+    """
+    if self.read_carry() == 0:
+        self.set_accumulator(9)
+    else:
+        self.set_accumulator(10)
+    self.reset_carry()
+    self.increment_pc(1)
+    return self.read_accumulator(), self.read_carry()

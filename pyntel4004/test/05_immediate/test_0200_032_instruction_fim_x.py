@@ -1,11 +1,14 @@
 # Using pytest
 # Test the fim instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-import random
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pickle  # noqa
+import pytest  # noqa
+import random  # noqa
 
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import decimal_to_binary, insert_register  # noqa
@@ -27,7 +30,7 @@ def test_scenario1(registerpair):
     chip_test = Processor()
     chip_base = Processor()
 
-    RANDOM_VALUE = random.randint(0, 205)  # Select a random 4-bit value
+    rv = random.randint(0, 205)  # Select a random 4-bit value
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
@@ -37,12 +40,12 @@ def test_scenario1(registerpair):
     chip_base.increment_pc(2)
     # Convert a register pair into a base register for insertion
     base_register = registerpair * 2
-    chip_base.insert_register(base_register, (RANDOM_VALUE >> 4) & 15)   # Bit-shift right and remove low bits   # noqa
-    chip_base.insert_register(base_register + 1, RANDOM_VALUE & 15)      # Remove low bits                       # noqa
+    chip_base.insert_register(base_register, (rv >> 4) & 15)   # Bit-shift right and remove low bits   # noqa
+    chip_base.insert_register(base_register + 1, rv & 15)      # Remove low bits                       # noqa
 
     # Carry out the instruction under test
     # Perform an FIM operation
-    Processor.fim(chip_test, registerpair, RANDOM_VALUE)
+    Processor.fim(chip_test, registerpair, rv)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
