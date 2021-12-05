@@ -9,6 +9,9 @@ from .exceptions import AddressOutOf8BitRange, \
     ValueOutOfRangeForStack, ValueTooLargeForAccumulator, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
+# Import typing library
+from typing import Tuple
+
 
 def rdx(self, character) -> int:
     """
@@ -36,7 +39,8 @@ def rdx(self, character) -> int:
     return self.ACCUMULATOR
 
 
-def decode_command_register(command_register, shape):
+def decode_command_register(command_register: str,
+                            shape: str) -> Tuple[int, int, int]:
     """
     Convert the supplied CR into its component parts.
 
@@ -102,7 +106,8 @@ def decode_command_register(command_register, shape):
     return int(chip), int(register), int(address)
 
 
-def convert_to_absolute_address(self, rambank, chip, register, address):
+def convert_to_absolute_address(self, rambank: int, chip: int,
+                                register: int, address: int) -> int:
     """
     Convert a rambank, chip, register and address to an absolute RAM address.
 
@@ -143,7 +148,7 @@ def convert_to_absolute_address(self, rambank, chip, register, address):
     return absolute_address
 
 
-def split_address8(address):
+def split_address8(address: int) -> Tuple[str, str]:
     """
     Split a supplied decimal address into 2 4-bit words.
 
@@ -177,7 +182,7 @@ def split_address8(address):
     return address_left, address_right
 
 
-def set_carry(self):
+def set_carry(self) -> int:
     """
     Set the carry bit.
 
@@ -205,7 +210,7 @@ def set_carry(self):
     return self.CARRY
 
 
-def reset_carry(self):
+def reset_carry(self) -> int:
     """
     Resets the carry bit.
 
@@ -233,7 +238,7 @@ def reset_carry(self):
     return self.CARRY
 
 
-def read_complement_carry(self):
+def read_complement_carry(self) -> int:
     """
     Reads the complement of the carry bit, but doesn't change the value.
 
@@ -258,7 +263,7 @@ def read_complement_carry(self):
     return 1 if self.CARRY == 0 else 0
 
 
-def insert_register(self, register: int, value: int):
+def insert_register(self, register: int, value: int) -> int:
     """
     Insert a value into a specific register.
 
@@ -297,7 +302,7 @@ def insert_register(self, register: int, value: int):
     return value
 
 
-def read_register(self, register: int):
+def read_register(self, register: int) -> int:
     """
     Read a specific register.
 
@@ -329,7 +334,7 @@ def read_register(self, register: int):
     return self.REGISTERS[register]
 
 
-def insert_registerpair(self, registerpair: int, value: int):
+def insert_registerpair(self, registerpair: int, value: int) -> int:
     """
     Insert a value into a specific register.
 
@@ -374,7 +379,7 @@ def insert_registerpair(self, registerpair: int, value: int):
     return value
 
 
-def read_registerpair(self, registerpair: int):
+def read_registerpair(self, registerpair: int) -> int:
     """
     Read a specific register pair.
 
@@ -411,7 +416,7 @@ def read_registerpair(self, registerpair: int):
     return (hi << 4) + lo   # Bit-shift left high value and add low value
 
 
-def increment_pc(self, words: int):
+def increment_pc(self, words: int) -> int:
     """
     Increment the Program Counter by a specific number of words.
 
@@ -445,7 +450,7 @@ def increment_pc(self, words: int):
     return self.PROGRAM_COUNTER
 
 
-def inc_pc_by_page(self, pc: int):
+def inc_pc_by_page(self, pc: int) -> int:
     """
     Retrieve the pc's new value after being incremented by a page.
 
@@ -481,7 +486,7 @@ def inc_pc_by_page(self, pc: int):
     return pc
 
 
-def is_end_of_page(self, address: int, word: int):
+def is_end_of_page(self, address: int, word: int) -> bool:
     """
     Determine if an instruction is located at the end of a memory page.
 
@@ -516,7 +521,7 @@ def is_end_of_page(self, address: int, word: int):
     return (location - word) == self.PAGE_SIZE - 1
 
 
-def increment_register(self, register: int):
+def increment_register(self, register: int) -> int:
     """
     Increment the value in a register by 1.
 
@@ -551,7 +556,7 @@ def increment_register(self, register: int):
     return self.REGISTERS[register]
 
 
-def write_pin10(self, value: int):
+def write_pin10(self, value: int) -> bool:
     """
     Write to pin 10 (reset pin).
 
@@ -583,7 +588,7 @@ def write_pin10(self, value: int):
     raise InvalidPin10Value('PIN 10 attempted to be set to ' + str(value))
 
 
-def write_ram_status(self, char: int):
+def write_ram_status(self, char: int) -> bool:
     """
     Write to a RAM status character.
 
@@ -625,7 +630,7 @@ def write_ram_status(self, char: int):
 # Miscellaneous read/write operations
 
 
-def write_to_stack(self, value: int):
+def write_to_stack(self, value: int) -> bool:
     """
     Write to the stack.
 
@@ -670,7 +675,7 @@ def write_to_stack(self, value: int):
     return True
 
 
-def read_from_stack(self):
+def read_from_stack(self) -> int:
     """
     Read from the stack.
 
@@ -711,7 +716,7 @@ def read_from_stack(self):
 # Utility operations
 
 
-def ones_complement(value: str, bits: int):
+def ones_complement(value: str, bits: int) -> str:
     """
     Converts a decimal into a one's compliment value of a specified bit length.
 
@@ -759,7 +764,8 @@ def ones_complement(value: str, bits: int):
     return ones
 
 
-def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result: str = 'b'):  # noqa
+def convert_decimal_to_n_bit_slices(bits: int, chunk: int,
+                                    decimal: int, result: str = 'b') -> str:
     """
     Converts a decimal to several binary or decimal values of specific lengths.
 
@@ -819,7 +825,7 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
     return chunks
 
 
-def decimal_to_binary(bits: int, decimal: int):
+def decimal_to_binary(bits: int, decimal: int) -> str:
     """
     Converts a decimal value into a binary value of a specified bit length.
 
@@ -858,7 +864,7 @@ def decimal_to_binary(bits: int, decimal: int):
     return binary
 
 
-def binary_to_decimal(binary: str):
+def binary_to_decimal(binary: str) -> int:
     """
     Converts a string value(which must be in binary form) to a decimal value.
 
@@ -891,7 +897,7 @@ def binary_to_decimal(binary: str):
     return int(binary, 2)
 
 
-def flip_wpm_counter(self):
+def flip_wpm_counter(self) -> str:
     """
     Flip the WPM counter.
 
@@ -929,7 +935,7 @@ def flip_wpm_counter(self):
     return self.WPM_COUNTER
 
 
-def check_overflow(self):
+def check_overflow(self) -> Tuple[int, int]:
     """
     Check if an overflow is detected.
 
@@ -968,7 +974,7 @@ def check_overflow(self):
     return self.ACCUMULATOR, self.CARRY
 
 
-def set_accumulator(self, value: int):
+def set_accumulator(self, value: int) -> int:
     """
     Insert a value into the Accumulator.
 
