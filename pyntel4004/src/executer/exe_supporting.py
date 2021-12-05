@@ -149,7 +149,7 @@ def print_stack(chip: Processor) -> None:
 
 def process_simple_monitor_command(chip: Processor, monitor_command: str,
                                    monitor: bool, opcode: str) \
-                                   -> Tuple[bool, bool, str, str]:
+        -> Tuple[bool, bool, str, str]:
     """
     Take appropriate action depending on the command supplied.
 
@@ -213,7 +213,7 @@ def process_simple_monitor_command(chip: Processor, monitor_command: str,
 
 def deal_with_monitor_command(chip: Processor, monitor_command: str,
                               breakpoints, monitor: bool, opcode: str) \
-                              -> Tuple[bool, bool, str, str]:
+        -> Tuple[bool, bool, str, str]:
     """
     Take appropriate action depending on the command supplied.
 
