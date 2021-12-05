@@ -181,24 +181,6 @@ def read_current_ram_bank(self) -> int:
     return self.CURRENT_RAM_BANK
 
 
-def read_carry(self) -> int:
-    """
-    Return the value of the carry flag.
-
-    Parameters
-    ----------
-    self : Processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
-    Returns
-    -------
-    CARRY
-        A 1 or a 0 (the value of the carry flag)
-
-    """
-    return self.CARRY
-
-
 def read_pin10(self) -> int:
     """
     Return the value of PIN 10 on the i4004 chip (simulated test pin).
