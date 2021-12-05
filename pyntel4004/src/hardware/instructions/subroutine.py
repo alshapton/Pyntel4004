@@ -43,10 +43,13 @@ Commands in this module.
 
 """
 
+# Import typing library
+from typing import Tuple
+
 from hardware.exceptions import ValueOutOfRangeForStack
 
 
-def bbl(self, accumulator: int):
+def bbl(self, accumulator: int) -> Tuple[int, int]:
     """
     Name:           Branch back and load data to the accumulator.
 
@@ -71,7 +74,7 @@ def bbl(self, accumulator: int):
     return self.PROGRAM_COUNTER, self.ACCUMULATOR
 
 
-def jms(self, address: int):
+def jms(self, address: int) -> int:
     """
     Name:           Jump to Subroutine.
 

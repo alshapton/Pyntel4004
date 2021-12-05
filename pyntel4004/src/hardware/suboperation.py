@@ -10,7 +10,7 @@ from .exceptions import AddressOutOf8BitRange, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
-def rdx(self, character):
+def rdx(self, character) -> int:
     """
     Read RAM status character X.
 

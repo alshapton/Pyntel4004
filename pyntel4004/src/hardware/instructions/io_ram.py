@@ -52,13 +52,17 @@ Commands in this module.
 
 """
 
+# Import typing library
+from typing import Tuple
+
+
 from hardware.suboperation import check_overflow, \
     convert_to_absolute_address, decimal_to_binary, decode_command_register, \
     flip_wpm_counter, ones_complement, rdx
 from hardware.reads import read_wpm_counter
 
 
-def rdm(self):
+def rdm(self) -> int:
     """
     Name:           Read Data RAM data character.
 
@@ -81,7 +85,7 @@ def rdm(self):
     return self.ACCUMULATOR
 
 
-def rd0(self):
+def rd0(self) -> int:
     """
     Name:           Read RAM status character 0.
 
@@ -107,7 +111,7 @@ def rd0(self):
     return rdx(self, 0)
 
 
-def rd1(self):
+def rd1(self) -> int:
     """
     Name:           Read RAM status character 1.
 
@@ -133,7 +137,7 @@ def rd1(self):
     return rdx(self, 1)
 
 
-def rd2(self):
+def rd2(self) -> int:
     """
     Name:           Read RAM status character 2.
 
@@ -159,7 +163,7 @@ def rd2(self):
     return rdx(self, 2)
 
 
-def rd3(self):
+def rd3(self) -> int:
     """
     Name:           Read RAM status character 3.
 
@@ -185,7 +189,7 @@ def rd3(self):
     return rdx(self, 3)
 
 
-def rdr(self):
+def rdr(self) -> int:
     """
     Name:           Read ROM Port.
 
@@ -228,7 +232,7 @@ def rdr(self):
     return self.ACCUMULATOR
 
 
-def wrm(self):
+def wrm(self) -> int:
     """
     Name:           Write accumulator into RAM character.
 
@@ -252,7 +256,7 @@ def wrm(self):
     return self.PROGRAM_COUNTER
 
 
-def wr0(self):
+def wr0(self) -> int:
     """
     Name:           Write accumulator into RAM status character 0.
 
@@ -280,7 +284,7 @@ def wr0(self):
     return self.PROGRAM_COUNTER
 
 
-def wr1(self):
+def wr1(self) -> int:
     """
     Name:           Write accumulator into RAM status character 1.
 
@@ -308,7 +312,7 @@ def wr1(self):
     return self.PROGRAM_COUNTER
 
 
-def wr2(self):
+def wr2(self) -> int:
     """
     Name:           Write accumulator into RAM status character 2.
 
@@ -336,7 +340,7 @@ def wr2(self):
     return self.PROGRAM_COUNTER
 
 
-def wr3(self):
+def wr3(self) -> int:
     """
     Name:           Write accumulator into RAM status character 3.
 
@@ -364,7 +368,7 @@ def wr3(self):
     return self.PROGRAM_COUNTER
 
 
-def wmp(self):
+def wmp(self) -> int:
     """
     Name:           Write memory port.
 
@@ -403,7 +407,7 @@ def wmp(self):
     return self.ACCUMULATOR
 
 
-def wrr(self):
+def wrr(self) -> int:
     """
     Name:           Write ROM port.
 
@@ -436,7 +440,7 @@ def wrr(self):
     return self.ACCUMULATOR
 
 
-def adm(self):
+def adm(self) -> Tuple[int, int]:
     """
     Name:           Add from memory with carry.
 
@@ -468,7 +472,7 @@ def adm(self):
     return self.ACCUMULATOR, self.CARRY
 
 
-def sbm(self):
+def sbm(self) -> Tuple[int, int]:
     """
     Name:           Subtract DATA RAM from memory with borrow.
 
@@ -521,7 +525,7 @@ def sbm(self):
     return self.ACCUMULATOR, self.CARRY
 
 
-def wpm(self):
+def wpm(self) -> Tuple[int, int]:
     """
     Name:           Write program RAM.
 

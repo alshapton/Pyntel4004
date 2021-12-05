@@ -45,7 +45,7 @@ Commands in this module.
 """
 
 
-def jun(self, address: int):
+def jun(self, address: int) -> int:
     """
     Name:           Jump unconditional.
 
@@ -71,7 +71,7 @@ def jun(self, address: int):
     return self.PROGRAM_COUNTER
 
 
-def jin(self, registerpair: int):
+def jin(self, registerpair: int) -> int:
     """
     Name:           Jump Indirect.
 
@@ -114,7 +114,7 @@ def jin(self, registerpair: int):
     return self.PROGRAM_COUNTER
 
 
-def jcn(self, conditions: int, address: int):
+def jcn(self, conditions: int, address: int) -> int:
     """
     Name:           Jump conditional.
 
@@ -202,7 +202,7 @@ def jcn(self, conditions: int, address: int):
     return self.PROGRAM_COUNTER
 
 
-def isz(self, register: int, address: int):
+def isz(self, register: int, address: int) -> int:
     """
     Name:           Increment index register skip if zero.
 

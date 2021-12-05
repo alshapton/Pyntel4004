@@ -1,7 +1,7 @@
 """Read Processor methods."""
 
 
-def read_all_registers(self):
+def read_all_registers(self) -> list:
     """
     Return the values of the Registers.
 
@@ -19,7 +19,7 @@ def read_all_registers(self):
     return self.REGISTERS
 
 
-def read_all_command_registers(self):
+def read_all_command_registers(self) -> list:
     """
     Return the values of all of the Command Registers.
 
@@ -37,7 +37,7 @@ def read_all_command_registers(self):
     return self.COMMAND_REGISTERS
 
 
-def read_all_ram(self):
+def read_all_ram(self) -> list:
     """
     Return the values of all the locations of RAM.
 
@@ -55,7 +55,7 @@ def read_all_ram(self):
     return self.RAM
 
 
-def read_all_rom(self):
+def read_all_rom(self) -> list:
     """
     Return the values of all the locations of ROM.
 
@@ -73,7 +73,7 @@ def read_all_rom(self):
     return self.ROM
 
 
-def read_all_pram(self):
+def read_all_pram(self) -> list:
     """
     Return the values of all the locations of PRAM.
 
@@ -91,7 +91,7 @@ def read_all_pram(self):
     return self.PRAM
 
 
-def read_all_stack(self):
+def read_all_stack(self) -> list:
     """
     Return the complete stack.
 
@@ -109,7 +109,7 @@ def read_all_stack(self):
     return self.STACK
 
 
-def read_accumulator(self):
+def read_accumulator(self) -> int:
     """
     Return the value of the accumulator.
 
@@ -127,7 +127,7 @@ def read_accumulator(self):
     return self.ACCUMULATOR
 
 
-def read_all_rom_ports(self):
+def read_all_rom_ports(self) -> list:
     """
     Return the values of all the ROM ports.
 
@@ -145,7 +145,7 @@ def read_all_rom_ports(self):
     return self.ROM_PORT
 
 
-def read_all_ram_ports(self):
+def read_all_ram_ports(self) -> list:
     """
     Return the values of all the RAM ports.
 
@@ -163,7 +163,7 @@ def read_all_ram_ports(self):
     return self.RAM_PORT
 
 
-def read_current_ram_bank(self):
+def read_current_ram_bank(self) -> int:
     """
     Return the current RAM bank i.e. the one selected by the SRC.
 
@@ -181,7 +181,7 @@ def read_current_ram_bank(self):
     return self.CURRENT_RAM_BANK
 
 
-def read_carry(self):
+def read_carry(self) -> int:
     """
     Return the value of the carry flag.
 
@@ -199,7 +199,7 @@ def read_carry(self):
     return self.CARRY
 
 
-def read_pin10(self):
+def read_pin10(self) -> int:
     """
     Return the value of PIN 10 on the i4004 chip (simulated test pin).
 
@@ -217,7 +217,7 @@ def read_pin10(self):
     return self.PIN_10_SIGNAL_TEST
 
 
-def read_wpm_counter(self):
+def read_wpm_counter(self) -> str:
     """
     Return the value of the WPM counter ("LEFT" or "RIGHT").
 
@@ -238,7 +238,7 @@ def read_wpm_counter(self):
     return self.WPM_COUNTER
 
 
-def read_acbr(self):
+def read_acbr(self) -> int:
     """
     Return the value of the ACBR interim property.
 
@@ -259,7 +259,7 @@ def read_acbr(self):
     return self.ACBR
 
 
-def read_program_counter(self):
+def read_program_counter(self) -> int:
     """
     Return the value of the program counter.
 
@@ -277,7 +277,7 @@ def read_program_counter(self):
     return self.PROGRAM_COUNTER
 
 
-def read_stack_pointer(self):
+def read_stack_pointer(self) -> int:
     """
     Return the value of the stack pointer.
 
@@ -296,7 +296,7 @@ def read_stack_pointer(self):
     return self.STACK_POINTER
 
 
-def read_all_status_characters(self):
+def read_all_status_characters(self) -> list:
     """
     Return the values of all the RAM status characters.
 

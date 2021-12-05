@@ -48,7 +48,7 @@ from hardware.exceptions import InvalidRamBank, InvalidRegisterPair
 from hardware.suboperation import decimal_to_binary
 
 
-def dcl(self):
+def dcl(self) -> int:
     """
     Name:           Designate command line.
 
@@ -78,16 +78,15 @@ def dcl(self):
                     X110	CM-RAM2, CM-RAM3	        Bank 6
                     X111	CM-RAM1, CM-RAM2, CM-RAM3	Bank 7
     """
-    ACC = self.ACCUMULATOR
-    if ACC > 7:
-        raise InvalidRamBank('RAM bank : ' + str(ACC))
+    if self.ACCUMULATOR > 7:
+        raise InvalidRamBank('RAM bank : ' + str(self.ACCUMULATOR))
 
-    self.CURRENT_RAM_BANK = ACC
+    self.CURRENT_RAM_BANK = self.ACCUMULATOR
     self.increment_pc(1)
     return self.CURRENT_RAM_BANK
 
 
-def src(self, registerpair: int):
+def src(self, registerpair: int) -> int:
     """
     Name:           Send register control.
 

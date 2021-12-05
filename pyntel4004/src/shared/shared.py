@@ -1,14 +1,7 @@
 """Shared operations (between assembly, disassembly and execution."""
 
-# Import system library
-import os
-
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
-
-# OS file path separator
-global sep
-sep = os.sep
 
 
 def coredump(chip: Processor, filename: str) -> bool:

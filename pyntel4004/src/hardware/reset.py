@@ -1,7 +1,7 @@
 """Initialisation methods."""
 
 
-def init_ram(self):
+def init_ram(self) -> None:
     """
     Initialise the RAM with zeroes in all locations.
 
@@ -15,7 +15,7 @@ def init_ram(self):
         self.RAM.append(0)
 
 
-def init_command_registers(self):
+def init_command_registers(self) -> None:
     """
     Initialise the command registers with zeroes.
 
@@ -29,7 +29,7 @@ def init_command_registers(self):
         self.COMMAND_REGISTERS.append(0)
 
 
-def init_registers(self):
+def init_registers(self) -> None:
     """
     Initialise the registers with zeroes.
 
@@ -43,7 +43,7 @@ def init_registers(self):
         self.REGISTERS.append(0)
 
 
-def init_stack(self):
+def init_stack(self) -> None:
     """
     Initialise the stack.
 
@@ -57,7 +57,7 @@ def init_stack(self):
         self.STACK.append(0)
 
 
-def init_rom(self):
+def init_rom(self) -> None:
     """
     Initialise the ROM with zeroes in all locations.
 
@@ -71,7 +71,7 @@ def init_rom(self):
         self.ROM.append(0)
 
 
-def init_pram(self):
+def init_pram(self) -> None:
     """
     Initialise the PRAM with zeroes in all locations.
 
@@ -85,7 +85,7 @@ def init_pram(self):
         self.PRAM.append(0)
 
 
-def init_wpm_counter(self):
+def init_wpm_counter(self) -> None:
     """
     Initialise the WPM Counter.
 

@@ -44,8 +44,11 @@ Commands in this module.
 
 """
 
+# Import typing library
+from typing import Tuple
 
-def add(self, register: int):
+
+def add(self, register: int) -> Tuple[int, int]:
     """
     Name:           Add index register to accumulator with carry.
 
@@ -73,7 +76,7 @@ def add(self, register: int):
     return self.ACCUMULATOR, self.CARRY
 
 
-def sub(self, register: int):
+def sub(self, register: int) -> Tuple[int, int]:
     """
     Name:           Subtract index register from accumulator with borrow.
 
@@ -107,7 +110,7 @@ def sub(self, register: int):
     return self.ACCUMULATOR, self.CARRY
 
 
-def ld(self, register: int):
+def ld(self, register: int) -> int:
     """
     Name:           Load index register to Accumulator.
 
@@ -125,7 +128,7 @@ def ld(self, register: int):
     return self.ACCUMULATOR
 
 
-def xch(self, register: int):
+def xch(self, register: int) -> Tuple[int, int]:
     """
     Name:           Exchange index register and accumulator.
 

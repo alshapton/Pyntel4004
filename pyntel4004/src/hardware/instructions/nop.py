@@ -44,7 +44,7 @@ Commands in this module.
 """
 
 
-def nop(self):
+def nop(self) -> int:
     """
     Name:           No Operation.
 

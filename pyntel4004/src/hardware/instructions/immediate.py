@@ -44,7 +44,7 @@ Commands in this module.
 """
 
 
-def fim(self, registerpair: int, value: int):
+def fim(self, registerpair: int, value: int) -> list:
     """
     Name:           Fetched immediate from ROM.
 
@@ -62,7 +62,7 @@ def fim(self, registerpair: int, value: int):
     return self.REGISTERS
 
 
-def ldm(self, operand: int):
+def ldm(self, operand: int) -> int:
     """
     Name:           Load Accumulator Immediate.
 
