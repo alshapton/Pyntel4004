@@ -4,7 +4,7 @@ import os
 import sys
 sys.path.insert(1, '..' + os.sep + 'src')
 
-from hardware.exceptions import  InvalidRegister, InvalidRegisterPair, \
+from hardware.exceptions import InvalidRegister, InvalidRegisterPair, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 
