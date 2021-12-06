@@ -12,7 +12,8 @@ import pytest  # noqa
 
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import convert_decimal_to_n_bit_slices, \
-     decimal_to_binary, insert_register   # noqa
+     decimal_to_binary  # noqa
+from hardware.suboperations.registers import insert_register   # noqa
 
 
 @pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])

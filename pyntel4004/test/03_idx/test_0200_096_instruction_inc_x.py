@@ -11,8 +11,8 @@ import pytest  # noqa
 
 
 from hardware.processor import Processor  # noqa
-from hardware.suboperation import insert_register, decimal_to_binary  # noqa
-
+from hardware.suboperation import decimal_to_binary  # noqa
+from hardware.suboperations.registers import insert_register  # noqa
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])  # noqa
 def test_validate_instruction(register):

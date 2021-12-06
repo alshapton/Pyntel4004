@@ -11,7 +11,8 @@ import pytest  # noqa
 import random  # noqa
 
 from hardware.processor import Processor  # noqa
-from hardware.suboperation import decimal_to_binary, insert_register  # noqa
+from hardware.suboperation import decimal_to_binary  # noqa
+from hardware.suboperations.registers import insert_register  # noqa
 
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7,
@@ -32,18 +33,18 @@ def test_scenario1(register):
     chip_test = Processor()
     chip_base = Processor()
 
-    RANDOM_VALUE = random.randint(0, 15)  # Select a random 4-bit value
+    rv = random.randint(0, 15)  # Select a random 4-bit value
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
     chip_test.set_accumulator(14)
-    chip_test.REGISTERS[register] = RANDOM_VALUE
+    chip_test.REGISTERS[register] = rv
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0
     chip_base.increment_pc(1)
-    chip_base.set_accumulator(RANDOM_VALUE)
-    chip_base.REGISTERS[register] = RANDOM_VALUE
+    chip_base.set_accumulator(rv)
+    chip_base.REGISTERS[register] = rv
 
     # Carry out the instruction under test
     # Perform an LD operation

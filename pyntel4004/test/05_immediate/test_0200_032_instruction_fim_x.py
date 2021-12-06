@@ -11,7 +11,8 @@ import pytest  # noqa
 import random  # noqa
 
 from hardware.processor import Processor  # noqa
-from hardware.suboperation import decimal_to_binary, insert_register  # noqa
+from hardware.suboperation import decimal_to_binary  # noqa
+from hardware.suboperations.registers import insert_register  # noqa
 
 
 @pytest.mark.parametrize("registerpair", [0, 1, 2, 3, 4, 5, 6, 7])

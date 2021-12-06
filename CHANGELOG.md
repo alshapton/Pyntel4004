@@ -14,8 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Additional documentation about the Intel 4004 and its' companion chipset
 - Initial version of a disassembler
 - Mechanism to determine loading mechanism - either from an .OBJ or a .BIN file
+- Type hinting
 ### Changed
--
+- Broken out suboperations and reads to their own files for simplicity - all 
+  functions for a specific portion of the processor are now together
 ### Deprecated
 -
 ### Fixed
@@ -24,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   assigned incorrectly.
 
 ### Removed
--
+- suboperation.py
 ### Security
 -
 ## [0.0.1-beta.1](https://pypi.org/project/Pyntel4004/0.0.1b1/) - 2021-11-19

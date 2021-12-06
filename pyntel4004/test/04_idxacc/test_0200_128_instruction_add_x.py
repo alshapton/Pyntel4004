@@ -11,7 +11,8 @@ import pytest  # noqa
 import random  # noqa
 
 from hardware.processor import Processor  # noqa
-from hardware.suboperation import decimal_to_binary, insert_register  # noqa
+from hardware.suboperation import decimal_to_binary  # noqa
+from hardware.suboperations.registers import insert_register  # noqa
 
 
 @pytest.mark.parametrize("register", [0, 1, 2, 3, 4, 5, 6, 7,
@@ -32,24 +33,24 @@ def test_scenario1(values):
     chip_test = Processor()
     chip_base = Processor()
 
-    RANDOM_REG = random.randint(0, 15)  # Select a random value
+    rr = random.randint(0, 15)  # Select a random value
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
     chip_test.set_accumulator(values[1])
     chip_test.CARRY = values[0]
-    chip_test.insert_register(RANDOM_REG, values[2])
+    chip_test.insert_register(rr, values[2])
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0
     chip_base.increment_pc(1)
     chip_base.CARRY = values[4]
     chip_base.set_accumulator(values[3])
-    chip_base.insert_register(RANDOM_REG, values[2])
+    chip_base.insert_register(rr, values[2])
 
     # Carry out the instruction under test
     # Perform aN ADD operation
-    Processor.add(chip_test, RANDOM_REG)
+    Processor.add(chip_test, rr)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
