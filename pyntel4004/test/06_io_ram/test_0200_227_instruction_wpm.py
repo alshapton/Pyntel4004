@@ -12,7 +12,7 @@ import pytest  # noqa
 
 
 from hardware.processor import Processor  # noqa
-from hardware.suboperation import binary_to_decimal, \
+from hardware.suboperations.utility import binary_to_decimal, \
     convert_to_absolute_address, \
     convert_decimal_to_n_bit_slices as c2n  # noqa
 from utils import encode_command_register  # noqa

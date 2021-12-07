@@ -12,7 +12,7 @@ import pytest  # noqa
 
 from hardware.processor import Processor  # noqa
 
-from hardware.suboperation import decimal_to_binary  # noqa
+from hardware.suboperations.utility import decimal_to_binary  # noqa
 
 
 @pytest.mark.parametrize("value", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,

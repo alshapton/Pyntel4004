@@ -1,7 +1,7 @@
 # Using pytest
 # Test the initialisation of an instance of an i4004(processor)
-# Using the functions from the reset.py module (via processor.py)
-# Also testing the functions of the reads.py module (via processor.py)
+# Using the functions from the init.py module (via processor.py)
+# Also testing the functions of the other.py module (via processor.py)
 
 # Import system modules
 import os
@@ -193,9 +193,9 @@ def test_init_ram_ports_without_read():
 @pytest.mark.withread
 def test_init_ram_ports_with_read():
     """Test RAM port content with read function."""
-    RAM_PORTS = chip.read_all_ram_ports()
+    ram_ports = chip.read_all_ram_ports()
     for i in range(chip.NO_CHIPS_PER_BANK):
-        assert sum(RAM_PORTS[i]) == 0
+        assert sum(ram_ports[i]) == 0
 
 
 @pytest.mark.withoutread
@@ -210,11 +210,11 @@ def test_init_status_characters_without_read():
 @pytest.mark.withread
 def test_init_status_characters_with_read():
     """Test RAM status characters with read function."""
-    STATUS_CHARACTERS = chip.read_all_status_characters()
+    status_characters = chip.read_all_status_characters()
     for b in range(chip.NO_DRB):
         for c in range(chip.NO_CHIPS_PER_BANK):
             for r in range(chip.NO_STATUS_REGISTERS):
-                assert sum(STATUS_CHARACTERS[b][c][r]) == 0
+                assert sum(status_characters[b][c][r]) == 0
 
 
 @pytest.mark.withoutread

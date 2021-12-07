@@ -45,7 +45,7 @@ Commands in this module.
 """
 
 from hardware.exceptions import InvalidRamBank, InvalidRegisterPair
-from hardware.suboperation import decimal_to_binary
+from hardware.suboperations.utility import decimal_to_binary
 
 
 def dcl(self) -> int:

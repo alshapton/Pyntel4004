@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Type hinting
 ### Changed
 - Broken out suboperations and reads to their own files for simplicity - all 
-  functions for a specific portion of the processor are now together
+  functions for a specific portion of the processor are now together in the hardware.suboperations module
 ### Deprecated
 -
 ### Fixed
@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - suboperation.py
+- reads.py
 ### Security
 -
 ## [0.0.1-beta.1](https://pypi.org/project/Pyntel4004/0.0.1b1/) - 2021-11-19

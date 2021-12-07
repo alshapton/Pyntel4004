@@ -8,10 +8,8 @@ class Processor:
     #  pylint: disable=import-outside-toplevel
     # Turn off import-outside-toplevel warning for this class
     from hardware import opcodes
-    from hardware.reset import init_command_registers, init_pram, \
-        init_ram, init_registers, init_rom, init_stack, \
-        init_wpm_counter
 
+    # Import opcode mechanics
     from hardware.instructions.accumulator import clb, clc, cma, cmc, \
         daa, dac, iac, kbp, ral, rar, stc, tcc, tcs
     from hardware.instructions.idx import fin, inc
@@ -24,23 +22,33 @@ class Processor:
     from hardware.instructions.subroutine import bbl, jms
     from hardware.instructions.transfer_control import isz, jcn, jin, jun
 
-    from hardware.reads import read_accumulator, read_all_ram, \
-        read_all_registers, read_all_pram, read_all_rom, \
-        read_all_stack, read_current_ram_bank, read_pin10, \
-        read_all_command_registers, read_wpm_counter, read_acbr, \
-        read_program_counter, read_stack_pointer, read_all_rom_ports, \
-        read_all_ram_ports, read_all_status_characters
-    from hardware.suboperation import binary_to_decimal, check_overflow, \
+    from hardware.suboperations.other import decode_command_register, \
+        read_all_command_registers
+    from hardware.suboperations.utility import binary_to_decimal, \
         convert_decimal_to_n_bit_slices, convert_to_absolute_address, \
-        decimal_to_binary, decode_command_register, \
-        flip_wpm_counter, increment_register, increment_pc, inc_pc_by_page, \
-        is_end_of_page, ones_complement, rdx, set_accumulator, \
-        split_address8, write_pin10, write_ram_status
+        decimal_to_binary, ones_complement, split_address8
+
+    # Import suboperations
+    from hardware.suboperations.accumulator import check_overflow, \
+        read_acbr, read_accumulator, set_accumulator
     from hardware.suboperations.carry import read_carry, \
         read_complement_carry, reset_carry, set_carry
-    from hardware.suboperations.registers import insert_register, \
-        insert_registerpair, read_register, read_registerpair
-    from hardware.suboperations.stack import read_from_stack, write_to_stack
+    from hardware.suboperations.init import init_command_registers, \
+        init_pram, init_ram, init_registers, init_rom, init_stack, \
+        init_wpm_counter
+    from hardware.suboperations.pc import inc_pc_by_page, increment_pc, \
+        is_end_of_page, read_program_counter
+    from hardware.suboperations.pin10 import read_pin10, write_pin10
+    from hardware.suboperations.ram import rdx, read_all_pram, read_all_ram, \
+        read_all_ram_ports, read_all_status_characters, \
+        read_current_ram_bank, write_ram_status
+    from hardware.suboperations.registers import increment_register, \
+        insert_register, insert_registerpair, read_all_registers, \
+        read_register, read_registerpair
+    from hardware.suboperations.rom import read_all_rom, read_all_rom_ports
+    from hardware.suboperations.stack import read_all_stack, read_from_stack, \
+        read_stack_pointer, write_to_stack
+    from hardware.suboperations.wpm import flip_wpm_counter, read_wpm_counter
     #  pylint: enable=import-outside-toplevel
 
     # Operations to read the processor components

@@ -9,7 +9,7 @@
 
 from typing import Tuple, Any
 from hardware.processor import Processor
-from hardware.suboperation import split_address8
+from hardware.suboperations.utility import split_address8
 from shared.shared import do_error, get_opcodeinfo, get_opcodeinfobyopcode  # noqa
 
 

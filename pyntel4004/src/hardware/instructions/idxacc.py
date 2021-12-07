@@ -65,7 +65,7 @@ def add(self, register: int) -> Tuple[int, int]:
                     otherwise, the carry/link is set to 0. The 4 bit
                     content of the index register is unaffected.
     """
-    from hardware.suboperation import check_overflow  # noqa
+    from hardware.suboperations.accumulator import check_overflow  # noqa
 
     self.ACCUMULATOR = (self.ACCUMULATOR + self.REGISTERS[register] +
                         self.read_carry())
@@ -92,7 +92,7 @@ def sub(self, register: int) -> Tuple[int, int]:
                     otherwise, it is set to 1.
                     The 4 bit content of the index register is unaffected.
     """
-    from hardware.suboperation import ones_complement, binary_to_decimal   # noqa
+    from hardware.suboperations.utility import ones_complement, binary_to_decimal   # noqa
 
     carry = self.read_complement_carry()
 

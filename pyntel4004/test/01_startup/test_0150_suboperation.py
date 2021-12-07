@@ -20,6 +20,7 @@ from hardware.exceptions import AddressOutOf8BitRange, \
         ValueOutOfRangeForBits, ValueOutOfRangeForStack,\
         ValueTooLargeForAccumulator, \
         ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
+
 from hardware.processor import Processor  # noqa
 
 from utils import encode_command_register  # noqa

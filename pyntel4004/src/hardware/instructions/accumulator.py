@@ -100,7 +100,7 @@ def cma(self: Any) -> int:
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec.
     Side-effects:   Not Applicable
     """
-    from hardware.suboperation import ones_complement  # noqa
+    from hardware.suboperations.utility import ones_complement  # noqa
 
     ones_acc = int(ones_complement(self.ACCUMULATOR, 4), 2)
     self.ACCUMULATOR = ones_acc

@@ -11,7 +11,7 @@ import pytest  # noqa
 import random  # noqa
 
 from hardware.processor import Processor  # noqa
-from hardware.suboperation import decimal_to_binary  # noqa
+from hardware.suboperations.utility import decimal_to_binary  # noqa
 from hardware.suboperations.registers import insert_register  # noqa
 
 

@@ -8,7 +8,7 @@ from hardware.processor import Processor
 
 def encode_command_register(chip, register, address, shape):
 
-    from hardware.suboperation import decimal_to_binary  # noqa
+    from hardware.suboperations.utility import decimal_to_binary  # noqa
     from hardware.exceptions import InvalidCommandRegisterFormat
 
     if shape not in ('DATA_RAM_CHAR', 'DATA_RAM_STATUS_CHAR',

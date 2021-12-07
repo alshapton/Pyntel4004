@@ -1,1 +1,1 @@
-"""i4004 Processor infrastructure."""
+"""i4004 Suboperations"""

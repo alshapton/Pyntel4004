@@ -10,7 +10,7 @@ import pickle  # noqa
 import pytest  # noqa
 
 from hardware.processor import Processor  # noqa
-from hardware.suboperation import decimal_to_binary  # noqa
+from hardware.suboperations.utility import decimal_to_binary  # noqa
 from hardware.suboperations.stack import write_to_stack  # noqa
 from hardware.exceptions import ValueOutOfRangeForStack  # noqa
 

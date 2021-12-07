@@ -52,14 +52,20 @@ Commands in this module.
 
 """
 
+# Import system modules
+import os
+import sys
+sys.path.insert(1, '..' + os.sep + 'src')
+
 # Import typing library
-from typing import Tuple
+from typing import Tuple  # noqa
 
-
-from hardware.suboperation import check_overflow, \
-    convert_to_absolute_address, decimal_to_binary, decode_command_register, \
-    flip_wpm_counter, ones_complement, rdx
-from hardware.reads import read_wpm_counter
+from hardware.suboperations.utility import convert_to_absolute_address, \
+    decimal_to_binary, ones_complement  # noqa
+from hardware.suboperations.other import decode_command_register  # noqa
+from hardware.suboperations.accumulator import check_overflow  # noqa
+from hardware.suboperations.ram import rdx  # noqa
+from hardware.suboperations.wpm import flip_wpm_counter, read_wpm_counter  # noqa
 
 
 def rdm(self) -> int:

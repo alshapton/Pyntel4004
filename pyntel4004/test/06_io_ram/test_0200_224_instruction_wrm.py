@@ -12,7 +12,7 @@ import pickle  # noqa
 import pytest  # noqa
 
 from hardware.processor import Processor  # noqa
-from hardware.suboperation import convert_to_absolute_address  # noqa
+from hardware.suboperations.utility import convert_to_absolute_address  # noqa
 from utils import encode_command_register  # noqa
 
 
