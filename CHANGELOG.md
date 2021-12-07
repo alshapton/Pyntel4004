@@ -15,21 +15,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version of a disassembler
 - Mechanism to determine loading mechanism - either from an .OBJ or a .BIN file
 - Type hinting
+- `other.py`
+- suboperations directory
 ### Changed
 - Broken out suboperations and reads to their own files for simplicity - all 
-  functions for a specific portion of the processor are now together in the hardware.suboperations module
+    functions for a specific portion of the processor are now together in the hardware.suboperations module
 ### Deprecated
--
+- N/A
 ### Fixed
 - Error in assembler when the second label in a program had a corresponding
-  operator with more than one operand; that and subsequent labels were being
-  assigned incorrectly.
-
+    operator with more than one operand; that and subsequent labels were being
+    assigned incorrectly.
 ### Removed
-- suboperation.py
-- reads.py
+- `suboperation.py`
+- `reads.py`
+- `codacy.com` code coverage
 ### Security
--
+- N/A
 ## [0.0.1-beta.1](https://pypi.org/project/Pyntel4004/0.0.1b1/) - 2021-11-19
 
 ### Notes
