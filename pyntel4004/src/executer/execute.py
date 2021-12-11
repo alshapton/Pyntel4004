@@ -141,7 +141,7 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
 
     opcode = _tps[chip.PROGRAM_COUNTER]
 
-    if opcode == 255:  # pseudo-opcode (directive "end" - stop program)
+    if opcode == 256:  # pseudo-opcode (directive "end" - stop program)
         print('           end')
         result = None
 
@@ -193,7 +193,7 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
     opcode = 0
 
     _tps = retrieve_program(chip, location)
-    while opcode != 255:  # pseudo-opcode (directive) for "end"
+    while opcode != 256:  # pseudo-opcode (directive) for "end"
         monitor_command = 'none'
         result, monitor_command, monitor, breakpoints, exe, opcode = \
             process_instruction(chip, breakpoints, _tps, monitor,

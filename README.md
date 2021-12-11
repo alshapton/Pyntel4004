@@ -5,7 +5,7 @@
 [![Build Pipeline](https://github.com/alshapton/Pyntel4004/actions/workflows/build-pipeline.yml/badge.svg)](https://github.com/alshapton/Pyntel4004/actions/workflows/build-pipeline.yml)
 [![Documentation Status](https://readthedocs.org/projects/pyntel4004/badge/?version=latest)](https://pyntel4004.readthedocs.io/en/latest/?badge=latest)
 ![GitHub](https://img.shields.io/github/license/alshapton/pyntel4004)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/28ff090ed5a9412b82a26b4da605745f)](https://www.codacy.com/gh/alshapton/Pyntel4004/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alshapton/Pyntel4004&amp;utm_campaign=Badge_Grade)
+[![CodeFactor](https://www.codefactor.io/repository/github/alshapton/pyntel4004/badge)](https://www.codefactor.io/repository/github/alshapton/pyntel4004)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=active+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
 [![DeepSource](https://deepsource.io/gh/alshapton/Pyntel4004.svg/?label=resolved+issues)](https://deepsource.io/gh/alshapton/Pyntel4004/?ref=repository-badge)
 [![PyPI version](https://badge.fury.io/py/Pyntel4004.svg)](https://badge.fury.io/py/Pyntel4004)
@@ -17,11 +17,13 @@ A Python software implementation of the Intel 4004 processor.
 ## General Information
 
 -  Two pass assembler using the original mnemonics, directives and comments syntax
+-  Disassembler
 -  Monitor facility to step through code and examine registers, memory etc
 
 ## Requirements
 
-* `Python`_ >= 3.8.2
+* Python >= 3.8.2
+
 <br>
 
 ## Installation Instructions

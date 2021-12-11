@@ -16,7 +16,7 @@ ADD
    * - Name
      - Add register to accumulator with carry
    * - Function
-     - Add a value from a specified register to the accumulator, | b |
+     - Add a value from a specified register to the accumulator, |br|
        respecting the carry flag.
    * - Syntax
      - ADD R

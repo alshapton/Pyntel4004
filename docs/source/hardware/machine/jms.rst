@@ -61,16 +61,17 @@ position within a page of memory, whereas some other instructions are.
 Therefore, only a **JUN** or **JMS** instruction should be used to transfer control
 from one page of memory to another.
 
+.. _jms_ref1:
 
 .. rubric:: Example program snippet for illustration
 
 ::
 
-          jms LAB
+          jms lab
           xch 0
 
 
-  LAB     inc 1
+  lab,    inc 1
 
 
           bbl 6
@@ -85,7 +86,7 @@ placing the address of the next instruction on the stack.
 Thus the execution sequence of the above example is as follows:
 
 The **jms** instruction replaces the contents of the program counter with
-the address of the label *LAB*. The next instruction executed is **inc**.
+the address of the label *lab*. The next instruction executed is **inc**.
 
 Additional instructions are then executed, then the **bbl** instruction.
 

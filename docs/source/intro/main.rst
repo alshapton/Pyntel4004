@@ -7,6 +7,11 @@ Intel 4004 Chip History
 .. image:: images/intel4004chip.png
           :scale: 50%
 
+.. toctree::
+   :hidden:
+   
+   ../hardware/refs/decsub
+
 Background
 
 In 1969 Busicom contracted Intel to design a set of chips to be used in a new high perfomance calculator.

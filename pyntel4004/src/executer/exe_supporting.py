@@ -285,7 +285,7 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
     if monitor_command == 'off':
         return False, False, '', opcode
     if monitor_command == 'q':
-        return None, False, monitor_command, 255
+        return None, False, monitor_command, 256
 
     return -1, '', '', 0
 

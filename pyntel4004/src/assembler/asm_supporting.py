@@ -245,7 +245,7 @@ def asm_end(tps: list, address: int, count: int, label: str) -> list:
     print_ln('', label, '', '', '', '', '',  '', '', '', '', str(count),
              'end', '', '', '', '')
     # pseudo-opcode (directive "end")
-    tps[address] = 255
+    tps[address] = 256
     return tps
 
 

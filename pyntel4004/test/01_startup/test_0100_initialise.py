@@ -231,7 +231,7 @@ def test_init_pin_10_with_read():
 
 def test_full_opcodes():
     """Test opcode count directly."""
-    assert len(chip.INSTRUCTIONS) == 256
+    assert len(chip.INSTRUCTIONS) == 257
 
 
 chip = Processor()
