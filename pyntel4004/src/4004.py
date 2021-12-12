@@ -106,8 +106,8 @@ def main(argv: list) -> None:
         if did_execute:
             print()
             acc = chip.read_accumulator()
-            print('Accumulator : ' + str(acc) +
-                  '  (0b ' + str(Processor.decimal_to_binary(4, acc)) + ')')
+            print('Accumulator : ' + str(acc) + '  (0b ' +
+                  str(Processor.decimal_to_binary(4, acc)) + ')')
             print('Carry       :', chip.read_carry())
             print()
 
