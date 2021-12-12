@@ -5,7 +5,7 @@ import os
 import sys
 sys.path.insert(1, '..' + os.sep + 'src')
 
-from hardware.exceptions import  ProgramCounterOutOfBounds  # noqa
+from hardware.exceptions import ProgramCounterOutOfBounds  # noqa
 
 
 def increment_pc(self, words: int) -> int:
