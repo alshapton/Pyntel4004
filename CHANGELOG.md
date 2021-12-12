@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1-beta.3](https://pypi.org/project/Pyntel4004/0.0.1b3/) - 2021-XX-XX
 
 ### Notes
--
+- Successfully run a copy of the Busicom calculator code on the Retroshield Arduino 4004
+  The next stage will be to compile a short program using Pyntel4004 and run it on the Retroshield.
 ### Added
 - Additonal opcode documentation
+- Write code to Retroshield-compatible .h file
 ### Changed
 -
 ### Deprecated
