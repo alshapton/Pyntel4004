@@ -493,8 +493,8 @@ def asm_pseudo(chip: Processor, opcode: int, label: str, count: int,
 def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
              opcode: str, opcodeinfo: dict,
              label: str, count: int, org_found: bool, location: str) \
-             -> Tuple[Processor, list, list, int, list,
-                      dict, str, int, Any, bool, str]:
+    -> Tuple[Processor, list, list, int, list,
+             dict, str, int, Any, bool, str]:
     """
     Assemble the program (opcode components).
 
@@ -606,8 +606,8 @@ def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
 
 def assemble_opcodes(chip: Processor, x: list, _labels: list, address: int,
                      tps: list, opcodeinfo: dict, label: str, count: int) \
-                     -> Tuple[Processor, list, list,
-                              int, list, dict, str, int]:
+    -> Tuple[Processor, list, list,
+             int, list, dict, str, int]:
     """
     Assemble the opcodes.
 
@@ -1229,7 +1229,7 @@ def assemble_jcn(self: Processor, x: list, _labels: list,
 def assemble_2(chip: Processor, x: list, opcode: str, address: int,
                tps: list, _labels: list, address_left: str,
                address_right: str, label: str, count: int) \
-               -> Tuple[int, list, list]:
+        -> Tuple[int, list, list]:
     """
     Function to assemble specific instructions.
 
@@ -1503,7 +1503,7 @@ def validate_inc(parts: list, line: str) -> bool:
 def work_with_a_line_of_asm(chip: Processor, line: str,
                             _labels: list, p_line: int,
                             address: int, tfile: list) \
-                            -> Tuple[Any, list, int, int, list]:
+        -> Tuple[Any, list, int, int, list]:
     """
     Analyse a single line of code.
 
