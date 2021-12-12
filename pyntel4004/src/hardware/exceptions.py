@@ -1,16 +1,9 @@
-<<<<<<< HEAD
-class AddressOutOf8BitRange(Exception):
-    """
-    Raised when an address is out of range of an 8-bit Value
-    """
-=======
 """Exceptions to raise when issues occur."""
 
 
 class AddressOutOf8BitRange(Exception):
 
     """Raised when an address is out of range of an 8-bit Value."""
->>>>>>> 0.0.1-beta.2
 
 
 class IncompatibleChunkBit(Exception):
@@ -29,26 +22,14 @@ class InvalidChunkValue(Exception):
 
 
 class InvalidCommandRegisterContent(Exception):
-
-    """Raised when a command register contains an wrongly formatted value."""
-
-
-class InvalidCommandRegisterContent(Exception):
     """
     Raised when a command register contains an illegally formatted value.
     """
 
 
 class InvalidCommandRegisterFormat(Exception):
-<<<<<<< HEAD
-    """
-    Raised when a command register format for decoding/encoding is not
-    within the prescribed values.
-    """
-=======
 
     """Raised when a CR format isn't within the prescribed values."""
->>>>>>> 0.0.1-beta.2
 
 
 class InvalidEndOfPage(Exception):

@@ -8,14 +8,8 @@ import sys
 sys.path.insert(1, '..' + os.sep + 'src')
 sys.path.insert(2, '..' + os.sep + 'src')
 
-<<<<<<< HEAD
-from hardware.suboperation import convert_to_absolute_address, \
-    encode_command_register
-sys.path.insert(1, '../src')
-=======
 import pickle  # noqa
 import pytest  # noqa
->>>>>>> 0.0.1-beta.2
 
 from hardware.processor import Processor  # noqa
 from hardware.suboperations.utility import convert_to_absolute_address  # noqa

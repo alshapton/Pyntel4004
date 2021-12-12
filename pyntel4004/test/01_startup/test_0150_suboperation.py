@@ -8,20 +8,9 @@ import sys
 import pickle
 import pytest
 
-<<<<<<< HEAD
-from hardware.suboperation import encode_command_register
-
-# from hardware.suboperation import convert_to_absolute_address
-
-sys.path.insert(1, '../src')
-
-# import hardware.suboperation  # noqa
-from hardware.processor import processor  # noqa
-=======
 sys.path.insert(1, '..' + os.sep + 'src')
 sys.path.insert(2, '..' + os.sep + 'test')
 
->>>>>>> 0.0.1-beta.2
 from hardware.exceptions import AddressOutOf8BitRange, \
         IncompatibleChunkBit, InvalidBitValue, \
         InvalidChunkValue, InvalidCommandRegisterFormat, \
@@ -32,12 +21,9 @@ from hardware.exceptions import AddressOutOf8BitRange, \
         ValueTooLargeForAccumulator, \
         ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
-<<<<<<< HEAD
-=======
 from hardware.processor import Processor  # noqa
 
 from utils import encode_command_register  # noqa
->>>>>>> 0.0.1-beta.2
 ##############################################################################
 #                      RDx generic function                                  #
 ##############################################################################
@@ -51,17 +37,10 @@ from utils import encode_command_register  # noqa
 def test_suboperation_rdx(rambank, chip, register, address, character):
     """Tests for RDx generic function."""
     import random
-<<<<<<< HEAD
-    chip_base = processor()
-    chip_test = processor()
-
-    RANDOM_VALUE = random.randint(0, 15)  # Select a random value
-=======
     chip_base = Processor()
     chip_test = Processor()
 
     random_value = random.randint(0, 15)  # Select a random value
->>>>>>> 0.0.1-beta.2
 
     command_register = encode_command_register(chip, register, 0,
                                                'DATA_RAM_STATUS_CHAR')
@@ -69,30 +48,18 @@ def test_suboperation_rdx(rambank, chip, register, address, character):
     chip_base.CURRENT_RAM_BANK = rambank
     chip_base.COMMAND_REGISTER = command_register
     chip_base.STATUS_CHARACTERS[rambank][chip][register][character] \
-<<<<<<< HEAD
-        = RANDOM_VALUE
-    chip_base.set_accumulator(RANDOM_VALUE)
-=======
         = random_value
     chip_base.set_accumulator(random_value)
->>>>>>> 0.0.1-beta.2
     chip_base.increment_pc(1)
 
     # Set preconditions
     chip_test.CURRENT_RAM_BANK = rambank
     chip_test.COMMAND_REGISTER = command_register
     chip_test.STATUS_CHARACTERS[rambank][chip][register][character] \
-<<<<<<< HEAD
-        = RANDOM_VALUE
-
-    # Perform the operation under test:
-    processor.rdx(chip_test, character)
-=======
         = random_value
 
     # Perform the operation under test:
     Processor.rdx(chip_test, character)
->>>>>>> 0.0.1-beta.2
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
@@ -113,19 +80,11 @@ def test_suboperation_rdx(rambank, chip, register, address, character):
                                    'RAM_PORT', 'ROM_PORT'])
 def test_suboperation_enc_dec_cr_scenario1(chip, register,
                                            address, shape):
-<<<<<<< HEAD
-    """Test Convert to absolute address. """
-    chip_2 = processor.decimal_to_binary(2, chip)
-    chip_4 = processor.decimal_to_binary(4, chip)
-    register_2 = processor.decimal_to_binary(2, register)
-    address_4 = processor.decimal_to_binary(4, address)
-=======
     """Test Convert to absolute address."""
     chip_2 = Processor.decimal_to_binary(2, chip)
     chip_4 = Processor.decimal_to_binary(4, chip)
     register_2 = Processor.decimal_to_binary(2, register)
     address_4 = Processor.decimal_to_binary(4, address)
->>>>>>> 0.0.1-beta.2
 
     if shape == 'DATA_RAM_CHAR':
         command_register = chip_2 + register_2 + address_4
@@ -152,17 +111,10 @@ def test_suboperation_enc_dec_cr_scenario1(chip, register,
         command_register = chip_4 + '0000'
 
     assert command_register == \
-<<<<<<< HEAD
-        processor.encode_command_register(chip, register, address, shape)
-
-    dchip, dregister, daddress = \
-        processor.decode_command_register(command_register, shape)
-=======
         encode_command_register(chip, register, address, shape)
 
     dchip, dregister, daddress = \
         Processor.decode_command_register(command_register, shape)
->>>>>>> 0.0.1-beta.2
 
     assert dchip == tchip
     assert dregister == tregister
@@ -174,11 +126,7 @@ def test_suboperation_enc_dec_cr_scenario1(chip, register,
 def test_suboperation_enc_dec_cr_scenario2(shape):
     """Test encode/decode command failure (shape only)."""
     with pytest.raises(Exception) as e:
-<<<<<<< HEAD
-        assert processor.encode_command_register(0, 0, 0, shape)
-=======
         assert encode_command_register(0, 0, 0, shape)
->>>>>>> 0.0.1-beta.2
     assert str(e.value) == 'Shape: ' + shape
     assert e.type == InvalidCommandRegisterFormat
 
@@ -188,11 +136,7 @@ def test_suboperation_enc_dec_cr_scenario2(shape):
 def test_suboperation_enc_dec_cr_scenario3(shape):
     """Test encode/decode command failure (shape only)."""
     with pytest.raises(Exception) as e:
-<<<<<<< HEAD
-        assert processor.decode_command_register(0, 0, 0, shape)
-=======
         assert Processor.decode_command_register(0, 0, 0, shape)
->>>>>>> 0.0.1-beta.2
         assert str(e.value) == 'Shape: ' + shape
         assert e.type == InvalidCommandRegisterFormat
 
@@ -207,13 +151,8 @@ def test_suboperation_enc_dec_cr_scenario3(shape):
 @pytest.mark.parametrize("address", [0, 6, 15])
 def test_suboperation_convert_to_abs_addressscenario1(rambank,
                                                       chip, register, address):
-<<<<<<< HEAD
-    """Test Convert to absolute address. """
-    chip_test = processor()
-=======
     """Test Convert to absolute address."""
     chip_test = Processor()
->>>>>>> 0.0.1-beta.2
 
     base_rambank = rambank * chip_test.RAM_BANK_SIZE
     base_chip = chip * chip_test.RAM_CHIP_SIZE
@@ -224,11 +163,7 @@ def test_suboperation_convert_to_abs_addressscenario1(rambank,
         address
 
     assert absolute_address == \
-<<<<<<< HEAD
-        processor.convert_to_absolute_address(chip_test,
-=======
         Processor.convert_to_absolute_address(chip_test,
->>>>>>> 0.0.1-beta.2
                                               rambank, chip, register, address)
 
 ##############################################################################
@@ -243,18 +178,10 @@ def test_suboperation_convert_to_abs_addressscenario1(rambank,
                                     [255, '1111', '1111'], [65, '0100', '0001']])  # noqa
 def test_suboperation_test_split8scenario1(values):
     """Test Split 8 bits. """
-<<<<<<< HEAD
-
-    in_address = values[0]
-    in_left_4 = values[1]
-    in_right_4 = values[2]
-    lcl_left_4, lcl_right_4 = processor.split_address8(in_address)
-=======
     in_address = values[0]
     in_left_4 = values[1]
     in_right_4 = values[2]
     lcl_left_4, lcl_right_4 = Processor.split_address8(in_address)
->>>>>>> 0.0.1-beta.2
 
     # Make assertions that the output is as required
     assert in_left_4 == lcl_left_4
@@ -264,10 +191,6 @@ def test_suboperation_test_split8scenario1(values):
 @pytest.mark.parametrize("address", [-1, -100, 2, 4098])  # noqa
 def test_suboperation_test_split8scenario2(address):
     """Test Split 8 bits failure."""
-<<<<<<< HEAD
-
-=======
->>>>>>> 0.0.1-beta.2
     # Simulate conditions at end of operation in base chip
     # N/A
 
@@ -275,11 +198,7 @@ def test_suboperation_test_split8scenario2(address):
     # N/A - chip should have not had any changes as the operations will fail
     # attempting to use binary number larger than the bits will allow
     with pytest.raises(Exception) as e:
-<<<<<<< HEAD
-        assert processor.split_address8(address)
-=======
         assert Processor.split_address8(address)
->>>>>>> 0.0.1-beta.2
         assert str(e.value) == 'Address: ' + str(address)
         assert e.type == AddressOutOf8BitRange
 
@@ -1148,8 +1067,8 @@ def test_suboperation_test_insert_ram_status_scenario1(
 
     chip_base.set_accumulator(value[0])
     chip_base.CURRENT_RAM_BANK = rambank
-    address = processor.encode_command_register(chip, register, 0,
-                                                'DATA_RAM_STATUS_CHAR')
+    address = encode_command_register(chip, register, 0,
+                                      'DATA_RAM_STATUS_CHAR')
     chip_base.COMMAND_REGISTER = address
     chip_base.STATUS_CHARACTERS[rambank][chip][register][value[1]] = value[0]
 

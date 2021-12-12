@@ -33,11 +33,7 @@ def test_scenario1(values):
     chip_test = Processor()
     chip_base = Processor()
 
-<<<<<<< HEAD
-    RANDOM_REG = random.randint(0, 15)  # Select a random value
-=======
     rr = random.randint(0, 15)  # Select a random value
->>>>>>> 0.0.1-beta.2
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0

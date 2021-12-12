@@ -478,11 +478,7 @@ def adm(self) -> Tuple[int, int]:
     return self.ACCUMULATOR, self.CARRY
 
 
-<<<<<<< HEAD
-def sbm(self):
-=======
 def sbm(self) -> Tuple[int, int]:
->>>>>>> 0.0.1-beta.2
     """
     Name:           Subtract DATA RAM from memory with borrow.
 
@@ -569,13 +565,6 @@ def wpm(self) -> Tuple[int, int]:
 
 
     """
-<<<<<<< HEAD
-    from hardware.suboperation import convert_to_absolute_address, \
-        decimal_to_binary, flip_wpm_counter
-    from hardware.reads import read_wpm_counter
-
-=======
->>>>>>> 0.0.1-beta.2
     chip, register, addr = decode_command_register(
         decimal_to_binary(8, self.COMMAND_REGISTER),
         'DATA_RAM_CHAR')

@@ -1,4 +1,4 @@
-"""Module for running i4004 assembled code."""
+""" Module for running accembled code. """
 
 # Import system modules
 import os
@@ -9,16 +9,10 @@ sys.path.insert(1, '..' + os.sep + 'src')
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
 
-<<<<<<< HEAD
-from hardware.processor import processor
-from executer.supporting import deal_with_monitor_command, is_breakpoint
-from shared.shared import coredump, do_error, get_opcodeinfobyopcode
-=======
 # Import executer and shared functions
 from executer.exe_supporting import deal_with_monitor_command, is_breakpoint  # noqa
 from shared.shared import coredump, do_error, get_opcodeinfobyopcode, retrieve_program, \
     translate_mnemonic  # noqa
->>>>>>> 0.0.1-beta.2
 
 ##############################################################################
 #  _ _  _    ___   ___  _  _     ______                 _       _            #
@@ -31,9 +25,6 @@ from shared.shared import coredump, do_error, get_opcodeinfobyopcode, retrieve_p
 ##############################################################################
 
 
-<<<<<<< HEAD
-def execute(chip: processor, location: str, PC: int, monitor: bool):
-=======
 def process_coredump(chip: Processor, ex) -> None:
     """
     Formulate the opcodes into mnemonics ready for execution.
@@ -162,7 +153,6 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
 
 
 def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
->>>>>>> 0.0.1-beta.2
     """
     Control the execution of a previously assembled program.
 
@@ -202,31 +192,6 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
     chip.PROGRAM_COUNTER = pc
     opcode = 0
 
-<<<<<<< HEAD
-        if is_breakpoint(BREAKPOINTS, chip.PROGRAM_COUNTER):
-            monitor_command = 'none'
-            monitor = True
-            prompt = breakout_prompt
-        if monitor is True:
-            while monitor_command != '':
-                monitor_command = input(prompt).lower()
-                result, monitor, monitor_command, opcode = \
-                    deal_with_monitor_command(chip, monitor_command,
-                                              BREAKPOINTS, monitor, opcode)
-                if result is False:
-                    prompt = classic_prompt
-                if result is None:
-                    break
-        custom_opcode = False
-        OPCODE = _TPS[chip.PROGRAM_COUNTER]
-        if OPCODE == 255:  # pseudo-opcode (directive "end" - stop program)
-            print('           end')
-            break
-        opcodeinfo = get_opcodeinfobyopcode(chip, OPCODE)
-
-        exe = opcodeinfo['mnemonic']
-        if exe == '-':
-=======
     _tps = retrieve_program(chip, location)
     while opcode != 256:  # pseudo-opcode (directive) for "end"
         monitor_command = 'none'
@@ -234,7 +199,6 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
             process_instruction(chip, breakpoints, _tps, monitor,
                                 monitor_command, opcode)
         if result is None:
->>>>>>> 0.0.1-beta.2
             break
 
         # Execute instruction
@@ -246,20 +210,7 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
         # skipcq: PYL-PYL-W0123
         try:
             eval(exe)  # noqa
-<<<<<<< HEAD
-        except Exception as ex:
-            cls = str(type(ex))
-            x = cls.replace('<class ', '').replace('>', ''). \
-                replace("'", '').split('.')
-            ex_type = x[len(x)-1]
-            ex_args = str(ex.args).replace('(', '').replace(',)', '')
-            message = ex_type + ': ' + ex_args + ' at location ' + \
-                str(chip.PROGRAM_COUNTER)
-            do_error(message)
-            coredump(chip, 'fred')
-=======
         except Exception as ex:  # noqa
             process_coredump(chip, ex)
->>>>>>> 0.0.1-beta.2
             return False
     return True

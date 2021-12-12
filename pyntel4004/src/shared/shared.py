@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-def coredump(chip, filename):
-    """
-    Take the assembled program and write to a given filename.
 
-    Parameters
-    ----------
-    chip : processor
-=======
 """Shared operations (between assembly, disassembly and execution."""
 
 # Import i4004 processor
@@ -20,7 +12,6 @@ def coredump(chip: Processor, filename: str) -> bool:
     Parameters
     ----------
     chip : Processor
->>>>>>> 0.0.1-beta.2
         The chip targetted for the coredump
 
     filename: str, mandatory
@@ -35,8 +26,7 @@ def coredump(chip: Processor, filename: str) -> bool:
     N/A
 
     Notes
-<<<<<<< HEAD
-    ------
+    -----
     N/A
 
     """
@@ -44,17 +34,6 @@ def coredump(chip: Processor, filename: str) -> bool:
     errordate = 'Date/Time:' + \
         datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n\n'
     with open(filename + '.core', "w") as output:
-=======
-    -----
-    N/A
-
-    """
-    from datetime import datetime  # noqa
-    filename = datetime.now().strftime("%d/%m/%Y-%H:%M:%S") + '.core'
-    errordate = 'Date/Time:' + \
-        datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n\n'
-    with open(filename, "w", encoding='utf-8') as output:
->>>>>>> 0.0.1-beta.2
         output.write('\n\n' + errordate)
         output.write('Processor Characteristics:\n\n')
         output.write('MAX_4_BITS :           ' + str(chip.MAX_4_BITS) +
@@ -119,58 +98,12 @@ def coredump(chip: Processor, filename: str) -> bool:
         for i in chip.REGISTERS:
             output.write(spaces + str(i) + '\t\t')
 
-<<<<<<< HEAD
         return True
 
 
 def do_error(message: str):
     """
     Print an assembly/runtime error message
-=======
-        print('Core dump to: ' + filename)
-        return True
-
-
-def determine_filetype(inputfile: str) -> str:
-    """
-    Determine the filetype of a specific input file.
-
-    In the context of reloading a previously assembled file for
-    execution or disassembly.
-
-    Parameters
-    ----------
-    inputfile: str, mandatory
-        The filename to examine
-
-    Returns
-    -------
-    filetype: str
-        OBJ if an object file complete with metadata
-        BIN if a binary assembled file.
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    -----
-    N/A
-
-    """
-    file = open(inputfile, "rb")
-    bytes = file.read(12)[2:9]
-    if bytes == b'program':
-        filetype = 'OBJ'
-    else:
-        filetype = 'BIN'
-    return filetype
-
-
-def do_error(message: str) -> bool:
-    """
-    Print an assembly/runtime error message.
->>>>>>> 0.0.1-beta.2
 
     Parameters
     ----------
@@ -186,11 +119,7 @@ def do_error(message: str) -> bool:
     N/A
 
     Notes
-<<<<<<< HEAD
-    ------
-=======
     -----
->>>>>>> 0.0.1-beta.2
     N/A
 
     """
@@ -199,16 +128,6 @@ def do_error(message: str) -> bool:
     return True
 
 
-<<<<<<< HEAD
-def get_opcodeinfo(self, ls: str, mnemonic: str):
-    """
-    Given a mnemonic, retrieve information about the mnemonic from
-    the opcode table
-
-    Parameters
-    ----------
-    chip : processor, mandatory
-=======
 def get_opcodeinfo(self: Processor, ls: str, mnemonic: str) -> dict:
     """
     Given a mnemonic retrieve details about the it from the opcode table.
@@ -216,7 +135,6 @@ def get_opcodeinfo(self: Processor, ls: str, mnemonic: str) -> dict:
     Parameters
     ----------
     self : Processor, mandatory
->>>>>>> 0.0.1-beta.2
         The instance of the processor containing the registers, accumulator etc
 
     ls: str, mandatory
@@ -242,11 +160,7 @@ def get_opcodeinfo(self: Processor, ls: str, mnemonic: str) -> dict:
     N/A
 
     Notes
-<<<<<<< HEAD
-    ------
-=======
     -----
->>>>>>> 0.0.1-beta.2
     N/A
 
     """
@@ -268,20 +182,6 @@ def get_opcodeinfo(self: Processor, ls: str, mnemonic: str) -> dict:
     return opcodeinfo
 
 
-<<<<<<< HEAD
-def get_opcodeinfobyopcode(self, OPCODE: int):
-    """
-    Given an opcode, retrieve information about the instruction from
-    the opcode table
-
-    Parameters
-    ----------
-    chip : processor, mandatory
-        The instance of the processor containing the registers, accumulator etc
-
-    OPCODE: int, mandatory
-        The mnemonic to locate
-=======
 def get_opcodeinfobyopcode(self: Processor, opcode: int) -> dict:
     """
     Given an opcode, retrieve details about it from the opcode table.
@@ -293,7 +193,6 @@ def get_opcodeinfobyopcode(self: Processor, opcode: int) -> dict:
 
     opcode: int, mandatory
         The opcode to locate
->>>>>>> 0.0.1-beta.2
 
     Returns
     -------
@@ -310,23 +209,13 @@ def get_opcodeinfobyopcode(self: Processor, opcode: int) -> dict:
     N/A
 
     Notes
-<<<<<<< HEAD
-    ------
-=======
     -----
->>>>>>> 0.0.1-beta.2
     N/A
 
     """
     opcodeinfo = {"opcode": -1, "mnemonic": "-"}
     try:
         opcodeinfo = next((item for item in self.INSTRUCTIONS
-<<<<<<< HEAD
-                           if item['opcode'] == OPCODE), None)
-    except:  # noqa
-        opcodeinfo = {"opcode": -1, "mnemonic": "-"}
-    return opcodeinfo
-=======
                            if item['opcode'] == opcode),
                           {"opcode": -1, "mnemonic": "N/A"})
     except:  # noqa
@@ -474,4 +363,3 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
             print('  {:>7}  {:<10}'.format(opcode, exe.replace('()', '')))  # noqa
 
     return exe
->>>>>>> 0.0.1-beta.2

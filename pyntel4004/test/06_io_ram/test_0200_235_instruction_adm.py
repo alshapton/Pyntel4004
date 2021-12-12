@@ -10,12 +10,6 @@ sys.path.insert(2, '..' + os.sep + 'test')
 import pickle  # noqa
 import pytest  # noqa
 
-<<<<<<< HEAD
-from hardware.suboperation import convert_to_absolute_address, encode_command_register, \
-    ones_complement  # noqa
-from hardware.processor import processor  # noqa
-=======
->>>>>>> 0.0.1-beta.2
 from hardware.exceptions import InvalidRamBank  # noqa
 from hardware.processor import Processor  # noqa
 from hardware.suboperations.utility import convert_to_absolute_address  # noqa

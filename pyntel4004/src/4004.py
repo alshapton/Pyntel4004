@@ -17,13 +17,8 @@ from assembler.assemble import assemble  # noqa
 from disassembler.disassemble import disassemble  # noqa
 
 # Executer imports
-<<<<<<< HEAD
-from executer.execute import execute
-from executer.supporting import retrieve
-=======
 from executer.execute import execute  # noqa
 from executer.exe_supporting import retrieve  # noqa
->>>>>>> 0.0.1-beta.2
 
 
 def main(argv: list) -> None:
