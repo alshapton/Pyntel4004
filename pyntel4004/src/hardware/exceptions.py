@@ -22,8 +22,9 @@ class InvalidChunkValue(Exception):
 
 
 class InvalidCommandRegisterContent(Exception):
-
-    """Raised when a command register contains an wrongly formatted value."""
+    """
+    Raised when a command register contains an illegally formatted value.
+    """
 
 
 class InvalidCommandRegisterFormat(Exception):

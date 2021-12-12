@@ -22,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -
 ### Security
 -
-
 ## [0.0.1-beta.2](https://pypi.org/project/Pyntel4004/0.0.1b2/) - 2021-12-11
 
 ### Notes
@@ -152,3 +151,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1-alpha.1](https://pypi.org/project/Pyntel4004/0.0.1a1/) - 2021-09-24
 
 ### Not documented
+

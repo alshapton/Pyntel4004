@@ -1,3 +1,4 @@
+
 """Shared operations (between assembly, disassembly and execution."""
 
 # Import i4004 processor
@@ -29,11 +30,10 @@ def coredump(chip: Processor, filename: str) -> bool:
     N/A
 
     """
-    from datetime import datetime  # noqa
-    filename = datetime.now().strftime("%d/%m/%Y-%H:%M:%S") + '.core'
+    from datetime import datetime
     errordate = 'Date/Time:' + \
         datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n\n'
-    with open(filename, "w", encoding='utf-8') as output:
+    with open(filename + '.core', "w") as output:
         output.write('\n\n' + errordate)
         output.write('Processor Characteristics:\n\n')
         output.write('MAX_4_BITS :           ' + str(chip.MAX_4_BITS) +
@@ -98,49 +98,12 @@ def coredump(chip: Processor, filename: str) -> bool:
         for i in chip.REGISTERS:
             output.write(spaces + str(i) + '\t\t')
 
-        print('Core dump to: ' + filename)
         return True
 
 
-def determine_filetype(inputfile: str) -> str:
+def do_error(message: str):
     """
-    Determine the filetype of a specific input file.
-
-    In the context of reloading a previously assembled file for
-    execution or disassembly.
-
-    Parameters
-    ----------
-    inputfile: str, mandatory
-        The filename to examine
-
-    Returns
-    -------
-    filetype: str
-        OBJ if an object file complete with metadata
-        BIN if a binary assembled file.
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    -----
-    N/A
-
-    """
-    file = open(inputfile, "rb")
-    bytes = file.read(12)[2:9]
-    if bytes == b'program':
-        filetype = 'OBJ'
-    else:
-        filetype = 'BIN'
-    return filetype
-
-
-def do_error(message: str) -> bool:
-    """
-    Print an assembly/runtime error message.
+    Print an assembly/runtime error message
 
     Parameters
     ----------

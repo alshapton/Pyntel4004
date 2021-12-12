@@ -112,6 +112,7 @@ def src(self, registerpair: int) -> int:
     Execution:      1 word, 8-bit code and an execution time of 10.8 usec..
     Side-effects:   Not Applicable
     """
+    from hardware.suboperation import decimal_to_binary
     if registerpair > 7:
         raise InvalidRegisterPair('Register pair : ' + str(registerpair))
 

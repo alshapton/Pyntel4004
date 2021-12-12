@@ -1,4 +1,4 @@
-"""Module for running i4004 assembled code."""
+""" Module for running accembled code. """
 
 # Import system modules
 import os
