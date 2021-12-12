@@ -57,7 +57,8 @@ def disassemble(chip: Processor, location: str, pc: int) -> bool:
     chip.PROGRAM_COUNTER = pc
     opcode = 0
     _tps = retrieve_program(chip, location)
-    while (opcode != 256) or (chip.PROGRAM_COUNTER <= chip.MEMORY_SIZE_PRAM - 1) :  # pseudo-opcode (directive) for "end"
+    # pseudo-opcode (directive) for "end"
+    while (opcode != 256) or (chip.PROGRAM_COUNTER <= chip.MEMORY_SIZE_PRAM - 1):
         if chip.PROGRAM_COUNTER == chip.MEMORY_SIZE_PRAM:
             return True
         if opcode == 256:

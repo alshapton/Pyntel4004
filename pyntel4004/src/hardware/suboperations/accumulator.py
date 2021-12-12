@@ -8,7 +8,7 @@ sys.path.insert(1, '..' + os.sep + 'src')
 # Import typing library
 from typing import Tuple  # noqa
 
-from hardware.exceptions import  ValueTooLargeForAccumulator  # noqa
+from hardware.exceptions import ValueTooLargeForAccumulator  # noqa
 
 
 def check_overflow(self) -> Tuple[int, int]:
