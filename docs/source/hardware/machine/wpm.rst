@@ -105,7 +105,10 @@ program RAM location:
 
 
 
-.. rubric:: Example program - TO DO
+.. rubric:: Example Program
+
+The following program writes to a program RAM location whose address
+is held in status characters 0, 1, and 2 of DATA RAM register 0 of DATA RAM chip 0, shown below.
 
 .. image:: images/wpm-diag.png
    :scale: 50%
@@ -114,10 +117,37 @@ program RAM location:
 ::
 
   / Example program
-          FIM   0P  180
-          SRC   0P
-          LDM   15
-          WRM
+        FIM        0P  180
+        SRC        0P
+        LDM        15
+        WRM
 
+        FIM        0P    224
+        SRC        0P          / Select ROM port 14.
+        LDM        1
+        WRR                    / Turn on write enable.
+                               / Set up PRAM address.
+                               /
+        FIM        0P    0
+        SRC        0P          / Select DATA RAM chip 0 register 0.
+        RD1                    / Read middle 4 bits of address.
+        XCH        10          / Save in register 10.
+        RD2                    / Read lowest 4 bits of address.
+        XCH        11          / Save in register 11.
+        RD0                    / Read highest 4 bits of address.
+        FIM        0P    240
+        SRC        0P          / Select ROM port 15.
+        WRR                    / Write high address.
+        SRC        5P          / Write middle + low address (RP5)
+                               /
+        LD         2           / High 4 data bits to accumulator.
+        WPM                    / Write to PRAM
+        LD         3           / Low 4 data bits to accumulator.
+        WPM                    / Write to PRAM
+
+        FIM        0P    224
+        SRC        0P          / Select ROM port 14.
+        CLB
+        WRR                    / Turn off write enable.
 
 .. _wpm: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208
