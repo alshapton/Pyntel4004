@@ -1579,8 +1579,9 @@ def work_with_a_line_of_asm(chip: Processor, line: str,
         match_label(_labels, parts[0], label_content)
         # Set opcode
         opcode = parts[1][:3]
-        opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
-        address = address + opcodeinfo['words']
+        if opcode != '=':
+            opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+            address = address + opcodeinfo['words']
     else:
         # Set opcode
         opcode = parts[0][:3]
@@ -1637,14 +1638,18 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
     """
     from datetime import datetime  # noqa
     program_name = '"program":"' + filename + '"'
+    cd = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     m_location = '"location":"' + memory_location + '"'
-    compdate = '"compile_date":"' + \
-               datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '"'
+    compdate = '"compile_date":"' + cd + '"'
     labels = '"labels":' + str(_labels).replace("'", '"')
     memorycontent = '"memory":['
+    i = 0
     for location in program:
         content = str(hex(location)[2:])
+        if int(content, 16) > 255:
+            program[i] = 0
         memorycontent = memorycontent + '"' + content + '", '
+        i = i + 1
     memory_content = memorycontent[:-2] + ']'
 
     json_doc = "{"
@@ -1656,6 +1661,33 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
     json_doc = json_doc + '}'
     with open(filename + '.obj', "w", encoding='utf-8') as output:
         output.write(json_doc)
-    with open(filename + '.bin', "w+b") as b:
-        b.write(bytearray(program))
+    with open(filename + '.bin', "w+b") as binary:
+        binary.write(bytearray(program))
+
+    memorycontent = 'const unsigned char rom_bin[] = {  \n'
+    i = 0
+    for location in program:
+        content = str(hex(location)[2:]).upper()
+        if int(content, 16) < 10:
+            zerox = '0x0'
+        else:
+            zerox = "0x"
+        memorycontent = memorycontent + zerox + content + ', '
+        i = i + 1
+        if i == 16:
+            i = 0
+            memorycontent = memorycontent + '\n'
+    memory_content = memorycontent[:-3] + '};\n'
+
+    with open(filename + "k4004.h", "w") as k4004:
+        k4004.write('////////////////////////////////////////////////////////////////////\n')  # noqa
+        k4004.write('// Program Name  : ' + filename + "\n")
+        k4004.write('// Assembly Date : ' + cd + "\n")
+        k4004.write('////////////////////////////////////////////////////////////////////\n')  # noqa
+        k4004.write('// Program produced in Retroshield Arduino 4004 format.\n')  # noqa
+        k4004.write('// by Pyntel4004 Assembler\n')
+        k4004.write('\n\n')
+
+        k4004.write(memory_content + "\n")
+
     return True

@@ -7,6 +7,9 @@ Intel 4004 Op-Codes
 
    ../hardware/machine/add
    ../hardware/machine/bbl
+   ../hardware/machine/clb
+   ../hardware/machine/clc
+   ../hardware/machine/dcl
    ../hardware/machine/fim
    ../hardware/machine/fin
    ../hardware/machine/inc
@@ -19,10 +22,14 @@ Intel 4004 Op-Codes
    ../hardware/machine/ldm
    ../hardware/machine/nop
    ../hardware/machine/src
+   ../hardware/machine/stc
    ../hardware/machine/sub
+   ../hardware/machine/tcc
+   ../hardware/machine/wmp
    ../hardware/machine/wpm
    ../hardware/machine/wrm
    ../hardware/machine/wrn
+   ../hardware/machine/wrr
    ../hardware/machine/xch
 
 .. list-table:: Intel 4004 processor Op-Codes
@@ -119,7 +126,7 @@ Intel 4004 Op-Codes
      -
      -
    * - Write RAM Port
-     - WMP
+     - :ref:`hardware-machine-wmp`
      - 11100001
      -
      -
@@ -129,7 +136,7 @@ Intel 4004 Op-Codes
      -
      -
    * - Write ROM Port
-     - WRR
+     - :ref:`hardware-machine-wrr`
      - 11100010
      -
      -
@@ -194,12 +201,12 @@ Intel 4004 Op-Codes
      -
      -
    * - Clear Both
-     - CLB
+     - :ref:`hardware-machine-clb`
      - 11110000
      -
      -
    * - Clear Carry
-     - CLC
+     - :ref:`hardware-machine-clc`
      - 11110001
      -
      -
@@ -229,7 +236,7 @@ Intel 4004 Op-Codes
      -
      -
    * - Transfer Carry and Clear
-     - TCC
+     - :ref:`hardware-machine-tcc`
      - 11110111
      -
      -
@@ -244,7 +251,7 @@ Intel 4004 Op-Codes
      -
      -
    * - Set Carry
-     - STC
+     - :ref:`hardware-machine-stc`
      - 11111010
      -
      -
@@ -259,7 +266,7 @@ Intel 4004 Op-Codes
      -
      -
    * - Designate Command Line
-     - DCL
+     - :ref:`hardware-machine-dcl`
      - 11111101
      -
      -
