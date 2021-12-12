@@ -1,13 +1,17 @@
 # Using pytest
 # Test the JMS instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
 
-from hardware.processor import processor  # noqa
-from hardware.suboperation import decimal_to_binary, write_to_stack  # noqa
+import pickle  # noqa
+import pytest  # noqa
+
+from hardware.processor import Processor  # noqa
+from hardware.suboperations.utility import decimal_to_binary  # noqa
+from hardware.suboperations.stack import write_to_stack  # noqa
 from hardware.exceptions import ValueOutOfRangeForStack  # noqa
 
 
@@ -15,7 +19,7 @@ from hardware.exceptions import ValueOutOfRangeForStack  # noqa
                                        12, 13, 14, 15])
 def test_validate_instruction(increment):
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[80 + increment]
     known = {"opcode": 80 + increment, "mnemonic": "jms(address12)", "exe": 21.6, "bits": ["0101", decimal_to_binary(4, increment)], "words": 2}  # noqa
@@ -25,8 +29,8 @@ def test_validate_instruction(increment):
 @pytest.mark.parametrize("address12", [1024, 24, 99, 2095, 4090])
 def test_jms_scenario1(address12):
     """Test JMS instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 300
@@ -38,7 +42,7 @@ def test_jms_scenario1(address12):
 
     # Perform the instruction under test:
     # Jump to a subroutine
-    processor.jms(chip_test, address12)
+    Processor.jms(chip_test, address12)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
@@ -54,7 +58,7 @@ def test_jms_scenario1(address12):
 @pytest.mark.parametrize("address12", [-1, 4096])
 def test_jms_scenario2(address12):
     """Test JMS instruction failure."""
-    chip_test = processor()
+    chip_test = Processor()
 
     # Simulate conditions at START of operation in base chip
     # chip should have not had any changes as the operations will fail
@@ -66,6 +70,6 @@ def test_jms_scenario2(address12):
 
     # attempting to use an invalid value
     with pytest.raises(Exception) as e:
-        assert processor.jms(chip_test, address12)
+        assert Processor.jms(chip_test, address12)
     assert str(e.value) == ' Value: ' + str(address12)
     assert e.type == ValueOutOfRangeForStack

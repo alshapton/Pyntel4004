@@ -1,12 +1,15 @@
+"""Definition of an i4004 processor."""
 
-class processor:
-    """Definition of an i4004 processor."""
 
-    # Import processor internals
+class Processor:
+
+    """Functionality and chracteristics of an i4004 processor."""
+
+    #  pylint: disable=import-outside-toplevel
+    # Turn off import-outside-toplevel warning for this class
     from hardware import opcodes
-    from hardware.reset import init_command_registers, init_pram, \
-        init_ram, init_registers, init_rom, init_stack, init_wpm_counter
 
+    # Import opcode mechanics
     from hardware.instructions.accumulator import clb, clc, cma, cmc, \
         daa, dac, iac, kbp, ral, rar, stc, tcc, tcs
     from hardware.instructions.idx import fin, inc
@@ -19,6 +22,7 @@ class processor:
     from hardware.instructions.subroutine import bbl, jms
     from hardware.instructions.transfer_control import isz, jcn, jin, jun
 
+<<<<<<< HEAD
     from hardware.reads import read_accumulator, read_all_ram, \
         read_all_registers, read_all_pram, read_all_rom, \
         read_all_stack, read_carry, read_current_ram_bank, read_pin10, \
@@ -35,6 +39,36 @@ class processor:
         read_from_stack, read_register, read_registerpair, rdx, \
         set_accumulator, set_carry, split_address8, \
         write_pin10, write_ram_status, write_to_stack
+=======
+    from hardware.suboperations.other import decode_command_register, \
+        read_all_command_registers
+    from hardware.suboperations.utility import binary_to_decimal, \
+        convert_decimal_to_n_bit_slices, convert_to_absolute_address, \
+        decimal_to_binary, ones_complement, split_address8
+
+    # Import suboperations
+    from hardware.suboperations.accumulator import check_overflow, \
+        read_acbr, read_accumulator, set_accumulator
+    from hardware.suboperations.carry import read_carry, \
+        read_complement_carry, reset_carry, set_carry
+    from hardware.suboperations.init import init_command_registers, \
+        init_pram, init_ram, init_registers, init_rom, init_stack, \
+        init_wpm_counter
+    from hardware.suboperations.pc import inc_pc_by_page, increment_pc, \
+        is_end_of_page, read_program_counter
+    from hardware.suboperations.pin10 import read_pin10, write_pin10
+    from hardware.suboperations.ram import rdx, read_all_pram, read_all_ram, \
+        read_all_ram_ports, read_all_status_characters, \
+        read_current_ram_bank, write_ram_status
+    from hardware.suboperations.registers import increment_register, \
+        insert_register, insert_registerpair, read_all_registers, \
+        read_register, read_registerpair
+    from hardware.suboperations.rom import read_all_rom, read_all_rom_ports
+    from hardware.suboperations.stack import read_all_stack, read_from_stack, \
+        read_stack_pointer, write_to_stack
+    from hardware.suboperations.wpm import flip_wpm_counter, read_wpm_counter
+    #  pylint: enable=import-outside-toplevel
+>>>>>>> 0.0.1-beta.2
 
     # Operations to read the processor components
     # Some used internally,
@@ -65,7 +99,7 @@ class processor:
     # Initialise processor
 
     def __init__(self):
-
+        """Initialise an instance of the processor."""
         # Set up all the internals of the processor
         self.COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
 
@@ -87,7 +121,7 @@ class processor:
         self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
                                     for _reg in range(4)]
                                    for _chip in range(4)]
-                                  for _bank in range(8)]
+                                  for _bank in range(self.NO_DRB)]
 
         # Creation of processor simulated hardware
         # Pin 10 on the physical chip is the "test" pin

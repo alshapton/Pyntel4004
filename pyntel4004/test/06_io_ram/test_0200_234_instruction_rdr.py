@@ -1,18 +1,22 @@
 # Using pytest
 # Test the RDM instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'test')
 
-from hardware.processor import processor  # noqa
-from hardware.suboperation import encode_command_register  # noqa
+import pickle  # noqa
+import pytest  # noqa
+
+from hardware.processor import Processor  # noqa
+from utils import encode_command_register  # noqa
 
 
 def test_validate_rdr_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[234]
     known = {"opcode": 234, "mnemonic": "rdr()", "exe": 10.8, "bits": ["1110", '1010'], "words": 1}  # noqa
@@ -25,8 +29,8 @@ def test_validate_rdr_instruction():
                                     [12, 3], [13, 2], [14, 1], [15, 0]])
 def test_rdr_scenario1(values):
     """Test RDM instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Perform the instruction under test:
 
@@ -34,7 +38,7 @@ def test_rdr_scenario1(values):
     chip_test.COMMAND_REGISTER = \
         encode_command_register(values[0], 0, 0, 'ROM_PORT')
     chip_test.ROM_PORT[values[0]] = values[1]
-    processor.rdr(chip_test)
+    Processor.rdr(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.COMMAND_REGISTER = \

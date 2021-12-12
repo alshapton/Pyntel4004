@@ -1,17 +1,20 @@
 # Using pytest
 # Test the iac instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
 
-from hardware.processor import processor  # noqa
+import pickle  # noqa
+import pytest  # noqa
+
+from hardware.processor import Processor  # noqa
 
 
 def test_validate_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[242]
     known = {"opcode": 242, "mnemonic": "iac()", "exe": 10.8, "bits": ["1111", '0010'], "words": 1}  # noqa
@@ -21,8 +24,8 @@ def test_validate_instruction():
 @pytest.mark.parametrize("values", [[0, 0], [1, 0], [4, 0], [7, 0], [9, 0], [13, 0], [14, 0], [15, 1]])  # noqa
 def test_scenario1(values):
     """Test IAC instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
@@ -41,7 +44,7 @@ def test_scenario1(values):
     # Carry out the instruction under test
     # Perform a IAC operation
 
-    processor.iac(chip_test)
+    Processor.iac(chip_test)
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 

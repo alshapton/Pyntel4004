@@ -63,7 +63,7 @@ The FIM instruction loads register 0 with the value 1 and register 1 with the
 value 5.
 The JIN instruction then causes a jump to location 0x315.
 
-NOTE:
+.. rubric:: Note:
 If the JIN instruction is located in the last location of a page in memory,
 the highest 4 bits of the program counter are incremented by one, causing
 control to be transferred to the corresponding location on the next page.

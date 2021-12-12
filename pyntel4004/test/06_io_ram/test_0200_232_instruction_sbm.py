@@ -1,6 +1,7 @@
 # Using pytest
 # Test the SBM instruction of an instance of an i4004(processor)
 
+<<<<<<< HEAD
 import sys
 import pickle
 import pytest
@@ -10,11 +11,30 @@ from hardware.suboperation import binary_to_decimal, check_overflow, convert_to_
     encode_command_register, ones_complement, read_complement_carry  # noqa
 from hardware.processor import processor  # noqa
 from hardware.exceptions import InvalidRamBank  # noqa
+=======
+# Import system modules
+import os
+import sys
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'test')
+
+import pickle  # noqa
+import pytest  # noqa
+
+from hardware.processor import Processor  # noqa
+from hardware.suboperations.utility import convert_to_absolute_address, \
+    ones_complement  # noqa
+from utils import encode_command_register  # noqa
+>>>>>>> 0.0.1-beta.2
 
 
 def test_validate_sbm_instruction():
     """Ensure instruction's characteristics are valid."""
+<<<<<<< HEAD
     chip_test = processor()
+=======
+    chip_test = Processor()
+>>>>>>> 0.0.1-beta.2
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[232]
     known = {"opcode": 232, "mnemonic": "sbm()", "exe": 10.8, "bits": ["1110", "0110"], "words": 1}  # noqa
@@ -31,8 +51,13 @@ def test_validate_sbm_instruction():
 def test_adm_scenario1(rambank, chip, register, address, value,
                        accumulator, carry):
     """Test ADM instruction functionality."""
+<<<<<<< HEAD
     chip_test = processor()
     chip_base = processor()
+=======
+    chip_test = Processor()
+    chip_base = Processor()
+>>>>>>> 0.0.1-beta.2
 
     cr = encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
 
@@ -45,7 +70,11 @@ def test_adm_scenario1(rambank, chip, register, address, value,
     chip_test.RAM[absolute_address] = value
     chip_test.set_accumulator(accumulator)
 
+<<<<<<< HEAD
     processor.sbm(chip_test)
+=======
+    Processor.sbm(chip_test)
+>>>>>>> 0.0.1-beta.2
 
     # Simulate conditions at end of instruction in base chip
 
@@ -61,7 +90,11 @@ def test_adm_scenario1(rambank, chip, register, address, value,
     carry_complement = chip_base.read_complement_carry()
     chip_base.ACCUMULATOR = (chip_base.ACCUMULATOR + value_complement +
                              carry_complement)
+<<<<<<< HEAD
     processor.check_overflow(chip_base)
+=======
+    Processor.check_overflow(chip_base)
+>>>>>>> 0.0.1-beta.2
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
 

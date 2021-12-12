@@ -1,20 +1,22 @@
 # Using pytest
 # Test the WRR instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'test')
 
-from hardware.suboperation import encode_command_register
+import pickle  # noqa
+import pytest  # noqa
 
-sys.path.insert(1, '../src')
-
-from hardware.processor import processor  # noqa
+from hardware.processor import Processor  # noqa
+from utils import encode_command_register  # noqa
 
 
 def test_validate_wrr_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[226]
     known = {"opcode": 226, "mnemonic": "wrr()", "exe": 10.8, "bits": ["1110", '0010'], "words": 1}  # noqa
@@ -27,8 +29,8 @@ def test_wrr_scenario1(rom):
     """Test WRR instruction functionality."""
     import random
 
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     value = random.randint(0, 15)  # Select a random value
 
@@ -37,7 +39,7 @@ def test_wrr_scenario1(rom):
     chip_test.set_accumulator(value)
     chip_test.COMMAND_REGISTER = \
         encode_command_register(rom, 0, 0, 'ROM_PORT')
-    processor.wrr(chip_test)
+    Processor.wrr(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.PROGRAM_COUNTER = 0

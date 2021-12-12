@@ -1,18 +1,22 @@
 # Using pytest
 # Test the RDn instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'test')
 
-from hardware.processor import processor  # noqa
-from hardware.suboperation import encode_command_register  # noqa
+import pickle  # noqa
+import pytest  # noqa
+
+from hardware.processor import Processor  # noqa
+from utils import encode_command_register  # noqa
 
 
-def test_validate_rdN_instruction():
+def test_validate_rdn_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     # There are 4 rdN instructions.
     op = chip_test.INSTRUCTIONS[236]
@@ -36,12 +40,12 @@ def test_validate_rdN_instruction():
 @pytest.mark.parametrize("chip", [0, 1, 2, 3])
 @pytest.mark.parametrize("register", [0, 1, 2, 3])
 @pytest.mark.parametrize("char", [0, 1, 2, 3])
-def test_rdN_scenario1(rambank, chip, register, char):
+def test_rdn_scenario1(rambank, chip, register, char):
     """Test instruction RDn"""
     from random import randint
 
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     value = randint(0, 15)
 
@@ -53,13 +57,13 @@ def test_rdN_scenario1(rambank, chip, register, char):
 
     # Perform the instruction under test:
     if char == 0:
-        processor.rd0(chip_test)
+        Processor.rd0(chip_test)
     if char == 1:
-        processor.rd1(chip_test)
+        Processor.rd1(chip_test)
     if char == 2:
-        processor.rd2(chip_test)
+        Processor.rd2(chip_test)
     if char == 3:
-        processor.rd3(chip_test)
+        Processor.rd3(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.COMMAND_REGISTER = address

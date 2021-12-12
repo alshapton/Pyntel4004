@@ -5,15 +5,25 @@ Intel 4004 Op-Codes
 .. toctree::
    :hidden:
 
+   ../hardware/machine/add
+   ../hardware/machine/bbl
    ../hardware/machine/fim
    ../hardware/machine/fin
    ../hardware/machine/inc
+   ../hardware/machine/isz
    ../hardware/machine/jin
    ../hardware/machine/jms
    ../hardware/machine/jun
    ../hardware/machine/jcn
-   ../hardware/machine/src
+   ../hardware/machine/ld
+   ../hardware/machine/ldm
    ../hardware/machine/nop
+   ../hardware/machine/src
+   ../hardware/machine/sub
+   ../hardware/machine/wpm
+   ../hardware/machine/wrm
+   ../hardware/machine/wrn
+   ../hardware/machine/xch
 
 .. list-table:: Intel 4004 processor Op-Codes
    :header-rows: 1
@@ -69,42 +79,42 @@ Intel 4004 Op-Codes
      -
      - R
    * - Increment and Skip
-     - ISZ
+     - :ref:`hardware-machine-isz`
      - 0111RRRR
      - AAAAAAAA
      - R, A
    * - Add
-     - ADD
+     - :ref:`hardware-machine-add`
      - 1000RRRR
      -
      - R
    * - Subtract
-     - SUB
+     - :ref:`hardware-machine-sub`
      - 1001RRRR
      -
      - R
    * - Load
-     - LD
+     - :ref:`hardware-machine-ld`
      - 1010RRRR
      -
      - R
    * - Exchange
-     - XCH
+     - :ref:`hardware-machine-xch`
      - 1011RRRR
      -
      - R
    * - Branch Back and Load
-     - BBL
+     - :ref:`hardware-machine-bbl`
      - 1100DDDD
      -
      - D
    * - Load Immediate
-     - LDM
+     - :ref:`hardware-machine-ldm`
      - 1101DDDD
      -
      - D
    * - Write Main Memory
-     - WRM
+     - :ref:`hardware-machine-wrm`
      - 11100000
      -
      -
@@ -113,28 +123,33 @@ Intel 4004 Op-Codes
      - 11100001
      -
      -
+   * - Write Program RAM
+     - :ref:`hardware-machine-wpm`
+     - 11100011
+     -
+     -
    * - Write ROM Port
      - WRR
      - 11100010
      -
      -
    * - Write Status Char 0
-     - WR0
+     - :ref:`WR0 <hardware-machine-wrn>`
      - 11100100
      -
      -
    * - Write Status Char 1
-     - WR1
+     - :ref:`WR1 <hardware-machine-wrn>`
      - 11100101
      -
      -
    * - Write Status Char 2
-     - WR2
+     - :ref:`WR2 <hardware-machine-wrn>`
      - 11100110
      -
      -
    * - Write Status Char 3
-     - WR3
+     - :ref:`WR3 <hardware-machine-wrn>`
      - 11100111
      -
      -

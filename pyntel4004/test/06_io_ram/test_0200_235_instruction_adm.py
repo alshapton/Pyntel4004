@@ -1,20 +1,30 @@
 # Using pytest
 # Test the ADM instruction of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-import pytest
-sys.path.insert(1, '../src')
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'test')
 
+import pickle  # noqa
+import pytest  # noqa
+
+<<<<<<< HEAD
 from hardware.suboperation import convert_to_absolute_address, encode_command_register, \
     ones_complement  # noqa
 from hardware.processor import processor  # noqa
+=======
+>>>>>>> 0.0.1-beta.2
 from hardware.exceptions import InvalidRamBank  # noqa
+from hardware.processor import Processor  # noqa
+from hardware.suboperations.utility import convert_to_absolute_address  # noqa
+from utils import encode_command_register  # noqa
 
 
 def test_validate_adm_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[235]
     known = {"opcode": 235, "mnemonic": "adm()", "exe": 10.8, "bits": ["1110", '1000'], "words": 1}  # noqa
@@ -27,8 +37,8 @@ def test_validate_adm_instruction():
                                     [6, 0, 0, 1, 1], [7, 2, 2, 0, 0]])
 def test_adm_scenario1(values):
     """Test ADM instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     rambank = values[0]
     chip = values[1]
@@ -48,7 +58,7 @@ def test_adm_scenario1(values):
     chip_test.RAM[absolute_address] = value
     chip_test.set_accumulator(accumulator)
 
-    processor.adm(chip_test)
+    Processor.adm(chip_test)
 
     # Simulate conditions at end of instruction in base chip
     chip_base.CARRY = 0

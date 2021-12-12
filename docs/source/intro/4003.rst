@@ -1,0 +1,45 @@
+.. _4003:
+
+The Intel 4003 Chip
+===================
+
+.. include:: ../global.rst
+
+.. image:: images/intel4003chip.png
+   :scale: 50%
+
+The Intel 4003 chip was introduced in 1971 as part of the Intel 4000 family; 10-bit Serial-in/Parallel-out, Serial-out Shift Register, fabricated with P-channel silicon gate MOS technology.
+
+
+The 4003 was designed to be used with other MCS-4/40 devices such as the 4004 CPU.
+Although produced by Intel, National Semiconductors was the only second source.
+
+Logically, the Intel 4003 is set out as shown:
+
+.. image:: images/4003-logic.png
+   :scale: 50%
+   :align: center
+
+The circled numbers relate to the pins as shown below:
+
+.. image:: images/4003-pins.png
+   :scale: 50%
+   :align: center
+
+
+The 4003 is a 10-bit static shift register with serial-in, parallel-out and serial-out data.
+
+Its function is to increase the number of output lines to interface with I/O devices such as keyboards, displays,
+printers, teletypes, switchers, readers, A-D converters, etc.
+
+Data is loaded serially and is available in parallel on 10 output lines which are accessed through enable logic.
+When enabled (E = low), the shift register contents is read out; when not enabled (E = high), the parallel-out lines are at V :subscript:`SS`.
+The serial-out line is not affected by the enable logic.
+
+Data is also available serially permitting an indefinite number of similar devices to be cascaded together to provide shift register length multiples of 10.
+
+The data shifting is controlled by the CP signal. An internal power-on-clear circuit (:download:`Patent number US3821785 <resources/US3753011.pdf>`) will clear the shift register (Q :subscript:`i` = V :subscript:`SS`) between the application
+of a supply voltage and the first CP signal.
+
+Text © intel4004.com provided by `chipdb.org <http://datasheets.chipdb.org/Intel/MCS-4/datashts/MCS4_Data_Sheet_Nov71.pdf>`_ |br|
+Image © `cpu-zone.com <(http://www.cpu-zone.com/4001.htm>`_

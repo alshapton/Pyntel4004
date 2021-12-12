@@ -11,16 +11,48 @@
 ###########################################################################
 
 """
-Commands:   BBL -   BRANCH BACK AND LOAD
+Commands in this module.
+
+            BBL -   BRANCH BACK AND LOAD
             JMS -   JUMP TO SUBROUTINE
+
+
+ Abbreviations used in the descriptions of each instruction's actions:
+
+            (    )      the content of
+            -->         is transferred to
+            ACC	        Accumulator (4-bit)
+            CY	        Carry/link Flip-Flop
+            ACBR	    Accumulator Buffer Register (4-bit)
+            RRRR	    Index register address
+            RPn	        Index register pair address
+            PL	        Low order program counter Field (4-bit)
+            PM	        Middle order program counter Field (4-bit)
+            PH	        High order program counter Field (4-bit)
+            ai	        Order i content of the accumulator
+            CMi	        Order i content of the command register
+            M	        RAM main character location
+            MSi	        RAM status character i
+            DB (T)	    Data bus content at time T
+            Stack	    The 3 registers in the address register
+                        other than the program counter
+
+    Additional Abbreviations:
+            ~           Inverse (1's complement)
+            .           logical OR
+
 """
+
+# Import typing library
+from typing import Tuple
 
 from hardware.exceptions import ValueOutOfRangeForStack
 
 
-def bbl(self, accumulator: int):
+def bbl(self, accumulator: int) -> Tuple[int, int]:
     """
-    Name:           Branch back and load data to the accumulator
+    Name:           Branch back and load data to the accumulator.
+
     Function:       The program counter (address stack) is pushed down one
                     level.
                     Program control transfers to the next instruction
@@ -42,9 +74,10 @@ def bbl(self, accumulator: int):
     return self.PROGRAM_COUNTER, self.ACCUMULATOR
 
 
-def jms(self, address: int):
+def jms(self, address: int) -> int:
     """
-    Name:           Jump to Subroutine
+    Name:           Jump to Subroutine.
+
     Function:       The address of the next instruction in sequence following
                     JMS (return address) is saved in the push down stack.
                     Program control is transferred to the instruction located

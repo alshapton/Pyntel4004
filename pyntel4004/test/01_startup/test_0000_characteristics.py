@@ -1,9 +1,12 @@
 # Using pytest
 # Test the characteristics of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-sys.path.insert(1, '../src')
-from hardware.processor import processor  # noqa
+sys.path.insert(1, '..' + os.sep + 'src')
+
+from hardware.processor import Processor  # noqa
 
 
 def test_chip_properties_MAX_4_BITS():
@@ -96,4 +99,4 @@ def test_init_MSB():
     assert chip.MSB == 8
 
 
-chip = processor()
+chip = Processor()

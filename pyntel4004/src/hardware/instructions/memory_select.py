@@ -11,16 +11,47 @@
 ##########################################################################
 
 """
-Commands:   DCL -   DESIGNATE COMMAND LINE
+Commands in this module.
+
+            DCL -   DESIGNATE COMMAND LINE
             SRC -   SEND REGISTER CONTROL
+
+
+ Abbreviations used in the descriptions of each instruction's actions:
+
+            (    )      the content of
+            -->         is transferred to
+            ACC	        Accumulator (4-bit)
+            CY	        Carry/link Flip-Flop
+            ACBR	    Accumulator Buffer Register (4-bit)
+            RRRR	    Index register address
+            RPn	        Index register pair address
+            PL	        Low order program counter Field (4-bit)
+            PM	        Middle order program counter Field (4-bit)
+            PH	        High order program counter Field (4-bit)
+            ai	        Order i content of the accumulator
+            CMi	        Order i content of the command register
+            M	        RAM main character location
+            MSi	        RAM status character i
+            DB (T)	    Data bus content at time T
+            Stack	    The 3 registers in the address register
+                        other than the program counter
+
+    Additional Abbreviations:
+            ~           Inverse (1's complement)
+            .           logical OR
+
+
 """
 
 from hardware.exceptions import InvalidRamBank, InvalidRegisterPair
+from hardware.suboperations.utility import decimal_to_binary
 
 
-def dcl(self):
+def dcl(self) -> int:
     """
-    Name:           Designate command line
+    Name:           Designate command line.
+
     Function:       The content of the three least significant accumulator
                     bits is transferred to the command control register
                     within the CPU. This instruction provides RAM bank
@@ -47,18 +78,18 @@ def dcl(self):
                     X110	CM-RAM2, CM-RAM3	        Bank 6
                     X111	CM-RAM1, CM-RAM2, CM-RAM3	Bank 7
     """
-    ACC = self.ACCUMULATOR
-    if ACC > 7:
-        raise InvalidRamBank('RAM bank : ' + str(ACC))
+    if self.ACCUMULATOR > 7:
+        raise InvalidRamBank('RAM bank : ' + str(self.ACCUMULATOR))
 
-    self.CURRENT_RAM_BANK = ACC
+    self.CURRENT_RAM_BANK = self.ACCUMULATOR
     self.increment_pc(1)
     return self.CURRENT_RAM_BANK
 
 
-def src(self, registerpair: int):
+def src(self, registerpair: int) -> int:
     """
-    Name:           Send register control
+    Name:           Send register control.
+
     Function:       The 8 bit content of the designated index register pair
                     is sent to the RAM address register at X2 and X3.
                     A subsequent read, write, or I/O operation of the RAM will

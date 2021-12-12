@@ -5,21 +5,21 @@ class instructions:
     opcodes = [
         {"opcode": 0, "mnemonic": "nop()", "exe": 10.8, "bits": [
             "0000", "0000"], "words": 1},
-        {"opcode": 1, "mnemonic": "-"},
-        {"opcode": 2, "mnemonic": "-"},
-        {"opcode": 3, "mnemonic": "-"},
-        {"opcode": 4, "mnemonic": "-"},
-        {"opcode": 5, "mnemonic": "-"},
-        {"opcode": 6, "mnemonic": "-"},
-        {"opcode": 7, "mnemonic": "-"},
-        {"opcode": 8, "mnemonic": "-"},
-        {"opcode": 9, "mnemonic": "-"},
-        {"opcode": 10, "mnemonic": "-"},
-        {"opcode": 11, "mnemonic": "-"},
-        {"opcode": 12, "mnemonic": "-"},
-        {"opcode": 13, "mnemonic": "-"},
-        {"opcode": 14, "mnemonic": "-"},
-        {"opcode": 15, "mnemonic": "-"},
+        {"opcode": 1, "mnemonic": "-", "words": 1},
+        {"opcode": 2, "mnemonic": "-", "words": 1},
+        {"opcode": 3, "mnemonic": "-", "words": 1},
+        {"opcode": 4, "mnemonic": "-", "words": 1},
+        {"opcode": 5, "mnemonic": "-", "words": 1},
+        {"opcode": 6, "mnemonic": "-", "words": 1},
+        {"opcode": 7, "mnemonic": "-", "words": 1},
+        {"opcode": 8, "mnemonic": "-", "words": 1},
+        {"opcode": 9, "mnemonic": "-", "words": 1},
+        {"opcode": 10, "mnemonic": "-", "words": 1},
+        {"opcode": 11, "mnemonic": "-", "words": 1},
+        {"opcode": 12, "mnemonic": "-", "words": 1},
+        {"opcode": 13, "mnemonic": "-", "words": 1},
+        {"opcode": 14, "mnemonic": "-", "words": 1},
+        {"opcode": 15, "mnemonic": "-", "words": 1},
         {"opcode": 16, "mnemonic": "jcn(0,address8)", "exe": 21.6, "bits": [
             "0001", "0000", "xxxx", "xxxx"], "words": 2},
         {"opcode": 17, "mnemonic": "jcn(1,address8)", "exe": 21.6, "bits": [
@@ -496,7 +496,8 @@ class instructions:
             "1111", "1100"], "words": 1},
         {"opcode": 253, "mnemonic": "dcl()", "exe": 10.8, "bits": [
             "1111", "1101"], "words": 1},
-        {"opcode": 254, "mnemonic": "-"},
-        {"opcode": 255, "mnemonic": "end", "exe": 0,
+        {"opcode": 254, "mnemonic": "-", "words": 1},
+        {"opcode": 255, "mnemonic": "-", "words": 1},
+        {"opcode": 256, "mnemonic": "end", "exe": 0,
          "bits": ["1111", "1111"], "words": 0}
     ]

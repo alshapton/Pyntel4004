@@ -1,16 +1,19 @@
 # Using pytest
 # Test the clb instructions of an instance of an i4004(processor)
 
+# Import system modules
+import os
 import sys
-import pickle
-sys.path.insert(1, '../src')
 
-from hardware.processor import processor  # noqa
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pickle  # noqa
+from hardware.processor import Processor  # noqa
 
 
 def test_validate_instruction():
     """Ensure instruction's characteristics are valid."""
-    chip_test = processor()
+    chip_test = Processor()
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[240]
     known = {"opcode": 240, "mnemonic": "clb()", "exe": 10.8, "bits": ["1111", '0000'], "words": 1}  # noqa
@@ -19,8 +22,8 @@ def test_validate_instruction():
 
 def test_scenario1():
     """Test CLB instruction functionality."""
-    chip_test = processor()
-    chip_base = processor()
+    chip_test = Processor()
+    chip_base = Processor()
 
     # Perform the instruction under test:
     chip_test.PROGRAM_COUNTER = 0
@@ -34,7 +37,7 @@ def test_scenario1():
 
     # Carry out the instruction under test
     # Perform a CLB operation
-    processor.clb(chip_test)
+    Processor.clb(chip_test)
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

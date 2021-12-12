@@ -1,15 +1,29 @@
-# Import i4004 processor
+"""Assembler main module."""
 
-from hardware.processor import processor
-from hardware.suboperation import split_address8
+# Disable pylint's too-many-locals warning, since there
+# are functions in this module with large numbers of locals.
+
+# pylint: disable=too-many-locals
+
+
+# Import i4004 processor
+from hardware.processor import Processor
 
 # Assembler imports
+<<<<<<< HEAD
 from assembler.supporting import add_label, assemble_isz, assemble_2, \
     assemble_fim, assemble_jcn, do_error, get_bits, \
     match_label, print_ln, \
     validate_inc, write_program_to_file
 
 from shared.shared import get_opcodeinfo
+=======
+from assembler.asm_supporting import asm_comment, asm_label, asm_main, \
+        do_error, pass0, pass1, wrap_up  # noqa
+
+# Shared imports
+from shared.shared import get_opcodeinfo  # noqa
+>>>>>>> 0.0.1-beta.2
 
 ###############################################################################
 #  _ _  _    ___   ___  _  _                                _     _           #
@@ -22,9 +36,9 @@ from shared.shared import get_opcodeinfo
 ###############################################################################
 
 
-def assemble(program_name: str, object_file: str, chip: processor):
+def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
     """
-    Main two-pass assembler for i4004 code
+    Main two-pass assembler for i4004 code.
 
     Parameters
     ----------
@@ -34,7 +48,7 @@ def assemble(program_name: str, object_file: str, chip: processor):
     object_file: str, mandatory
         Name of the output file in which to place the object code
 
-    chip: processor, mandatory
+    chip: Processor, mandatory
         Instance of a processor to place the assembled code in.
 
     Returns
@@ -47,30 +61,31 @@ def assemble(program_name: str, object_file: str, chip: processor):
     N/A
 
     Notes
-    ------
+    -----
     N/A
 
     """
-    # Reset label table for this program
-    _LABELS = []
 
-    # Maximum size of program memory
-    TPS_SIZE = max([chip.MEMORY_SIZE_ROM,
-                    chip.MEMORY_SIZE_PRAM, chip.MEMORY_SIZE_RAM])
+    #     mccabe: MC0001 / assemble is too complex (44) - start
+    #     mccabe: MC0001 / assemble is too complex (35)
+    #     mccabe: MC0001 / assemble is too complex (30)
+    #     mccabe: MC0001 / assemble is too complex (25)
+    #     mccabe: MC0001 / assemble is too complex (21)
+    #     mccabe: MC0001 / assemble is too complex (18)
+    #     mccabe: MC0001 / assemble is too complex (13)
+    #     mccabe: MC0001 / assemble is too complex (10)
 
-    # Reset temporary_program_store
-    TPS = []
-    for _i in range(TPS_SIZE):
-        TPS.append(0)
+    # Pass 0 - Initialise label tables, program storage etc
+    _labels, tps, tfile = pass0(chip)
 
-    # Initialise assembly language line store to
-    # twice the size of the potential program size.
-    TFILE = []
-    for _i in range(TPS_SIZE * 2):
-        TFILE.append('')
+    # Program Line Count
+    count = 0
 
     # Pass 1
+    err, _labels, tps, tfile, address = pass1(chip, program_name,
+                                              _labels, tps, tfile)
 
+<<<<<<< HEAD
     try:
         program = open(program_name, 'r')
     except IOError:
@@ -140,6 +155,10 @@ def assemble(program_name: str, object_file: str, chip: processor):
         print(ERR)
         print("Program Assembly halted @ Pass 1")
         print()
+=======
+    if err:
+        do_error(err + "\nProgram Assembly halted @ Pass 1\n\n")
+>>>>>>> 0.0.1-beta.2
         return False
 
     # Pass 2
@@ -148,20 +167,19 @@ def assemble(program_name: str, object_file: str, chip: processor):
     print(' (Dec)            (Bin)           (Bin)          (Dec)')
     print('                            Word 1     Word 2')
 
-    # Program Line Count
-    count = 0
+    org_found = False
+    location = ''
+
     while True:
-        line = TFILE[count].strip()
+        line = tfile[count].strip()
         if len(line) == 0:
             break  # End of code
-
         x = line.split()
         label = ''
 
         # Check for initial comments
         if line[0] == '/':
-            print_ln('', label, ' ', ' ', ' ', ' ', ' ', ' ', ' ',  ' ',
-                     ' ', str(count), line, ' ', '', '', '',)
+            asm_comment(label, count, line)
         else:
             if len(line) > 0:
                 if x[0][-1] == ',':
@@ -169,12 +187,11 @@ def assemble(program_name: str, object_file: str, chip: processor):
                     opcode = x[1]
                     # Check to see if we are assembling a label
                     if '0' <= str(x[1])[:1] <= '9':
-                        TPS[address] = int(x[1])
-                        print_ln('', '',  '', '', '', '', '', '', '', '', '',
-                                 str(count), label, str(x[1]), '', '', '',)
+                        tps = asm_label(tps, address, x, count, label)
                         break
                 else:
                     opcode = x[0]
+<<<<<<< HEAD
                 opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
                 if (opcode in ['org', 'end', 'pin', '=']) or \
                    (opcode is not None):
@@ -292,25 +309,25 @@ def assemble(program_name: str, object_file: str, chip: processor):
                 else:
                     ERR = do_error("'FATAL: Pass 2:  Invalid mnemonic '" +
                                    opcode + "' at line: " + str(count + 1))
+=======
+
+                opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+                chip, x, _labels, address, tps, opcodeinfo, label, count, \
+                    err, org_found, location = \
+                    asm_main(chip, x, _labels, address, tps, opcode,
+                             opcodeinfo, label, count, org_found,
+                             location)
+                if err:
+                    do_error(err)
+>>>>>>> 0.0.1-beta.2
                     break
+
         count = count + 1
 
-    if ERR:
+    if err:
         print("Program Assembly halted")
         return False
-    print()
 
-    # Place assembled code into correct location
-    if location == 'rom':
-        chip.ROM = TPS
-
-    if location == 'ram':
-        chip.PRAM = TPS
-
-    print('Labels:')
-    print('Address   Label')
-    for _i in range(len(_LABELS)):  # noqa
-        print('{:>5}     {}'.format(_LABELS[_i]['address'],
-              _LABELS[_i]['label']))
-    write_program_to_file(TPS, object_file, location, _LABELS)
+    # Wrap up assembly process and write to file if necessary
+    chip = wrap_up(chip, location, tps, _labels, object_file)
     return True

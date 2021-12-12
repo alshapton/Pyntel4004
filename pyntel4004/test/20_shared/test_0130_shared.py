@@ -1,6 +1,7 @@
 # Using pytest
 # Test the shared operations between assembler and executer
 
+<<<<<<< HEAD
 import sys
 
 import pytest
@@ -9,6 +10,19 @@ from shared.shared import get_opcodeinfo
 
 
 sys.path.insert(1, '../src')
+=======
+# Import system modules
+import os
+import sys
+sys.path.insert(1, '..' + os.sep + 'src')
+
+import pickle  # noqa
+import pytest  # noqa
+
+from hardware.processor import Processor  # noqa
+from shared.shared import get_opcodeinfo  # noqa
+
+>>>>>>> 0.0.1-beta.2
 
 ##############################################################################
 #                      Test get_opcodeinfo                                   #
@@ -22,8 +36,12 @@ sys.path.insert(1, '../src')
                                     ])
 def test_suboperation_get_opcodeinfo_scenario1(values):
     """Tests for get_opcodeinfo function."""
+<<<<<<< HEAD
 
     chip = processor()
+=======
+    chip = Processor()
+>>>>>>> 0.0.1-beta.2
 
     opcode = values[0]
     mnemonic = values[1]
@@ -44,8 +62,12 @@ def test_suboperation_get_opcodeinfo_scenario1(values):
 @pytest.mark.parametrize("mnemonic", ['amd()', 'adding', 'clock'])
 def test_suboperation_get_opcodeinfo_scenario2(mnemonic):
     """Tests for get_opcodeinfo function."""
+<<<<<<< HEAD
 
     chip = processor()
+=======
+    chip = Processor()
+>>>>>>> 0.0.1-beta.2
     opcode = '{"opcode": -1, "mnemonic": "N/A"}'
 
     chip_opcode = str(get_opcodeinfo(chip, '',  mnemonic)).replace('\'', '"')

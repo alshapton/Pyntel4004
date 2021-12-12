@@ -4,7 +4,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<<<<<<< HEAD
 ## [0.0.1-alpha.7](https://pypi.org/project/Pyntel4004/0.0.1a7/) - 2021-11-04
+=======
+## [0.0.1-beta.2](https://pypi.org/project/Pyntel4004/0.0.1b2/) - 2021-12-11
+
+### Notes
+
+- Includes first release of a disassembler
+- **Successfully completely disassembled the BUSICOM 141-PF ROM object code**
+### Added
+- Additional documentation about the Intel 4004 and its' companion chipset
+- Additional opcode documentation
+- Initial version of a disassembler
+- Mechanism to determine loading mechanism - either from an `.bin` or a `.bin` file
+- Type hinting
+- `other.py`
+- `suboperations` directory
+- Switched to `codefactor.io` for code analysis (on-demand only)
+### Changed
+- Broken out suboperations and reads to their own files for simplicity - all functions for a specific portion of the processor are now together in the hardware.suboperations module.
+- Changed the "end" mnemonic from 255 to 256 - data in BUSICOM ROM could be confused with a 255 value.
+### Deprecated
+- N/A
+### Fixed
+- Error in assembler when the second label in a program had a corresponding operator with more than one operand; that and subsequent labels were being assigned incorrectly.
+### Removed
+- `suboperation.py`
+- `reads.py`
+- `codacy.com` code coverage
+### Security
+- N/A
+## [0.0.1-beta.1](https://pypi.org/project/Pyntel4004/0.0.1b1/) - 2021-11-19
+
+### Notes
+
+- First Beta Release
+
+### Added
+-
+
+### Changed
+-
+
+### Deprecated
+-
+### Fixed
+- Code Style, Documentation, Bug Risks, Anti-Patterns
+
+### Removed
+- machine.py - no longer needed
+
+### Security
+
+## [0.0.1-alpha.6](https://pypi.org/project/Pyntel4004/0.0.1a7/) - 2021-11-04
+>>>>>>> 0.0.1-beta.2
 
 ### Added
 - EQUATE function (symbols only - no EXPressions yet)
@@ -17,14 +71,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved exception handling
 
 ### Deprecated
+<<<<<<< HEAD
 
+=======
+-
+>>>>>>> 0.0.1-beta.2
 ### Fixed
 - Bug in SRC function where decimal number was used instead of binary number
 
 ### Removed
+<<<<<<< HEAD
 
 ### Security
 
+=======
+-
+### Security
+-
+>>>>>>> 0.0.1-beta.2
 ## [0.0.1-alpha.6](https://pypi.org/project/Pyntel4004/0.0.1a6/) - 2021-10-24
 
 ### Added
@@ -37,15 +101,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched to [KeepAChangeLog](https://keepchangelog.com) format.
 
 ### Deprecated
+<<<<<<< HEAD
 
+=======
+-
+>>>>>>> 0.0.1-beta.2
 ### Fixed
 - Some small bugs in the WPM instruction code
 - Abstracted some functions for readability
 
 ### Removed
+<<<<<<< HEAD
 
 ### Security
 
+=======
+-
+### Security
+-
+>>>>>>> 0.0.1-beta.2
 ## [0.0.1-alpha.5](https://pypi.org/project/Pyntel4004/0.0.1a5/) - 2021-10-10
 
 ### Added
@@ -82,4 +156,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.1-alpha.1](https://pypi.org/project/Pyntel4004/0.0.1a1/) - 2021-09-24
 
+<<<<<<< HEAD
 ### Not documented
+=======
+### Not documented
+>>>>>>> 0.0.1-beta.2

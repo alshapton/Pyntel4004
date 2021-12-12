@@ -12,7 +12,9 @@
 ##########################################################################
 
 """
-Commands:   RDM -   READ DATA RAM DATA CHARACTER
+Commands in this module.
+
+            RDM -   READ DATA RAM DATA CHARACTER
             RDn -   READ DATA RAM STATUS CHARACTER
             RDR -   READ DATA ROM PORT
             WRM -   WRITE DATA RAM CHARACTER
@@ -22,16 +24,54 @@ Commands:   RDM -   READ DATA RAM DATA CHARACTER
             ADM -   ADD DATA RAM TO ACCUMULATOR WITH CARRY
             SBM -   SUBTRACT DATA RAM FROM ACCUMULATOR WITH BORROW
             WPM -   WRITE PROGRAM RAM
+
+
+ Abbreviations used in the descriptions of each instruction's actions:
+
+            (    )      the content of
+            -->         is transferred to
+            ACC	        Accumulator (4-bit)
+            CY	        Carry/link Flip-Flop
+            ACBR	    Accumulator Buffer Register (4-bit)
+            RRRR	    Index register address
+            RPn	        Index register pair address
+            PL	        Low order program counter Field (4-bit)
+            PM	        Middle order program counter Field (4-bit)
+            PH	        High order program counter Field (4-bit)
+            ai	        Order i content of the accumulator
+            CMi	        Order i content of the command register
+            M	        RAM main character location
+            MSi	        RAM status character i
+            DB (T)	    Data bus content at time T
+            Stack	    The 3 registers in the address register
+                        other than the program counter
+
+    Additional Abbreviations:
+            ~           Inverse (1's complement)
+            .           logical OR
+
 """
 
+# Import system modules
+import os
+import sys
+sys.path.insert(1, '..' + os.sep + 'src')
 
-from hardware.suboperation import convert_to_absolute_address, \
-    decode_command_register, rdx
+# Import typing library
+from typing import Tuple  # noqa
+
+from hardware.suboperations.utility import convert_to_absolute_address, \
+    decimal_to_binary, ones_complement  # noqa
+from hardware.suboperations.other import decode_command_register  # noqa
+from hardware.suboperations.accumulator import check_overflow  # noqa
+from hardware.suboperations.ram import rdx  # noqa
+from hardware.suboperations.wpm import flip_wpm_counter, read_wpm_counter  # noqa
 
 
-def rdm(self):
+def rdm(self) -> int:
     """
-    Name:           Read Data RAM data character
+    Name:           Read Data RAM data character.
+
     Function:       The content of the previously selected RAM main memory
                     character is transferred to the accumulator
                     The carry/link is unaffected.
@@ -51,9 +91,10 @@ def rdm(self):
     return self.ACCUMULATOR
 
 
-def rd0(self):
+def rd0(self) -> int:
     """
-    Name:           Read RAM status character 0
+    Name:           Read RAM status character 0.
+
     Function:       The 4-bits of status character 0 for the previously
                     selected RAM register are transferred to the
                     accumulator.
@@ -76,9 +117,10 @@ def rd0(self):
     return rdx(self, 0)
 
 
-def rd1(self):
+def rd1(self) -> int:
     """
-    Name:           Read RAM status character 1
+    Name:           Read RAM status character 1.
+
     Function:       The 4-bits of status character 1 for the previously
                     selected RAM register are transferred to the
                     accumulator.
@@ -101,9 +143,10 @@ def rd1(self):
     return rdx(self, 1)
 
 
-def rd2(self):
+def rd2(self) -> int:
     """
-    Name:           Read RAM status character 2
+    Name:           Read RAM status character 2.
+
     Function:       The 4-bits of status character 2 for the previously
                     selected RAM register are transferred to the
                     accumulator.
@@ -126,9 +169,10 @@ def rd2(self):
     return rdx(self, 2)
 
 
-def rd3(self):
+def rd3(self) -> int:
     """
-    Name:           Read RAM status character 3
+    Name:           Read RAM status character 3.
+
     Function:       The 4-bits of status character 3 for the previously
                     selected RAM register are transferred to the
                     accumulator.
@@ -151,9 +195,10 @@ def rd3(self):
     return rdx(self, 3)
 
 
-def rdr(self):
+def rdr(self) -> int:
     """
-    Name:           Read ROM Port
+    Name:           Read ROM Port.
+
     Function:       The ROM port specified by the last SRC instruction is read.
                     When using the 4001 ROM,each of the 4 lines of the port may
                     be an input or an output line; the data on the input lines
@@ -186,16 +231,17 @@ def rdr(self):
     Implementation  This software implementation of the i4004 will ALWAYS
                     return the values of the output lines as-is.
     """
-    rom, _none, _none = \
+    rom, _unused1, _unused2 = \
         decode_command_register(self.COMMAND_REGISTER, 'ROM_PORT')
     self.ACCUMULATOR = self.ROM_PORT[rom]
     self.increment_pc(1)
     return self.ACCUMULATOR
 
 
-def wrm(self):
+def wrm(self) -> int:
     """
-    Name:           Write accumulator into RAM character
+    Name:           Write accumulator into RAM character.
+
     Function:       The accumulator content is written into the previously
                     selected RAM main memory character location.
                     The accumulator and carry/link are unaffected.
@@ -216,9 +262,10 @@ def wrm(self):
     return self.PROGRAM_COUNTER
 
 
-def wr0(self):
+def wr0(self) -> int:
     """
-    Name:           Write accumulator into RAM status character 0
+    Name:           Write accumulator into RAM status character 0.
+
     Function:       The content of the accumulator is written into the
                     RAM status character 0 of the previously selected
                     RAM register.
@@ -243,9 +290,10 @@ def wr0(self):
     return self.PROGRAM_COUNTER
 
 
-def wr1(self):
+def wr1(self) -> int:
     """
-    Name:           Write accumulator into RAM status character 1
+    Name:           Write accumulator into RAM status character 1.
+
     Function:       The content of the accumulator is written into the
                     RAM status character 1 of the previously selected
                     RAM register.
@@ -270,9 +318,10 @@ def wr1(self):
     return self.PROGRAM_COUNTER
 
 
-def wr2(self):
+def wr2(self) -> int:
     """
-    Name:           Write accumulator into RAM status character 2
+    Name:           Write accumulator into RAM status character 2.
+
     Function:       The content of the accumulator is written into the
                     RAM status character 2 of the previously selected
                     RAM register.
@@ -297,9 +346,10 @@ def wr2(self):
     return self.PROGRAM_COUNTER
 
 
-def wr3(self):
+def wr3(self) -> int:
     """
-    Name:           Write accumulator into RAM status character 3
+    Name:           Write accumulator into RAM status character 3.
+
     Function:       The content of the accumulator is written into the
                     RAM status character 3 of the previously selected
                     RAM register.
@@ -324,9 +374,10 @@ def wr3(self):
     return self.PROGRAM_COUNTER
 
 
-def wmp(self):
+def wmp(self) -> int:
     """
-    Name:           Write memory port
+    Name:           Write memory port.
+
     Function:       The content of the accumulator is transferred to the
                     RAM output port of the previously selected RAM chip.
                     The data is available on the output pins until a new
@@ -355,16 +406,17 @@ def wmp(self):
     Bits 3 - 8 = Not relevant
     """
     crb = self.read_current_ram_bank()
-    chip, _none, _none = \
+    chip, _unused1, _unused2 = \
         decode_command_register(self.COMMAND_REGISTER, 'RAM_PORT')
     self.RAM_PORT[crb][chip] = self.ACCUMULATOR
     self.increment_pc(1)
     return self.ACCUMULATOR
 
 
-def wrr(self):
+def wrr(self) -> int:
     """
-    Name:           Write ROM port
+    Name:           Write ROM port.
+
     Function:       The content of the accumulator is transferred to the ROM
                     output port of the previously selected ROM chip.
                     The data is available on the output pins until a new WRR
@@ -387,16 +439,17 @@ def wrr(self):
     Bits 1 - 4 = The ROM chip targetted
     Bits 5 - 8 = Not relevant
     """
-    rom, _none, _none = \
+    rom, _unused1, _unused2 = \
         decode_command_register(self.COMMAND_REGISTER, 'ROM_PORT')
     self.ROM_PORT[rom] = self.ACCUMULATOR
     self.increment_pc(1)
     return self.ACCUMULATOR
 
 
-def adm(self):
+def adm(self) -> Tuple[int, int]:
     """
-    Name:           Add from memory with carry
+    Name:           Add from memory with carry.
+
     Function:       The DATA RAM data character specified by the
                     last SRC instruction, plus the carry bit, are
                     added to the accumulator.
@@ -409,8 +462,6 @@ def adm(self):
                     MAX_4_BITS was generated to indicate a carry out;
                     otherwise, the carry/link is set to 0.
     """
-    from hardware.suboperation import check_overflow
-
     # Get value
     crb = self.read_current_ram_bank()
     chip, register, address = \
@@ -427,9 +478,14 @@ def adm(self):
     return self.ACCUMULATOR, self.CARRY
 
 
+<<<<<<< HEAD
 def sbm(self):
+=======
+def sbm(self) -> Tuple[int, int]:
+>>>>>>> 0.0.1-beta.2
     """
-    Name:           Subtract DATA RAM from memory with borrow
+    Name:           Subtract DATA RAM from memory with borrow.
+
     Function:       The value of the DATA RAM character specified
                     by the last SRC instruction is subtracted from
                     the accumulator with borrow.
@@ -459,8 +515,6 @@ def sbm(self):
                     be complemented by the program between each required
                     subtraction operation.
     """
-    from hardware.suboperation import check_overflow, ones_complement
-
     # Get value
     crb = self.read_current_ram_bank()
     chip, register, address = \
@@ -481,9 +535,10 @@ def sbm(self):
     return self.ACCUMULATOR, self.CARRY
 
 
-def wpm(self):
+def wpm(self) -> Tuple[int, int]:
     """
-    Name:           Write program RAM
+    Name:           Write program RAM.
+
     Function:       This is a special instruction which may be used to write
                     the contents of the accumulator into a half byte of
                     program RAM, or read the contents of a half byte of program
@@ -514,10 +569,13 @@ def wpm(self):
 
 
     """
+<<<<<<< HEAD
     from hardware.suboperation import convert_to_absolute_address, \
         decimal_to_binary, flip_wpm_counter
     from hardware.reads import read_wpm_counter
 
+=======
+>>>>>>> 0.0.1-beta.2
     chip, register, addr = decode_command_register(
         decimal_to_binary(8, self.COMMAND_REGISTER),
         'DATA_RAM_CHAR')

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 def coredump(chip, filename):
     """
     Take the assembled program and write to a given filename.
@@ -5,6 +6,21 @@ def coredump(chip, filename):
     Parameters
     ----------
     chip : processor
+=======
+"""Shared operations (between assembly, disassembly and execution."""
+
+# Import i4004 processor
+from hardware.processor import Processor  # noqa
+
+
+def coredump(chip: Processor, filename: str) -> bool:
+    """
+    Take the memory and write to a given filename.
+
+    Parameters
+    ----------
+    chip : Processor
+>>>>>>> 0.0.1-beta.2
         The chip targetted for the coredump
 
     filename: str, mandatory
@@ -19,6 +35,7 @@ def coredump(chip, filename):
     N/A
 
     Notes
+<<<<<<< HEAD
     ------
     N/A
 
@@ -27,6 +44,17 @@ def coredump(chip, filename):
     errordate = 'Date/Time:' + \
         datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n\n'
     with open(filename + '.core', "w") as output:
+=======
+    -----
+    N/A
+
+    """
+    from datetime import datetime  # noqa
+    filename = datetime.now().strftime("%d/%m/%Y-%H:%M:%S") + '.core'
+    errordate = 'Date/Time:' + \
+        datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n\n'
+    with open(filename, "w", encoding='utf-8') as output:
+>>>>>>> 0.0.1-beta.2
         output.write('\n\n' + errordate)
         output.write('Processor Characteristics:\n\n')
         output.write('MAX_4_BITS :           ' + str(chip.MAX_4_BITS) +
@@ -91,12 +119,58 @@ def coredump(chip, filename):
         for i in chip.REGISTERS:
             output.write(spaces + str(i) + '\t\t')
 
+<<<<<<< HEAD
         return True
 
 
 def do_error(message: str):
     """
     Print an assembly/runtime error message
+=======
+        print('Core dump to: ' + filename)
+        return True
+
+
+def determine_filetype(inputfile: str) -> str:
+    """
+    Determine the filetype of a specific input file.
+
+    In the context of reloading a previously assembled file for
+    execution or disassembly.
+
+    Parameters
+    ----------
+    inputfile: str, mandatory
+        The filename to examine
+
+    Returns
+    -------
+    filetype: str
+        OBJ if an object file complete with metadata
+        BIN if a binary assembled file.
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    file = open(inputfile, "rb")
+    bytes = file.read(12)[2:9]
+    if bytes == b'program':
+        filetype = 'OBJ'
+    else:
+        filetype = 'BIN'
+    return filetype
+
+
+def do_error(message: str) -> bool:
+    """
+    Print an assembly/runtime error message.
+>>>>>>> 0.0.1-beta.2
 
     Parameters
     ----------
@@ -112,7 +186,11 @@ def do_error(message: str):
     N/A
 
     Notes
+<<<<<<< HEAD
     ------
+=======
+    -----
+>>>>>>> 0.0.1-beta.2
     N/A
 
     """
@@ -121,6 +199,7 @@ def do_error(message: str):
     return True
 
 
+<<<<<<< HEAD
 def get_opcodeinfo(self, ls: str, mnemonic: str):
     """
     Given a mnemonic, retrieve information about the mnemonic from
@@ -129,6 +208,15 @@ def get_opcodeinfo(self, ls: str, mnemonic: str):
     Parameters
     ----------
     chip : processor, mandatory
+=======
+def get_opcodeinfo(self: Processor, ls: str, mnemonic: str) -> dict:
+    """
+    Given a mnemonic retrieve details about the it from the opcode table.
+
+    Parameters
+    ----------
+    self : Processor, mandatory
+>>>>>>> 0.0.1-beta.2
         The instance of the processor containing the registers, accumulator etc
 
     ls: str, mandatory
@@ -154,7 +242,11 @@ def get_opcodeinfo(self, ls: str, mnemonic: str):
     N/A
 
     Notes
+<<<<<<< HEAD
     ------
+=======
+    -----
+>>>>>>> 0.0.1-beta.2
     N/A
 
     """
@@ -176,6 +268,7 @@ def get_opcodeinfo(self, ls: str, mnemonic: str):
     return opcodeinfo
 
 
+<<<<<<< HEAD
 def get_opcodeinfobyopcode(self, OPCODE: int):
     """
     Given an opcode, retrieve information about the instruction from
@@ -188,6 +281,19 @@ def get_opcodeinfobyopcode(self, OPCODE: int):
 
     OPCODE: int, mandatory
         The mnemonic to locate
+=======
+def get_opcodeinfobyopcode(self: Processor, opcode: int) -> dict:
+    """
+    Given an opcode, retrieve details about it from the opcode table.
+
+    Parameters
+    ----------
+    self : Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    opcode: int, mandatory
+        The opcode to locate
+>>>>>>> 0.0.1-beta.2
 
     Returns
     -------
@@ -204,14 +310,168 @@ def get_opcodeinfobyopcode(self, OPCODE: int):
     N/A
 
     Notes
+<<<<<<< HEAD
     ------
+=======
+    -----
+>>>>>>> 0.0.1-beta.2
     N/A
 
     """
     opcodeinfo = {"opcode": -1, "mnemonic": "-"}
     try:
         opcodeinfo = next((item for item in self.INSTRUCTIONS
+<<<<<<< HEAD
                            if item['opcode'] == OPCODE), None)
     except:  # noqa
         opcodeinfo = {"opcode": -1, "mnemonic": "-"}
     return opcodeinfo
+=======
+                           if item['opcode'] == opcode),
+                          {"opcode": -1, "mnemonic": "N/A"})
+    except:  # noqa
+        opcodeinfo = {"opcode": -1, "mnemonic": "-"}
+    return opcodeinfo
+
+
+def retrieve_program(chip: Processor, location: str) -> list:
+    """
+    Retrieve the assembled program from the specified location.
+
+    Parameters
+    ----------
+    chip : Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    location : str, mandatory
+        The location to which the program should be loaded
+
+    Returns
+    -------
+    loc: list
+        The program from the location specified
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    if location == 'rom':
+        loc = chip.ROM
+    if location == 'ram':
+        loc = chip.PRAM
+    return loc
+
+
+def translate_mnemonic(chip: Processor, _tps: list, exe: str,
+                       opcode: str, task: str, words: int) -> str:
+    """
+    Formulate the opcodes into mnemonics ready for execution.
+
+    Parameters
+    ----------
+    chip : Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    _tps: list, mandatory
+        List representing the memory of the i4004 into which the
+        newly assembled instructions will be placed.
+
+    exe: str, mandatory
+        pre-formatted exe mnemonic ready for processing
+
+    opcode: str, mandatory
+        Opcode of the current instruction
+
+    task: str, mandatory
+        'D' for Disassembly
+        'E' for Execution
+
+    words: int, optional (supply 0)
+        The number of words an instruction uses
+
+    Returns
+    -------
+    exe: str
+        A correctly formed, ready-for execution mnemonic
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    custom_opcode = False
+    cop = ''
+
+    # Only mnemonic with 2 characters - fix
+    if exe[:3] == 'ld ':
+        exe = exe[:2] + exe[3:]
+
+    # Ensure that the correct arguments are passed to the operations
+    if exe[:3] == 'fim':
+        custom_opcode = True
+        value = str(_tps[chip.PROGRAM_COUNTER + 1])
+        cop = exe.replace('data8', value)
+        exe = exe.replace('p', '').replace('data8)', '') + value + ')'
+
+    if exe[:3] == 'isz':
+        # Remove opcode from 1st byte to get register
+        register = bin(_tps[chip.PROGRAM_COUNTER] & 15)[2:].zfill(8)[4:]
+        address = str(_tps[chip.PROGRAM_COUNTER + 1])
+        exe = 'isz(' + str(int(register, 2)) + ',' + str(address) + ')'
+
+    if exe[:4] == 'jcn(':
+        custom_opcode = True
+        address = _tps[chip.PROGRAM_COUNTER + 1]
+        conditions = (bin(_tps[chip.PROGRAM_COUNTER])[2:].zfill(8)[4:])
+        b10address = str(address)
+        cop = exe.replace('address8', b10address)
+        exe = exe[:4] + str(int(conditions, 2)) + ',' + b10address + ')'
+        if task == 'D':
+            opcode = str(_tps[chip.PROGRAM_COUNTER]) + ', ' \
+                + str(_tps[chip.PROGRAM_COUNTER + 1])
+
+    if exe[:4] in ('jun(', 'jms('):
+        custom_opcode = True
+        # Remove opcode from 1st byte
+        hvalue = bin(_tps[chip.PROGRAM_COUNTER] &
+                     0xffff0000)[2:].zfill(8)[:4]
+        lvalue = bin(_tps[chip.PROGRAM_COUNTER + 1])[2:].zfill(8)
+        whole_value = str(int(hvalue + lvalue, 2))
+        cop = exe.replace('address12', whole_value)
+        exe = exe[:4] + whole_value + ')'
+        if task == 'D':
+            opcode = str(_tps[chip.PROGRAM_COUNTER]) + ', ' + \
+                str(_tps[chip.PROGRAM_COUNTER + 1])
+
+    if task == 'D':
+        if exe[:3] == 'end':  # pseudo-opcode (directive "end" - stop program)
+            opcode = ''
+            custom_opcode = False
+        if custom_opcode:
+            custom_opcode = False
+            exe = cop
+            print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, cop.replace('()', '')))  # noqa
+        else:
+            print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, exe.replace('()', '')))  # noqa
+
+        chip.PROGRAM_COUNTER = chip.PROGRAM_COUNTER + words
+
+    if task == 'E':
+        if custom_opcode:
+            custom_opcode = False
+            exe = cop
+            print('  {:>7}  {:<10}'.format(opcode, cop.replace('()', '')))  # noqa
+        else:
+            print('  {:>7}  {:<10}'.format(opcode, exe.replace('()', '')))  # noqa
+
+    return exe
+>>>>>>> 0.0.1-beta.2

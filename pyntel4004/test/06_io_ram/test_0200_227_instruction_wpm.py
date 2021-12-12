@@ -1,6 +1,7 @@
 # Using pytest
 # Test the WPM instructions of an instance of an i4004(processor)
 
+<<<<<<< HEAD
 import sys
 import pickle
 import pytest
@@ -11,11 +12,32 @@ from hardware.suboperation import binary_to_decimal, \
 sys.path.insert(1, '../src')
 
 from hardware.processor import processor  # noqa
+=======
+# Import system modules
+import os
+import sys
+sys.path.insert(1, '..' + os.sep + 'src')
+sys.path.insert(2, '..' + os.sep + 'test')
+
+import pickle  # noqa
+import pytest  # noqa
+
+
+from hardware.processor import Processor  # noqa
+from hardware.suboperations.utility import binary_to_decimal, \
+    convert_to_absolute_address, \
+    convert_decimal_to_n_bit_slices as c2n  # noqa
+from utils import encode_command_register  # noqa
+>>>>>>> 0.0.1-beta.2
 
 
 def test_validate_wpm_instruction():
     """Ensure instruction's characteristics are valid."""
+<<<<<<< HEAD
     chip_test = processor()
+=======
+    chip_test = Processor()
+>>>>>>> 0.0.1-beta.2
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[227]
     known = {"opcode": 227, "mnemonic": "wpm()", "exe": 10.8, "bits": ["1110", "0011"], "words": 1}  # noqa
@@ -28,11 +50,18 @@ def test_validate_wpm_instruction():
 @pytest.mark.parametrize("address", [2, 5, 3])
 def test_wpm_scenario1_write(rambank, chip, register, address):
     """Test WPM instruction functionality."""
+<<<<<<< HEAD
 
     chip_test = processor()
     chip_base = processor()
 
     '''
+=======
+    chip_test = Processor()
+    chip_base = Processor()
+
+    """
+>>>>>>> 0.0.1-beta.2
     This piece of code writes an 8-bit value (consisting of 2 4-bit values)
     from the accumulator in 2 chunks. The setting up of this code and the
     execution of several WPM statements is key to the testing, although much
@@ -65,7 +94,12 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     24    SRC        0P          / Select ROM port 14.
     25    CLB
     26    WRR                    / Turn off write enable.
+<<<<<<< HEAD
     '''
+=======
+    """
+
+>>>>>>> 0.0.1-beta.2
     # Perform the instruction under test:
     # Preamble.....
     chip_test.PROGRAM_COUNTER = 0             # Set PC to be zero
@@ -107,6 +141,7 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     chip_test.ROM_PORT[15] = chip_test.STATUS_CHARACTERS[rambank][0][0][0]
 
     # Lines 17 - 18
+<<<<<<< HEAD
     chip_test.COMMAND_REGISTER = processor.read_registerpair(chip_test, 5)
 
     # Lines 19 - 20
@@ -116,6 +151,17 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     # Lines 21 - 22
     chip_test.set_accumulator(binary_to_decimal(str(chunks[2])))
     processor.wpm(chip_test)
+=======
+    chip_test.COMMAND_REGISTER = Processor.read_registerpair(chip_test, 5)
+
+    # Lines 19 - 20
+    chip_test.set_accumulator(binary_to_decimal(str(chunks[0])))
+    Processor.wpm(chip_test)
+
+    # Lines 21 - 22
+    chip_test.set_accumulator(binary_to_decimal(str(chunks[2])))
+    Processor.wpm(chip_test)
+>>>>>>> 0.0.1-beta.2
 
     # Lines 23 - 26
     chip_test.set_accumulator(0)
@@ -152,6 +198,7 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     chip_base.ROM_PORT[15] = chip_base.STATUS_CHARACTERS[rambank][0][0][0]
 
     # Lines 17 - 18
+<<<<<<< HEAD
     chip_base.COMMAND_REGISTER = processor.read_registerpair(chip_base, 5)
 
     # Lines 19 - 20
@@ -160,17 +207,33 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     chip_base.PRAM[address_to_write_to] = chip_base.ACCUMULATOR << 4
     chip_base.RAM[address_to_write_to] = chip_base.ACCUMULATOR << 4
     processor.flip_wpm_counter(chip_base)
+=======
+    chip_base.COMMAND_REGISTER = Processor.read_registerpair(chip_base, 5)
+
+    # Lines 19 - 20
+    chip_base.set_accumulator(binary_to_decimal(str(chunks[0])))
+    chip_base.PRAM[address_to_write_to] = chip_base.ACCUMULATOR << 4
+    chip_base.RAM[address_to_write_to] = chip_base.ACCUMULATOR << 4
+    Processor.flip_wpm_counter(chip_base)
+>>>>>>> 0.0.1-beta.2
     chip_base.increment_pc(1)
 
     # Lines 21 - 22
     chip_base.set_accumulator(binary_to_decimal(str(chunks[2])))
     value = chip_base.ACCUMULATOR
+<<<<<<< HEAD
     # processor.wpm(chip_base)
+=======
+>>>>>>> 0.0.1-beta.2
     chip_base.PRAM[address_to_write_to] = \
         chip_base.PRAM[address_to_write_to] + value
     chip_base.RAM[address_to_write_to] = \
         chip_base.RAM[address_to_write_to] + value
+<<<<<<< HEAD
     processor.flip_wpm_counter(chip_base)
+=======
+    Processor.flip_wpm_counter(chip_base)
+>>>>>>> 0.0.1-beta.2
     chip_base.increment_pc(1)
 
     # Lines 23 - 26
@@ -193,11 +256,18 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
 @pytest.mark.parametrize("address", [2, 5, 3])
 def test_wpm_scenario1_read(rambank, chip, register, address):
     """Test WPM instruction functionality."""
+<<<<<<< HEAD
 
     chip_test = processor()
     chip_base = processor()
 
     '''
+=======
+    chip_test = Processor()
+    chip_base = Processor()
+
+    """
+>>>>>>> 0.0.1-beta.2
     This piece of code reads an 8-bit value (consisting of 2 4-bit values)
     from the program ram in 2 chunks. The setting up of this code and the
     execution of several WPM statements is key to the testing, although much
@@ -226,7 +296,11 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     19    SRC        0P          / Select ROM port 15
     20    RDR                    / Read to accumulator
     21    XCH        3           / Save in register 2
+<<<<<<< HEAD
     '''
+=======
+    """
+>>>>>>> 0.0.1-beta.2
     # Perform the instruction under test:
     # Preamble.....
     chip_test.PROGRAM_COUNTER = 0             # Set PC to be zero
@@ -265,11 +339,19 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_test.ROM_PORT[15] = chip_test.STATUS_CHARACTERS[rambank][0][0][0]
 
     # Line 11
+<<<<<<< HEAD
     chip_test.COMMAND_REGISTER = processor.read_registerpair(chip_test, 5)
 
     # Lines 12 - 13
     processor.wpm(chip_test)
     processor.wpm(chip_test)
+=======
+    chip_test.COMMAND_REGISTER = Processor.read_registerpair(chip_test, 5)
+
+    # Lines 12 - 13
+    Processor.wpm(chip_test)
+    Processor.wpm(chip_test)
+>>>>>>> 0.0.1-beta.2
 
     # Lines 14 - 16
     # Get the value from ROM port 14 to accumulator
@@ -312,6 +394,7 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_base.ROM_PORT[15] = chip_base.STATUS_CHARACTERS[rambank][0][0][0]
 
     # Line 11
+<<<<<<< HEAD
     chip_base.COMMAND_REGISTER = processor.read_registerpair(chip_test, 5)
 
     # Lines 12 - 13
@@ -320,6 +403,16 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_base.increment_pc(1)
     chip_base.ROM_PORT[15] = chip_base.PRAM[address_to_write_to] << 4 >> 4
     processor.flip_wpm_counter(chip_base)
+=======
+    chip_base.COMMAND_REGISTER = Processor.read_registerpair(chip_test, 5)
+
+    # Lines 12 - 13
+    chip_base.ROM_PORT[14] = chip_base.PRAM[address_to_write_to] >> 4 << 4
+    Processor.flip_wpm_counter(chip_base)
+    chip_base.increment_pc(1)
+    chip_base.ROM_PORT[15] = chip_base.PRAM[address_to_write_to] << 4 >> 4
+    Processor.flip_wpm_counter(chip_base)
+>>>>>>> 0.0.1-beta.2
     chip_base.increment_pc(1)
 
     # Lines 14 - 16
