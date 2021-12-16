@@ -16,6 +16,7 @@ Pyntel4004 Documentation
    MCS-4 Manual <intro/mcs4>
    Overview and Instructions <intro/usage>
    Intel 4004 OpCodes <intro/opcodes>
+   Glossary <intro/glossary>
    ASCII Table <hardware/refs/ascii>
 
 Indices and tables
