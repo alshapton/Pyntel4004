@@ -64,4 +64,4 @@ The carry bit is not affected.
 
 The above program will first clear the accumulator (setting all 4 bits to 0), then load the value 9 into the accumulator, then finally, set all the accumulator's 4 bits by loading the value 15.
 
-.. _bbl: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208
+.. _ldm: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208

@@ -107,4 +107,4 @@ instruction adds the contents of register 1 plus the carry bit to the accumulato
 From here, normal program execution continues at location 0x363.
 
 
-.. _jin: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208
+.. _jun: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208

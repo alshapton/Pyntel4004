@@ -35,7 +35,7 @@ WRR
    * - Side-effects
      - Not Applicable
    * - Implemented
-     - wmp_
+     - wrr_
 
 .. rubric:: Detailed Description
 
@@ -69,4 +69,4 @@ ROM chip 2.
         WRR
 
 
-.. _wmp: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208
+.. _wrr: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208

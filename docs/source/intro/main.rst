@@ -11,6 +11,8 @@ Intel 4004 Chip History
    :hidden:
    
    ../hardware/refs/decsub
+   ../hardware/refs/decadd
+   ../hardware/refs/multiadd
 
 Background
 

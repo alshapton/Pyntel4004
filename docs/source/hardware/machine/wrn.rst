@@ -44,7 +44,7 @@ The contents of the DATA RAM status character whose number from 0 to 3 is
 specified by n, associated with the DATA RAM register specified by tbe 
 last SRC instruction, are replaced by the contents of the accumulator.
 
-The carry bit and the a-ccumulator are not affected.
+The carry bit and the accumulator are not affected.
 
 The DATA RAM status character is encoded in the opcode as shown below:
 
