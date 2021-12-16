@@ -6,6 +6,7 @@ Intel 4004 Op-Codes
    :hidden:
 
    ../hardware/machine/add
+   ../hardware/machine/adm
    ../hardware/machine/bbl
    ../hardware/machine/clb
    ../hardware/machine/clc
@@ -29,7 +30,10 @@ Intel 4004 Op-Codes
    ../hardware/machine/nop
    ../hardware/machine/ral
    ../hardware/machine/rar
+   ../hardware/machine/rdm
    ../hardware/machine/rdn
+   ../hardware/machine/rdr
+   ../hardware/machine/sbm
    ../hardware/machine/src
    ../hardware/machine/stc
    ../hardware/machine/sub
@@ -171,22 +175,22 @@ Intel 4004 Op-Codes
      -
      -
    * - Subtract Main Memory
-     - SBM
+     - :ref:`hardware-machine-sbm`
      - 11101000
      -
      -
    * - Read Main Memory
-     - RDM
+     - :ref:`hardware-machine-rdm`
      - 11101001
      -
      -
    * - Read ROM Port
-     - RDR
+     - :ref:`hardware-machine-rdr`
      - 11101010
      -
      -
    * - Add Main Memory
-     - ADM
+     - :ref:`hardware-machine-adm`
      - 11101011
      -
      -
