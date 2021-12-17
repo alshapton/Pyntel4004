@@ -7,12 +7,6 @@ Intel 4004 Chip History
 .. image:: images/intel4004chip.png
           :scale: 50%
 
-.. toctree::
-   :hidden:
-   
-   ../hardware/refs/decsub
-   ../hardware/refs/decadd
-   ../hardware/refs/multiadd
 
 Background
 

@@ -1,12 +1,11 @@
 .. _hardware-machine-refs-multiadd:
 
+:orphan:
+
 Multi-Digit Addition
 ====================
 
 .. include:: ../../global.rst
-
-.. toctree::
-   :hidden:
 
 The carry bit may be used to add unsigned data quantities of arbitrary length.
 

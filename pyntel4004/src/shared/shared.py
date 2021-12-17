@@ -101,6 +101,36 @@ def coredump(chip: Processor, filename: str) -> bool:
         return True
 
 
+def determine_filetype(inputfile: str) -> str:
+    """
+    Determine the filetype of a specific input file.
+    In the context of reloading a previously assembled file for
+    execution or disassembly.
+    Parameters
+    ----------
+    inputfile: str, mandatory
+        The filename to examine
+    Returns
+    -------
+    filetype: str
+        OBJ if an object file complete with metadata
+        BIN if a binary assembled file.
+    Raises
+    ------
+    N/A
+    Notes
+    -----
+    N/A
+    """
+    file = open(inputfile, "rb")
+    bytes = file.read(12)[2:9]
+    if bytes == b'program':
+        filetype = 'OBJ'
+    else:
+        filetype = 'BIN'
+    return filetype
+
+
 def do_error(message: str):
     """
     Print an assembly/runtime error message

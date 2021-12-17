@@ -8,11 +8,7 @@ fff,    =       9
         fim     0p     180
         src     0p
 lbl,    ldm     15
-<<<<<<< HEAD:pyntel4004/src/example2.asm
         wrm
         wr0
         wmp
         end
-=======
-        end
->>>>>>> 0.0.1-beta.2:pyntel4004/src/examples/example2.asm

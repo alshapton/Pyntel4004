@@ -1,12 +1,12 @@
 .. _hardware-machine-refs-decadd:
 
+:orphan:
+
 Decimal Addition
 ================
 
 .. include:: ../../global.rst
 
-.. toctree::
-   :hidden:
 
 Each 4 bit data quantity may be treated as a decimal number as long as it represents
 one of the decimal digits from 0 through 9, and does not contain any of the
