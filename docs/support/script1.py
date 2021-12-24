@@ -56,7 +56,7 @@ def convert(num):
         # store num in a u_int, size of u_it is greater,
         # it will be positive since msb is 0
         n = num + 2**32
- 
+
         # use the same remainder technique.
         while (n):
             res = m[n % 16] + res
@@ -282,7 +282,8 @@ def powers_of_10(directory: str) -> None:
 
     doc_name = sys._getframe().f_code.co_name
     filename = directory + '/' + doc_name + doc_suffix
-    powers = [0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    powers = [0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     with open(filename, "w") as f:
         f.write('.. _' + doc_name + ':\n')
@@ -313,12 +314,12 @@ def powers_of_10(directory: str) -> None:
 
             # Negative powers
             nfmt = "{:.63f}"
-            neg_num = float(((10 ** -i) * (16 ** powers[i])) )
+            neg_num = float(((10 ** -i) * (16 ** powers[i])))
             #neg_num = -(10 ** i)
             print(neg_num)
             neg_output = float.hex((neg_num))
             #neg_interim = nfmt.format(neg_num)
-            
+
             '''
             neg = str([neg_output[i:i+5]
                       for i in range(0, len(neg_output), 5)]).\
@@ -331,8 +332,9 @@ def powers_of_10(directory: str) -> None:
             neg = neg_output
             f.write('   * - ' + pos + '\n')
             f.write('     - ' + str(i) + '\n')
-            f.write('     - ' + neg + '  ' + str(i) + ' ' + str(powers[i]) + '\n')
-        
+            f.write('     - ' + neg + '  ' + str(i) +
+                    ' ' + str(powers[i]) + '\n')
+
     f.close()
 
 
@@ -412,7 +414,7 @@ def instruction_machine_codes(chip, directory: str) -> None:
                 m2 = 'ld'
                 custom = True
             if custom is False:
-                parameter = mnemonic.replace(')', '').replace('(', '').replace(mnemonic[:3],'')  # noqa
+                parameter = mnemonic.replace(')', '').replace('(', '').replace(mnemonic[:3], '')  # noqa
                 m2 = m
             if opcode != 256:
                 f.write('   * - ' + str(opcode) + '\n')
