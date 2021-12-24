@@ -7,7 +7,6 @@ Decimal Addition
 
 .. include:: ../../global.rst
 
-
 Each 4 bit data quantity may be treated as a decimal number as long as it represents
 one of the decimal digits from 0 through 9, and does not contain any of the
 bit patterns representing the hexadecimal digits A through F. 

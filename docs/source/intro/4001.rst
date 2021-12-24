@@ -49,7 +49,8 @@ An external signal (CL) will asynchronously clear the output register during nor
 All internal flip flops (including the output register) will be reset when the RESET line
 goes low (negative voltage).
 
-Each I/O pin can be uniquely chosen as either an input or output port by metal option.
+Each I/O pin can be uniquely chosen as either an input or output port by metal option when ordering.
+An example order form can be downloaded :download:`here <resources/Intel-4001-Custom-ROM-Order-Form.pdf>`
 Direct or inverted input or output is optional.
 An on-chip resistor at the input pins connected to either V :subscript:`dd` or V :subscript:`ss` is also optional
 (see ordering information on page 12).

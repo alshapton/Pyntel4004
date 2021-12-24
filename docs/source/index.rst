@@ -13,10 +13,10 @@ Pyntel4004 Documentation
       4002 <intro/4002>
       4003 <intro/4003>
       4004 <intro/4004>
-   MCS-4 Manual <intro/mcs4>
    Overview and Instructions <intro/usage>
+   MCS-4 Manual <intro/manual/mcs4>
    Intel 4004 OpCodes <intro/opcodes>
-   Glossary <intro/glossary>
+   Glossary <intro/manual/glossary>
    ASCII Table <hardware/refs/ascii>
 
 Indices and tables

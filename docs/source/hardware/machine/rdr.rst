@@ -93,7 +93,8 @@ the programmer must be careful not to use one port for both functions.
 Whether a 0 or a 1 is transferred is a function of the hardware and not under 
 control of the programmer. That is to say, when a 4001 ROM chip is ordered, 
 it is required to determine **at that stage** what the functionality of the pins
-should be. Once ordered, the decision cannot be reverted.
+should be. Once ordered, the decision cannot be reverted. An order form can be
+downloaded :download:`here <../../intro/resources/Intel-4001-Custom-ROM-Order-Form.pdf>`
 
 
 .. _rdr: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208
