@@ -15,61 +15,61 @@ Powers Of 10 :subscript:`16`
      - 10 :superscript:`-n`
    * - 1
      - 0
-     - 0x1.0000000000000p+0  0 0
+     - 1.0000 0000 0000 0000
    * - A
      - 1
-     - 0x1.999999999999ap-4  1 0
+     - 0.1999 9999 9999 999A
    * - 64
      - 2
-     - 0x1.47ae147ae147bp+5  2 3
+     - 0.28F5 C285 5C28 F5C3 x 16 :superscript:`-1`
    * - 3E8
      - 3
-     - 0x1.0624dd2f1a9fcp-10  3 0
+     - 0.4189 374B C6A7 EF9E x 16 :superscript:`-2`
    * - 2710
      - 4
-     - 0x1.a36e2eb1c432dp-14  4 0
+     - 0.68DB 8BAC 710c b296 x 16 :superscript:`-3`
    * - 1 86A0
      - 5
-     - 0x1.4f8b588e368f1p-17  5 0
+     - 0.A7C5 AC47 1B47 8423 x 16 :superscript:`-4`
    * - F 4240
      - 6
-     - 0x1.0c6f7a0b5ed8dp-20  6 0
+     - 0.10C6 F7A0 B5ED 9D37 x 16 :superscript:`-4`
    * - 98 9680
      - 7
-     - 0x1.ad7f29abcaf48p-24  7 0
+     - 0.1A07 F29A BCAF 4858 x 16 :superscript:`-5`
    * - 5F5 E100
      - 8
-     - 0x1.5798ee2308c3ap-27  8 0
+     - 0.2AF3 1DC4 6118 73BF x 16 :superscript:`-6`
    * - 3B9A CA00
      - 9
-     - 0x1.12e0be826d695p-30  9 0
+     - 0.44B8 2FA0 9B5A 52CC x 16 :superscript:`-7`
    * - 2 540B E400
      - 10
-     - 0x1.b7cdfd9d7bdbbp-34  10 0
+     - 0.6DF3 7F67 5EF6 EADF x 16 :superscript:`-8`
    * - 17 4876 E800
      - 11
-     - 0x1.5fd7fe1796495p-37  11 0
+     - 0.AFEB FF0B CB24 AAFF x 16 :superscript:`-9`
    * - E8 D4A5 1000
      - 12
-     - 0x1.19799812dea11p-40  12 0
+     - 0.1197 9981 2DEA 1119 x 16 :superscript:`-9`
    * - 918 4E72 A000
      - 13
-     - 0x1.c25c268497682p-44  13 0
+     - 0.1C25 C268 4976 81C2 x 16 :superscript:`-10`
    * - 5AF3 107A 4000
      - 14
-     - 0x1.6849b86a12b9bp-47  14 0
+     - 0.2D09 370D 4257 3604 x 16 :superscript:`-11`
    * - 3 8D7E A4C6 8000
      - 15
-     - 0x1.203af9ee75616p-50  15 0
+     - 0.480E BE7B 9D58 566D x 16 :superscript:`-12`
    * - 23 86F2 6FC1 0000
      - 16
-     - 0x1.cd2b297d889bcp-54  16 0
+     - 0.734A CASF 6226 F0AE x 16 :superscript:`-13`
    * - 163 4578 5D8A 0000
      - 17
-     - 0x1.70ef54646d497p-57  17 0
+     - 0.B877 AA32 36A4 B449 x 16 :superscript:`-14`
    * - DE0 B6B3 A764 0000
      - 18
-     - 0x1.2725dd1d243acp-60  18 0
+     - 0.1272 5DD1 D243 ABA1 x 16 :superscript:`-14`
    * - 8AC7 2304 89E8 0000
      - 19
-     - 0x1.d83c94fb6d2acp-64  19 0
+     - 0.1D83 C94F B6D2 AC35 x 16 :superscript:`-15`

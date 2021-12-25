@@ -22,3 +22,4 @@ MCS-4 Assembly Language Programming Manual
    powers_of_two
    powers_of_sixteen
    powers_of_10
+   hexadecimal_decimal_integer_conversion

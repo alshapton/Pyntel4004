@@ -9,7 +9,6 @@
 
 # Import system modules
 import os
-import struct
 import sys
 from typing import Any
 
@@ -18,55 +17,6 @@ sys.path.insert(1, '..' + os.sep + '..' + os.sep +
 
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
-
-
-def convert(num):
-    # map for decimal to hexa, 0-9 are
-    # straightforward, alphabets a-f used
-    # for 10 to 15.
-    m = dict.fromkeys(range(16), 0)
-
-    digit = ord('0')
-    c = ord('a')
-
-    for i in range(16):
-        if (i < 10):
-            m[i] = chr(digit)
-            digit += 1
-        else:
-            m[i] = chr(c)
-            c += 1
-
-    # string to be returned
-    res = ""
-
-    # check if num is 0 and directly return "0"
-    if (not num):
-        return "0"
-
-    # if num>0, use normal technique as
-    # discussed in other post
-    if (num > 0):
-        while (num):
-            res = m[num % 16] + res
-            num //= 16
-    # if num<0, we need to use the elaborated
-    # trick above, lets see this
-    else:
-        # store num in a u_int, size of u_it is greater,
-        # it will be positive since msb is 0
-        n = num + 2**32
- 
-        # use the same remainder technique.
-        while (n):
-            res = m[n % 16] + res
-            n //= 16
-
-    return res
-
-
-def float_to_hex(f):
-    return hex(struct.unpack('<I', struct.pack('<f', f))[0])
 
 
 def caps(line):
@@ -282,7 +232,6 @@ def powers_of_10(directory: str) -> None:
 
     doc_name = sys._getframe().f_code.co_name
     filename = directory + '/' + doc_name + doc_suffix
-    powers = [0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
     with open(filename, "w") as f:
         f.write('.. _' + doc_name + ':\n')
@@ -312,27 +261,31 @@ def powers_of_10(directory: str) -> None:
                 replace("'", "")
 
             # Negative powers
-            nfmt = "{:.63f}"
-            neg_num = float(((10 ** -i) * (16 ** powers[i])) )
-            #neg_num = -(10 ** i)
-            print(neg_num)
-            neg_output = float.hex((neg_num))
-            #neg_interim = nfmt.format(neg_num)
-            
-            '''
-            neg = str([neg_output[i:i+5]
-                      for i in range(0, len(neg_output), 5)]).\
-                replace('[', '').replace(']', '').replace(',', '').\
-                replace("'", "")
-            neg = neg[:23] + ' x 10 :superscript:`' + \
-                str(powers[i] * -1) + '`'
-
-            '''
-            neg = neg_output
+            neg = ['1.0000 0000 0000 0000',
+                   '0.1999 9999 9999 999A',
+                   '0.28F5 C285 5C28 F5C3 x 16 :superscript:`-1`',
+                   '0.4189 374B C6A7 EF9E x 16 :superscript:`-2`',
+                   '0.68DB 8BAC 710c b296 x 16 :superscript:`-3`',
+                   '0.A7C5 AC47 1B47 8423 x 16 :superscript:`-4`',
+                   '0.10C6 F7A0 B5ED 9D37 x 16 :superscript:`-4`',
+                   '0.1A07 F29A BCAF 4858 x 16 :superscript:`-5`',
+                   '0.2AF3 1DC4 6118 73BF x 16 :superscript:`-6`',
+                   '0.44B8 2FA0 9B5A 52CC x 16 :superscript:`-7`',
+                   '0.6DF3 7F67 5EF6 EADF x 16 :superscript:`-8`',
+                   '0.AFEB FF0B CB24 AAFF x 16 :superscript:`-9`',
+                   '0.1197 9981 2DEA 1119 x 16 :superscript:`-9`',
+                   '0.1C25 C268 4976 81C2 x 16 :superscript:`-10`',
+                   '0.2D09 370D 4257 3604 x 16 :superscript:`-11`',
+                   '0.480E BE7B 9D58 566D x 16 :superscript:`-12`',
+                   '0.734A CASF 6226 F0AE x 16 :superscript:`-13`',
+                   '0.B877 AA32 36A4 B449 x 16 :superscript:`-14`',
+                   '0.1272 5DD1 D243 ABA1 x 16 :superscript:`-14`',
+                   '0.1D83 C94F B6D2 AC35 x 16 :superscript:`-15`'
+                   ]
             f.write('   * - ' + pos + '\n')
             f.write('     - ' + str(i) + '\n')
-            f.write('     - ' + neg + '  ' + str(i) + ' ' + str(powers[i]) + '\n')
-        
+            f.write('     - ' + neg[i] + '\n')
+
     f.close()
 
 
@@ -342,8 +295,11 @@ def instruction_machine_codes(chip, directory: str) -> None:
 
     Parameters
     ----------
-    self : Processor, mandatory
+    chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
+
+    directory: str, mandatory
+        String containing the target directory for the file.
 
     Returns
     -------
@@ -432,6 +388,80 @@ def instruction_machine_codes(chip, directory: str) -> None:
         f.close()
 
 
+def hexadecimal_decimal_integer_conversion(directory: str) -> None:
+    """
+    Create the page for the hex/dec conversion
+
+    Parameters
+    ----------
+    directory: str, mandatory
+        String containing the target directory for the file.
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    doc_name = sys._getframe().f_code.co_name
+    filename = directory + '/' + doc_name + doc_suffix
+
+    with open(filename, "w") as f:
+        write_title(f, doc_name)
+        f.write('\n\n.. include:: ../../global.rst')
+        f.write('\n\n')
+        f.write('\nThe table below provldes for direct conversions ')
+        f.write('betweon hexadecimal integers in the range O-FFF and decimal ')
+        f.write('integers in the range 0-4095. \n\n')
+        f.write('For conversion of larger integers, the table values ')
+        f.write('may be added to the following figures:\n')
+
+        f.write('\n.. csv-table:: ')
+        f.write('\n   :header: "Hex", "Decimal", "Hex", "Decimal"')
+        f.write('\n   :widths: 25, 25, 25, 25')
+        f.write('\n')
+
+        f.write('\n   "1 000","4 096","20 000","131 072"')
+        f.write('\n   "2 000","8 192","30 000","196 608"')
+        f.write('\n   "3 000","12 288","40 000","262 144"')
+        f.write('\n   "4 000","16 384","50 000","327 680"')
+        f.write('\n   "5 000","20 480","60 000","393 216"')
+        f.write('\n   "6 000","24 576","70 000","458 752"')
+        f.write('\n   "7 000","28 672","80 000","524 288"')
+        f.write('\n   "8 000","32 768","90 000","589 824"')
+        f.write('\n   "9 000","36 864","A0 000","655 360"')
+        f.write('\n   "A 000","40 960","B0 000","720 896"')
+        f.write('\n   "B 000","45 056","C0 000","786 432"')
+        f.write('\n   "C 000","49 152","D0 000","851 968"')
+        f.write('\n   "D 000","53 248","E0 000","917 504"')
+        f.write('\n   "E 000","57 344","F0 000","983 040"')
+        f.write('\n   "F 000","61 440","100 000","1 048 576"')
+        f.write('\n   "10 000","65 536","200 000","2 097 152"')
+        f.write('\n   "11 000","69 632","300 000","3 145 728"')
+        f.write('\n   "12 000","73 728","400 000","4 194 304"')
+        f.write('\n   "13 000","77 824","500 000","5 242 880"')
+        f.write('\n   "14 000","81 920","600 000","6 291 456"')
+        f.write('\n   "15 000","86 016","700 000","7 340 032"')
+        f.write('\n   "16 000","90 112","800 000","8 388 608"')
+        f.write('\n   "17 000","94 208","900 000","9 437 184"')
+        f.write('\n   "18 000","98 304","A00 000","10 485 760"')
+        f.write('\n   "19 000","102 400","B00 000","11 534 336"')
+        f.write('\n   "1A 000","106 496","C00 000","12 582 912"')
+        f.write('\n   "1B 000","110 592","D00 000","13 631 408"')
+        f.write('\n   "1C 000","114 688","E00 000","14 680 064"')
+        f.write('\n   "1D 000","118 784","F00 000","15 728 640"')
+        f.write('\n   "1E 000","122 880","1 000 000","16 777 216"')
+        f.write('\n   "1F 000","126 976","2 000 000","33 554 432"')
+        f.write('\n')
+
+
 def main(argv: list) -> None:
     """
     Create documentation pages from information
@@ -462,6 +492,7 @@ def main(argv: list) -> None:
     powers_of_two(manual)
     powers_of_sixteen(manual)
     powers_of_10(manual)
+    hexadecimal_decimal_integer_conversion(manual)
 
 
 manual = '..' + os.sep + 'source' + os.sep + 'intro' + os.sep + 'manual'
