@@ -368,7 +368,7 @@ def instruction_machine_codes(chip, directory: str) -> None:
                 m2 = 'ld'
                 custom = True
             if custom is False:
-                parameter = mnemonic.replace(')', '').replace('(', '').replace(mnemonic[:3],'')  # noqa
+                parameter = mnemonic.replace(')', '').replace('(', '').replace(mnemonic[:3], '')  # noqa
                 m2 = m
             if opcode != 256:
                 f.write('   * - ' + str(opcode) + '\n')
