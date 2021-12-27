@@ -13,12 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Completed first pass at all opcode documentation
 - Write code to Retroshield-compatible `.h` file
 - Added Glossary of Terms
+- Added all Appendices in MSC-4 manual (partially automated where tables are required)
 ### Changed
 -
 ### Deprecated
 -
 ### Fixed
--
+- Incorrect symbolic image being displayed on SRC instruction page.
 ### Removed
 -
 ### Security

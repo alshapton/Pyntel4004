@@ -1,6 +1,6 @@
 .. _hardware-machine-inc:
 
-SRC
+INC
 ===
 
 .. include:: ../../global.rst

@@ -388,6 +388,63 @@ def instruction_machine_codes(chip, directory: str) -> None:
         f.close()
 
 
+def hexadecimal_arithmetic(directory: str) -> None:
+    """
+    Create the page for with the two tables for hex arithmetic.
+    Parameters
+    ----------
+    directory: str, mandatory
+        String containing the target directory for the file.
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+
+    doc_name = sys._getframe().f_code.co_name
+    filename = directory + '/' + doc_name + doc_suffix
+
+    with open(filename, "w") as f:
+        write_title(f, doc_name)
+        f.write('\n\n.. include:: ../../global.rst')
+        f.write('\n\n')
+
+        f.write('.. list-table:: Hexadecimal Addition\n')
+        f.write('   :header-rows: 1\n\n')
+
+        f.write('   * - 0\n')
+        for i in range(1, 15):
+            f.write('     - ' + hex(i)[2:].upper() + '\n')
+        f.write('     - F\n')
+
+        for i in range(1, 16):
+            f.write('   * - ' + hex(i)[2:].upper() + '\n')
+            for j in range(1, 16):
+                f.write('     - ' + hex(i+j)[2:].upper().rjust(2, '0') + '\n')
+
+        f.write('.. list-table:: Hexadecimal Multiplication\n')
+        f.write('   :header-rows: 1\n\n')
+
+        f.write('   * - 1\n')
+        for i in range(2, 15):
+            f.write('     - ' + hex(i)[2:].upper() + '\n')
+        f.write('     - F\n')
+
+        for i in range(2, 16):
+            f.write('   * - ' + hex(i)[2:].upper() + '\n')
+            for j in range(2, 16):
+                f.write('     - ' + hex(i*j)[2:].upper().rjust(2, '0') + '\n')
+
+
 def hexadecimal_decimal_integer_conversion(directory: str) -> None:
     """
     Create the page for the hex/dec conversion
@@ -418,7 +475,7 @@ def hexadecimal_decimal_integer_conversion(directory: str) -> None:
         f.write('\n\n.. include:: ../../global.rst')
         f.write('\n\n')
         f.write('\nThe table below provldes for direct conversions ')
-        f.write('betweon hexadecimal integers in the range O-FFF and decimal ')
+        f.write('between hexadecimal integers in the range O-FFF and decimal ')
         f.write('integers in the range 0-4095. \n\n')
         f.write('For conversion of larger integers, the table values ')
         f.write('may be added to the following figures:\n')
@@ -459,7 +516,140 @@ def hexadecimal_decimal_integer_conversion(directory: str) -> None:
         f.write('\n   "1D 000","118 784","F00 000","15 728 640"')
         f.write('\n   "1E 000","122 880","1 000 000","16 777 216"')
         f.write('\n   "1F 000","126 976","2 000 000","33 554 432"')
-        f.write('\n')
+        f.write('\n\n\n')
+
+        f.write('.. list-table:: You will need to horizontally scroll....\n')
+        f.write('   :header-rows: 1\n\n')
+
+        f.write('   * - \n')
+        for i in range(15):
+            f.write('     - ' + hex(i)[2:].upper() + '\n')
+        f.write('     - F\n')
+
+        dec = 0
+        for i in range(0, 4096, 16):
+            f.write('   * - ' + hex(i)[2:].upper().rjust(3, '0') + '\n')
+            for j in range(16):
+                f.write('     - ' + str(dec).rjust(3, '0') + '\n')
+                dec = dec + 1
+
+
+def instruction_summary(directory: str) -> None:
+
+    operations = [
+                {"group": 'index_register_instructions',
+                    "instructions": ["fin", "inc"]},
+                {"group": 'index_register_to_accumulator_instructions',
+                    "instructions": ["add", "sub", "ld", "xch"]},
+                {"group": 'accumulator_instructions',
+                    "instructions": ["clb", "clc", "iac", "cmc", "cma",
+                                     "ral", "rar", "tcc", "dac", "tcs",
+                                     "stc", "daa", "kbp"]},
+                {"group": 'immediate_instructions',
+                    "instructions": ["fim", "ldm"]},
+                {"group": 'transfer_of_control_instructions',
+                    "instructions": ["jun", "jin", "jcn", "isz"]},
+                {"group": 'subroutine_linkage_instructions',
+                    "instructions": ["jms", "bbl"]},
+                {"group": 'memory_selection_instructions',
+                    "instructions": ["src", "dcl"]},
+                {"group": 'io_and_ram_instructions',
+                    "instructions": ["wrm", "wmp", "wrr", "wpm",
+                                     "wrn", "rdm", "rdr", "rdn",
+                                     "adm", "sbm"]},
+                {"group": 'nop_instructions', "instructions": ["nop"]}
+                ]
+
+    descriptions = [{"inst": "fin", "desc": "Load RP with 8 bits of ROM data addressed by register pair 0."},  # noqa
+                    {"inst": "inc", "desc": "Increment register REG."},  # noqa
+                    {"inst": "add", "desc": "Add REG plus carry bit to the accumulator."},  # noqa
+                    {"inst": "sub", "desc": "Subtract REG from accumulator with borrow."},  # noqa
+                    {"inst": "ld", "desc": "Load accumulator from REG."},  # noqa
+                    {"inst": "xch", "desc": "Exchange the contents of accumulator and REG."},  # noqa
+                    {"inst": "clb", "desc": "Clear both the accumulator and carry."},  # noqa
+                    {"inst": "clc", "desc": "Clear carry."},  # noqa
+                    {"inst": "iac", "desc": "Increment accumulator."},  # noqa
+                    {"inst": "cmc", "desc": "Complement carry."},  # noqa
+                    {"inst": "cma", "desc": "Complement each bit of the accumulator."},  # noqa
+                    {"inst": "ral", "desc": "Rotate accumulator left through carry."},  # noqa
+                    {"inst": "rar", "desc": "Rotate accumulator right through carry."},  # noqa
+                    {"inst": "tcc", "desc": "Transmit the value of the carry to the accumulator then clear carry."},  # noqa
+                    {"inst": "dac", "desc": "Decrement accumulator."},  # noqa
+                    {"inst": "tcs", "desc": "Adjust accumulator for decimal subtract."},  # noqa
+                    {"inst": "stc", "desc": "Set carry."},
+                    {"inst": "daa", "desc": "Adjust accumulator for decimal add."},  # noqa
+                    {"inst": "kbp", "desc": "Convert accumulator from 1 of n code to a binary value."},  # noqa
+                    {"inst": "fim", "desc": "Load 8 bit immediate DATA into register pair RP."},  # noqa
+                    {"inst": "ldm", "desc": "Load 4-bit immediate DATA into the accumulator."},  # noqa
+                    {"inst": "jun", "desc": "Jump to location ADDR."},  # noqa
+                    {"inst": "jin", "desc": "Jump to the address in register pair RP."},  # noqa
+                    {"inst": "jcn", "desc": "Jump to ADDR if condition true."},  # noqa
+                    {"inst": "isz", "desc": "Increment REG. If zero, skip. If non zero, jump to ADDR"},  # noqa
+                    {"inst": "jms", "desc": "Call subroutine and push return address onto stack."},  # noqa
+                    {"inst": "bbl", "desc": "Return from subroutine and load accumulator with immediate DATA."},  # noqa
+                    {"inst": "nop", "desc": "No Operation"},  # noqa
+                    {"inst": "src", "desc": "Contents of RP select a RAM or ROM address to be used by I/O and RAM instructions."},  # noqa
+                    {"inst": "dcl", "desc": "Select a particular RAM bank."},  # noqa
+                    {"inst": "wrm", "desc": "Write accumulator to RAM."},  # noqa
+                    {"inst": "wmp", "desc": "Write accumulator to RAM output port"},  # noqa
+                    {"inst": "wrr", "desc": "Write accumulator to ROM output port."},  # noqa
+                    {"inst": "wpm", "desc": "Write accumulator to Program RAM."},  # noqa
+                    {"inst": "wrn", "desc": "Write accumulator to RAM status char&cter n (n = 0, 1, 2 or 3)."},  # noqa
+                    {"inst": "rdm", "desc": "Load accumulator from RAM."},  # noqa
+                    {"inst": "rdr", "desc": "Load accumulator from ROM input port."},  # noqa
+                    {"inst": "rdn", "desc": "Load accumulator from RAM status character n (n = 0, 1, 2 or 3) ."},  # noqa
+                    {"inst": "adm", "desc": "Add RAM data plus carry to accumulator."},  # noqa
+                    {"inst": "sbm", "desc": "Subtract RAM data from accumulator with borrow."}  # noqa
+                     ]  # noqa
+
+    for section in operations:
+        doc_name = section["group"]
+        filename = directory + os.sep + doc_name + doc_suffix
+        fragment_file = '..' + os.sep + 'source' + os.sep + 'intro' + \
+            os.sep + 'manual' + os.sep + 'fragments' + os.sep + \
+            'frag_' + doc_name + doc_suffix
+        print(fragment_file)
+        with open(filename, "w") as f:
+            write_title(f, doc_name)
+            f.write('\n\n.. include:: ../../global.rst')
+            f.write('\n\n')
+            f.write('.. toctree::\n   :hidden:\n\n')
+            for ins in section["instructions"]:
+                f.write('   ../../hardware/machine/' + ins + '\n')
+            # Include the fragment file
+            try:
+                fragment = open(fragment_file, 'r')
+                while True:
+                    # Get next line from file
+                    line = fragment.readline()
+                    # if line is empty
+                    # end of file is reached
+                    if not line:
+                        break
+                    if line[:8] != ':orphan:':
+                        f.write(line)
+                fragment.close()
+            except FileNotFoundError:
+                pass
+            f.write('\n\n')
+            f.write('.. list-table:: \n')
+            f.write('   :header-rows: 1\n\n')
+
+            f.write('   * - Code\n')
+            f.write('     - Symbolic\n')
+            f.write('     - Description\n')
+
+            for instruction in section["instructions"]:
+
+                description = next((x for x in descriptions
+                                   if x["inst"] == instruction), None)
+                f.write('   * - :ref:`hardware-machine-' + instruction + '`\n')
+                f.write('     - .. image:: ../../hardware/machine/images/' +
+                        instruction + "-sym.png\n")
+                f.write('          :scale: 25%\n')
+                f.write('     - ' + description["desc"] + '\n')
+        f.close()
+
 
 
 def main(argv: list) -> None:
@@ -485,6 +675,9 @@ def main(argv: list) -> None:
     N/A
 
     """
+
+    print("Building automated pages.....")
+
     # Create new instance of a processor
     chip = Processor()
 
@@ -493,6 +686,8 @@ def main(argv: list) -> None:
     powers_of_sixteen(manual)
     powers_of_10(manual)
     hexadecimal_decimal_integer_conversion(manual)
+    hexadecimal_arithmetic(manual)
+    instruction_summary(manual)
 
 
 manual = '..' + os.sep + 'source' + os.sep + 'intro' + os.sep + 'manual'

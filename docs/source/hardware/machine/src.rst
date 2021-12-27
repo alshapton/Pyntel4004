@@ -31,7 +31,7 @@ SRC
    * - Hexadecimal
      - 0x21, then incrementing by 2 until 0x2F (1st word)
    * - Symbolic
-     - .. image:: images/fim-sym.png
+     - .. image:: images/src-sym.png
           :scale: 50%
    * - Execution
      - 1 words, 8-bit code and an execution time of 10.3 |mu| sec
