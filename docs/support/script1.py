@@ -368,7 +368,7 @@ def instruction_machine_codes(chip, directory: str) -> None:
                 m2 = 'ld'
                 custom = True
             if custom is False:
-                parameter = mnemonic.replace(')', '').replace('(', '').replace(mnemonic[:3],'')  # noqa
+                parameter = mnemonic.replace(')', '').replace('(', '').replace(mnemonic[:3], '')  # noqa
                 m2 = m
             if opcode != 256:
                 f.write('   * - ' + str(opcode) + '\n')
@@ -537,28 +537,28 @@ def hexadecimal_decimal_integer_conversion(directory: str) -> None:
 def instruction_summary(directory: str) -> None:
 
     operations = [
-                {"group": 'index_register_instructions',
-                    "instructions": ["fin", "inc"]},
-                {"group": 'index_register_to_accumulator_instructions',
-                    "instructions": ["add", "sub", "ld", "xch"]},
-                {"group": 'accumulator_instructions',
-                    "instructions": ["clb", "clc", "iac", "cmc", "cma",
-                                     "ral", "rar", "tcc", "dac", "tcs",
-                                     "stc", "daa", "kbp"]},
-                {"group": 'immediate_instructions',
-                    "instructions": ["fim", "ldm"]},
-                {"group": 'transfer_of_control_instructions',
-                    "instructions": ["jun", "jin", "jcn", "isz"]},
-                {"group": 'subroutine_linkage_instructions',
-                    "instructions": ["jms", "bbl"]},
-                {"group": 'memory_selection_instructions',
-                    "instructions": ["src", "dcl"]},
-                {"group": 'io_and_ram_instructions',
-                    "instructions": ["wrm", "wmp", "wrr", "wpm",
-                                     "wrn", "rdm", "rdr", "rdn",
-                                     "adm", "sbm"]},
-                {"group": 'nop_instructions', "instructions": ["nop"]}
-                ]
+        {"group": 'index_register_instructions',
+         "instructions": ["fin", "inc"]},
+        {"group": 'index_register_to_accumulator_instructions',
+         "instructions": ["add", "sub", "ld", "xch"]},
+        {"group": 'accumulator_instructions',
+         "instructions": ["clb", "clc", "iac", "cmc", "cma",
+                          "ral", "rar", "tcc", "dac", "tcs",
+                          "stc", "daa", "kbp"]},
+        {"group": 'immediate_instructions',
+         "instructions": ["fim", "ldm"]},
+        {"group": 'transfer_of_control_instructions',
+         "instructions": ["jun", "jin", "jcn", "isz"]},
+        {"group": 'subroutine_linkage_instructions',
+         "instructions": ["jms", "bbl"]},
+        {"group": 'memory_selection_instructions',
+         "instructions": ["src", "dcl"]},
+        {"group": 'io_and_ram_instructions',
+         "instructions": ["wrm", "wmp", "wrr", "wpm",
+                          "wrn", "rdm", "rdr", "rdn",
+                          "adm", "sbm"]},
+        {"group": 'nop_instructions', "instructions": ["nop"]}
+    ]
 
     descriptions = [{"inst": "fin", "desc": "Load RP with 8 bits of ROM data addressed by register pair 0."},  # noqa
                     {"inst": "inc", "desc": "Increment register REG."},  # noqa
@@ -649,7 +649,6 @@ def instruction_summary(directory: str) -> None:
                 f.write('          :scale: 25%\n')
                 f.write('     - ' + description["desc"] + '\n')
         f.close()
-
 
 
 def main(argv: list) -> None:
