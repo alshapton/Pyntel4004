@@ -19,11 +19,18 @@ MCS-4 Assembly Language Programming Manual
    accumulator
    memories
    stack
+   input_and_output
+   representation
+   memory_addressing
+   carry
+   4004_instruction_set
+   programming_techniques
+   instruction_summary
    instruction_machine_codes
    powers_of_two
    powers_of_sixteen
    powers_of_10
    hexadecimal_decimal_integer_conversion
    hexadecimal_arithmetic
-   instruction_summary
-   input_and_output
+   pseudo_instructions
+

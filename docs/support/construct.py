@@ -607,15 +607,14 @@ def instruction_summary(directory: str) -> None:
         filename = directory + os.sep + doc_name + doc_suffix
         fragment_file = '..' + os.sep + 'source' + os.sep + 'intro' + \
             os.sep + 'manual' + os.sep + 'fragments' + os.sep + \
-            'frag_' + doc_name + doc_suffix
-        print(fragment_file)
+            doc_name + frag_suffix
         with open(filename, "w") as f:
             write_title(f, doc_name)
             f.write('\n\n.. include:: ../../global.rst')
             f.write('\n\n')
             f.write('.. toctree::\n   :hidden:\n\n')
             for ins in section["instructions"]:
-                f.write('   ../../hardware/machine/' + ins + '\n')
+                f.write('   /hardware/machine/' + ins + '\n')
             # Include the fragment file
             try:
                 fragment = open(fragment_file, 'r')
@@ -630,13 +629,12 @@ def instruction_summary(directory: str) -> None:
                         f.write(line)
                 fragment.close()
             except FileNotFoundError:
+                # if there is no fragment file, then no problem
                 pass
             f.write('\n\n')
             f.write('.. list-table:: \n')
             f.write('   :header-rows: 1\n\n')
-
             f.write('   * - Code\n')
-            f.write('     - Symbolic\n')
             f.write('     - Description\n')
 
             for instruction in section["instructions"]:
@@ -644,12 +642,8 @@ def instruction_summary(directory: str) -> None:
                 description = next((x for x in descriptions
                                    if x["inst"] == instruction), None)
                 f.write('   * - :ref:`hardware-machine-' + instruction + '`\n')
-                f.write('     - .. image:: ../../hardware/machine/images/' +
-                        instruction + "-sym.png\n")
-                f.write('          :scale: 25%\n')
                 f.write('     - ' + description["desc"] + '\n')
         f.close()
-
 
 
 def main(argv: list) -> None:
@@ -692,5 +686,6 @@ def main(argv: list) -> None:
 
 manual = '..' + os.sep + 'source' + os.sep + 'intro' + os.sep + 'manual'
 doc_suffix = '.rst'
+frag_suffix = '.frag'
 
 main(sys.argv[1:])

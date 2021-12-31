@@ -19,6 +19,7 @@ A Python software implementation of the Intel 4004 processor.
 -  Two pass assembler using the original mnemonics, directives and comments syntax
 -  Disassembler
 -  Monitor facility to step through code and examine registers, memory etc
+-  Cross-assembler for Retroshield 4004 Arduino
 
 ## Requirements
 

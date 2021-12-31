@@ -13,7 +13,7 @@ Memories
    rom
 
 The 4004 can be used with three different types of memory which have different
- organizations and characteristics, and are used for different purposes. 
+organizations and characteristics, and are used for different purposes. 
  
 These are :
 

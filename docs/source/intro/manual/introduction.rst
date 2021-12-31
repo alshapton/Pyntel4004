@@ -16,10 +16,8 @@ For those readers vlho do understand programming concepts, several features of t
 INTEL 4004 microcomputer are described below. They include:
 
 • 4 bit parallel CPU on a single chip.
-• 46 instructions, including conditional branching, subroutine capability, and binary 
-    and decimal arithmetic modes.
-• Direct addressing for 32,768 bits of read-only memory, 
-    5120 bits of data random-access memory and 32768 bits of program random-access memory.
+• 46 instructions, including conditional branching, subroutine capability, and binary and decimal arithmetic modes.
+• Direct addressing for 32,768 bits of read-only memory, 5120 bits of data random-access memory and 32768 bits of program random-access memory.
 • Sixteen 4-bit index registers and a three 12-bit register stack.
 
 INTEL 4004 microcomputer users will have widely differing programming needs. 

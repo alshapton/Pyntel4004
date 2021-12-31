@@ -54,7 +54,7 @@ The following subroutine will perform a sixteen digit addition, making these ass
          XCH   8           / SET DIGIT COUNTER = 0
    AD1,  SRC   2P          / SELECT RAM REG 0
          RDM               / READ DIGIT TO ACCUMULATOR
-         SRC               / SELECT RAM REG 1
+         SRC   3P          / SELECT RAM REG 1
          ADM               / ADD DIGIT + CARRY TO ACCUMULATOR
          WRM               / WRITE RESULT TO REG 1
          INC   5           / ADDRESS NEXT CHARACTER OF RAM REG 0

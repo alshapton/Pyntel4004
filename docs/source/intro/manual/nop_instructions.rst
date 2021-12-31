@@ -9,16 +9,14 @@ Nop Instructions
 .. toctree::
    :hidden:
 
-   ../../hardware/machine/nop
+   /hardware/machine/nop
 
+This instruction occupies one byte.
 
 .. list-table:: 
    :header-rows: 1
 
    * - Code
-     - Symbolic
      - Description
    * - :ref:`hardware-machine-nop`
-     - .. image:: ../../hardware/machine/images/nop-sym.png
-          :scale: 25%
      - No Operation

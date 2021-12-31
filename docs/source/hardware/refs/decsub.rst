@@ -21,6 +21,7 @@ digit is produced to compensate for the borrow.
 
 In detail, the procedure for subtracting one multi-digit decimal number from another is as follows:
 
+
 1       Set the carry bit to 1 indicating no borrow.
 
 2       Use the TCS instruction to set the accumulator to either 9 or 10 decimal.

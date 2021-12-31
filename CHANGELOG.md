@@ -7,19 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1-beta.3](https://pypi.org/project/Pyntel4004/0.0.1b3/) - 2021-XX-XX
 
 ### Notes
-- ***Successfully run a copy of the Busicom calculator code on the Retroshield Arduino 4004.***
+- ***Successfully ran a copy of the Busicom calculator code on the Retroshield Arduino 4004.***
 - ***The next stage will be to compile a short program using Pyntel4004 and run it on the Retroshield.***
 ### Added
 - Completed first pass at all opcode documentation
 - Write code to Retroshield-compatible `.h` file
 - Added Glossary of Terms
 - Added all Appendices in MSC-4 manual (partially automated where tables are required)
+- Added custom role to allow superscript substitutions
 ### Changed
 -
 ### Deprecated
 -
 ### Fixed
-- Incorrect symbolic image being displayed on SRC instruction page.
+- Incorrect symbolic image being displayed on SRC instruction page
+- Fixed a number of incorrect links
 ### Removed
 -
 ### Security

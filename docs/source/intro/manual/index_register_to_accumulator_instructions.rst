@@ -9,31 +9,29 @@ Index Register To Accumulator Instructions
 .. toctree::
    :hidden:
 
-   ../../hardware/machine/add
-   ../../hardware/machine/sub
-   ../../hardware/machine/ld
-   ../../hardware/machine/xch
+   /hardware/machine/add
+   /hardware/machine/sub
+   /hardware/machine/ld
+   /hardware/machine/xch
 
+This section describes instructions which involve an operation between an index register and the accumulator. 
+
+Instructions in this class occupy one byte as follows:
+
+.. image:: /intro/manual/images/idx-acc-diag.png
+          :scale: 50%
+          :align: center
 
 .. list-table:: 
    :header-rows: 1
 
    * - Code
-     - Symbolic
      - Description
    * - :ref:`hardware-machine-add`
-     - .. image:: ../../hardware/machine/images/add-sym.png
-          :scale: 25%
      - Add REG plus carry bit to the accumulator.
    * - :ref:`hardware-machine-sub`
-     - .. image:: ../../hardware/machine/images/sub-sym.png
-          :scale: 25%
      - Subtract REG from accumulator with borrow.
    * - :ref:`hardware-machine-ld`
-     - .. image:: ../../hardware/machine/images/ld-sym.png
-          :scale: 25%
      - Load accumulator from REG.
    * - :ref:`hardware-machine-xch`
-     - .. image:: ../../hardware/machine/images/xch-sym.png
-          :scale: 25%
      - Exchange the contents of accumulator and REG.

@@ -25,26 +25,28 @@ Writing An Address To The Stack
 
 To perform a stack write operation; |br|
 
-(1) The address is written into the register indicated by the pointer. 
+(1) The address is written into the register indicated by the pointer. |br|
 (2) The pointer is advanced to the next sequential register.
 
 Any register may be used to hold the first address written to the stack. 
 More than three addresses may be written to the stack; however, this will cause a corresponding number of previously 
 stored addresses to be overwritten and lost. This is illustrated below:
 
-     - .. image:: images/stack-write.png
-          :scale: 50%
-          :align: center
-   
+     .. image:: images/stack-write.png
+        :scale: 50%
+        :align: center
+
 .. rubric:: Note:
 
 Storing the fourth address (d) overwrites the first address stored (a).
 
+|just|
 
 Reading An Address From The Stack
 ---------------------------------
 
 To perform a stack read operation; |br|
+
 (1) The pointer is backed up one register. |br|
 (2) The memory address indicated by the pointer is read.
 
@@ -52,10 +54,10 @@ The address read remains in the stack undisturbed.  |br|
 Thus, if 4 addresses are written to the stack and then three reads are performed, the stack will appear as below:
 
 
-     - .. image:: images/stack-read.png
-          :scale: 50%
-          :align: center
-   
+     .. image:: images/stack-read.png
+        :scale: 50%
+        :align: center
+
 The stack is used by programs as described in Section 2.7.7.
 
 

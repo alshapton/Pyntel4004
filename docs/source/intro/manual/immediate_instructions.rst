@@ -9,21 +9,18 @@ Immediate Instructions
 .. toctree::
    :hidden:
 
-   ../../hardware/machine/fim
-   ../../hardware/machine/ldm
+   /hardware/machine/fim
+   /hardware/machine/ldm
 
+
+There are two instructions which use data that is part of the instruction itself.
 
 .. list-table:: 
    :header-rows: 1
 
    * - Code
-     - Symbolic
      - Description
    * - :ref:`hardware-machine-fim`
-     - .. image:: ../../hardware/machine/images/fim-sym.png
-          :scale: 25%
      - Load 8 bit immediate DATA into register pair RP.
    * - :ref:`hardware-machine-ldm`
-     - .. image:: ../../hardware/machine/images/ldm-sym.png
-          :scale: 25%
      - Load 4-bit immediate DATA into the accumulator.
