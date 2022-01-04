@@ -13,9 +13,9 @@ Stack operations consist of writing an address to the stack, and reading an addr
 In order to understand these operations, it may be helpful to visualize the stack as three registers 
 on the surface of a cylinder, as shown below:
 
-     - .. image:: images/stack-diag.png
-          :scale: 50%
-          :align: center
+     .. image:: images/stack-diag.png
+        :scale: 50%
+        :align: center
    
 Each stack register is adjacent to the other two stack registers. 
 The 4004 keeps a pointer to the next stack register available.
@@ -58,7 +58,5 @@ Thus, if 4 addresses are written to the stack and then three reads are performed
         :scale: 50%
         :align: center
 
-The stack is used by programs as described in Section 2.7.7.
+The stack is used by programs as described :ref:`here<subroutines_addressing>`.
 
-
-Text © intel4004.com

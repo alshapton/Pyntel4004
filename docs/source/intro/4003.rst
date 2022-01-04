@@ -40,6 +40,3 @@ Data is also available serially permitting an indefinite number of similar devic
 
 The data shifting is controlled by the CP signal. An internal power-on-clear circuit (:download:`Patent number US3821785 <resources/US3753011.pdf>`) will clear the shift register (Q :subscript:`i` = V :subscript:`SS`) between the application
 of a supply voltage and the first CP signal.
-
-Text © intel4004.com provided by `chipdb.org <http://datasheets.chipdb.org/Intel/MCS-4/datashts/MCS4_Data_Sheet_Nov71.pdf>`_ |br|
-Image © `cpu-zone.com <(http://www.cpu-zone.com/4001.htm>`_

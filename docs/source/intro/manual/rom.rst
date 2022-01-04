@@ -30,7 +30,5 @@ locations 256 through 511 comprise page 1 and so on.
 
 .. note:: Instruction Positioning
 
-    As described in Section 3, certain instructions function differently when located
+    As described :ref:`here<instruction_summary>`, certain instructions function differently when located
     in the last byte (or bytes) of a page than when located elsewhere.
-
-Text © intel4004.com

@@ -36,4 +36,3 @@ which allow programs to be generated on a computer having a FORTRAN compiler
 whose word size is 32 bits or greater, limiting INTELLEC 4 use to final checkout 
 of programs only.
 
-Text © intel4004.com

@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added all Appendices in MSC-4 manual (partially automated where tables are required)
 - Added custom role to allow superscript substitutions
 ### Changed
--
+- Consolidated all acknowledgements into a single page
 ### Deprecated
 -
 ### Fixed

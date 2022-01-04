@@ -45,6 +45,3 @@ addresses 192 - 255 correspond to CHIP 3. |br|
 In addition, each DATA RAM REGISTER has four 4-bit STATUS characters associated with it. 
 These status characters may be read and written like the data characters, but are accessed by 
 special instructions as described :ref:`here <hardware-machine-rdn>` and :ref:`here <hardware-machine-wrn>`
-
-
-Text © intel4004.com

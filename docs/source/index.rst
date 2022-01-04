@@ -18,6 +18,9 @@ Pyntel4004 Documentation
    Intel 4004 OpCodes <intro/opcodes>
    Glossary <intro/manual/glossary>
    ASCII Table <hardware/refs/ascii>
+   Acknowledgements<intro/acknowledgements>
+
+
 
 Indices and tables
 ==================

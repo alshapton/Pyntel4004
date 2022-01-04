@@ -22,8 +22,7 @@ To the programmer, the computer is represented as consisting of the following pa
     be addressed location by location in order to access stored information. |br| |br|
 
 (4) The stack which is a device used to facilitate execution of subroutines, as described 
-    later in this section. |br| |br| *******
+    :ref:`here<stack>` |br| |br|
 
 (5) Input/Output which is the interface between a program and the outside world. |br| |br|
 
-Text © intel4004.com

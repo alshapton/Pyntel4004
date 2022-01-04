@@ -26,7 +26,3 @@ There are a number of ways in which this can be done, as described below
     -   :ref:`Program RAM Addressing <program_ram>`
     -   :ref:`Data RAM Addressing <data_ram>`
     -   :ref:`Subroutines and the use of the stack for Addressing <subroutines_addressing>`
-
-
-
-Text © intel4004.com

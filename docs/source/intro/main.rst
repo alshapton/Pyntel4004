@@ -42,5 +42,3 @@ The instruction cycle of 10.8 microseconds could have been easily reduced to
 The 4000-family was completed by March 1971, in production by June 1971 and
 introduced to the general market in November 1971 with the name MCS-4.
 
-
-Text © intel4004.com

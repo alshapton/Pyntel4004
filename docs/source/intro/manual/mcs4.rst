@@ -12,6 +12,7 @@ MCS-4 Assembly Language Programming Manual
 
 .. toctree::
 
+   acknowledgements
    glossary
    introduction
    organization
@@ -24,9 +25,11 @@ MCS-4 Assembly Language Programming Manual
    memory_addressing
    carry
    4004_instruction_set
-   programming_techniques
+   data_statements
+   constant_data
    instruction_summary
    instruction_machine_codes
+   programming_techniques
    powers_of_two
    powers_of_sixteen
    powers_of_10

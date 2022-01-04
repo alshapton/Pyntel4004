@@ -63,7 +63,7 @@ a jump to location 0x13E would cause an error, since this is not the first byte 
 
 ---------
 
-Upon reading Section 3, you will see that it is easy to avoid writing an assembly language 
+Upon reading :ref:`the instruction summary<instruction_summary>`, you will see that it is easy to avoid writing an assembly language 
 program with jump instructions which have erroneous memory addresses. Information on this subject 
 is given here rather to help the programmer who is debugging programs by entering hexadecimal 
 codes directly into program RAM

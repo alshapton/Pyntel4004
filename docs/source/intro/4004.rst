@@ -95,8 +95,3 @@ The instruction repertoire of the 4004 consists of :
    through an LDM instruction). |br|
    During DCL the CM-RAM :subscript:`i` code is transferred from the accumulator to the CM-RAM register.
    The RAM bank is then selected starting with the next instruction.
-
-Text © intel4004.com provided by `chipdb.org <http://datasheets.chipdb.org/Intel/MCS-4/datashts/MCS4_Data_Sheet_Nov71.pdf>`_ |br|
-Image © `cpu-zone.com <(http://www.cpu-zone.com/4001.htm>`_
-
-

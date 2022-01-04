@@ -20,6 +20,3 @@ These are :
     -   :ref:`ROM (Read Only Memory) <rom>`
     -   :ref:`PRAM (Program Random Access Memory) <pram>`
     -   :ref:`RAM (Data Random Access Memory) <ram>`
-
-
-Text © intel4004.com
