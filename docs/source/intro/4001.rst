@@ -30,7 +30,7 @@ The circled numbers relate to the pins as shown below:
 Address and data are transferred in and out by time multiplexing on 4 data bus lines.
 Timing is internally generated using two clock signals |phi| :subscript:`1` and |phi| :subscript:`2`, and a SYNC signal
 supplied by the 4004. Addressed are received from the CPU on three time periods
-following SYNC, and select 1 out of 256 words and 1 out of 16 ROM’s.
+following SYNC, and select 1 out of 256 words and 1 out of 16 ROMs.
 
 For that purpose, each ROM is identified #0, 1, 2, through 15 by metal option.
 A Command Line (CM) is also provided and its scope is to select a ROM bank

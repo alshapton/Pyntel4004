@@ -69,6 +69,5 @@ Bits which are fixed  are indicated by 0 or 1; bits vvhich may be either
 0 or 1 in different circumstances are represented by letters; thus RP represents a
 three-bit field which contains one of the eight possible combinations of zeroes and ones.
 
-Text © intel4004.com
 
 

@@ -13,12 +13,14 @@ Pyntel4004 Documentation
       4002 <intro/4002>
       4003 <intro/4003>
       4004 <intro/4004>
+      MCS-4 System Interconnections<intro/interconnect>
+      Chip Packaging and characteristics<intro/packaging>
    Overview and Instructions <intro/usage>
    MCS-4 Manual <intro/manual/mcs4>
    Intel 4004 OpCodes <intro/opcodes>
    Glossary <intro/manual/glossary>
    ASCII Table <hardware/refs/ascii>
-   Acknowledgements<intro/acknowledgements>
+   Acknowledgements<intro/manual/acknowledgements>
 
 
 

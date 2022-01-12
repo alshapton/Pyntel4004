@@ -1,7 +1,13 @@
+.. _acknowledgements:
 
-The majority of the text within the expanded MSC-4 manual is
 
-© `Intel <intel.com`_ 1971, 1973
+.. include:: ../../global.rst
+
+Acknowledgements
+================
+
+
+The majority of the text within the expanded MSC-4 manual is © `Intel <intel.com`_ 1971, 1973
 
 Additional text is © `4004.com <http://4004.com`_
 
@@ -13,5 +19,6 @@ Datasheets provided by `chipdb.org <http://datasheets.chipdb.org/Intel/MCS-4/dat
 
 Intellec-4 manual provided by `bitsavers.org <http://www.bitsavers.org/components/intel/MCS4/Intel_Intellec_4_and_Micro_Computer_Modules_Jan74.pdf>`_
 
-Chip images © `cpu-zone.com <(http://www.cpu-zone.com/4001.htm>`_
+Chip images © `cpu-zone.com <http://www.cpu-zone.com/4001.htm>`_
 
+Second Source information provided by `wikichip.org <wikichip.org>`_

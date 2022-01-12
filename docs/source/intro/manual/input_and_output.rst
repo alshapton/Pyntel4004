@@ -12,5 +12,3 @@ they are referred to as ROM ports or RAM ports. These
 are **totally** separate from the instruction or data locations provided in ROM or RAM, 
 and should not be confused with them. |br|
 The ports associated with RAMs may be used only for output.
-
-Text © intel4004.com

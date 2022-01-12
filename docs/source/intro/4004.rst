@@ -9,11 +9,27 @@ The Intel 4004 Chip
    :scale: 100%
    :align: center
 
+   
 The Intel 4004 chip was introduced in 1971 as part of the Intel 4000 family; 4-bit central processing unit (CPU), fabricated with P-channel silicon gate MOS technology.
 
 
 The 4004 was designed to be used with other members of the MCS-4/40 family (4001, 4002, 4003).
-Although produced by Intel, National Semiconductors was the only second source.
+
+The :ref:`packaging<packaging>` of the Intel 4004 (and the Second Source manufacturers) are shown below:
+
+.. csv-table::
+   :header: "Manufacturer", "Model", "Package"
+   :widths: 40, 20, 40
+
+   "Manufacturer","Model","Package"
+   "Intel","C4004","16-pin Ceramic DIP"
+   "Intel","D4004","16-pin Ceramic DIP"
+   "Intel","P4004","16-pin Plastic DIP"
+   "National Semiconductor","INS4004D","16-pin Ceramic DIP"
+   "National Semiconductor","INS4004J","16-pin side-brazed Ceramic DIP"
+   "Hitachi","HD35404","16-pin DIP"
+   "Microsystems International","MF7114",""
+
 
 Internally, the 4004 is a 4-bit microprocessor with 8-bit instructions. It is clocked at a frequency of 500KHz - 740KHz.
 It contains 4096x8-bit ROM and 1280x4-bit RAM, with 2,300 transistors at a 10 micron definition. 
