@@ -10,13 +10,10 @@ Intel 4004 Op-Codes
    ../hardware/machine/bbl
    ../hardware/machine/clb
    ../hardware/machine/clc
-<<<<<<< HEAD
-=======
    ../hardware/machine/cma
    ../hardware/machine/cmc
    ../hardware/machine/daa
    ../hardware/machine/dac
->>>>>>> release/0.0.1-beta.3
    ../hardware/machine/dcl
    ../hardware/machine/fim
    ../hardware/machine/fin
@@ -41,10 +38,7 @@ Intel 4004 Op-Codes
    ../hardware/machine/stc
    ../hardware/machine/sub
    ../hardware/machine/tcc
-<<<<<<< HEAD
-=======
    ../hardware/machine/tcs
->>>>>>> release/0.0.1-beta.3
    ../hardware/machine/wmp
    ../hardware/machine/wpm
    ../hardware/machine/wrm
