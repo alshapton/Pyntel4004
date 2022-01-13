@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Incorrect symbolic image being displayed on SRC instruction page
 - Fixed a number of incorrect links
->>>>>>> release/0.0.1-beta.3
 ### Removed
 -
 ### Security
