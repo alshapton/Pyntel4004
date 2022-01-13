@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1-beta.3.1](https://pypi.org/project/Pyntel4004/0.0.1b3.1/) - 2022-01-13
+## [0.0.1-beta.3a](https://pypi.org/project/Pyntel4004/0.0.1b3a/) - 2022-01-13
 ### Notes
 - Fixed issue with 0.0.1-beta.3 relating to incorrent merge process
+- Refer to documentation for 0.0.1-beta.3 for changes.
 
 ## 0.0.1-beta.3 **PULLED** - 2022-01-13
 
