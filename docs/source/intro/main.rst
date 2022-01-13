@@ -3,12 +3,11 @@
 Intel 4004 Chip History
 =======================
 
+.. include:: ../global.rst
 
 .. image:: images/intel4004chip.png
           :scale: 50%
 
-
-Background
 
 In 1969 Busicom contracted Intel to design a set of chips to be used in a new high perfomance calculator.
 Ted Hoff, Federico Faggin and Stan Mazor came up with a design that involved four different chips.
@@ -32,7 +31,7 @@ Other chips in the 4xxx family were:
  - an 8-bit address latch for access to standard memory chips, and one built-in 4-bit chip select and I/O port (4008)
  - a program and I/O access converter to standard memory and I/O chips (4009)
 
- 
+
  - an 8192-bit( 1024 × 8) ROM w/ 4-bit I/O Ports (4208)
  - a general purpose Bye I/O port (4211))
  - a keyboard/display interface (4269)
@@ -59,3 +58,40 @@ The instruction cycle of 10.8 microseconds could have been easily reduced to
 The 4000-family was completed by March 1971, in production by June 1971 and
 introduced to the general market in November 1971 with the name MCS-4.
 
+MCS-4
+-----
+
+The MCS-4 is a microprogrammable computer set designed for applications such 
+as test systems, peripherals, terminals, billing machines, measuring machines,
+numeric and process control.
+
+The 4004 CPU, 4003 Shift Register, and 4002 RAM are standard building blocks.
+The 4001 ROM contains the custom microprogram and is implemented as a metal mask
+according to customer specifications.
+
+MCS-4 systems readily interface to switches, keyboards, displays, teletypewriters, 
+printers, readers, A-D converters and other popular peripherals.
+
+A system built with the MCS-4 micro computer set can have up to 4k * 8-bit ROM words,
+8192 * 4-bit RAM characters, and 128 I/O lines without requiring any interface logic.
+By adding a few gates, the MCS-4 can have up to 48 RAM and ROM packages in any
+combination, and 192 I/O lines. The minimum configuration consists of one CPU and one
+256 * 8-bit ROM.
+
+The MCS-4 has a very powerful instruction set that allows both binary and decimal arithmetic.
+It includes conditional branching, jump to subroutine, and provides for the efficient use of 
+ROM look-up tables by indirect fetching.
+
+The Intel MCS-4 micro computer set (4001/2/3/4) is fabricated with `Silicon Gate Technology <https://en.wikipedia.org/wiki/Self-aligned_gate#Development_of_the_silicon-gate_technology_at_Fairchild>`_ .
+This low threshold technology allows the design and production of higher performance MOS circuits
+and provides a higher functional density on a monolithic chip than conventional `MOS <https://en.wikipedia.org/wiki/MOSFET#MOS_integrated_circuit_(MOS_IC)>`_ technologies.
+
+Busicom 141-PF
+--------------
+
+.. image:: /intro/images/busicom-141-pf.png
+          :scale: 50%
+          :align: center
+
+In the case of the Busicom 141-PF (also marketed as the NCR-18-36), the ROM contained 
+the custom microprogramming to allow the MCS-4 chipset to operate as a calculator.

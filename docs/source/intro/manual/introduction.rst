@@ -12,7 +12,7 @@ in assembly language, and to show how it is economical and practical to do so.
 Accordingly, this manual assumes that the reader has a good understanding of logic, 
 but may be unfamiliar with programming concepts.
 
-For those readers vlho do understand programming concepts, several features of the 
+For those readers who do understand programming concepts, several features of the 
 INTEL 4004 microcomputer are described below. They include:
 
 • 4 bit parallel CPU on a single chip.
@@ -25,7 +25,7 @@ Some users may wish to write a few short programs, while other users may have
 extensive programming requirements.
 
 For the user with limited programming needs,two system programs resident on the 
-INTELLEC 4 (Intel's development system for the MCS-4microcomputer) are provided; 
+INTELLEC 4 (Intel's development system for the MCS-4 microcomputer) are provided; 
 they are an Assembler and a System Monitor. 
 
 Use of the INTELLEC 4 and its system programs is described in the INTELLEC 4 

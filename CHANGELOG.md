@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1-beta.3](https://pypi.org/project/Pyntel4004/0.0.1b3/) - 2021-XX-XX
+## [0.0.1-beta.3](https://pypi.org/project/Pyntel4004/0.0.1b3/) - 2022-01-13
 
 ### Notes
 - ***Successfully ran a copy of the Busicom calculator code on the Retroshield Arduino 4004.***
@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Write code to Retroshield-compatible `.h` file
 - Added Glossary of Terms
 - Added all Appendices in MSC-4 manual (partially automated where tables are required)
+- Included initial content from the MCS-4 data sheet
 - Added custom role to allow superscript substitutions
 ### Changed
 - Consolidated all acknowledgements into a single page
