@@ -30,7 +30,7 @@ The circled numbers relate to the pins as shown below:
 Address and data are transferred in and out by time multiplexing on 4 data bus lines.
 Timing is internally generated using two clock signals |phi| :subscript:`1` and |phi| :subscript:`2`, and a SYNC signal
 supplied by the 4004. Addressed are received from the CPU on three time periods
-following SYNC, and select 1 out of 256 words and 1 out of 16 ROM’s.
+following SYNC, and select 1 out of 256 words and 1 out of 16 ROMs.
 
 For that purpose, each ROM is identified #0, 1, 2, through 15 by metal option.
 A Command Line (CM) is also provided and its scope is to select a ROM bank
@@ -49,13 +49,11 @@ An external signal (CL) will asynchronously clear the output register during nor
 All internal flip flops (including the output register) will be reset when the RESET line
 goes low (negative voltage).
 
-Each I/O pin can be uniquely chosen as either an input or output port by metal option.
+Each I/O pin can be uniquely chosen as either an input or output port by metal option when ordering.
+An example order form can be downloaded :download:`here <resources/Intel-4001-Custom-ROM-Order-Form.pdf>`
 Direct or inverted input or output is optional.
 An on-chip resistor at the input pins connected to either V :subscript:`dd` or V :subscript:`ss` is also optional
 (see ordering information on page 12).
 
-
-Text © intel4004.com provided by `chipdb.org <http://datasheets.chipdb.org/Intel/MCS-4/datashts/MCS4_Data_Sheet_Nov71.pdf>`_ |br|
-Image © `cpu-zone.com <(http://www.cpu-zone.com/4001.htm>`_
 
 

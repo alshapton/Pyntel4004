@@ -40,6 +40,8 @@ ADD
 
 .. rubric:: Detailed Description
 
+|just|
+
 The 4 bit content of the designated index register is added to the content of the accumulator with carry. The result is stored in the accumulator. The carry/link is set to 1 if a sum greater than 15 was generated to indicate a carry out; otherwise, the carry/link is set to 0. The 4 bit content of the index register is unaffected.
 
 .. image:: images/add.png
@@ -88,6 +90,8 @@ The accumulator contains 15 and the carry bit is reset.
             end
 
 
+|just|
+
 In this example, the accumulator contains a value of 6, register 12 contains a value of 9, and the carry 
 bit is 1 - note the STC instruction replacing the CLC instruction.
 
@@ -104,4 +108,4 @@ Performing an ADD 12 (add the value of the accumulator to that in register 12) d
 
 The accumulator contains 0 and the carry bit is set.
 
-.. _src: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208
+.. _add: https://github.com/alshapton/Pyntel4004/blob/5e9f4253d8a412f6a3ec8fca5e3acfc88e0861c3/pyntel4004/src/hardware/machine.py#L208

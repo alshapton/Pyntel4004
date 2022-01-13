@@ -33,7 +33,7 @@ JCN
    * - Side-effects
      - Not Applicable
    * - Implemented
-     - imp_
+     - jcn_
 
 .. rubric:: Detailed Description
 
@@ -96,4 +96,4 @@ Loads the value 10 into the accumulator, and decrements it by one. Once the valu
 
 If the JCN instruction is located in the last two locations of a page in memory and the jump condition is true f the highest 4 bits of the program counter are incremented by 1, causing control to be transferred to the corresponding location on the next memory page.
 
-.. _imp: https://github.com/alshapton/Pyntel4004/blob/4ed95ca321cd0e9f19a89ef0ebea2b0ebe52952c/pyntel4004/src/hardware/machine.py#L360
+.. _jcn: https://github.com/alshapton/Pyntel4004/blob/4ed95ca321cd0e9f19a89ef0ebea2b0ebe52952c/pyntel4004/src/hardware/machine.py#L360

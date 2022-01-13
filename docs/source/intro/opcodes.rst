@@ -6,25 +6,45 @@ Intel 4004 Op-Codes
    :hidden:
 
    ../hardware/machine/add
+   ../hardware/machine/adm
    ../hardware/machine/bbl
    ../hardware/machine/clb
    ../hardware/machine/clc
+<<<<<<< HEAD
+=======
+   ../hardware/machine/cma
+   ../hardware/machine/cmc
+   ../hardware/machine/daa
+   ../hardware/machine/dac
+>>>>>>> release/0.0.1-beta.3
    ../hardware/machine/dcl
    ../hardware/machine/fim
    ../hardware/machine/fin
+   ../hardware/machine/iac
    ../hardware/machine/inc
    ../hardware/machine/isz
    ../hardware/machine/jin
    ../hardware/machine/jms
    ../hardware/machine/jun
    ../hardware/machine/jcn
+   ../hardware/machine/kbp
    ../hardware/machine/ld
    ../hardware/machine/ldm
    ../hardware/machine/nop
+   ../hardware/machine/ral
+   ../hardware/machine/rar
+   ../hardware/machine/rdm
+   ../hardware/machine/rdn
+   ../hardware/machine/rdr
+   ../hardware/machine/sbm
    ../hardware/machine/src
    ../hardware/machine/stc
    ../hardware/machine/sub
    ../hardware/machine/tcc
+<<<<<<< HEAD
+=======
+   ../hardware/machine/tcs
+>>>>>>> release/0.0.1-beta.3
    ../hardware/machine/wmp
    ../hardware/machine/wpm
    ../hardware/machine/wrm
@@ -161,42 +181,42 @@ Intel 4004 Op-Codes
      -
      -
    * - Subtract Main Memory
-     - SBM
+     - :ref:`hardware-machine-sbm`
      - 11101000
      -
      -
    * - Read Main Memory
-     - RDM
+     - :ref:`hardware-machine-rdm`
      - 11101001
      -
      -
    * - Read ROM Port
-     - RDR
+     - :ref:`hardware-machine-rdr`
      - 11101010
      -
      -
    * - Add Main Memory
-     - ADM
+     - :ref:`hardware-machine-adm`
      - 11101011
      -
      -
    * - Read Status Char 0
-     - RD0
+     - :ref:`RD0 <hardware-machine-rdn>`
      - 11101100
      -
      -
    * - Read Status Char 1
-     - RD1
+     - :ref:`RD1 <hardware-machine-rdn>`
      - 11101101
      -
      -
    * - Read Status Char 2
-     - RD2
+     - :ref:`RD2 <hardware-machine-rdn>`
      - 11101110
      -
      -
    * - Read Status Char 3
-     - RD3
+     - :ref:`RD3 <hardware-machine-rdn>`
      - 11101111
      -
      -
@@ -211,27 +231,27 @@ Intel 4004 Op-Codes
      -
      -
    * - Increment Accumulator
-     - IAC
+     - :ref:`hardware-machine-iac`
      - 11110010
      -
      -
    * - Complement Carry
-     - CMC
+     - :ref:`hardware-machine-cmc`
      - 11110011
      -
      -
-   * - Complement
-     - CMA
+   * - Complement Accumulator
+     - :ref:`hardware-machine-cma`
      - 11110100
      -
      -
    * - Rotate Left
-     - RAL
+     - :ref:`hardware-machine-ral`
      - 11110101
      -
      -
    * - Rotate Right
-     - RAR
+     - :ref:`hardware-machine-rar`
      - 11110110
      -
      -
@@ -241,12 +261,12 @@ Intel 4004 Op-Codes
      -
      -
    * - Decrement Accumulator
-     - DAC
+     - :ref:`hardware-machine-dac`
      - 11111000
      -
      -
    * - Transfer Carry Subtract
-     - TCS
+     - :ref:`hardware-machine-tcs`
      - 11111001
      -
      -
@@ -256,12 +276,12 @@ Intel 4004 Op-Codes
      -
      -
    * - Decimal Adjust Accumulator
-     - DAA
+     - :ref:`hardware-machine-daa`
      - 11111011
      -
      -
    * - Keyboard Process
-     - KBP
+     - :ref:`hardware-machine-kbp`
      - 11111100
      -
      -

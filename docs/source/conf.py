@@ -10,10 +10,18 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+
+# Add several paths so that Sphinx can find documentation locations
+
+import docutils
 import os
 import sys
 src = '..' + os.sep + '..' + os.sep + 'pyntel4004' + os.sep + 'src'
+hardware_images = 'hardware' + os.sep + 'machine' + os.sep + 'images'
+manual_images = 'intro' + os.sep + 'manual' + os.sep + 'images'
 sys.path.insert(0, os.path.abspath(src))
+sys.path.append(os.path.abspath(hardware_images))
+sys.path.append(os.path.abspath(manual_images))
 
 # -- Project information -----------------------------------------------------
 
@@ -32,11 +40,12 @@ release = 'ENV_VERSION'
 # ones.
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
-    extensions = ["sphinx.ext.autodoc"]
+    extensions = ["sphinx.ext.autodoc", "sphinx_rtd_theme"]
     html_theme = "alabaster"
 
 else:
-    extensions = ["faculty_sphinx_theme", "sphinx.ext.autodoc"]
+    extensions = ["faculty_sphinx_theme", "sphinx.ext.autodoc",
+                  "sphinx_rtd_theme"]
     html_theme = "faculty-sphinx-theme"
 
 
@@ -70,3 +79,22 @@ pygments_style = 'sphinx'
 
 # Hide the "Show Source" link
 html_show_sourcelink = False
+
+# -- Define custom roles -----------------------------------------------------
+
+
+def supsub_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    """
+    Specific role to allow substitutions to be superscripted.
+    """
+    node = docutils.nodes.superscript()
+    node2 = docutils.nodes.substitution_reference(refname=text)
+    node += [node2]
+    return [node], []
+
+
+def setup(app):
+    """
+    Add new role.
+    """
+    app.add_role('supsub', supsub_role)

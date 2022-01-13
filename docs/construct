@@ -1,0 +1,7 @@
+DOC_DIR=`pwd`
+cd support
+# pip3 install --user docutils==0.16
+python3 construct.py 
+cd $DOC_DIR 
+make html
+# pip3 install --user docutils==0.18.1
