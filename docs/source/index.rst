@@ -16,7 +16,7 @@ Pyntel4004 Documentation
       4004 <intro/4004>
       MCS-4 System Interconnections<intro/interconnect>
       Chip Packaging and characteristics<intro/packaging>
-      Hardware Characteristics <intro/manual/hardware>
+      Hardware Characteristics <intro/manual/hardwarecharacteristics>
    Overview and Instructions <intro/usage>
    MCS-4 Manual <intro/manual/mcs4>
    Intel 4004 OpCodes <intro/opcodes>
