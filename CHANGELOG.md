@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 -
 ### Added
-- 
+- Switched to Sonarcloud code scanning
 ### Changed
 - 
 ### Deprecated
@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - 
 ### Removed
--
+- Deepsource.io integration
+- Codacy integration
 ### Security
 - N/A
 

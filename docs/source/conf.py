@@ -16,6 +16,8 @@
 import docutils
 import os
 import sys
+import datetime
+this_year = datetime.datetime.now().year
 src = '..' + os.sep + '..' + os.sep + 'pyntel4004' + os.sep + 'src'
 hardware_images = 'hardware' + os.sep + 'machine' + os.sep + 'images'
 manual_images = 'intro' + os.sep + 'manual' + os.sep + 'images'
@@ -26,7 +28,7 @@ sys.path.append(os.path.abspath(manual_images))
 # -- Project information -----------------------------------------------------
 
 project = 'Pyntel4004'
-copyright = '2021, Andrew Shapton'
+copyright = this_year + ', Andrew Shapton'
 author = 'Andrew Shapton'
 
 # The full version, including alpha/beta/rc tags
