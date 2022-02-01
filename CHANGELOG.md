@@ -4,7 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1-beta.3](https://pypi.org/project/Pyntel4004/0.0.1b3/) - 2022-01-13
+## [0.0.1-beta.5](https://pypi.org/project/Pyntel4004/0.0.1b5/) - XXXX-XX-XX
+
+### Notes
+-
+### Added
+- Switched to Sonarcloud code scanning
+### Changed
+- 
+### Deprecated
+- 
+### Fixed
+- 
+### Removed
+- Deepsource.io integration
+- Codacy integration
+### Security
+- N/A
+
+## [0.0.1-beta.4](https://pypi.org/project/Pyntel4004/0.0.1b4/) - 2022-01-13
+### Notes
+- Fixed issue with 0.0.1-beta.3 relating to incorrent merge process
+- Release yanked and replaced with this release.
+- See details below in 0.0.1-beta.3 for changes.
+
+## 0.0.1-beta.3 **PULLED** - 2022-01-13
 
 ### Notes
 - ***Successfully ran a copy of the Busicom calculator code on the Retroshield Arduino 4004.***

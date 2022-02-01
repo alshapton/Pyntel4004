@@ -54,10 +54,26 @@ def main(argv: list) -> None:
     run = False
     do_assemble = False
     do_disassemble = False
+    """
+    options:    -i / -ifile=    input file
+                -o / -ofile=    output file
+                -h              help
+                -d              disassemble
+                -x              execute
+                -r              reload
+    """
+    help = '4004 <options>\n'
+    options = "options:    -i / -ifile=    input file \n \
+            -o / -ofile=    output file \n \
+            -h              help \n \
+            -d              disassemble \n \
+            -x              execute \n \
+            -r              reload\n"
+
     try:
-        opts, args = getopt.getopt(argv, "i:o:r:x:d", ["ifile=", "ofile=", "s"])  # noqa
+        opts, args = getopt.getopt(argv, "i:o:r:x:d")  # noqa
     except getopt.GetoptError:
-        print('4004 -i <inputfile>\n -o <outputfile> -x')
+        print(help, options)
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-d':
@@ -65,14 +81,14 @@ def main(argv: list) -> None:
             do_disassemble = True
             run = False
         if opt == '-h':
-            print('4004 -i <inputfile> -o <outputfile> -x')
+            print(help, options)
             sys.exit()
-        if opt in ("-o", "--ofile"):
+        if opt == "-o":
             if arg == '':
                 outputfile = inputfile
             else:
                 outputfile = arg
-        if opt in ("-i", "--ifile"):
+        if opt == "-i":
             inputfile = arg
             do_assemble = True
         if opt == "-x":
