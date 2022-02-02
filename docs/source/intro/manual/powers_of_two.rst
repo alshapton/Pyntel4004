@@ -6,7 +6,7 @@ Powers Of Two
 
 .. include:: ../../global.rst
 
-.. list-table::
+.. list-table::  
    :header-rows: 1
 
    * - 2 :superscript:`n`

@@ -15,7 +15,7 @@ Immediate Instructions
 
 There are two instructions which use data that is part of the instruction itself.
 
-.. list-table:: 
+.. list-table::  
    :header-rows: 1
 
    * - Code

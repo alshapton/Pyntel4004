@@ -48,7 +48,7 @@ For conversion of larger integers, the table values may be added to the followin
    "1F 000","126 976","2 000 000","33 554 432"
 
 
-.. list-table:: You will need to horizontally scroll....
+.. list-table::  
    :header-rows: 1
 
    * - 

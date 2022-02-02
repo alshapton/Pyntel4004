@@ -30,7 +30,7 @@ These instructions occupy one byte as follows:
 
 
 
-.. list-table:: 
+.. list-table::  
    :header-rows: 1
 
    * - Code

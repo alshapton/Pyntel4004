@@ -22,7 +22,7 @@ Instructions in this class occupy one byte as follows:
           :scale: 50%
           :align: center
 
-.. list-table:: 
+.. list-table::  
    :header-rows: 1
 
    * - Code

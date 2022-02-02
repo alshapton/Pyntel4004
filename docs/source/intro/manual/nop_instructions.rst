@@ -13,7 +13,7 @@ Nop Instructions
 
 This instruction occupies one byte.
 
-.. list-table:: 
+.. list-table::  
    :header-rows: 1
 
    * - Code

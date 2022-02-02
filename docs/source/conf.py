@@ -17,7 +17,7 @@ import docutils
 import os
 import sys
 import datetime
-this_year = datetime.datetime.now().year
+this_year = str(datetime.datetime.now().year)
 src = '..' + os.sep + '..' + os.sep + 'pyntel4004' + os.sep + 'src'
 hardware_images = 'hardware' + os.sep + 'machine' + os.sep + 'images'
 manual_images = 'intro' + os.sep + 'manual' + os.sep + 'images'

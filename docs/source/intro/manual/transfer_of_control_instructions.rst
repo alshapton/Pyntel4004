@@ -16,7 +16,7 @@ Transfer Of Control Instructions
 
 Instructions which alter the normal execution sequence of instructions.
 
-.. list-table:: 
+.. list-table::  
    :header-rows: 1
 
    * - Code

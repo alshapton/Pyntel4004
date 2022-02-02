@@ -19,6 +19,19 @@ sys.path.insert(1, '..' + os.sep + '..' + os.sep +
 from hardware.processor import Processor  # noqa
 
 
+def init_table_header(cols: int, inc: bool,
+                      name: str, widths: str, f: Any) -> None:
+    if inc:
+        f.write(global_rst)
+
+    f.write('.. list-table:: ' + name + '\n')
+    f.write('   :header-rows: ' + str(cols) + '\n')
+    if widths == '':
+        f.write('\n')
+    else:
+        f.write('   :widths: ' + widths + '\n\n')
+
+
 def caps(line):
     """
     Capitalize a line of text
@@ -103,10 +116,7 @@ def powers_of_two(directory: str) -> None:
     filename = directory + '/' + doc_name + doc_suffix
     with open(filename, "w") as f:
         write_title(f, doc_name)
-        f.write('\n\n.. include:: ../../global.rst\n\n')
-
-        f.write('.. list-table::\n')
-        f.write('   :header-rows: 1\n\n')
+        init_table_header(1, True, ' ', '', f)
 
         f.write('   * - 2 :superscript:`n`\n')
         f.write('     - n\n')
@@ -134,9 +144,9 @@ def powers_of_two(directory: str) -> None:
                                 for i in range(0, len(neg_output), 3)]).\
                 replace('[', '').replace(']', '').replace(',', '').\
                 replace("'", "")
-            f.write('   * - ' + pos + '\n')
-            f.write('     - ' + str(i) + '\n')
-            f.write('     - ' + neg + '\n')
+            f.write(star_dash + pos + '\n')
+            f.write(right_dash + str(i) + '\n')
+            f.write(right_dash + neg + '\n')
     f.close()
 
 
@@ -169,11 +179,7 @@ def powers_of_sixteen(directory: str) -> None:
 
     with open(filename, "w") as f:
         write_title(f, doc_name)
-        f.write('\n\n.. include:: ../../global.rst\n\n')
-
-        f.write('.. list-table::\n')
-        f.write('   :header-rows: 1\n')
-        f.write('   :widths: 20,10,70\n\n')
+        init_table_header(1, True, ' ', '20,10,70', f)
 
         f.write('   * - 16 :superscript:`n`\n')
         f.write('     - n\n')
@@ -201,9 +207,9 @@ def powers_of_sixteen(directory: str) -> None:
                 replace("'", "")
             neg = neg[:23] + ' x 10 :superscript:`' + \
                 str(powers[i] * -1) + '`'
-            f.write('   * - ' + pos + '\n')
-            f.write('     - ' + str(i) + '\n')
-            f.write('     - ' + neg + '\n')
+            f.write(star_dash + pos + '\n')
+            f.write(right_dash + str(i) + '\n')
+            f.write(right_dash + neg + '\n')
     f.close()
 
 
@@ -239,12 +245,7 @@ def powers_of_10(directory: str) -> None:
         underline = ''
         underline = underline.ljust(len(doc_name)+16, '=')
         f.write('\n' + title + '\n' + underline + '\n')
-
-        f.write('\n\n.. include:: ../../global.rst\n\n')
-
-        f.write('.. list-table::\n')
-        f.write('   :header-rows: 1\n')
-        f.write('   :widths: 20,10,70\n\n')
+        init_table_header(1, True, ' ', '20,10,70', f)
 
         f.write('   * - 10 :superscript:`n`\n')
         f.write('     - n\n')
@@ -282,9 +283,9 @@ def powers_of_10(directory: str) -> None:
                    '0.1272 5DD1 D243 ABA1 x 16 :superscript:`-14`',
                    '0.1D83 C94F B6D2 AC35 x 16 :superscript:`-15`'
                    ]
-            f.write('   * - ' + pos + '\n')
-            f.write('     - ' + str(i) + '\n')
-            f.write('     - ' + neg[i] + '\n')
+            f.write(star_dash + pos + '\n')
+            f.write(right_dash + str(i) + '\n')
+            f.write(right_dash + neg[i] + '\n')
 
     f.close()
 
@@ -319,7 +320,7 @@ def instruction_machine_codes(chip, directory: str) -> None:
 
     with open(filename, "w") as f:
         write_title(f, doc_name)
-        f.write('\n\n.. include:: ../../global.rst')
+        f.write(global_rst)
         f.write('\nIn order to help the programmer examine memory ')
         f.write('when debugging programs, this list provides the assembly ')
         f.write('language instruction represented by each of the 256 ')
@@ -329,8 +330,7 @@ def instruction_machine_codes(chip, directory: str) -> None:
         f.write('\n')
         f.write('\n')
 
-        f.write('.. list-table:: Instruction Machine Codes\n')
-        f.write('   :header-rows: 1\n\n')
+        init_table_header(1, False, 'Instruction Machine Codes', '', f)
 
         f.write('   * - Decimal\n')
         f.write('     - Octal\n')
@@ -371,16 +371,16 @@ def instruction_machine_codes(chip, directory: str) -> None:
                 parameter = mnemonic.replace(')', '').replace('(', '').replace(mnemonic[:3], '')  # noqa
                 m2 = m
             if opcode != 256:
-                f.write('   * - ' + str(opcode) + '\n')
-                f.write('     - ' + str(oct(opcode))[2:] + '\n')
-                f.write('     - ' + hex(opcode)[2:].upper() + '\n')
+                f.write(star_dash + str(opcode) + '\n')
+                f.write(right_dash + str(oct(opcode))[2:] + '\n')
+                f.write(right_dash + hex(opcode)[2:].upper() + '\n')
                 if m == '---':
                     f.write('     - Not Used \n')
                 else:
-                    f.write('     - ' + ':ref:`' + m.upper() +
+                    f.write(right_dash + ':ref:`' + m.upper() +
                             ' <hardware-machine-' + m2.lower() + '>`\n')
-                f.write('     - ' + parameter + '\n')
-                f.write('     - ' + comment + '\n')
+                f.write(right_dash + parameter + '\n')
+                f.write(right_dash + comment + '\n')
         f.write('\n|br|')
         f.write('\n\n |psi| Second hexadecimal ' +
                 'digit is part of the jump address.')
@@ -415,34 +415,29 @@ def hexadecimal_arithmetic(directory: str) -> None:
 
     with open(filename, "w") as f:
         write_title(f, doc_name)
-        f.write('\n\n.. include:: ../../global.rst')
-        f.write('\n\n')
 
-        f.write('.. list-table:: Hexadecimal Addition\n')
-        f.write('   :header-rows: 1\n\n')
+        init_table_header(1, True, 'Hexadecimal Addition', '', f)
 
         f.write('   * - 0\n')
         for i in range(1, 15):
-            f.write('     - ' + hex(i)[2:].upper() + '\n')
-        f.write('     - F\n')
+            f.write(right_dash + hex(i)[2:].upper() + '\n')
+        f.write(dash_eff)
 
         for i in range(1, 16):
-            f.write('   * - ' + hex(i)[2:].upper() + '\n')
+            f.write(star_dash + hex(i)[2:].upper() + '\n')
             for j in range(1, 16):
-                f.write('     - ' + hex(i+j)[2:].upper().rjust(2, '0') + '\n')
-
-        f.write('.. list-table:: Hexadecimal Multiplication\n')
-        f.write('   :header-rows: 1\n\n')
+                f.write(right_dash + hex(i+j)[2:].upper().rjust(2, '0') + '\n')
+        init_table_header(1, False, 'Hexadecimal Multiplication', '', f)
 
         f.write('   * - 1\n')
         for i in range(2, 15):
-            f.write('     - ' + hex(i)[2:].upper() + '\n')
-        f.write('     - F\n')
+            f.write(right_dash + hex(i)[2:].upper() + '\n')
+        f.write(dash_eff)
 
         for i in range(2, 16):
-            f.write('   * - ' + hex(i)[2:].upper() + '\n')
+            f.write(star_dash + hex(i)[2:].upper() + '\n')
             for j in range(2, 16):
-                f.write('     - ' + hex(i*j)[2:].upper().rjust(2, '0') + '\n')
+                f.write(right_dash + hex(i*j)[2:].upper().rjust(2, '0') + '\n')
 
 
 def hexadecimal_decimal_integer_conversion(directory: str) -> None:
@@ -472,7 +467,7 @@ def hexadecimal_decimal_integer_conversion(directory: str) -> None:
 
     with open(filename, "w") as f:
         write_title(f, doc_name)
-        f.write('\n\n.. include:: ../../global.rst')
+        f.write(global_rst)
         f.write('\n\n')
         f.write('\nThe table below provldes for direct conversions ')
         f.write('between hexadecimal integers in the range O-FFF and decimal ')
@@ -518,19 +513,18 @@ def hexadecimal_decimal_integer_conversion(directory: str) -> None:
         f.write('\n   "1F 000","126 976","2 000 000","33 554 432"')
         f.write('\n\n\n')
 
-        f.write('.. list-table:: You will need to horizontally scroll....\n')
-        f.write('   :header-rows: 1\n\n')
+        init_table_header(1, False, ' ', '', f)
 
         f.write('   * - \n')
         for i in range(15):
-            f.write('     - ' + hex(i)[2:].upper() + '\n')
-        f.write('     - F\n')
+            f.write(right_dash + hex(i)[2:].upper() + '\n')
+        f.write(dash_eff)
 
         dec = 0
         for i in range(0, 4096, 16):
-            f.write('   * - ' + hex(i)[2:].upper().rjust(3, '0') + '\n')
-            for j in range(16):
-                f.write('     - ' + str(dec).rjust(3, '0') + '\n')
+            f.write(star_dash + hex(i)[2:].upper().rjust(3, '0') + '\n')
+            for _j in range(16):
+                f.write(right_dash + str(dec).rjust(3, '0') + '\n')
                 dec = dec + 1
 
 
@@ -610,7 +604,7 @@ def instruction_summary(directory: str) -> None:
             doc_name + frag_suffix
         with open(filename, "w") as f:
             write_title(f, doc_name)
-            f.write('\n\n.. include:: ../../global.rst')
+            f.write(global_rst)
             f.write('\n\n')
             f.write('.. toctree::\n   :hidden:\n\n')
             for ins in section["instructions"]:
@@ -632,8 +626,7 @@ def instruction_summary(directory: str) -> None:
                 # if there is no fragment file, then no problem
                 pass
             f.write('\n\n')
-            f.write('.. list-table:: \n')
-            f.write('   :header-rows: 1\n\n')
+            init_table_header(1, False, ' ', '', f)
             f.write('   * - Code\n')
             f.write('     - Description\n')
 
@@ -642,7 +635,7 @@ def instruction_summary(directory: str) -> None:
                 description = next((x for x in descriptions
                                    if x["inst"] == instruction), None)
                 f.write('   * - :ref:`hardware-machine-' + instruction + '`\n')
-                f.write('     - ' + description["desc"] + '\n')
+                f.write(right_dash + description["desc"] + '\n')
         f.close()
 
 
@@ -688,4 +681,8 @@ manual = '..' + os.sep + 'source' + os.sep + 'intro' + os.sep + 'manual'
 doc_suffix = '.rst'
 frag_suffix = '.frag'
 
+right_dash = '     - '
+star_dash = '   * - '
+dash_eff = '     - F\n'
+global_rst = '\n\n.. include:: ../../global.rst\n\n'
 main(sys.argv[1:])

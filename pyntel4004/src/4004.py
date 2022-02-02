@@ -62,7 +62,7 @@ def main(argv: list) -> None:
                 -x              execute
                 -r              reload
     """
-    help = '4004 <options>\n'
+    helptxt = '4004 <options>\n'
     options = "options:    -i / -ifile=    input file \n \
             -o / -ofile=    output file \n \
             -h              help \n \
@@ -73,7 +73,7 @@ def main(argv: list) -> None:
     try:
         opts, args = getopt.getopt(argv, "i:o:r:x:d")  # noqa
     except getopt.GetoptError:
-        print(help, options)
+        print(helptxt, options)
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-d':
@@ -81,7 +81,7 @@ def main(argv: list) -> None:
             do_disassemble = True
             run = False
         if opt == '-h':
-            print(help, options)
+            print(helptxt, options)
             sys.exit()
         if opt == "-o":
             if arg == '':

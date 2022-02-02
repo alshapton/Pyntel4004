@@ -6,7 +6,7 @@ Powers Of 10 :subscript:`16`
 
 .. include:: ../../global.rst
 
-.. list-table::
+.. list-table::  
    :header-rows: 1
    :widths: 20,10,70
 

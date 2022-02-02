@@ -119,7 +119,7 @@ logic "1" is defined as the more negative voltage (:math:`V_{IL}`, :math:`V_{OL}
 +-------------------+----------------------------------------------------------+-----------------------+-----------------------+---------------------------+-------------------+----------------------------------------+
 |:math:`t_{H}` [1,3]|Data-In, CM, SYNC Hold Time                               | 40                    | 20                    |                           | ns                |                                        |
 +-------------------+----------------------------------------------------------+-----------------------+-----------------------+---------------------------+-------------------+----------------------------------------+
-|:math:`t_{H}`  [3] |Data Bus Hold Time in :math:`M_{2}` - :math:`X_{1}`       |                       | 40   |br|             | 20     |br|               | ns  |br|          |               |br|                     |
+|:math:`t_{H}`  [3] | Data Bus Hold Time in :math:`M_{2}` - :math:`X_{1}`      |                       | 40   |br|             | 20     |br|               | ns  |br|          |               |br|                     |
 |                   | and :math:`X_{2}` - :math:`X_{3}` transition             |                       |                       |                           |                   |                                        |
 +-------------------+----------------------------------------------------------+-----------------------+-----------------------+---------------------------+-------------------+----------------------------------------+
 |:math:`t_{OS}` [2] |Set Time (Reference)                                      | 0                     |                       |                           | ns                |                                        |
@@ -134,6 +134,18 @@ logic "1" is defined as the more negative voltage (:math:`V_{IL}`, :math:`V_{OL}
 |:math:`t_{OH}`     |Data-Out Hold Time                                        | 50                    |150                    |                           | ns                |:math:`C_{OUT}` = 50pF                  |
 +-------------------+----------------------------------------------------------+-----------------------+-----------------------+---------------------------+-------------------+----------------------------------------+
 
+.. note::
+  [1] :math:`t_{H}` measured with :math:`t_{\phi R}` = 10nsec
+
+  [2] :math:`T_{ACC}` is Data Bus, SYNC and CM-line output access time referred to the :math:`{\phi}_{2}` trailing edge which clocks these lines out. :math:`t_{OS}` is the same output access time referred to the leading edge of the next :math:`{\phi}_{2}` clock pulse.
+
+  [3] All MCS-40 components which may transmit instruction or data to the 4004 at :math:`M_{2}` and :math:`X_{2}` always enter a float state until the 4004 takes over the data bus at :math:`X_{1}` - :math:`X_{3}` time. Therefore, the :math:`T_{H}` requirement is always insured since each component contributes :math:`10{\mu}A` of leakage current and 10pF of capacitance, which guarantees that the data bus cannot change faster than :math:`1V/{\mu}sec`
+  
+  [4] :math:`C_{DATA BUS}` = 200pF if 4008 and 4009 or 4298 is used.
 
 
+.. rubric:: 4004 Timing Diagram
 
+.. image:: /intro/manual/images/4004-timing-diag.png
+          :scale: 50%
+          :align: center
