@@ -11,7 +11,9 @@
    :header-rows: 0
 
    * - Ambient Temperature Under Bias
-     - 0 :superscript:`o` C to +70 :superscript:`o` C    
+     - 0 :superscript:`o` C to +70 :superscript:`o` C   
+   * -
+     - Available with Operating Temp of -40 :superscript:`o` C to +85 :superscript:`o` C  
    * - Storage Temperature
      - -55 :superscript:`o` C to +100 :superscript:`o` C
    * - Input Voltage and Supply Voltage  |br| with respect to V :subscript:`SS`
@@ -147,5 +149,11 @@ logic "1" is defined as the more negative voltage (:math:`V_{IL}`, :math:`V_{OL}
 .. rubric:: 4004 Timing Diagram
 
 .. image:: /intro/manual/images/4004-timing-diag.png
+          :scale: 50%
+          :align: center
+
+.. rubric:: 4004 Timing Diagram Detail
+
+.. image:: /intro/manual/images/4004-timing-diag-detail.png
           :scale: 50%
           :align: center

@@ -278,14 +278,14 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_test.set_accumulator(chip_test.ROM_PORT[14])
 
     # Line 17
-    chip_test.REGISTERS[reg_pair_first] == chip_test.read_accumulator()
+    chip_test.REGISTERS[reg_pair_first] = chip_test.read_accumulator()
 
     # Lines 18 - 20
     # Get the value from ROM port 15 to accumulator
     chip_test.set_accumulator(chip_test.ROM_PORT[15])
 
     # Line 21
-    chip_test.REGISTERS[reg_pair_second] == chip_test.read_accumulator()
+    chip_test.REGISTERS[reg_pair_second] = chip_test.read_accumulator()
 
     # Simulate conditions in base chip
     # Lines 1 - 2
@@ -329,14 +329,14 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_base.set_accumulator(chip_base.ROM_PORT[14])
 
     # Line 17
-    chip_base.REGISTERS[reg_pair_first] == chip_base.read_accumulator()
+    chip_base.REGISTERS[reg_pair_first] = chip_base.read_accumulator()
 
     # Lines 18 - 20
     # Get the value from ROM port 15 to accumulator
     chip_base.set_accumulator(chip_base.ROM_PORT[15])
 
     # Line 21
-    chip_base.REGISTERS[reg_pair_second] == chip_base.read_accumulator()
+    chip_base.REGISTERS[reg_pair_second] = chip_base.read_accumulator()
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

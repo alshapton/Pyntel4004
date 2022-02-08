@@ -7,6 +7,8 @@ Hexadecimal Decimal Integer Conversion
 .. include:: ../../global.rst
 
 
+
+
 The table below provldes for direct conversions between hexadecimal integers in the range O-FFF and decimal integers in the range 0-4095. 
 
 For conversion of larger integers, the table values may be added to the following figures:

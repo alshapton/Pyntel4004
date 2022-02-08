@@ -8,8 +8,8 @@ from typing import Tuple
 from shared.shared import get_opcodeinfobyopcode  # noqa
 
 
-def disassemble_instruction(chip: Processor, _tps: list,
-                            opcode: str) -> Tuple[str, str, int]:
+def disassemble_instruction(chip: Processor, _tps: list) -> \
+        Tuple[str, str, int]:
     """
     Process a single instruction.
 
@@ -20,10 +20,7 @@ def disassemble_instruction(chip: Processor, _tps: list,
 
     _tps: list, mandatory
         List representing the memory of the i4004 into which the
-        newly assembled instructions will be placed.
-
-    opcode: str, mandatory
-        Opcode of the current instruction
+        assembled instructions exist.
 
     Returns
     -------

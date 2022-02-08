@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 - 
 ### Fixed
-- 
+- Code smells in the documentation construction script
 ### Removed
 - Deepsource.io integration
 - Codacy integration

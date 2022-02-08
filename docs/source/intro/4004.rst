@@ -35,8 +35,17 @@ Internally, the 4004 is a 4-bit microprocessor with 8-bit instructions. It is cl
 It contains 4096x8-bit ROM and 1280x4-bit RAM, with 2,300 transistors at a 10 micron definition. 
 There are 45 instructions (46 including NOP) with a 4 level stack and sixteen 4-bit (or eight 8-bit) registers
 
+The hardware configuration is :ref:`here<hardware4004>`.
 
 Logically, the Intel 4004 is set out as shown:
+
+.. rubric:: Internal
+
+.. image:: /intro/manual/images/4004-logic-diag.png
+          :scale: 50%
+          :align: center
+
+.. rubric:: including external
 
 .. image:: images/4004-logic.png
    :scale: 50%
@@ -83,7 +92,7 @@ controlled by four RAM control signals (CM-RAM :subscript:`0`, CM-RAM :subscript
 
 An input test signal (TEST) is used in conjunction with the jump on condition (":ref:`JCN<hardware-machine-jcn>`") instruction.
 An external RESET signal is used to clear all registers and flip-flops. To fully clear all registers, the RESET signal
-must be applied for at least 8 memory cycles (8 x 8 clock periods). After REST the program will start from "0"
+must be applied for at least 8 memory cycles (8 x 8 clock periods). After RESET the program will start from "0"
 step and CM-RAM :subscript:`0` will be selected.
 
 The instruction repertoire of the 4004 consists of :

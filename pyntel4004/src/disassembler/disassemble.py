@@ -58,12 +58,13 @@ def disassemble(chip: Processor, location: str, pc: int) -> bool:
     opcode = 0
     _tps = retrieve_program(chip, location)
     # pseudo-opcode (directive) for "end"
-    while (opcode != 256) or (chip.PROGRAM_COUNTER <= chip.MEMORY_SIZE_PRAM - 1):
+    while (opcode != 256) or \
+            (chip.PROGRAM_COUNTER <= chip.MEMORY_SIZE_PRAM - 1):
         if chip.PROGRAM_COUNTER == chip.MEMORY_SIZE_PRAM:
             return True
         if opcode == 256:
             return True
-        exe, opcode, words = disassemble_instruction(chip, _tps,  opcode)
+        exe, opcode, words = disassemble_instruction(chip, _tps)
         # Translate and print instruction
         translate_mnemonic(chip, _tps, exe, opcode, 'D', words)
     return True

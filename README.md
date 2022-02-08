@@ -66,12 +66,13 @@ The user instructions can be found [here](https://pyntel4004.readthedocs.io/en/l
 - No 3rd party libraries to be used (i.e. pure Python).
 - Build a fully-working i4004 opcode emulator.
 - Build a fully-working assembler which generates correct op-codes.
-- Construct a fully-working software-based i4004 chip which can use the generated object code from the compiler.
+- Construct a fully-working software-based i4004 chip which can use the generated object code from the assembler.
 - Enable code assembled with Pyntel4004 to be run on a real i4004 chipset
 - Enable code assembled with Pyntel4004 to be run on a retroShield4004 for Arduino
 
 ## Status
 
+04-FEB-2022:    Cross-assemble to retroShield4004 for Arduino, completing documentation
 23-SEP-2021:    Publishing releases to [PyPi](https://pypi.org/project/Pyntel4004/)
 <br>
 10-SEP-2021:    Documentation building and hosted with [READTHEDOCS](https://pyntel4004.readthedocs.io/en/latest/)

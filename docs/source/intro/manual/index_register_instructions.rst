@@ -6,6 +6,8 @@ Index Register Instructions
 
 .. include:: ../../global.rst
 
+
+
 .. toctree::
    :hidden:
 
