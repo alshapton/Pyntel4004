@@ -41,7 +41,6 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     from the accumulator in 2 chunks. The setting up of this code and the
     execution of several WPM statements is key to the testing, although much
     has to be set up around those instructions to stage the tests.
-
     1     FIM        0P    224
     2     SRC        0P          / Select ROM port 14.
     3     LDM        1
@@ -64,7 +63,6 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     20    WPM                    / Write to PRAM
     21    LD         3           / Low 4 data bits to accumulator.
     22    WPM                    / Write to PRAM
-
     23    FIM        0P    224
     24    SRC        0P          / Select ROM port 14.
     25    CLB
@@ -94,13 +92,13 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
         chip_test, rambank, chip, register, address)
     chunks = c2n(12, 4, address_to_write_to, 'b')
 
-    # Lines 8 - 10    # Store middle bits in register "reg_pair_first"
+    # Lines 8 - 10    # Store middle bits in register "reg_pair_first"
     chip_test.STATUS_CHARACTERS[rambank][0][0][1] = \
         binary_to_decimal(str(chunks[1]))
     chip_test.REGISTERS[reg_pair_first] = \
         chip_test.STATUS_CHARACTERS[rambank][0][0][1]
 
-    # Lines 11 - 12   # Store lower bits in register "reg_pair_second"
+    # Lines 11 - 12   # Store lower bits in register "reg_pair_second"
     chip_test.STATUS_CHARACTERS[rambank][0][0][2] = \
         binary_to_decimal(str(chunks[2]))
     chip_test.REGISTERS[reg_pair_second] = \
@@ -139,13 +137,13 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
         chip_base, rambank, chip, register, address)
     chunks = c2n(12, 4, address_to_write_to, 'b')
 
-    # Lines 8 - 10    # Store middle bits in register "reg_pair_first"
+    # Lines 8 - 10    # Store middle bits in register "reg_pair_first"
     chip_base.STATUS_CHARACTERS[rambank][0][0][1] = \
         binary_to_decimal(str(chunks[1]))
     chip_base.REGISTERS[reg_pair_first] = \
         chip_base.STATUS_CHARACTERS[rambank][0][0][1]
 
-    # Lines 11 - 12   # Store lower bits in register "reg_pair_second"
+    # Lines 11 - 12   # Store lower bits in register "reg_pair_second"
     chip_base.STATUS_CHARACTERS[rambank][0][0][2] = \
         binary_to_decimal(str(chunks[2]))
     chip_base.REGISTERS[reg_pair_second] = \
@@ -204,7 +202,6 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     from the program ram in 2 chunks. The setting up of this code and the
     execution of several WPM statements is key to the testing, although much
     has to be set up around those instructions to stage the tests.
-
     1     FIM        0P    0
     2     SRC        0P          / Select DATA RAM chip 0 register 0.
     3     RD1                    / Read middle 4 bits of address.
@@ -216,10 +213,8 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     9     SRC        0P          / Select ROM port 15.
     10    WRR                    / Write high address.
     11    SRC        5P          / Write middle + low address (RP5)
-
     12    WPM                    / PRAM data to ROM port 14.
     13    WPM                    / PRAM data to ROM port 15.
-
     14    FIM        0P    224
     15    SRC        0P          / Select ROM port 14.
     16    RDR                    / Read to accumulator
@@ -249,13 +244,13 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
         chip_test, rambank, chip, register, address)
     chunks = c2n(12, 4, address_to_write_to, 'b')
 
-    # Lines 3 - 4    # Store middle bits in register "reg_pair_first"
+    # Lines 3 - 4    # Store middle bits in register "reg_pair_first"
     chip_test.STATUS_CHARACTERS[rambank][0][0][1] = \
         binary_to_decimal(str(chunks[1]))
     chip_test.REGISTERS[reg_pair_first] = \
         chip_test.STATUS_CHARACTERS[rambank][0][0][1]
 
-    # Lines 5 - 6   # Store lower bits in register "reg_pair_second"
+    # Lines 5 - 6   # Store lower bits in register "reg_pair_second"
     chip_test.STATUS_CHARACTERS[rambank][0][0][2] = \
         binary_to_decimal(str(chunks[2]))
     chip_test.REGISTERS[reg_pair_second] = \
@@ -278,14 +273,14 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_test.set_accumulator(chip_test.ROM_PORT[14])
 
     # Line 17
-    chip_test.REGISTERS[reg_pair_first] = chip_test.read_accumulator()
+    chip_test.REGISTERS[reg_pair_first] == chip_test.read_accumulator()
 
     # Lines 18 - 20
     # Get the value from ROM port 15 to accumulator
     chip_test.set_accumulator(chip_test.ROM_PORT[15])
 
     # Line 21
-    chip_test.REGISTERS[reg_pair_second] = chip_test.read_accumulator()
+    chip_test.REGISTERS[reg_pair_second] == chip_test.read_accumulator()
 
     # Simulate conditions in base chip
     # Lines 1 - 2
@@ -296,13 +291,13 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
         chip_base, rambank, chip, register, address)
     chunks = c2n(12, 4, address_to_write_to, 'b')
 
-    # Lines 3 - 4    # Store middle bits in register "reg_pair_first"
+    # Lines 3 - 4    # Store middle bits in register "reg_pair_first"
     chip_base.STATUS_CHARACTERS[rambank][0][0][1] = \
         binary_to_decimal(str(chunks[1]))
     chip_base.REGISTERS[reg_pair_first] = \
         chip_base.STATUS_CHARACTERS[rambank][0][0][1]
 
-    # Lines 5 - 6   # Store lower bits in register "reg_pair_second"
+    # Lines 5 - 6   # Store lower bits in register "reg_pair_second"
     chip_base.STATUS_CHARACTERS[rambank][0][0][2] = \
         binary_to_decimal(str(chunks[2]))
     chip_base.REGISTERS[reg_pair_second] = \
@@ -329,14 +324,14 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_base.set_accumulator(chip_base.ROM_PORT[14])
 
     # Line 17
-    chip_base.REGISTERS[reg_pair_first] = chip_base.read_accumulator()
+    chip_base.REGISTERS[reg_pair_first] == chip_base.read_accumulator()
 
     # Lines 18 - 20
     # Get the value from ROM port 15 to accumulator
     chip_base.set_accumulator(chip_base.ROM_PORT[15])
 
     # Line 21
-    chip_base.REGISTERS[reg_pair_second] = chip_base.read_accumulator()
+    chip_base.REGISTERS[reg_pair_second] == chip_base.read_accumulator()
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.
