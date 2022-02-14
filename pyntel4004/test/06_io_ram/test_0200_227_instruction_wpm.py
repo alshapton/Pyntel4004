@@ -155,7 +155,7 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     chip_base.ROM_PORT[15] = chip_base.STATUS_CHARACTERS[rambank][0][0][0]
 
     # Lines 17 - 18
-    chip_base.COMMAND_REGISTER = Processor.read_registerpair(chip_base, 5)
+    chip_base.COMMAND_REGISTER = Processor.read_registerpair(chip_test, 5)
 
     # Lines 19 - 20
     chip_base.set_accumulator(binary_to_decimal(str(chunks[0])))
@@ -222,7 +222,7 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     18    INC        0
     19    SRC        0P          / Select ROM port 15
     20    RDR                    / Read to accumulator
-    21    XCH        3           / Save in register 2
+    21    XCH        3           / Save in register 3
     """
     # Perform the instruction under test:
     # Preamble.....
@@ -262,7 +262,7 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_test.ROM_PORT[15] = chip_test.STATUS_CHARACTERS[rambank][0][0][0]
 
     # Line 11
-    chip_test.COMMAND_REGISTER = Processor.read_registerpair(chip_test, 5)
+    chip_test.COMMAND_REGISTER = chip_test.read_registerpair(5)
 
     # Lines 12 - 13
     Processor.wpm(chip_test)
@@ -273,14 +273,14 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_test.set_accumulator(chip_test.ROM_PORT[14])
 
     # Line 17
-    chip_test.REGISTERS[reg_pair_first] == chip_test.read_accumulator()
+    chip_test.REGISTERS[reg_pair_first] = chip_test.read_accumulator()
 
     # Lines 18 - 20
     # Get the value from ROM port 15 to accumulator
     chip_test.set_accumulator(chip_test.ROM_PORT[15])
 
     # Line 21
-    chip_test.REGISTERS[reg_pair_second] == chip_test.read_accumulator()
+    chip_test.REGISTERS[reg_pair_second] = chip_test.read_accumulator()
 
     # Simulate conditions in base chip
     # Lines 1 - 2
@@ -309,7 +309,7 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_base.ROM_PORT[15] = chip_base.STATUS_CHARACTERS[rambank][0][0][0]
 
     # Line 11
-    chip_base.COMMAND_REGISTER = Processor.read_registerpair(chip_test, 5)
+    chip_base.COMMAND_REGISTER = chip_base.read_registerpair(5)
 
     # Lines 12 - 13
     chip_base.ROM_PORT[14] = chip_base.PRAM[address_to_write_to] >> 4 << 4
@@ -324,14 +324,14 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_base.set_accumulator(chip_base.ROM_PORT[14])
 
     # Line 17
-    chip_base.REGISTERS[reg_pair_first] == chip_base.read_accumulator()
+    chip_base.REGISTERS[reg_pair_first] = chip_base.read_accumulator()
 
     # Lines 18 - 20
     # Get the value from ROM port 15 to accumulator
     chip_base.set_accumulator(chip_base.ROM_PORT[15])
 
     # Line 21
-    chip_base.REGISTERS[reg_pair_second] == chip_base.read_accumulator()
+    chip_base.REGISTERS[reg_pair_second] = chip_base.read_accumulator()
 
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the instruction under test.

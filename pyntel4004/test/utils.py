@@ -46,14 +46,18 @@ def encode_command_register(chip, register, address, shape):
 
 def is_same(chip1: Processor, chip2: Processor, component: str):
     """Individual assertions that the two supplied chips are identical."""
+    # Valid component values are:
+    #
+    # ''                ALL components
+    # RAM               RAM
+    # REGISTERS         Registers
+    # COMMAND_REGISTER  Command Register
+
     if component != '':
         # skipcq: PYL-PYL-W0123
         print('chip1:  ' + str(eval(('chip1.' + component))))
         # skipcq: PYL-PYL-W0123
         print('chip2:  ' + str(eval(('chip2.' + component))))
-
-    # Check command registers
-    assert chip1.COMMAND_REGISTERS == chip2.COMMAND_REGISTERS
 
     # Check RAM content
     if component == 'RAM':
@@ -62,6 +66,17 @@ def is_same(chip1: Processor, chip2: Processor, component: str):
                 print('RAM Location: ', i, '   ',
                       chip1.RAM[i], '    ', chip2.RAM[i])
             assert chip1.RAM[i] == chip2.RAM[i]
+
+    # Check Registers content
+    if component == 'REGISTERS':
+        for i in range(15):
+            if chip1.REGISTERS[i] != chip2.REGISTERS[i]:
+                print('Register: ', i, '   ',
+                      chip1.REGISTERS[i], '    ', chip2.REGISTERS[i])
+            assert chip1.REGISTERS[i] == chip2.REGISTERS[i]
+
+    # Check command registers
+    assert chip1.COMMAND_REGISTERS == chip2.COMMAND_REGISTERS
 
     assert chip1.RAM == chip2.RAM
     assert chip1.RAM_PORT == chip2.RAM_PORT
