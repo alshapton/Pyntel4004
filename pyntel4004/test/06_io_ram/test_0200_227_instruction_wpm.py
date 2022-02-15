@@ -9,13 +9,46 @@ sys.path.insert(2, '..' + os.sep + 'test')
 
 import pickle  # noqa
 import pytest  # noqa
-
+from typing import Tuple  # noqa
 
 from hardware.processor import Processor  # noqa
 from hardware.suboperations.utility import binary_to_decimal, \
     convert_to_absolute_address, \
     convert_decimal_to_n_bit_slices as c2n  # noqa
 from utils import encode_command_register  # noqa
+
+
+def common_wpm_code_1(desired_chip: Processor, chip: Processor,
+                      rambank: int, register: int, address: int,
+                      reg_pair_first: int,
+                      reg_pair_second: int) -> Tuple[str, str]:
+    """Common code applicable to all tests to reduce duplication."""
+    # Line a
+    desired_chip.COMMAND_REGISTER = \
+        encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
+
+    address_to_write_to = convert_to_absolute_address(
+        desired_chip, rambank, chip, register, address)
+    chunks = c2n(12, 4, address_to_write_to, 'b')
+
+    # Lines b - d    # Store middle bits in register "reg_pair_first"
+    desired_chip.STATUS_CHARACTERS[rambank][0][0][1] = \
+        binary_to_decimal(str(chunks[1]))
+    desired_chip.REGISTERS[reg_pair_first] = \
+        desired_chip.STATUS_CHARACTERS[rambank][0][0][1]
+
+    # Lines e - g   # Store lower bits in register "reg_pair_second"
+    desired_chip.STATUS_CHARACTERS[rambank][0][0][2] = \
+        binary_to_decimal(str(chunks[2]))
+    desired_chip.REGISTERS[reg_pair_second] = \
+        desired_chip.STATUS_CHARACTERS[rambank][0][0][2]
+
+    # Lines h - j    # Store higher bits in ROM PORT 15
+    desired_chip.STATUS_CHARACTERS[rambank][0][0][0] = \
+        binary_to_decimal(str(chunks[0]))
+    desired_chip.ROM_PORT[15] = \
+        desired_chip.STATUS_CHARACTERS[rambank][0][0][0]
+    return chunks, address_to_write_to
 
 
 def test_validate_wpm_instruction():
@@ -84,30 +117,9 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     # Lines 1 - 4
     chip_test.ROM_PORT[14] = 1                # set the write enable flag
 
-    # Line 7
-    chip_test.COMMAND_REGISTER = \
-        encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
-
-    address_to_write_to = convert_to_absolute_address(
-        chip_test, rambank, chip, register, address)
-    chunks = c2n(12, 4, address_to_write_to, 'b')
-
-    # Lines 8 - 10    # Store middle bits in register "reg_pair_first"
-    chip_test.STATUS_CHARACTERS[rambank][0][0][1] = \
-        binary_to_decimal(str(chunks[1]))
-    chip_test.REGISTERS[reg_pair_first] = \
-        chip_test.STATUS_CHARACTERS[rambank][0][0][1]
-
-    # Lines 11 - 12   # Store lower bits in register "reg_pair_second"
-    chip_test.STATUS_CHARACTERS[rambank][0][0][2] = \
-        binary_to_decimal(str(chunks[2]))
-    chip_test.REGISTERS[reg_pair_second] = \
-        chip_test.STATUS_CHARACTERS[rambank][0][0][2]
-
-    # Lines 13 - 16    # Store higher bits in ROM PORT 15
-    chip_test.STATUS_CHARACTERS[rambank][0][0][0] = \
-        binary_to_decimal(str(chunks[0]))
-    chip_test.ROM_PORT[15] = chip_test.STATUS_CHARACTERS[rambank][0][0][0]
+    # Perform common functionality
+    chunks, _ = common_wpm_code_1(chip_test, chip, rambank, register,
+                                  address, reg_pair_first, reg_pair_second)
 
     # Lines 17 - 18
     chip_test.COMMAND_REGISTER = Processor.read_registerpair(chip_test, 5)
@@ -129,30 +141,11 @@ def test_wpm_scenario1_write(rambank, chip, register, address):
     # Lines 1 - 4
     chip_base.ROM_PORT[14] = 1              # set the write enable flag
 
-    # Line 7
-    chip_base.COMMAND_REGISTER = \
-        encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
-
-    address_to_write_to = convert_to_absolute_address(
-        chip_base, rambank, chip, register, address)
-    chunks = c2n(12, 4, address_to_write_to, 'b')
-
-    # Lines 8 - 10    # Store middle bits in register "reg_pair_first"
-    chip_base.STATUS_CHARACTERS[rambank][0][0][1] = \
-        binary_to_decimal(str(chunks[1]))
-    chip_base.REGISTERS[reg_pair_first] = \
-        chip_base.STATUS_CHARACTERS[rambank][0][0][1]
-
-    # Lines 11 - 12   # Store lower bits in register "reg_pair_second"
-    chip_base.STATUS_CHARACTERS[rambank][0][0][2] = \
-        binary_to_decimal(str(chunks[2]))
-    chip_base.REGISTERS[reg_pair_second] = \
-        chip_base.STATUS_CHARACTERS[rambank][0][0][2]
-
-    # Lines 13 - 16    # Store higher bits in ROM PORT 15
-    chip_base.STATUS_CHARACTERS[rambank][0][0][0] = \
-        binary_to_decimal(str(chunks[0]))
-    chip_base.ROM_PORT[15] = chip_base.STATUS_CHARACTERS[rambank][0][0][0]
+    # Perform common functionality
+    chunks, address_to_write_to = common_wpm_code_1(chip_base, chip, rambank,
+                                                    register, address,
+                                                    reg_pair_first,
+                                                    reg_pair_second)
 
     # Lines 17 - 18
     chip_base.COMMAND_REGISTER = Processor.read_registerpair(chip_test, 5)
@@ -236,30 +229,11 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     reg_pair_first = (register_pair * 2)
     reg_pair_second = reg_pair_first + 1
 
-    # Lines 1 - 2
-    chip_test.COMMAND_REGISTER = \
-        encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
-
-    address_to_write_to = convert_to_absolute_address(
-        chip_test, rambank, chip, register, address)
-    chunks = c2n(12, 4, address_to_write_to, 'b')
-
-    # Lines 3 - 4    # Store middle bits in register "reg_pair_first"
-    chip_test.STATUS_CHARACTERS[rambank][0][0][1] = \
-        binary_to_decimal(str(chunks[1]))
-    chip_test.REGISTERS[reg_pair_first] = \
-        chip_test.STATUS_CHARACTERS[rambank][0][0][1]
-
-    # Lines 5 - 6   # Store lower bits in register "reg_pair_second"
-    chip_test.STATUS_CHARACTERS[rambank][0][0][2] = \
-        binary_to_decimal(str(chunks[2]))
-    chip_test.REGISTERS[reg_pair_second] = \
-        chip_test.STATUS_CHARACTERS[rambank][0][0][2]
-
-    # Lines 7 - 10   # Store higher bits in ROM PORT 15
-    chip_test.STATUS_CHARACTERS[rambank][0][0][0] = \
-        binary_to_decimal(str(chunks[0]))
-    chip_test.ROM_PORT[15] = chip_test.STATUS_CHARACTERS[rambank][0][0][0]
+    # Perform common functionality
+    chunks, address_to_write_to = common_wpm_code_1(chip_test, chip, rambank,
+                                                    register, address,
+                                                    reg_pair_first,
+                                                    reg_pair_second)
 
     # Line 11
     chip_test.COMMAND_REGISTER = chip_test.read_registerpair(5)
@@ -283,30 +257,12 @@ def test_wpm_scenario1_read(rambank, chip, register, address):
     chip_test.REGISTERS[reg_pair_second] = chip_test.read_accumulator()
 
     # Simulate conditions in base chip
-    # Lines 1 - 2
-    chip_base.COMMAND_REGISTER = \
-        encode_command_register(chip, register, address, 'DATA_RAM_CHAR')
 
-    address_to_write_to = convert_to_absolute_address(
-        chip_base, rambank, chip, register, address)
-    chunks = c2n(12, 4, address_to_write_to, 'b')
-
-    # Lines 3 - 4    # Store middle bits in register "reg_pair_first"
-    chip_base.STATUS_CHARACTERS[rambank][0][0][1] = \
-        binary_to_decimal(str(chunks[1]))
-    chip_base.REGISTERS[reg_pair_first] = \
-        chip_base.STATUS_CHARACTERS[rambank][0][0][1]
-
-    # Lines 5 - 6   # Store lower bits in register "reg_pair_second"
-    chip_base.STATUS_CHARACTERS[rambank][0][0][2] = \
-        binary_to_decimal(str(chunks[2]))
-    chip_base.REGISTERS[reg_pair_second] = \
-        chip_base.STATUS_CHARACTERS[rambank][0][0][2]
-
-    # Lines 7 - 10   # Store higher bits in ROM PORT 15
-    chip_base.STATUS_CHARACTERS[rambank][0][0][0] = \
-        binary_to_decimal(str(chunks[0]))
-    chip_base.ROM_PORT[15] = chip_base.STATUS_CHARACTERS[rambank][0][0][0]
+    # Perform common functionality
+    chunks, address_to_write_to = common_wpm_code_1(chip_base, chip, rambank,
+                                                    register, address,
+                                                    reg_pair_first,
+                                                    reg_pair_second)
 
     # Line 11
     chip_base.COMMAND_REGISTER = chip_base.read_registerpair(5)
