@@ -494,7 +494,7 @@ def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
              opcode: str, opcodeinfo: dict,
              label: str, count: int, org_found: bool, location: str) \
     -> Tuple[Processor, list, list, int, list,
-             dict, str, int, Any, bool, str]:
+             str, dict, str, int, bool, str]:
     """
     Assemble the program (opcode components).
 

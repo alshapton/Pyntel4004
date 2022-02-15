@@ -15,7 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 - 
 ### Fixed
+- Reduced code complexity in construct.py from 21 -> 15
 - Code smells in the documentation construction script
+- Code smells in some suboperations fixed
+- Fixed bug in tests for WPM instruction
 ### Removed
 - Deepsource.io integration
 - Codacy integration

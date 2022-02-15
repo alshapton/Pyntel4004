@@ -77,23 +77,24 @@ def decode_command_register(command_register, shape):
         raise InvalidCommandRegisterFormat('Shape: ' + shape)
 
     command_register = str(command_register)
+    invalid_register_message = 'Content: ' + command_register
     if shape == 'DATA_RAM_CHAR':
         if command_register == '0':
-            raise InvalidCommandRegisterContent('Content: ' + command_register)
+            raise InvalidCommandRegisterContent(invalid_register_message)
         chip = binary_to_decimal(command_register[:2])
         register = binary_to_decimal(command_register[2:4])
         address = binary_to_decimal(command_register[4:])
 
     if shape == 'DATA_RAM_STATUS_CHAR':
         if command_register == '0':
-            raise InvalidCommandRegisterContent('Content: ' + command_register)
+            raise InvalidCommandRegisterContent(invalid_register_message)
         chip = binary_to_decimal(command_register[:2])
         register = binary_to_decimal(command_register[2:4])
         address = '0'
 
     if shape == 'RAM_PORT':
         if command_register == '0':
-            raise InvalidCommandRegisterContent('Content: ' + command_register)
+            raise InvalidCommandRegisterContent(invalid_register_message)
         # Note that in this instance, "chip" refers to "port"
         chip = binary_to_decimal(command_register[:2])
         register = '0'
@@ -101,7 +102,7 @@ def decode_command_register(command_register, shape):
 
     if shape == 'ROM_PORT':
         if command_register == '0':
-            raise InvalidCommandRegisterContent('Content: ' + command_register)
+            raise InvalidCommandRegisterContent(invalid_register_message)
         # Note that in this instance, "chip" refers to "port"
         chip = binary_to_decimal(command_register[:4])
         register = '0'

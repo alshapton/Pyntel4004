@@ -1,4 +1,4 @@
-"""Construct opcode table for documentation."""
+"""Construct pages for documentation."""
 
 # Disable pylint's too-many-locals warnings,
 # since there are large numbers of local variables.
@@ -17,6 +17,113 @@ sys.path.insert(1, '..' + os.sep + '..' + os.sep +
 
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
+
+
+def instruction_machine_codes_portion(f: Any, doc_name: str,
+                                      portion: str) -> None:
+    """
+    Write the portion information for the page for the machine code/opcode list
+
+    Parameters
+    ----------
+    f : Any, mandatory
+        Open file handle for this document
+
+    doc_name: str, mandatory
+        String containing the document name to use as a label
+
+    portion: str, mandatory
+        String containing the required portion to write
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    if portion == 'top':
+        write_title(f, doc_name)
+        f.write(global_rst)
+        f.write('\nIn order to help the programmer examine memory ')
+        f.write('when debugging programs, this list provides the assembly ')
+        f.write('language instruction represented by each of the 256 ')
+        f.write('possible instruction code bytes.\n')
+        f.write('Where an instruction occupies two bytes, only the first ')
+        f.write('(code) byte is given.')
+        f.write('\n')
+        f.write('\n')
+
+        init_table_header(1, False, 'Instruction Machine Codes', '', f)
+
+        f.write('   * - Decimal\n')
+        f.write('     - Octal\n')
+        f.write('     - Hex\n')
+        f.write('     - Mnemonic\n')
+        f.write('     - Parameter\n')
+        f.write('     - Comment\n')
+    if portion == 'bottom':
+        f.write('\n|br|')
+        f.write('\n\n |psi| Second hexadecimal ' +
+                'digit is part of the jump address.')
+        f.write('\n\n')
+
+
+def instruction_machine_codes_not_256(f: Any, opcode: str, m: str,
+                                      m2: str, parameter: str,
+                                      comment: str) -> None:
+    """
+    Write the opcode information for the page for the machine code/opcode list
+
+    Parameters
+    ----------
+    f : Any, mandatory
+        Open file handle for this document
+
+    opcode: str, mandatory
+        String containing the opcode
+
+    m/m2: str, mandatory
+        String containing two versions of the mnemonic name
+
+    parameter: str, mandatory
+        String containing any opcode parameters
+
+    comment: str, mandatory
+        String containing any comments
+
+    parameter: str, mandatory
+
+    Returns
+    -------
+    N/A
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    if int(opcode) != 256:
+        f.write(star_dash + str(opcode) + '\n')
+        f.write(right_dash + str(oct(opcode))[2:] + '\n')
+        f.write(right_dash + hex(opcode)[2:].upper() + '\n')
+        if m == '---':
+            f.write('     - Not Used \n')
+        else:
+            f.write(right_dash + ':ref:`' + m.upper() +
+                    ' <hardware-machine-' + m2.lower() + '>`\n')
+        f.write(right_dash + parameter + '\n')
+        f.write(right_dash + comment + '\n')
 
 
 def init_table_header(cols: int, inc: bool,
@@ -119,7 +226,7 @@ def powers_of_two(directory: str) -> None:
         init_table_header(1, True, ' ', '', f)
 
         f.write('   * - 2 :superscript:`n`\n')
-        f.write('     - n\n')
+        f.write(dash_en)
         f.write('     - 2 :superscript:`-n`\n')
 
         for i in range(64):
@@ -182,7 +289,7 @@ def powers_of_sixteen(directory: str) -> None:
         init_table_header(1, True, ' ', '20,10,70', f)
 
         f.write('   * - 16 :superscript:`n`\n')
-        f.write('     - n\n')
+        f.write(dash_en)
         f.write('     - 16 :superscript:`-n`\n')
 
         for i in range(16):
@@ -248,7 +355,7 @@ def powers_of_10(directory: str) -> None:
         init_table_header(1, True, ' ', '20,10,70', f)
 
         f.write('   * - 10 :superscript:`n`\n')
-        f.write('     - n\n')
+        f.write(dash_en)
         f.write('     - 10 :superscript:`-n`\n')
 
         for i in range(20):
@@ -290,7 +397,7 @@ def powers_of_10(directory: str) -> None:
     f.close()
 
 
-def instruction_machine_codes(chip, directory: str) -> None:
+def instruction_machine_codes(chip: Any, directory: str) -> None:
     """
     Create the page for the machine code/opcode list
 
@@ -319,25 +426,9 @@ def instruction_machine_codes(chip, directory: str) -> None:
     filename = directory + '/' + doc_name + doc_suffix
 
     with open(filename, "w") as f:
-        write_title(f, doc_name)
-        f.write(global_rst)
-        f.write('\nIn order to help the programmer examine memory ')
-        f.write('when debugging programs, this list provides the assembly ')
-        f.write('language instruction represented by each of the 256 ')
-        f.write('possible instruction code bytes.\n')
-        f.write('Where an instruction occupies two bytes, only the first ')
-        f.write('(code) byte is given.')
-        f.write('\n')
-        f.write('\n')
 
-        init_table_header(1, False, 'Instruction Machine Codes', '', f)
-
-        f.write('   * - Decimal\n')
-        f.write('     - Octal\n')
-        f.write('     - Hex\n')
-        f.write('     - Mnemonic\n')
-        f.write('     - Parameter\n')
-        f.write('     - Comment\n')
+        # Write the header information for the document
+        instruction_machine_codes_portion(f, doc_name, 'top')
 
         # Cycle through the instructions
         for i in chip.INSTRUCTIONS:
@@ -348,43 +439,37 @@ def instruction_machine_codes(chip, directory: str) -> None:
             mnemonic = i['mnemonic'].replace('()', '').replace(',data8', '').replace(',address8', '').replace('address12)', '').upper()  # noqa
             m = mnemonic[:3]
             m2 = ''
+
             if mnemonic == '-':
                 m = '---'
                 custom = True
-            if mnemonic[:3] == 'JMS' or mnemonic[:3] == 'JUN':
+
+            if m in ('JMS', 'JUN', 'JCN', 'LD ', 'WR0', 'WR1', 'WR2', 'WR3',
+                     'RD0', 'RD1', 'RD2', 'RD3'):
+                custom = True
+
+            if m in ('JMS', 'JUN'):
                 comment = '|psi|'
                 m2 = mnemonic[:3]
-                custom = True
-            if mnemonic[:3] == 'JCN':
+            if m == 'JCN':
                 parameter = mnemonic.split('(')[1].replace(')', '')
                 comment = 'CN=' + parameter
-                m2 = mnemonic[:3]
-                custom = True
-            if mnemonic[:3] in ('WR0', 'WR1', 'WR2', 'WR3',
-                                'RD0', 'RD1', 'RD2', 'RD3'):
+                m2 = m
+            if m[3] in ('1', '2', '3'):
                 m2 = mnemonic[:2] + 'n'
-                custom = True
-            if mnemonic[:3] == 'LD ':
+            if m == 'LD ':
                 m2 = 'ld'
-                custom = True
+
             if custom is False:
                 parameter = mnemonic.replace(')', '').replace('(', '').replace(mnemonic[:3], '')  # noqa
                 m2 = m
-            if opcode != 256:
-                f.write(star_dash + str(opcode) + '\n')
-                f.write(right_dash + str(oct(opcode))[2:] + '\n')
-                f.write(right_dash + hex(opcode)[2:].upper() + '\n')
-                if m == '---':
-                    f.write('     - Not Used \n')
-                else:
-                    f.write(right_dash + ':ref:`' + m.upper() +
-                            ' <hardware-machine-' + m2.lower() + '>`\n')
-                f.write(right_dash + parameter + '\n')
-                f.write(right_dash + comment + '\n')
-        f.write('\n|br|')
-        f.write('\n\n |psi| Second hexadecimal ' +
-                'digit is part of the jump address.')
-        f.write('\n\n')
+
+            # Write the footer information for the document
+            instruction_machine_codes_not_256(f, opcode, m, m2,
+                                              parameter, comment)
+        # Write the footer information for the document
+        instruction_machine_codes_portion(f, doc_name, 'bottom')
+
         f.close()
 
 
@@ -523,7 +608,7 @@ def hexadecimal_decimal_integer_conversion(directory: str) -> None:
         dec = 0
         for i in range(0, 4096, 16):
             f.write(star_dash + hex(i)[2:].upper().rjust(3, '0') + '\n')
-            for _j in range(16):
+            for _ in range(16):
                 f.write(right_dash + str(dec).rjust(3, '0') + '\n')
                 dec = dec + 1
 
@@ -684,5 +769,6 @@ frag_suffix = '.frag'
 right_dash = '     - '
 star_dash = '   * - '
 dash_eff = '     - F\n'
+dash_en = '     - n\n'
 global_rst = '\n\n.. include:: ../../global.rst\n\n'
 main(sys.argv[1:])
