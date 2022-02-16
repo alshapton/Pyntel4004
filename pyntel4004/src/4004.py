@@ -54,26 +54,10 @@ def main(argv: list) -> None:
     run = False
     do_assemble = False
     do_disassemble = False
-    """
-    options:    -i / -ifile=    input file
-                -o / -ofile=    output file
-                -h              help
-                -d              disassemble
-                -x              execute
-                -r              reload
-    """
-    helptxt = '4004 <options>\n'
-    options = "options:    -i / -ifile=    input file \n \
-            -o / -ofile=    output file \n \
-            -h              help \n \
-            -d              disassemble \n \
-            -x              execute \n \
-            -r              reload\n"
-
     try:
-        opts, args = getopt.getopt(argv, "i:o:r:x:d")  # noqa
+        opts, args = getopt.getopt(argv, "i:o:r:xd", ["ifile=", "ofile=", "s"])  # noqa
     except getopt.GetoptError:
-        print(helptxt, options)
+        print('4004 -i <inputfile>\n -o <outputfile> -x')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-d':
@@ -81,14 +65,14 @@ def main(argv: list) -> None:
             do_disassemble = True
             run = False
         if opt == '-h':
-            print(helptxt, options)
+            print('4004 -i <inputfile> -o <outputfile> -x')
             sys.exit()
-        if opt == "-o":
+        if opt in ("-o", "--ofile"):
             if arg == '':
                 outputfile = inputfile
             else:
                 outputfile = arg
-        if opt == "-i":
+        if opt in ("-i", "--ifile"):
             inputfile = arg
             do_assemble = True
         if opt == "-x":
@@ -114,7 +98,8 @@ def main(argv: list) -> None:
         memory_space = result[0]
         result = disassemble(chip, memory_space, 0)
 
-    if run is True and result is True:
+    print(run, result)
+    if run is True:
         print()
         print('EXECUTING PROGRAM: ')
         print()
