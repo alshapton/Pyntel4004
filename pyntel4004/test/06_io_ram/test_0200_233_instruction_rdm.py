@@ -40,9 +40,6 @@ def test_rdm_scenario1(values):
     address = values[3]
     value = values[4]
 
-    absolute_address = convert_to_absolute_address(
-        chip_test, rambank, chip, register, address)
-
     # Perform the instruction under test:
     chip_test.CURRENT_RAM_BANK = rambank
     absolute_address = convert_to_absolute_address(

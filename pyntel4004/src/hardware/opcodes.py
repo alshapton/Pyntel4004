@@ -2,6 +2,8 @@
 # Ignore format and style issues
 class instructions:
     """Complete set of opcodes for the i4004 processor."""
+    CONST_JMS = "jms(address12)"
+    CONST_JUN = "jun(address12)"
     opcodes = [
         {"opcode": 0, "mnemonic": "nop()", "exe": 10.8, "bits": [
             "0000", "0000"], "words": 1},
@@ -116,69 +118,69 @@ class instructions:
             "0011", "1110"], "words": 1},
         {"opcode": 63, "mnemonic": "jin(7)", "exe": 10.8, "bits": [
             "0011", "1111"], "words": 1},
-        {"opcode": 64, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 64, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "0000"], "words": 2},
-        {"opcode": 65, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 65, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "0001"], "words": 2},
-        {"opcode": 66, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 66, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "0010"], "words": 2},
-        {"opcode": 67, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 67, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "0011"], "words": 2},
-        {"opcode": 68, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 68, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "0100"], "words": 2},
-        {"opcode": 69, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 69, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "0101"], "words": 2},
-        {"opcode": 70, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 70, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "0110"], "words": 2},
-        {"opcode": 71, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 71, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "0111"], "words": 2},
-        {"opcode": 72, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 72, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "1000"], "words": 2},
-        {"opcode": 73, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 73, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "1001"], "words": 2},
-        {"opcode": 74, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 74, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "1010"], "words": 2},
-        {"opcode": 75, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 75, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "1011"], "words": 2},
-        {"opcode": 76, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 76, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "1100"], "words": 2},
-        {"opcode": 77, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 77, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "1101"], "words": 2},
-        {"opcode": 78, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 78, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "1110"], "words": 2},
-        {"opcode": 79, "mnemonic": "jun(address12)", "exe": 21.6, "bits": [
+        {"opcode": 79, "mnemonic": CONST_JUN, "exe": 21.6, "bits": [
             "0100", "1111"], "words": 2},
-        {"opcode": 80, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 80, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "0000"], "words": 2},
-        {"opcode": 81, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 81, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "0001"], "words": 2},
-        {"opcode": 82, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 82, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "0010"], "words": 2},
-        {"opcode": 83, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 83, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "0011"], "words": 2},
-        {"opcode": 84, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 84, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "0100"], "words": 2},
-        {"opcode": 85, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 85, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "0101"], "words": 2},
-        {"opcode": 86, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 86, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "0110"], "words": 2},
-        {"opcode": 87, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 87, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "0111"], "words": 2},
-        {"opcode": 88, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 88, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "1000"], "words": 2},
-        {"opcode": 89, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 89, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "1001"], "words": 2},
-        {"opcode": 90, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 90, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "1010"], "words": 2},
-        {"opcode": 91, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 91, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "1011"], "words": 2},
-        {"opcode": 92, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 92, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "1100"], "words": 2},
-        {"opcode": 93, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 93, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "1101"], "words": 2},
-        {"opcode": 94, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 94, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "1110"], "words": 2},
-        {"opcode": 95, "mnemonic": "jms(address12)", "exe": 21.6, "bits": [
+        {"opcode": 95, "mnemonic": CONST_JMS, "exe": 21.6, "bits": [
             "0101", "1111"], "words": 2},
         {"opcode": 96, "mnemonic": "inc(0)", "exe": 10.8, "bits": [
             "0110", "0000"], "words": 1},

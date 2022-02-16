@@ -455,7 +455,7 @@ def instruction_machine_codes(chip: Any, directory: str) -> None:
                 parameter = mnemonic.split('(')[1].replace(')', '')
                 comment = 'CN=' + parameter
                 m2 = m
-            if m[3] in ('1', '2', '3'):
+            if m[2:3] in ('0', '1', '2', '3'):
                 m2 = mnemonic[:2] + 'n'
             if m == 'LD ':
                 m2 = 'ld'

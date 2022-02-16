@@ -4,8 +4,6 @@
 # since there are functions in this module with large numbers of
 # arguments, and large numbers of local variables.
 
-# pylint: disable=too-many-arguments
-# pylint: disable=too-many-locals
 
 from typing import Tuple, Any
 from hardware.processor import Processor
@@ -414,7 +412,7 @@ def asm_pin(chip: Processor, value: int, label: str, count: int) -> Any:
     return err
 
 
-def asm_pseudo(chip: Processor, opcode: int, label: str, count: int,
+def asm_pseudo(chip: Processor, opcode: str, label: str, count: int,
                x: list, tps: list, address: int, org_found: bool,
                location: str) -> Tuple[Any, bool, list, str, int]:
     """
@@ -425,7 +423,7 @@ def asm_pseudo(chip: Processor, opcode: int, label: str, count: int,
     chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
-    opcode: int, mandatory
+    opcode: str, mandatory
        Value of the opcode for assembly
 
     label: str, mandatory
@@ -582,7 +580,7 @@ def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
     if (opcode in ['org', 'end', 'pin', '=']) or (opcode is not None):
         if (opcode in ['org', 'end', 'pin', '=']):
             err, org_found, tps, location, address = \
-                asm_pseudo(chip, opcode, label, count, x, tps,
+                asm_pseudo(chip, str(opcode), label, count, x, tps,
                            address, org_found, location)
             if err:
                 do_error(err)
@@ -1370,13 +1368,13 @@ def pass0(chip: Processor) -> Tuple[list, int, list, list]:
 
     # Reset temporary_program_store
     tps = []
-    for _i in range(tps_size):
+    for _ in range(tps_size):
         tps.append(0)
 
     # Initialise assembly language line store to
     # twice the size of the potential program size.
     tfile = []
-    for _i in range(tps_size * 2):
+    for _ in range(tps_size * 2):
         tfile.append('')
 
     return _lbls, tps, tfile
@@ -1589,17 +1587,16 @@ def work_with_a_line_of_asm(chip: Processor, line: str,
         err = validate_inc(parts, p_line + 1)
         return err, tfile, p_line, 0, _labels
     # Custom opcodes
-    if parts[0][len(parts[0])-1] != ',':
-        if not constant:
-            if (opcode == 'ld()' or opcode[:2] == 'ld'):
-                opcode = 'ld '
-            if opcode not in ('org', '/', 'end', 'pin', '='):
-                opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
-                if opcodeinfo == {'opcode': -1, 'mnemonic': 'N/A'}:
-                    err = "FATAL: Pass 1:  Invalid mnemonic '" + \
-                        opcode + "' at line: " + str(p_line + 1)
-                else:
-                    address = address + opcodeinfo['words']
+    if (parts[0][len(parts[0])-1] != ',' and not constant):
+        if (opcode == 'ld()' or opcode[:2] == 'ld'):
+            opcode = 'ld '
+        if opcode not in ('org', '/', 'end', 'pin', '='):
+            opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+            if opcodeinfo == {'opcode': -1, 'mnemonic': 'N/A'}:
+                err = "FATAL: Pass 1:  Invalid mnemonic '" + \
+                    opcode + "' at line: " + str(p_line + 1)
+            else:
+                address = address + opcodeinfo['words']
     tfile[p_line] = line.strip()
     p_line = p_line + 1
     return err, tfile, p_line, address, _labels

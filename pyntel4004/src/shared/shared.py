@@ -123,8 +123,8 @@ def determine_filetype(inputfile: str) -> str:
     N/A
     """
     file = open(inputfile, "rb")
-    bytes = file.read(12)[2:9]
-    if bytes == b'program':
+    bites = file.read(12)[2:9]
+    if bites == b'program':
         filetype = 'OBJ'
     else:
         filetype = 'BIN'

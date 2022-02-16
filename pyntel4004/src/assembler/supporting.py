@@ -41,13 +41,13 @@ def decode_conditions(conditions: str):
     return int_conditions
 
 
-def add_label(_L, label: str):
+def add_label(_l, label: str):
     """
     Add a label to the label table (if it does not exist already).
 
     Parameters
     ----------
-    _L : list, mandatory
+    _l : list, mandatory
         A list of the existing labels
     label: str, mandatory
         A candidate new label
@@ -55,7 +55,7 @@ def add_label(_L, label: str):
     Returns
     -------
     -1          if the label already existed and was not added
-    _L : list
+    _l : list
                 the list of labels with the new label appended
 
     Raises
@@ -68,24 +68,24 @@ def add_label(_L, label: str):
 
     """
     try:
-        label_exists = next((item for item in _L
+        label_exists = next((item for item in _l
                             if str(item["label"]) == label), None)
     except:  # noqa
         pass
     if not label_exists:
-        _L.append({'label': label, 'address': -1})
+        _l.append({'label': label, 'address': -1})
     else:
         return -1
-    return _L
+    return _l
 
 
-def match_label(_L, label: str, address):
+def match_label(_l, label: str, address):
     """
     Given a label and an address, add it (if required) to the list of labels.
 
     Parameters
     ----------
-    _L : list, mandatory
+    _l : list, mandatory
         A list of the known labels and their addresses
 
     label: str, mandatory
@@ -108,19 +108,19 @@ def match_label(_L, label: str, address):
     This will return -1 if the label is not found
 
     """
-    for _i in range(len(_L)):  # noqa
-        if _L[_i]['label'] == label:
-            _L[_i]['address'] = address
-    return _L
+    for _i in range(len(_l)):  # noqa
+        if _l[_i]['label'] == label:
+            _l[_i]['address'] = address
+    return _l
 
 
-def get_label_addr(_L, label: str):
+def get_label_addr(_l, label: str):
     """
     Given a label, get the address for that label.
 
     Parameters
     ----------
-    _L : list, mandatory
+    _l : list, mandatory
         A list of the known labels and their addresses
     label: str, mandatory
         The label whose address is required
@@ -140,7 +140,7 @@ def get_label_addr(_L, label: str):
 
     """
     label_address = -1
-    for _i in _L:
+    for _i in _l:
         if _i['label'] == label + ',':
             label_address = _i['address']
     return label_address
@@ -175,7 +175,7 @@ def get_bits(opcodeinfo):
     return bit1, bit2
 
 
-def assemble_isz(chip: processor, x, register, _LABELS, TPS,
+def assemble_isz(chip: processor, x, register, _labels, tps,
                  address, a_l, a_r, label, count):
     """
     Function to correctly assemble the ISZ instruction.
@@ -190,10 +190,11 @@ def assemble_isz(chip: processor, x, register, _LABELS, TPS,
 
     register: int, mandatory
         The register which will be compared in this instruction
-   _LABELS: list, mandatory
+
+    _labels: list, mandatory
         List of valid labels
 
-    TPS: list, mandatory
+    tps: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
 
@@ -216,11 +217,11 @@ def assemble_isz(chip: processor, x, register, _LABELS, TPS,
         After the instruction has been assembled, the incoming address
         is incremented by the number of words in the assembled instruction.
 
-    TPS: list
+    tps: list
         List representing the memory of the i4004 into which the newly
         assembled instruction has just been placed.
 
-    _LABELS: list
+    _labels: list
         Addresses of the labels (pass through only)
 
     Raises
@@ -235,22 +236,22 @@ def assemble_isz(chip: processor, x, register, _LABELS, TPS,
     n_opcode = 112 + int(register)
     opcodeinfo = get_opcodeinfobyopcode(chip, n_opcode)
     bit1, bit2 = get_bits(opcodeinfo)
-    label_address = get_label_addr(_LABELS, x[2])
+    label_address = get_label_addr(_labels, x[2])
     vl, vr = split_address8(int(label_address))
-    TPS[address] = n_opcode
-    TPS[address + 1] = label_address
+    tps[address] = n_opcode
+    tps[address + 1] = label_address
     print_ln(address, label, a_l,
              a_r, bit1, bit2, vl,
-             vr, str(TPS[address]) +
-             "," + str(TPS[address + 1]), '',
+             vr, str(tps[address]) +
+             "," + str(tps[address + 1]), '',
              '', str(count), x[0], str(x[1]),
              str(x[2]), '', '')
     address = address + opcodeinfo['words']
-    return address, TPS, _LABELS
+    return address, tps, _labels
 
 
 def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
-             f9, f10, f11, f12, f13, f14, f15, f16):
+             f9, f10, f11, f12, f13, f14, f15, f16) -> None:
     """
     Given a set of items, print them to the screen in a standard, columnar
     fashion.
@@ -280,7 +281,7 @@ def print_ln(f0, f1, f2, f3, f4, f5, f6, f7, f8,
                      f9, f10, f11, f12, f13, f14, f15, f16))
 
 
-def assemble_fim(self, x, _LABELS, TPS, address, address_left,
+def assemble_fim(self, x, _labels, tps, address, address_left,
                  address_right, label, count):
     """
     Function to assemble FIM instruction.
@@ -293,10 +294,10 @@ def assemble_fim(self, x, _LABELS, TPS, address, address_left,
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _LABELS: list, mandatory
+    _labels: list, mandatory
         List of valid labels
 
-    TPS: list, mandatory
+    tps: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
 
@@ -319,11 +320,11 @@ def assemble_fim(self, x, _LABELS, TPS, address, address_left,
         After the instruction has been assembled, the incoming address
         is incremented by the number of words in the assembled instruction.
 
-    TPS: list
+    tps: list
         List representing the memory of the i4004 into which the newly
         assembled instruction has just been placed.
 
-    _LABELS: list
+    _labels: list
         Addresses of the labels (pass through only)
 
     Raises
@@ -338,18 +339,18 @@ def assemble_fim(self, x, _LABELS, TPS, address, address_left,
 
     f_opcode = x[0] + '(' + x[1] + ',data8)'
     opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
-    TPS[address] = opcodeinfo['opcode']
-    TPS[address + 1] = int(x[2])
+    tps[address] = opcodeinfo['opcode']
+    tps[address + 1] = int(x[2])
     bit1, bit2 = get_bits(opcodeinfo)
     print_ln(address, label, '' '', '', bit1, bit2, '', '',
-             str(TPS[address]) + "," + str(TPS[address + 1]),
+             str(tps[address]) + "," + str(tps[address + 1]),
              str(count), x[0], str(x[1]),
              str(x[2]), '', '', '', '')
     address = address + opcodeinfo['words']
-    return address, TPS, _LABELS
+    return address, tps, _labels
 
 
-def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
+def assemble_jcn(self, x, _labels, tps, address, address_left,
                  address_right, label, count):
     """
     Function to assemble JCN instructions.
@@ -362,10 +363,10 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
     x: list, mandatory
         The current line of code being assembled split into individual elements
 
-    _LABELS: list, mandatory
+    _labels: list, mandatory
         List of valid labels
 
-    TPS: list, mandatory
+    tps: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
 
@@ -388,11 +389,11 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
         After the instruction has been assembled, the incoming address
         is incremented by the number of words in the assembled instruction.
 
-    TPS: list
+    tps: list
         List representing the memory of the i4004 into which the newly
         assembled instruction has just been placed.
 
-    _LABELS: list
+    _labels: list
         Addresses of the labels (pass through only)
 
     Raises
@@ -412,19 +413,19 @@ def assemble_jcn(self, x, _LABELS, TPS, address, address_left,
         bin_conditions = decode_conditions(conditions)
     f_opcode = 'jcn(' + str(bin_conditions) + ',address8)'
     opcodeinfo = get_opcodeinfo(self, 'L', f_opcode)
-    label_addr = int(get_label_addr(_LABELS, dest_label))
+    label_addr = int(get_label_addr(_labels, dest_label))
     vl, vr = split_address8(label_addr)
     bit1, bit2 = get_bits(opcodeinfo)
-    TPS[address] = opcodeinfo['opcode']
-    TPS[address + 1] = label_addr
+    tps[address] = opcodeinfo['opcode']
+    tps[address + 1] = label_addr
     print_ln(address, label, address_left, address_right, bit1, bit2,
-             vl, vr, str(TPS[address]) + "," + str(TPS[address + 1]),
+             vl, vr, str(tps[address]) + "," + str(tps[address + 1]),
              '', '', '', str(count), x[0], str(x[1]), str(x[2]), '')
     address = address + opcodeinfo['words']
-    return address, TPS, _LABELS
+    return address, tps, _labels
 
 
-def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
+def assemble_2(chip: processor, x, opcode, address, tps, _labels, address_left,
                address_right, label, count):
     """
     Function to assemble specific instructions.
@@ -443,11 +444,11 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
     address: int, mandatory
         Address in memory to place the newly assembled instruction
 
-    TPS: list, mandatory
+    tps: list, mandatory
         List representing the memory of the i4004 into which the
         newly assembled instructions will be placed.
 
-    _LABELS: list, mandatory
+    _labels: list, mandatory
         List of valid labels
 
     address_left, address_right: str, mandatory
@@ -466,11 +467,11 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
         After the instruction has been assembled, the incoming address
         is incremented by the number of words in the assembled instruction.
 
-    TPS: list
+    tps: list
         List representing the memory of the i4004 into which the newly
         assembled instruction has just been placed.
 
-    _LABELS: list
+    _labels: list
         Addresses of the labels (pass through only)
 
     Raises
@@ -485,7 +486,7 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
     # pad out for the only 2-character mnemonic
     if opcode == 'ld':
         opcode = 'ld '
-    addx = get_label_addr(_LABELS, x[1])
+    addx = get_label_addr(_labels, x[1])
     print(addx)
     if addx == -1:
         addx = x[1]
@@ -500,16 +501,16 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
             decimal_code = 80
         f_opcode = opcode + '(address12)'
         opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
-        label_addr = get_label_addr(_LABELS, x[1])
+        label_addr = get_label_addr(_labels, x[1])
         label_addr12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + \
             str(bin(label_addr)[2:].zfill(12))
         bit1 = label_addr12[:8]
         bit2 = label_addr12[8:]
-        TPS[address] = int(str(bit1), 2)
-        TPS[address+1] = int(str(bit2), 2)
+        tps[address] = int(str(bit1), 2)
+        tps[address+1] = int(str(bit2), 2)
         print_ln(address, label, address_left, address_right, bit1[:4],
-                 bit1[4:], bit2[:4], bit2[4:], str(TPS[address]) + ',' +
-                 str(TPS[address + 1]), str(count), opcode, str(x[1]),
+                 bit1[4:], bit2[:4], bit2[4:], str(tps[address]) + ',' +
+                 str(tps[address + 1]), str(count), opcode, str(x[1]),
                  '', '', '', '', '')
         address = address + opcodeinfo['words']
     else:
@@ -518,12 +519,12 @@ def assemble_2(chip: processor, x, opcode, address, TPS, _LABELS, address_left,
             f_opcode = 'src(' + register + ')'
         opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
         bit1, bit2 = get_bits(opcodeinfo)
-        TPS[address] = opcodeinfo['opcode']
+        tps[address] = opcodeinfo['opcode']
         print_ln(address, label, address_left, address_right, bit1,
-                 bit2, '', '', TPS[address], '', '', str(count), opcode,
+                 bit2, '', '', tps[address], '', '', str(count), opcode,
                  str(x[1]), '', '', '')
         address = address + opcodeinfo['words']
-    return address, TPS, _LABELS
+    return address, tps, _labels
 
 
 def validate_inc(parts, line):
@@ -565,7 +566,7 @@ def validate_inc(parts, line):
     return False
 
 
-def write_program_to_file(program, filename, memory_location, _LABELS):
+def write_program_to_file(program, filename, memory_location, _labels):
     """
     Take the assembled program and write to a given filename.
 
@@ -577,7 +578,7 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
         The filename to write to
     memory_location: str, mandatory
         Location in memory of the first word of the program
-    _LABELS: list, mandatory
+    _labels: list, mandatory
         Label table
 
     Returns
@@ -598,7 +599,7 @@ def write_program_to_file(program, filename, memory_location, _LABELS):
     m_location = '"location":"' + memory_location + '"'
     compdate = '"compile_date":"' + \
                datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '"'
-    labels = '"labels":' + str(_LABELS).replace("'", '"')
+    labels = '"labels":' + str(_labels).replace("'", '"')
     memorycontent = '"memory":['
     for location in program:
         content = str(hex(location)[2:])

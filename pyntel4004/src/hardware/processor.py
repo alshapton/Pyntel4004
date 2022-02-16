@@ -85,12 +85,12 @@ class Processor:
         self.COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
 
         # Set up RAM
-        self.RAM = []                                # RAM
-        self.RAM_PORT = [[0 for _bank in range(4)]   # RAM Ports
-                         for _chip in range(8)]
+        self.RAM = []                            # RAM
+        self.RAM_PORT = [[0 for _ in range(4)]   # RAM Ports
+                         for _ in range(8)]
         # Set up ROM
-        self.ROM = []                                # ROM
-        self.ROM_PORT = [0 for _bank in range(self.NO_ROM_PORTS)]   # ROM ports
+        self.ROM = []                                           # ROM
+        self.ROM_PORT = [0 for _ in range(self.NO_ROM_PORTS)]   # ROM ports
 
         self.PRAM = []               # Program RAM
         self.REGISTERS = []          # Registers (4-bit)
@@ -99,10 +99,10 @@ class Processor:
         self.COMMAND_REGISTER = 0
 
         # Set up RAM status characters
-        self.STATUS_CHARACTERS = [[[[0 for _char in range(4)]
-                                    for _reg in range(4)]
-                                   for _chip in range(4)]
-                                  for _bank in range(self.NO_DRB)]
+        self.STATUS_CHARACTERS = [[[[0 for _ in range(4)]
+                                    for _ in range(4)]
+                                   for _ in range(4)]
+                                  for _ in range(self.NO_DRB)]
 
         # Creation of processor simulated hardware
         # Pin 10 on the physical chip is the "test" pin
