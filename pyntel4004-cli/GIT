@@ -1,0 +1,1 @@
+git subtree $1 --prefix pyntel4004-cli https://github.com/alshapton/Pyntel4004-cli.git main 
