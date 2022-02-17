@@ -121,7 +121,7 @@ def test_suboperation_enc_dec_cr_scenario1(chip, register,
     assert daddress == taddress
 
 
-@pytest.mark.parametrize("shape", ['', 'RoM_PORT', 'R0M_PORT'
+@pytest.mark.parametrize("shape", ['', 'RoM_PORT', 'R0M_PORT',
                                    'RAM_STATUS_CHAR', 'rom_port'])
 def test_suboperation_enc_dec_cr_scenario2(shape):
     """Test encode/decode command failure (shape only)."""
@@ -131,7 +131,7 @@ def test_suboperation_enc_dec_cr_scenario2(shape):
     assert e.type == InvalidCommandRegisterFormat
 
 
-@pytest.mark.parametrize("shape", ['', 'RoM_PORT', 'R0M_PORT'
+@pytest.mark.parametrize("shape", ['', 'RoM_PORT', 'R0M_PORT',
                                    'RAM_STATUS_CHAR', 'rom_port'])
 def test_suboperation_enc_dec_cr_scenario3(shape):
     """Test encode/decode command failure (shape only)."""
@@ -846,7 +846,7 @@ def test_suboperation_test_flip_wpm_counter_scenario1(value):
     # Make assertions that the base chip is now at the same state as
     # the test chip which has been operated on by the operation under test.
     # flip the WPM counter 4 times, such that it returns to the original value
-    for _i in range(4):
+    for _ in range(4):
         chip_test.flip_wpm_counter()
     assert chip_test.read_wpm_counter() == value
 
