@@ -170,12 +170,12 @@ def decimal_to_binary(bits: int, decimal: int) -> str:
     N/A
 
     """
+    bits_const = ' Bits: ' + str(bits)
     if (bits not in [2, 4, 8, 12]):
-        raise InvalidBitValue(' Bits: ' + str(bits))
+        raise InvalidBitValue(bits_const)
 
     if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
-                                     ' Bits: ' + str(bits))
+        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) + bits_const)
 
     # Convert decimal to binary
     binary = bin(decimal)[2:].zfill(bits)

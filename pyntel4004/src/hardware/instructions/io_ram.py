@@ -576,9 +576,7 @@ def wpm(self) -> Tuple[int, int]:
     # Writing
     if self.ROM_PORT[14] == 1:
         # Write enabled, so store
-        value = self.ACCUMULATOR
         if wpm_counter == 'LEFT':
-            print(wpm_counter)
             value = self.ACCUMULATOR << 4
             self.PRAM[address] = value
             self.RAM[address] = value
@@ -593,7 +591,6 @@ def wpm(self) -> Tuple[int, int]:
         if wpm_counter == 'LEFT':
             self.ROM_PORT[14] = self.PRAM[address] >> 4 << 4
         if wpm_counter == 'RIGHT':
-            value = self.ACCUMULATOR
             self.ROM_PORT[15] = self.PRAM[address] << 4 >> 4
 
     flip_wpm_counter(self)
