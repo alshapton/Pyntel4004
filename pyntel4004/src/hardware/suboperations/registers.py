@@ -73,11 +73,12 @@ def insert_register(self, register: int, value: int) -> int:
     N/A
 
     """
+    reg_const = 'Register: ' + str(register)
     if (register < 0) or (register > 15):
-        raise InvalidRegister('Register: ' + str(register))
+        raise InvalidRegister(reg_const)
 
     if value > 15:
-        raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value))  # noqa
+        raise ValueTooLargeForRegister(reg_const + ',Value: ' + str(value))  # noqa
     self.REGISTERS[register] = value
     return value
 
@@ -112,12 +113,11 @@ def insert_registerpair(self, registerpair: int, value: int) -> int:
     N/A
 
     """
+    rp_const = 'Register Pair: ' + str(registerpair)
     if 0 < registerpair > 7:
-        raise InvalidRegisterPair('Register Pair: ' +
-                                  str(registerpair))
+        raise InvalidRegisterPair(rp_const)
     if value > 256:
-        raise ValueTooLargeForRegisterPair('Register Pair: ' +
-                                           str(registerpair) +
+        raise ValueTooLargeForRegisterPair(rp_const +
                                            ',Value: ' +
                                            str(value))
     # Convert a register pair into a base register for insertion

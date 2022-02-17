@@ -289,11 +289,12 @@ def insert_register(self, register: int, value: int):
     N/A
 
     """
+    reg_const = 'Register: ' + str(register)
     if (register < 0) or (register > 15):
-        raise InvalidRegister('Register: ' + str(register))
+        raise InvalidRegister(reg_const)
 
     if value > 15:
-        raise ValueTooLargeForRegister('Register: ' + str(register) + ',Value: ' + str(value))  # noqa
+        raise ValueTooLargeForRegister(reg_const + ',Value: ' + str(value))  # noqa
     self.REGISTERS[register] = value
     return value
 
@@ -360,14 +361,11 @@ def insert_registerpair(self, registerpair: int, value: int):
     N/A
 
     """
+    rp_const = 'Register Pair: ' + str(registerpair)
     if 0 < registerpair > 7:
-        raise InvalidRegisterPair('Register Pair: ' +
-                                  str(registerpair))
+        raise InvalidRegisterPair(rp_const)
     if value > 256:
-        raise ValueTooLargeForRegisterPair('Register Pair: ' +
-                                           str(registerpair) +
-                                           ',Value: ' +
-                                           str(value))
+        raise ValueTooLargeForRegisterPair(rp_const + ',Value: ' + str(value))
     # Convert a register pair into a base register for insertion
     base_register = registerpair * 2
     self.insert_register(base_register, (value >> 4) & 15)   # Bit-shift right and remove low bits   # noqa
@@ -740,12 +738,12 @@ def ones_complement(value: str, bits: int):
     N/A
 
     """
+    bits_const = ' Bits: ' + str(bits)
     if (bits not in [2, 4, 8, 12]):
-        raise InvalidBitValue(' Bits: ' + str(bits))
+        raise InvalidBitValue(bits_const)
 
     if (value > ((2 ** bits) - 1)) or (value < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(value) +
-                                     ' Bits: ' + str(bits))
+        raise ValueOutOfRangeForBits(' Value: ' + str(value) + bits_const)
 
     # Perform a one's complement
     # i.e. invert all the bits
@@ -797,19 +795,19 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
     N/A
 
     """
+    bits_const = ' Bits: ' + str(bits)
     if (bits not in [2, 4, 8, 12]):
-        raise InvalidBitValue(' Bits: ' + str(bits))
+        raise InvalidBitValue(bits_const)
 
     if (chunk not in [2, 4, 8, 12]):
         raise InvalidChunkValue(' Chunk: ' + str(chunk))
 
     if bits % chunk != 0:
-        raise IncompatibleChunkBit(' Bits: ' + str(bits) +
-                                   ' Chunk: ' + str(chunk))
+        raise IncompatibleChunkBit(bits_const + ' Chunk: ' + str(chunk))
 
     if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
         raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
-                                     ' Bits: ' + str(bits))
+                                     bits_const)
 
     binary = decimal_to_binary(bits, decimal)
     chunks = [binary[i:i+chunk] for i in range(0, len(binary), chunk)]
@@ -848,12 +846,12 @@ def decimal_to_binary(bits: int, decimal: int):
     N/A
 
     """
+    bits_const = ' Bits: ' + str(bits)
     if (bits not in [2, 4, 8, 12]):
-        raise InvalidBitValue(' Bits: ' + str(bits))
+        raise InvalidBitValue(bits_const)
 
     if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
-                                     ' Bits: ' + str(bits))
+        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) + bits_const)
 
     # Convert decimal to binary
     binary = bin(decimal)[2:].zfill(bits)

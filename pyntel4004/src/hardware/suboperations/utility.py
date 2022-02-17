@@ -78,19 +78,18 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int,
     N/A
 
     """
+    bits_const = ' Bits: ' + str(bits)
     if (bits not in [2, 4, 8, 12]):
-        raise InvalidBitValue(' Bits: ' + str(bits))
+        raise InvalidBitValue(bits_const)
 
     if (chunk not in [2, 4, 8, 12]):
         raise InvalidChunkValue(' Chunk: ' + str(chunk))
 
     if bits % chunk != 0:
-        raise IncompatibleChunkBit(' Bits: ' + str(bits) +
-                                   ' Chunk: ' + str(chunk))
+        raise IncompatibleChunkBit(bits_const + ' Chunk: ' + str(chunk))
 
     if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
-                                     ' Bits: ' + str(bits))
+        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) + bits_const)
 
     binary = decimal_to_binary(bits, decimal)
     chunks = [binary[i:i+chunk] for i in range(0, len(binary), chunk)]
@@ -210,18 +209,17 @@ def ones_complement(value: str, bits: int) -> str:
     N/A
 
     """
+    bits_const = ' Bits: ' + str(bits)
     if (bits not in [2, 4, 8, 12]):
-        raise InvalidBitValue(' Bits: ' + str(bits))
+        raise InvalidBitValue(bits_const)
 
     if (int(value) > ((2 ** bits) - 1)) or (int(value) < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(value) +
-                                     ' Bits: ' + str(bits))
+        raise ValueOutOfRangeForBits(' Value: ' + str(value) + bits_const)
 
     # Perform a one's complement
     # i.e. invert all the bits
 
     binary = decimal_to_binary(bits, int(value))
-    # binary = str(bin(value))[2:].zfill(bits)
     ones = ''
     for x in range(bits):
         if binary[x] == '1':

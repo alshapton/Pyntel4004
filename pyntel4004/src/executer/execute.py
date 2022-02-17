@@ -62,8 +62,8 @@ def process_coredump(chip: Processor, ex) -> None:
 
 
 def process_instruction(chip: Processor, breakpoints: list, _tps: list,
-                        monitor: bool, monitor_command: str,
-                        opcode: str) -> Tuple[bool, str, bool, list, str, str]:
+                        monitor: bool, monitor_command: str
+                        ) -> Tuple[bool, str, bool, list, str, str]:
     """
     Process a single instruction.
 
@@ -84,9 +84,6 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
 
     monitor_command: str, mandatory
         Command given by the user.
-
-    opcode: str, mandatory
-        Opcode of the current instruction
 
     Returns
     -------
@@ -197,7 +194,7 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
         monitor_command = 'none'
         result, monitor_command, monitor, breakpoints, exe, opcode = \
             process_instruction(chip, breakpoints, _tps, monitor,
-                                monitor_command, opcode)
+                                monitor_command)
         if result is None:
             break
 

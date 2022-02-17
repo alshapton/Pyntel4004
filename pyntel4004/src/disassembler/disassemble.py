@@ -25,7 +25,7 @@ from shared.shared import retrieve_program, translate_mnemonic  # noqa
 ###############################################################################################  # noqa
 
 
-def disassemble(chip: Processor, location: str, pc: int) -> bool:
+def disassemble(chip: Processor, location: str, pc: int) -> None:
     """
     Control the dissassembly of a previously assembled program.
 
@@ -42,7 +42,7 @@ def disassemble(chip: Processor, location: str, pc: int) -> bool:
 
     Returns
     -------
-    True        in all instances
+    None        in all instances
 
     Raises
     ------
@@ -61,10 +61,10 @@ def disassemble(chip: Processor, location: str, pc: int) -> bool:
     while (opcode != 256) or \
             (chip.PROGRAM_COUNTER <= chip.MEMORY_SIZE_PRAM - 1):
         if chip.PROGRAM_COUNTER == chip.MEMORY_SIZE_PRAM:
-            return True
+            return None
         if opcode == 256:
-            return True
+            return None
         exe, opcode, words = disassemble_instruction(chip, _tps)
         # Translate and print instruction
         translate_mnemonic(chip, _tps, exe, opcode, 'D', words)
-    return True
+    return None

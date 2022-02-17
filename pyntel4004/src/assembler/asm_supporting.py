@@ -859,11 +859,8 @@ def add_label(_lbls, label: str):
     N/A
 
     """
-    try:
-        label_exists = next((item for item in _lbls
-                            if str(item["label"]) == label), None)
-    except:  # noqa
-        pass
+    label_exists = next((item for item in _lbls
+                        if str(item["label"]) == label), None)
     if not label_exists:
         _lbls.append({'label': label, 'address': -1})
     else:

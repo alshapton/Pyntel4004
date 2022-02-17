@@ -194,21 +194,14 @@ def get_opcodeinfo(self: Processor, ls: str, mnemonic: str) -> dict:
     N/A
 
     """
-    opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
     if ls.upper() == 'S':
-        try:
-            opcodeinfo = next((item for item in self.INSTRUCTIONS
-                               if str(item["mnemonic"][:3]) == mnemonic),
-                              {"opcode": -1, "mnemonic": "N/A"})
-        except:  # noqa
-            opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
-        return opcodeinfo
-    try:
         opcodeinfo = next((item for item in self.INSTRUCTIONS
-                           if str(item["mnemonic"]) == mnemonic),
+                          if str(item["mnemonic"][:3]) == mnemonic),
                           {"opcode": -1, "mnemonic": "N/A"})
-    except:  # noqa
-        opcodeinfo = {"opcode": -1, "mnemonic": "N/A"}
+    else:
+        opcodeinfo = next((item for item in self.INSTRUCTIONS
+                          if str(item["mnemonic"]) == mnemonic),
+                          {"opcode": -1, "mnemonic": "N/A"})
     return opcodeinfo
 
 
@@ -243,13 +236,9 @@ def get_opcodeinfobyopcode(self: Processor, opcode: int) -> dict:
     N/A
 
     """
-    opcodeinfo = {"opcode": -1, "mnemonic": "-"}
-    try:
-        opcodeinfo = next((item for item in self.INSTRUCTIONS
-                           if item['opcode'] == opcode),
-                          {"opcode": -1, "mnemonic": "N/A"})
-    except:  # noqa
-        opcodeinfo = {"opcode": -1, "mnemonic": "-"}
+    opcodeinfo = next((item for item in self.INSTRUCTIONS
+                      if item['opcode'] == opcode),
+                      {"opcode": -1, "mnemonic": "N/A"})
     return opcodeinfo
 
 

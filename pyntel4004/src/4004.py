@@ -96,7 +96,7 @@ def main(argv: list) -> None:
         result = retrieve(reloadfile, chip)
         pc = result[1]
         memory_space = result[0]
-        result = disassemble(chip, memory_space, 0)
+        disassemble(chip, memory_space, 0)
 
     print(run, result)
     if run is True:
