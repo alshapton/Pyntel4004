@@ -783,7 +783,7 @@ def pass1(chip: Processor, program_name: str, _labels: list,
 def wrap_up(chip: Processor, location: str, tps: list, _labels: list,
             object_file: str) -> Processor:
     """
-    Pass 1 of the two-pass assembly process.
+    Wrap up the assembly process.
 
     Parameters
     ----------
@@ -1548,14 +1548,12 @@ def work_with_a_line_of_asm(chip: Processor, line: str,
     N/A
 
     """
-    print(line)
     constant = False
     err = False
     # Work with a line of assembly code
     parts = line.split()
     if parts[0][len(parts[0])-1] == ',':
         # Found a label, now add it to the label table
-        print(_labels, '    ', parts[0], '   ', address)
         if add_label(_labels, parts[0]) == -1:
             err = ('FATAL: Pass 1: Duplicate label: ' + parts[0] +
                    ' at line ' + str(p_line + 1))
@@ -1631,6 +1629,7 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
 
     """
     from datetime import datetime  # noqa
+    program_out = []
     program_name = '"program":"' + filename + '"'
     cd = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     m_location = '"location":"' + memory_location + '"'
@@ -1641,7 +1640,7 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
     for location in program:
         content = str(hex(location)[2:])
         if int(content, 16) > 255:
-            program[i] = 0
+            program_out.append(0)
         memorycontent = memorycontent + '"' + content + '", '
         i = i + 1
     memory_content = memorycontent[:-2] + ']'
@@ -1656,11 +1655,11 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
     with open(filename + '.obj', "w", encoding='utf-8') as output:
         output.write(json_doc)
     with open(filename + '.bin', "w+b") as binary:
-        binary.write(bytearray(program))
+        binary.write(bytearray(program_out))
 
     memorycontent = 'const unsigned char rom_bin[] = {  \n'
     i = 0
-    for location in program:
+    for location in program_out:
         content = str(hex(location)[2:]).upper()
         if int(content, 16) < 10:
             zerox = '0x0'

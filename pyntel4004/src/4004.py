@@ -98,7 +98,6 @@ def main(argv: list) -> None:
         memory_space = result[0]
         disassemble(chip, memory_space, 0)
 
-    print(run, result)
     if run is True:
         print()
         print('EXECUTING PROGRAM: ')

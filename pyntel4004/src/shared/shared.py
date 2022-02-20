@@ -325,11 +325,9 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
 
     # Ensure that the correct arguments are passed to the operations
     if exe[:3] == 'fim':
-        custom_opcode = True
         value = str(_tps[chip.PROGRAM_COUNTER + 1])
-        cop = exe.replace('data8', value)
         exe = exe.replace('p', '').replace('data8)', '') + value + ')'
-
+        
     if exe[:3] == 'isz':
         # Remove opcode from 1st byte to get register
         register = bin(_tps[chip.PROGRAM_COUNTER] & 15)[2:].zfill(8)[4:]

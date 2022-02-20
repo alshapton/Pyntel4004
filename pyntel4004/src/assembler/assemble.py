@@ -126,7 +126,6 @@ def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
     if err:
         print("Program Assembly halted")
         return False
-
     # Wrap up assembly process and write to file if necessary
     chip = wrap_up(chip, location, tps, _labels, object_file)
     return True
