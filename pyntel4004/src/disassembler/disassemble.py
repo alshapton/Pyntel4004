@@ -66,5 +66,5 @@ def disassemble(chip: Processor, location: str, pc: int) -> None:
             return None
         exe, opcode, words = disassemble_instruction(chip, _tps)
         # Translate and print instruction
-        translate_mnemonic(chip, _tps, exe, opcode, 'D', words)
+        translate_mnemonic(chip, _tps, exe, opcode, 'D', words, False)
     return None

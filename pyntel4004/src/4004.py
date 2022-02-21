@@ -87,7 +87,7 @@ def main(argv: list) -> None:
             print('Memory space : ' + memory_space)
             print('From         : ' + str(pc))
             print()
-            execute(chip, memory_space, pc, True)
+            execute(chip, memory_space, pc, True, False)
 
     if do_assemble is True:
         result = assemble(inputfile, outputfile, chip)
@@ -102,7 +102,7 @@ def main(argv: list) -> None:
         print()
         print('EXECUTING PROGRAM: ')
         print()
-        did_execute = execute(chip, 'rom', pc, True)
+        did_execute = execute(chip, 'rom', pc, True, False)
         if did_execute:
             print()
             acc = chip.read_accumulator()

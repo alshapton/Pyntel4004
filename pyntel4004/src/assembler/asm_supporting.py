@@ -8,10 +8,11 @@
 from typing import Tuple, Any
 from hardware.processor import Processor
 from hardware.suboperations.utility import split_address8
-from shared.shared import do_error, get_opcodeinfo, get_opcodeinfobyopcode  # noqa
+from shared.shared import do_error, get_opcodeinfo, get_opcodeinfobyopcode, \
+    print_messages  # noqa
 
 
-def asm_comment(label: str, count: int, line: str) -> None:
+def asm_comment(label: str, count: int, line: str, quiet: bool) -> None:
     """
     Output the assembled comment.
 
@@ -26,6 +27,9 @@ def asm_comment(label: str, count: int, line: str) -> None:
     line: str, mandatory
         Line of program code.
 
+    quiet: bool, mandatory
+        If quiet mode is on
+
     Returns
     -------
     N/A
@@ -39,12 +43,13 @@ def asm_comment(label: str, count: int, line: str) -> None:
     N/A
 
     """
-    print_ln('', label, ' ', ' ', ' ', ' ', ' ', ' ', ' ',  ' ',
-             ' ', str(count), line, ' ', '', '', '',)
+    if not quiet:
+        print_ln('', label, ' ', ' ', ' ', ' ', ' ', ' ', ' ',  ' ',
+                 ' ', str(count), line, ' ', '', '', '',)
 
 
 def assemble_1(opcodeinfo: dict, label: str, tps: list,
-               address: int, count: int) -> Tuple[list, str]:
+               address: int, count: int, quiet: bool) -> Tuple[list, str]:
     """
     Output the assembled operator (no operand(s)).
 
@@ -64,6 +69,9 @@ def assemble_1(opcodeinfo: dict, label: str, tps: list,
 
     count: int, mandatory
         Current assembly program line
+
+    quiet: bool, mandatory
+        If quiet mode is on
 
     Returns
     -------
@@ -86,18 +94,20 @@ def assemble_1(opcodeinfo: dict, label: str, tps: list,
     # Only operator, no operand
     bit1, bit2 = get_bits(opcodeinfo)
     tps[address] = opcodeinfo['opcode']
-    print_ln(address, label, address_left,
-             address_right, bit1, bit2, '', '',
-             tps[address], '', '', str(count),
-             opcodeinfo['mnemonic'].replace('(', '').replace(')', ''),
-             '', '', '', '')
+
+    if not quiet:
+        print_ln(address, label, address_left,
+                 address_right, bit1, bit2, '', '',
+                 tps[address], '', '', str(count),
+                 opcodeinfo['mnemonic'].replace('(', '').replace(')', ''),
+                 '', '', '', '')
     address = address + opcodeinfo['words']
     return tps, address
 
 
 def assemble_3(chip: Processor, x: list, _labels: list, tps: list,
                address: int, address_left: str, address_right: str,
-               label: str, count: int) -> Tuple[int, list, list]:
+               label: str, count: int, quiet: bool) -> Tuple[int, list, list]:
     """
     Assemble code with 3 components.
 
@@ -127,6 +137,9 @@ def assemble_3(chip: Processor, x: list, _labels: list, tps: list,
     count: int, mandatory
         Current assembly program line
 
+    quiet: bool, mandatory
+        If quiet mode is on
+
     Returns
     -------
     address: int
@@ -152,22 +165,24 @@ def assemble_3(chip: Processor, x: list, _labels: list, tps: list,
         address, tps, _labels = assemble_jcn(chip, x, _labels, tps,
                                              address, address_left,
                                              address_right, label,
-                                             count)
+                                             count, quiet)
     if x[0][:3] == 'fim':
         address, tps, _labels = assemble_fim(chip, x, _labels, tps,
-                                             address, label, count)
+                                             address, label, count, quiet)
     if x[0] == 'isz':
         address, tps, _labels = assemble_isz(chip, x, x[1], _labels, tps,
                                              address, address_left,
-                                             address_right, label, count)
+                                             address_right, label,
+                                             count, quiet)
     if x[0] not in ('jcn', 'fim', 'isz'):
-        tps, address = asm_others(chip, x, count, x[0], tps, address, label)
+        tps, address = asm_others(chip, x, count, x[0], tps, address,
+                                  label, quiet)
 
     return address, tps, _labels
 
 
 def asm_label(tps: list, address: int, x: list,
-              count: int, label: str) -> list:
+              count: int, label: str, quiet: bool) -> list:
     """
     Output the assembled label.
 
@@ -188,6 +203,9 @@ def asm_label(tps: list, address: int, x: list,
     label: str, mandatory
         Any label on this line
 
+    quiet: bool, mandatory
+        If quiet mode is on
+
     Returns
     -------
     tps: List, mandatory
@@ -203,12 +221,14 @@ def asm_label(tps: list, address: int, x: list,
 
     """
     tps[address] = int(x[1])
-    print_ln('', '',  '', '', '', '', '', '', '', '', '',
-             str(count), label, str(x[1]), '', '', '',)
+    if not quiet:
+        print_ln('', '',  '', '', '', '', '', '', '', '', '',
+                 str(count), label, str(x[1]), '', '', '',)
     return tps
 
 
-def asm_end(tps: list, address: int, count: int, label: str) -> list:
+def asm_end(tps: list, address: int, count: int, label: str,
+            quiet: bool) -> list:
     """
     Output the assembled "end" pseudo-opcode.
 
@@ -226,6 +246,9 @@ def asm_end(tps: list, address: int, count: int, label: str) -> list:
     label: str, mandatory
         Any label on this line
 
+    quiet: bool, mandatory
+        If quiet mode is on
+
     Returns
     -------
     tps: List
@@ -240,15 +263,16 @@ def asm_end(tps: list, address: int, count: int, label: str) -> list:
     N/A
 
     """
-    print_ln('', label, '', '', '', '', '',  '', '', '', '', str(count),
-             'end', '', '', '', '')
+    if not quiet:
+        print_ln('', label, '', '', '', '', '',  '', '', '', '', str(count),
+                 'end', '', '', '', '')
     # pseudo-opcode (directive "end")
     tps[address] = 256
     return tps
 
 
 def asm_org(label: str, count: int, x: list,
-            opcode: str) -> Tuple[bool, str, int]:
+            opcode: str, quiet: bool) -> Tuple[bool, str, int]:
     """
     Output the assembled "org" pseudo-opcode.
 
@@ -265,6 +289,9 @@ def asm_org(label: str, count: int, x: list,
 
     opcode: str, mandatory
         Opcode ('org' or '=')
+
+    quiet: bool, mandatory
+        If quiet mode is on
 
     Returns
     -------
@@ -287,9 +314,10 @@ def asm_org(label: str, count: int, x: list,
 
     """
     if opcode == 'org':
-        print_ln('', label,  '', '', '', '', '', '', '',
-                 '', '', str(count), opcode, str(x[1]),
-                 '', '', '',)
+        if not quiet:
+            print_ln('', label,  '', '', '', '', '', '', '',
+                     '', '', str(count), opcode, str(x[1]),
+                     '', '', '',)
         if x[1] in ('rom', 'ram'):
             location = x[1]
             address = 0
@@ -297,15 +325,17 @@ def asm_org(label: str, count: int, x: list,
             location = 'ram'
             address = int(str(x[1]))
     if opcode == '=':
-        print_ln('', label,  '', '', '', '', '', '', '',
-                 '', '', str(count), opcode, str(x[2]),
-                 '', '', '',)
+        if not quiet:
+            print_ln('', label,  '', '', '', '', '', '', '',
+                     '', '', str(count), opcode, str(x[2]),
+                     '', '', '',)
         location, address = 0, 0
     return True, location, address
 
 
 def asm_others(chip: Processor, x: list, count: int, opcode: str,
-               tps: list, address: int, label: str) -> Tuple[list, int]:
+               tps: list, address: int, label: str, quiet: bool) \
+                   -> Tuple[list, int]:
     """
     Assemble othe instructions.
 
@@ -331,6 +361,9 @@ def asm_others(chip: Processor, x: list, count: int, opcode: str,
 
     label: str, mandatory
         Label of the current line (if any)
+
+    quiet: bool, mandatory
+        If quiet mode is on
 
     Returns
     -------
@@ -359,15 +392,17 @@ def asm_others(chip: Processor, x: list, count: int, opcode: str,
     bit1, bit2 = get_bits(opcodeinfo)
     tps[address] = opcodeinfo['opcode']
     tps[address+1] = int(x[2])
-    print_ln(address, label, address_left, address_right, bit1, bit2,
-             val_left, val_right, str(tps[address]) + "," +
-             str(tps[address + 1]), '', '', str(count), opcode, str(x[1]),
-             str(x[2]), '', '')
+    if not quiet:
+        print_ln(address, label, address_left, address_right, bit1, bit2,
+                 val_left, val_right, str(tps[address]) + "," +
+                 str(tps[address + 1]), '', '', str(count), opcode, str(x[1]),
+                 str(x[2]), '', '')
     address = address + opcodeinfo['words']
     return tps, address
 
 
-def asm_pin(chip: Processor, value: int, label: str, count: int) -> Any:
+def asm_pin(chip: Processor, value: int, label: str,
+            count: int, quiet: bool) -> Any:
     """
     Manage the PIN10 (Signal pin).
 
@@ -384,6 +419,9 @@ def asm_pin(chip: Processor, value: int, label: str, count: int) -> Any:
 
     count: int, mandatory
         Current assembly program line
+
+    quiet: bool, mandatory
+        If quiet mode is on
 
     Returns
     -------
@@ -405,16 +443,17 @@ def asm_pin(chip: Processor, value: int, label: str, count: int) -> Any:
         err = "FATAL: Pass 2:  Invalid value for " \
               + "TEST PIN 10 at line " + count
     else:
-        print_ln('', label, '', '', '', '', '', '', '', '',
-                 '', '', '', '', str(count), 'pin',
-                 str(value))
-        err = False
+        if not quiet:
+            print_ln('', label, '', '', '', '', '', '', '', '',
+                     '', '', '', '', str(count), 'pin',
+                     str(value))
+            err = False
     return err
 
 
 def asm_pseudo(chip: Processor, opcode: str, label: str, count: int,
                x: list, tps: list, address: int, org_found: bool,
-               location: str) -> Tuple[Any, bool, list, str, int]:
+               location: str, quiet: bool) -> Tuple[Any, bool, list, str, int]:
     """
     Assemble pseudo-opcodes.
 
@@ -447,6 +486,9 @@ def asm_pseudo(chip: Processor, opcode: str, label: str, count: int,
     location: str
         'rom' or 'ram'
 
+    quiet: bool, mandatory
+        If quiet mode is on
+
     Returns
     -------
     err:
@@ -474,23 +516,23 @@ def asm_pseudo(chip: Processor, opcode: str, label: str, count: int,
 
     """
     if opcode == 'org':
-        org_found, location, address = asm_org(label, count, x, 'org')
+        org_found, location, address = asm_org(label, count, x, 'org', quiet)
         err = False
     if opcode == 'end':
-        tps = asm_end(tps, address, count, label)
+        tps = asm_end(tps, address, count, label, quiet)
         err = False
     if opcode == 'pin':
         err = False
-        err = asm_pin(chip, x[1], label, count)
+        err = asm_pin(chip, x[1], label, count, quiet)
     if opcode == '=':
-        org_found, _unused1, _unused2 = asm_org(x[0], count, x, '=')
+        org_found, _unused1, _unused2 = asm_org(x[0], count, x, '=', quiet)
         err = False
     return err, org_found, tps, location, address
 
 
 def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
-             opcode: str, opcodeinfo: dict,
-             label: str, count: int, org_found: bool, location: str) \
+             opcode: str, opcodeinfo: dict, label: str, count: int,
+             org_found: bool, location: str, quiet: bool) \
     -> Tuple[Processor, list, list, int, list,
              str, dict, str, int, bool, str]:
     """
@@ -531,6 +573,9 @@ def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
 
     location: str, mandatory
         'rom' or 'ram'
+
+    quiet: bool, mandatory
+        If quiet mode is on
 
     Returns
     -------
@@ -581,7 +626,7 @@ def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
         if (opcode in ['org', 'end', 'pin', '=']):
             err, org_found, tps, location, address = \
                 asm_pseudo(chip, str(opcode), label, count, x, tps,
-                           address, org_found, location)
+                           address, org_found, location, quiet)
             if err:
                 do_error(err)
                 return False
@@ -590,7 +635,7 @@ def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
                 chip, x, _labels, address, tps, opcodeinfo, label, \
                     count = assemble_opcodes(chip, x, _labels,
                                              address, tps, opcodeinfo,
-                                             label, count)
+                                             label, count, quiet)
             else:
                 err = "FATAL: Pass 2: No 'org'" + \
                     " found at line: " + str(count + 1)
@@ -603,7 +648,8 @@ def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
 
 
 def assemble_opcodes(chip: Processor, x: list, _labels: list, address: int,
-                     tps: list, opcodeinfo: dict, label: str, count: int) \
+                     tps: list, opcodeinfo: dict, label: str, count: int,
+                     quiet: bool) \
     -> Tuple[Processor, list, list,
              int, list, dict, str, int]:
     """
@@ -635,6 +681,9 @@ def assemble_opcodes(chip: Processor, x: list, _labels: list, address: int,
 
     count: int, mandatory
         Assembly line number (used for printing during assembly)
+
+    quiet: bool, mandatory
+        If quiet mode is on
 
     Returns
     -------
@@ -685,22 +734,23 @@ def assemble_opcodes(chip: Processor, x: list, _labels: list, address: int,
     # Check for operand(s)
     if len(x) == 1:
         # Only operator, no operand
-        tps, address = assemble_1(opcodeinfo, label, tps, address, count)  # noqa
+        tps, address = assemble_1(opcodeinfo, label, tps, address, count, quiet)  # noqa
     if len(x) == 2:
         # Operator & operand (generic)
         address, tps, _labels = assemble_2(chip, x, opcode, address, tps,
                                            _labels, address_left,
-                                           address_right, label, count)
+                                           address_right, label, count, quiet)
     if len(x) == 3:
         # Operator and 2 operands
         address, tps, _labels = assemble_3(chip, x, _labels, tps,
                                            address, address_left,
-                                           address_right, label, count)
+                                           address_right, label, count, quiet)
     return chip, x, _labels, address, tps, opcodeinfo, label, count
 
 
 def pass1(chip: Processor, program_name: str, _labels: list,
-          tps: list, tfile: list) -> Tuple[Any, list, list, list, int]:
+          tps: list, tfile: list, quiet: bool) -> \
+              Tuple[Any, list, list, list, int]:
     """
     Pass 1 of the two-pass assembly process.
 
@@ -721,6 +771,8 @@ def pass1(chip: Processor, program_name: str, _labels: list,
     tfile: list, mandatory
         Assembly language store
 
+    quiet: bool, mandatory
+        Whether quiet mode is on or off
 
     Returns
     -------
@@ -759,10 +811,7 @@ def pass1(chip: Processor, program_name: str, _labels: list,
                '" does not exist.')
         return err,  _labels, tps, tfile, address
     else:
-        print()
-        print()
-        print('Program Code:', program_name)
-        print()
+        print_messages(quiet, 'PROG', chip, program_name)
 
         while True:
             line = program.readline()
@@ -781,7 +830,7 @@ def pass1(chip: Processor, program_name: str, _labels: list,
 
 
 def wrap_up(chip: Processor, location: str, tps: list, _labels: list,
-            object_file: str) -> Processor:
+            object_file: str, quiet: bool) -> Processor:
     """
     Wrap up the assembly process.
 
@@ -801,6 +850,9 @@ def wrap_up(chip: Processor, location: str, tps: list, _labels: list,
 
     object_file: str, mandatory
         The filename to write to
+
+    quiet: bool, mandatory
+        Quiet mode on/off
 
     Returns
     -------
@@ -823,11 +875,8 @@ def wrap_up(chip: Processor, location: str, tps: list, _labels: list,
     if location == 'ram':
         chip.PRAM = tps
 
-    print()
-    print('Labels:')
-    print('Address   Label')
-    for _i in range(len(_labels)):  # noqa
-        print('{:>5}     {}'.format(_labels[_i]['address'], _labels[_i]['label']))  # noqa
+    print_messages(quiet, 'LABELS', chip, _labels)
+
     write_program_to_file(tps, object_file, location, _labels)
     return chip
 
@@ -1004,7 +1053,8 @@ def get_label_addr(_lbls: list, label: str) -> int:
 
 def assemble_isz(chip: Processor, x: list, register: int, _lbls: list,
                  tps: list, address: int, a_l: str, a_r: str,
-                 label: str, count: int) -> Tuple[int, list, list]:
+                 label: str, count: int, quiet: bool) \
+                     -> Tuple[int, list, list]:
     """
     Function to correctly assemble the ISZ instruction.
 
@@ -1052,6 +1102,9 @@ def assemble_isz(chip: Processor, x: list, register: int, _lbls: list,
     _lbls: list
         Addresses of the labels (pass through only)
 
+    quiet: bool, mandatory
+        If quiet mode is on
+
     Raises
     ------
     N/A
@@ -1068,19 +1121,20 @@ def assemble_isz(chip: Processor, x: list, register: int, _lbls: list,
     vl, vr = split_address8(int(label_address))
     tps[address] = n_opcode
     tps[address + 1] = label_address
-    print_ln(address, label, a_l,
-             a_r, bit1, bit2, vl,
-             vr, str(tps[address]) +
-             "," + str(tps[address + 1]), '',
-             '', str(count), x[0], str(x[1]),
-             str(x[2]), '', '')
+    if not quiet:
+        print_ln(address, label, a_l,
+                 a_r, bit1, bit2, vl,
+                 vr, str(tps[address]) +
+                 "," + str(tps[address + 1]), '',
+                 '', str(count), x[0], str(x[1]),
+                 str(x[2]), '', '')
     address = address + opcodeinfo['words']
     return address, tps, _lbls
 
 
 def assemble_fim(self: Processor, x: list, _labels: list,
                  tps: list, address: int, label: str,
-                 count: int) -> Tuple[int, list, list]:
+                 count: int, quiet: bool) -> Tuple[int, list, list]:
     """
     Function to assemble FIM instruction.
 
@@ -1109,6 +1163,9 @@ def assemble_fim(self: Processor, x: list, _labels: list,
     count: int, mandatory
         Assembly line number (used for printing during assembly)
 
+    quiet: bool, mandatory
+        If quiet mode is on
+
     Returns
     -------
     address: int
@@ -1136,10 +1193,11 @@ def assemble_fim(self: Processor, x: list, _labels: list,
     tps[address] = opcodeinfo['opcode']
     tps[address + 1] = int(x[2])
     bit1, bit2 = get_bits(opcodeinfo)
-    print_ln(address, label, '' '', '', bit1, bit2, '', '',
-             str(tps[address]) + "," + str(tps[address + 1]),
-             str(count), x[0], str(x[1]),
-             str(x[2]), '', '', '', '')
+    if not quiet:
+        print_ln(address, label, '', '', bit1, bit2, '', '',
+                 str(tps[address]) + "," + str(tps[address + 1]), '',
+                 '', str(count), x[0], str(x[1]),
+                 '', str(x[2]), '')
     address = address + opcodeinfo['words']
     return address, tps, _labels
 
@@ -1147,7 +1205,7 @@ def assemble_fim(self: Processor, x: list, _labels: list,
 def assemble_jcn(self: Processor, x: list, _labels: list,
                  tps: list, address: int, address_left: str,
                  address_right: str, label: str,
-                 count: int) -> Tuple[int, list, list]:
+                 count: int, quiet: bool) -> Tuple[int, list, list]:
     """
     Function to assemble JCN instructions.
 
@@ -1178,6 +1236,9 @@ def assemble_jcn(self: Processor, x: list, _labels: list,
 
     count: int, mandatory
         Assembly line number (used for printing during assembly)
+
+    quiet: bool, mandatory
+        If quiet mode is on
 
     Returns
     -------
@@ -1214,16 +1275,17 @@ def assemble_jcn(self: Processor, x: list, _labels: list,
     bit1, bit2 = get_bits(opcodeinfo)
     tps[address] = opcodeinfo['opcode']
     tps[address + 1] = label_addr
-    print_ln(address, label, address_left, address_right, bit1, bit2,
-             vl, vr, str(tps[address]) + "," + str(tps[address + 1]),
-             '', '', str(count), x[0], str(x[1]), str(x[2]), '', '')
+    if not quiet:
+        print_ln(address, label, address_left, address_right, bit1, bit2,
+                 vl, vr, str(tps[address]) + "," + str(tps[address + 1]),
+                 '', '', str(count), x[0], str(x[1]), str(x[2]), '', '')
     address = address + opcodeinfo['words']
     return address, tps, _labels
 
 
 def assemble_2(chip: Processor, x: list, opcode: str, address: int,
                tps: list, _labels: list, address_left: str,
-               address_right: str, label: str, count: int) \
+               address_right: str, label: str, count: int, quiet: bool) \
         -> Tuple[int, list, list]:
     """
     Function to assemble specific instructions.
@@ -1258,6 +1320,9 @@ def assemble_2(chip: Processor, x: list, opcode: str, address: int,
 
     count: int, mandatory
         Assembly line number (used for printing during assembly)
+
+    quiet: bool, mandatory
+        If quiet mode is on
 
     Returns
     -------
@@ -1304,10 +1369,11 @@ def assemble_2(chip: Processor, x: list, opcode: str, address: int,
         bit2 = label_addr12[8:]
         tps[address] = int(str(bit1), 2)
         tps[address+1] = int(str(bit2), 2)
-        print_ln(address, label, address_left, address_right, bit1[:4],
-                 bit1[4:], bit2[:4], bit2[4:], str(tps[address]) + ',' +
-                 str(tps[address + 1]), '', '', str(count), opcode, str(x[1]),
-                 '', '', '')
+        if not quiet:
+            print_ln(address, label, address_left, address_right, bit1[:4],
+                     bit1[4:], bit2[:4], bit2[4:], str(tps[address]) + ',' +
+                     str(tps[address + 1]), '', '', str(count), opcode,
+                     str(x[1]), '', '', '')
         address = address + opcodeinfo['words']
     else:
         if opcode == 'src':
@@ -1316,9 +1382,10 @@ def assemble_2(chip: Processor, x: list, opcode: str, address: int,
         opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
         bit1, bit2 = get_bits(opcodeinfo)
         tps[address] = opcodeinfo['opcode']
-        print_ln(address, label, address_left, address_right, bit1,
-                 bit2, '', '', tps[address], '', '', str(count), opcode,
-                 str(x[1]), '', '', '')
+        if not quiet:
+            print_ln(address, label, address_left, address_right, bit1,
+                     bit2, '', '', tps[address], '', '', str(count), opcode,
+                     str(x[1]), '', '', '')
         address = address + opcodeinfo['words']
     return address, tps, _labels
 

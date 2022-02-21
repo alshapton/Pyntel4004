@@ -4,6 +4,9 @@
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
 
+# Import typing library
+from typing import  Any
+
 
 def coredump(chip: Processor, filename: str) -> bool:
     """
@@ -99,6 +102,39 @@ def coredump(chip: Processor, filename: str) -> bool:
             output.write(spaces + str(i) + '\t\t')
 
         return True
+
+
+def print_messages(quiet: bool, msgtype: str, chip: Processor,
+                   param0: Any) -> None:
+    if not quiet:
+        if msgtype == 'EXEC':
+            print()
+            print('EXECUTING PROGRAM: ')
+            print()
+        if msgtype == 'BLANK':
+            print()
+        if msgtype == 'ACC':
+            acc = chip.read_accumulator()
+            print('Accumulator : ' + str(acc) + '  (0b ' +
+                  str(Processor.decimal_to_binary(4, acc)) + ')')
+        if msgtype == 'CARRY':
+            print('Carry       :', chip.read_carry())
+        if msgtype == 'ASM':
+            print('Address  Label   Address        Assembled            ' +
+                  '          Line     Op/Operand')
+            print(' (Dec)            (Bin)           (Bin)          (Dec)')
+            print('                            Word 1     Word 2')
+        if msgtype == 'PROG':
+            print()
+            print()
+            print('Program Code:', param0)
+            print()
+        if msgtype == 'LABELS':
+            print()
+            print('Labels:')
+            print('Address   Label')
+            for _i in range(len(param0)):  # noqa
+                print('{:>5}     {}'.format(param0[_i]['address'], param0[_i]['label']))  # noqa
 
 
 def determine_filetype(inputfile: str) -> str:
@@ -276,7 +312,7 @@ def retrieve_program(chip: Processor, location: str) -> list:
 
 
 def translate_mnemonic(chip: Processor, _tps: list, exe: str,
-                       opcode: str, task: str, words: int) -> str:
+                       opcode: str, task: str, words: int, quiet: bool) -> str:
     """
     Formulate the opcodes into mnemonics ready for execution.
 
@@ -302,6 +338,9 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
     words: int, optional (supply 0)
         The number of words an instruction uses
 
+    quiet: bool, mandatory
+        Whether quiet mode is on
+        
     Returns
     -------
     exe: str
@@ -327,7 +366,7 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
     if exe[:3] == 'fim':
         value = str(_tps[chip.PROGRAM_COUNTER + 1])
         exe = exe.replace('p', '').replace('data8)', '') + value + ')'
-        
+
     if exe[:3] == 'isz':
         # Remove opcode from 1st byte to get register
         register = bin(_tps[chip.PROGRAM_COUNTER] & 15)[2:].zfill(8)[4:]
@@ -365,9 +404,11 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
         if custom_opcode:
             custom_opcode = False
             exe = cop
-            print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, cop.replace('()', '')))  # noqa
+            if not quiet:
+                print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, cop.replace('()', '')))  # noqa
         else:
-            print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, exe.replace('()', '')))  # noqa
+            if not quiet:
+                print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, exe.replace('()', '')))  # noqa
 
         chip.PROGRAM_COUNTER = chip.PROGRAM_COUNTER + words
 
@@ -375,8 +416,10 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
         if custom_opcode:
             custom_opcode = False
             exe = cop
-            print('  {:>7}  {:<10}'.format(opcode, cop.replace('()', '')))  # noqa
+            if not quiet:
+                print('  {:>7}  {:<10}'.format(opcode, cop.replace('()', '')))  # noqa
         else:
-            print('  {:>7}  {:<10}'.format(opcode, exe.replace('()', '')))  # noqa
+            if not quiet:
+                print('  {:>7}  {:<10}'.format(opcode, exe.replace('()', '')))  # noqa
 
     return exe

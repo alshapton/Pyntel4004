@@ -62,7 +62,7 @@ def process_coredump(chip: Processor, ex) -> None:
 
 
 def process_instruction(chip: Processor, breakpoints: list, _tps: list,
-                        monitor: bool, monitor_command: str
+                        monitor: bool, monitor_command: str, quiet: bool
                         ) -> Tuple[bool, str, bool, list, str, str]:
     """
     Process a single instruction.
@@ -84,6 +84,9 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
 
     monitor_command: str, mandatory
         Command given by the user.
+
+    quiet: bool, mandatory
+        Whether quiet mode is on or off.
 
     Returns
     -------
@@ -126,7 +129,10 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
     opcode = _tps[chip.PROGRAM_COUNTER]
     if monitor is True:
         while monitor_command != '':
-            monitor_command = input(prompt).lower()
+            if not quiet:
+                monitor_command = input(prompt).lower()
+            else:
+                monitor_command = ''
             result, monitor, monitor_command, opcode = \
                 deal_with_monitor_command(chip, monitor_command,
                                           breakpoints, monitor, opcode)
@@ -138,17 +144,19 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
 
     opcode = _tps[chip.PROGRAM_COUNTER]
     if opcode == 256:  # pseudo-opcode (directive "end" - stop program)
-        print('           end')
+        if not quiet:
+            print('           end')
         result = None
 
     exe = get_opcodeinfobyopcode(chip, opcode)['mnemonic']
     if exe == '-':
         result = None
-    
+
     return result, monitor_command, monitor, breakpoints, exe, opcode
 
 
-def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
+def execute(chip: Processor, location: str, pc: int, monitor: bool,
+            quiet: bool) -> bool:
     """
     Control the execution of a previously assembled program.
 
@@ -165,6 +173,9 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
 
     monitor: bool, mandatory
         Whether or not the monitor is currently "on" or "off"
+
+    quiet: bool, mandatory
+        Whether or not quiet mode is on or off
 
     Returns
     -------
@@ -193,12 +204,13 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool) -> bool:
         monitor_command = 'none'
         result, monitor_command, monitor, breakpoints, exe, opcode = \
             process_instruction(chip, breakpoints, _tps, monitor,
-                                monitor_command)
-        if result is None:
+                                monitor_command, quiet)
+        if opcode == 256:
             break
 
         # Execute instruction
-        exe = 'chip.' + translate_mnemonic(chip, _tps, exe, opcode, 'E', 0)
+        exe = 'chip.' + translate_mnemonic(chip, _tps, exe, opcode,
+                                           'E', 0, quiet)
         # Evaluate the command (some commands may change
         # the PROGRAM_COUNTER here)
         # Deliberately using eval here... skip checks in all code quality tools

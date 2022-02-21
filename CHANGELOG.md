@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Code smells in the documentation construction script
 - Code smells in some suboperations fixed
 - Fixed bug in tests for WPM instruction
+- Fixed major bugs in FIM and END processing
 ### Removed
 - Deepsource.io integration
 - Codacy integration

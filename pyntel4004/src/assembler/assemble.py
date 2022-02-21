@@ -14,7 +14,7 @@ from assembler.asm_supporting import asm_comment, asm_label, asm_main, \
         do_error, pass0, pass1, wrap_up  # noqa
 
 # Shared imports
-from shared.shared import get_opcodeinfo  # noqa
+from shared.shared import get_opcodeinfo, print_messages  # noqa
 
 ###############################################################################
 #  _ _  _    ___   ___  _  _                                _     _           #
@@ -27,7 +27,8 @@ from shared.shared import get_opcodeinfo  # noqa
 ###############################################################################
 
 
-def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
+def assemble(program_name: str, object_file: str, chip: Processor,
+             quiet: bool) -> bool:
     """
     Main two-pass assembler for i4004 code.
 
@@ -41,6 +42,9 @@ def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
 
     chip: Processor, mandatory
         Instance of a processor to place the assembled code in.
+
+    quiet: bool, mandatory
+        Determines whether quiet mode is on i.e. no output.
 
     Returns
     -------
@@ -74,17 +78,14 @@ def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
 
     # Pass 1
     err, _labels, tps, tfile, address = pass1(chip, program_name,
-                                              _labels, tps, tfile)
+                                              _labels, tps, tfile, quiet)
 
     if err:
         do_error(err + "\nProgram Assembly halted @ Pass 1\n\n")
         return False
 
     # Pass 2
-    print('Address  Label   Address        Assembled                    ' +
-          '  Line     Op/Operand')
-    print(' (Dec)            (Bin)           (Bin)          (Dec)')
-    print('                            Word 1     Word 2')
+    print_messages(quiet, 'ASM', chip, '')
 
     org_found = False
     location = ''
@@ -98,7 +99,7 @@ def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
 
         # Check for initial comments
         if line[0] == '/':
-            asm_comment(label, count, line)
+            asm_comment(label, count, line, quiet)
         else:
             if len(line) > 0:
                 if x[0][-1] == ',':
@@ -116,7 +117,7 @@ def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
                     err, org_found, location = \
                     asm_main(chip, x, _labels, address, tps, opcode,
                              opcodeinfo, label, count, org_found,
-                             location)
+                             location, quiet)
                 if err:
                     do_error(err)
                     break
@@ -127,5 +128,5 @@ def assemble(program_name: str, object_file: str, chip: Processor) -> bool:
         print("Program Assembly halted")
         return False
     # Wrap up assembly process and write to file if necessary
-    chip = wrap_up(chip, location, tps, _labels, object_file)
+    chip = wrap_up(chip, location, tps, _labels, object_file, quiet)
     return True
