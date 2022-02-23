@@ -7,7 +7,7 @@ from hardware.processor import Processor
 from shared.shared import determine_filetype
 
 
-def reload(inputfile: str, chip: Processor) -> Tuple[str, int]:
+def reload(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
     """
     Reload an already assembled program and execute it.
 
@@ -19,6 +19,8 @@ def reload(inputfile: str, chip: Processor) -> Tuple[str, int]:
     chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
 
+    quiet: bool, mandatory
+        If output should be output or not
     Returns
     -------
     memory_space: str
@@ -42,7 +44,8 @@ def reload(inputfile: str, chip: Processor) -> Tuple[str, int]:
     location = 0
     pc = location
     if filetype == 'OBJ':
-        print(' Filetype: Object module with label tables etc.\n')
+        if not quiet:
+            print(' Filetype: Object module with label tables etc.\n')
         with open(inputfile, "r", encoding='utf-8') as programfile:
             data = json.load(programfile)
 
@@ -58,7 +61,8 @@ def reload(inputfile: str, chip: Processor) -> Tuple[str, int]:
             location = location + 1
 
     if filetype == 'BIN':
-        print(' Filetype: Binary assembled machine code\n')
+        if not quiet:
+            print(' Filetype: Binary assembled machine code\n')
         location = 0
         memory_space = 'ram'
         programbytearray = bytearray()
@@ -290,7 +294,7 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
     return -1, '', '', 0
 
 
-def retrieve(inputfile: str, chip: Processor) -> Tuple[str, int]:
+def retrieve(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
     """
     Pass-thru function for the "reload" function.
 
@@ -301,6 +305,9 @@ def retrieve(inputfile: str, chip: Processor) -> Tuple[str, int]:
 
     chip : Processor, mandatory
         The instance of the processor containing the registers, accumulator etc
+
+    quiet : bool, mandatory
+        Quiet mode on/off
 
     Returns
     -------
@@ -319,5 +326,5 @@ def retrieve(inputfile: str, chip: Processor) -> Tuple[str, int]:
     No added value in this function, simply a pass-thru.
 
     """
-    m, p = reload(inputfile, chip)
+    m, p = reload(inputfile, chip, quiet)
     return m, p

@@ -5,7 +5,7 @@
 from hardware.processor import Processor  # noqa
 
 # Import typing library
-from typing import  Any
+from typing import Any
 
 
 def coredump(chip: Processor, filename: str) -> bool:

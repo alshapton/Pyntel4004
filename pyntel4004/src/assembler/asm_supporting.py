@@ -1711,6 +1711,13 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
         memorycontent = memorycontent + '"' + content + '", '
         i = i + 1
     memory_content = memorycontent[:-2] + ']'
+    
+    # Strip out pseudo opcode "end"
+    position = 0
+    for i in program:
+        if program[position] > 255:
+            program[position] = 0
+        position = position + 1
 
     json_doc = "{"
     json_doc = json_doc + program_name + ','
@@ -1722,11 +1729,11 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
     with open(filename + '.obj', "w", encoding='utf-8') as output:
         output.write(json_doc)
     with open(filename + '.bin', "w+b") as binary:
-        binary.write(bytearray(program_out))
+        binary.write(bytearray(program))
 
     memorycontent = 'const unsigned char rom_bin[] = {  \n'
     i = 0
-    for location in program_out:
+    for location in program:
         content = str(hex(location)[2:]).upper()
         if int(content, 16) < 10:
             zerox = '0x0'
