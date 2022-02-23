@@ -29,6 +29,15 @@ A Python software implementation of the Intel 4004 processor and the MCS-4 compu
 ## Installation Instructions
 <br>
 
+### PyPI
+
+Pyntel4004 can be installed from PyPI by using the command:
+
+```bash
+
+    $ pip install Pyntel4004
+```
+
 ### Source Code
 Pyntel4004’s git repo is available on GitHub, which can be browsed [here](https://github.com/alshapton/pyntel4004) and cloned using:
 
@@ -72,6 +81,7 @@ The user instructions can be found [here](https://pyntel4004.readthedocs.io/en/l
 
 ## Status
 
+21-FEB-2022:    Started to split into two - (chip, assembler, dissassembler) and CLI
 04-FEB-2022:    Cross-assemble to retroShield4004 for Arduino, completing documentation
 23-SEP-2021:    Publishing releases to [PyPi](https://pypi.org/project/Pyntel4004/)
 <br>

@@ -340,7 +340,7 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
 
     quiet: bool, mandatory
         Whether quiet mode is on
-        
+
     Returns
     -------
     exe: str

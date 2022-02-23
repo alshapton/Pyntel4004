@@ -7,22 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1-beta.5](https://pypi.org/project/Pyntel4004/0.0.1b5/) - XXXX-XX-XX
 
 ### Notes
--
+- 
 ### Added
-- Switched to Sonarcloud code scanning
+- Switched to Sonarcloud.io code scanning
 ### Changed
 - 
 ### Deprecated
-- 
+- **Commands for running the assembler, disassembler and executer are now deprecated.**
+  **The command-line commands should no longer be used, and will be removed in the next release.** 
+  **To use the command-line, use:** 
+  **`pip install Pyntel4004-cli`**
 ### Fixed
-- Reduced code complexity in construct.py from 21 -> 15
+- Reduced code complexity in `construct.py` from 21 -> 15
 - Code smells in the documentation construction script
 - Code smells in some suboperations fixed
 - Fixed bug in tests for WPM instruction
 - Fixed major bugs in FIM and END processing
+- Fixed minor bugs with pseudo-opcode 256 and writing .bin and retroshield files
 ### Removed
 - Deepsource.io integration
-- Codacy integration
+- Codacy.com integration
 ### Security
 - N/A
 

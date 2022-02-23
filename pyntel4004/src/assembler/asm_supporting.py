@@ -1711,7 +1711,7 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
         memorycontent = memorycontent + '"' + content + '", '
         i = i + 1
     memory_content = memorycontent[:-2] + ']'
-    
+
     # Strip out pseudo opcode "end"
     position = 0
     for i in program:
