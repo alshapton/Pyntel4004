@@ -104,37 +104,64 @@ def coredump(chip: Processor, filename: str) -> bool:
         return True
 
 
+def msg_exec() -> None:
+    print()
+    print('EXECUTING PROGRAM: ')
+
+
+def msg_blank() -> None:
+    print()
+
+
+def msg_acc(chip: Processor) -> None:
+    acc = chip.read_accumulator()
+    print('Accumulator : ' + str(acc) + '  (0b ' +
+          str(Processor.decimal_to_binary(4, acc)) + ')')
+
+
+def msg_carry(chip: Processor) -> None:
+    print('Carry       :', chip.read_carry())
+
+
+def msg_asm() -> None:
+    print('Address  Label   Address        Assembled            ' +
+          '          Line     Op/Operand')
+    print(' (Dec)            (Bin)           (Bin)          (Dec)')
+    print('                            Word 1     Word 2')
+
+
+def msg_prog(param0: str) -> None:
+    print()
+    print()
+    print('Program Code:', param0)
+
+
+def msg_labels(param0: str) -> None:
+    print()
+    print('Labels:')
+    print('Address   Label')
+    for _i in range(len(param0)):  # noqa
+        print('{:>5}     {}'.format(param0[_i]['address'], param0[_i]['label']))  # noqa
+
+
 def print_messages(quiet: bool, msgtype: str, chip: Processor,
                    param0: Any) -> None:
     if not quiet:
         if msgtype == 'EXEC':
-            print()
-            print('EXECUTING PROGRAM: ')
-            print()
+            msg_exec()
         if msgtype == 'BLANK':
-            print()
+            msg_blank()
         if msgtype == 'ACC':
-            acc = chip.read_accumulator()
-            print('Accumulator : ' + str(acc) + '  (0b ' +
-                  str(Processor.decimal_to_binary(4, acc)) + ')')
+            msg_acc(chip)
         if msgtype == 'CARRY':
-            print('Carry       :', chip.read_carry())
+            msg_carry(chip)
         if msgtype == 'ASM':
-            print('Address  Label   Address        Assembled            ' +
-                  '          Line     Op/Operand')
-            print(' (Dec)            (Bin)           (Bin)          (Dec)')
-            print('                            Word 1     Word 2')
+            msg_asm()
         if msgtype == 'PROG':
-            print()
-            print()
-            print('Program Code:', param0)
-            print()
+            msg_prog(param0)
         if msgtype == 'LABELS':
-            print()
-            print('Labels:')
-            print('Address   Label')
-            for _i in range(len(param0)):  # noqa
-                print('{:>5}     {}'.format(param0[_i]['address'], param0[_i]['label']))  # noqa
+            msg_labels(param0)
+    return None
 
 
 def determine_filetype(inputfile: str) -> str:

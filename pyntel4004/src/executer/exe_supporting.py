@@ -7,6 +7,113 @@ from hardware.processor import Processor
 from shared.shared import determine_filetype
 
 
+def load_bin(inputfile: str, chip: Processor, quiet: bool) -> str:
+    """
+    Reload an already assembled binary program.
+
+    Parameters
+    ----------
+    inputfile: str, mandatory
+        filename of a .bin file
+
+    chip : Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    quiet: bool, mandatory
+        If output should be output or not
+
+    Returns
+    -------
+    memory_space: str
+        rom or ram (depending on the target memory space)
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    if not quiet:
+        print(' Filetype: Binary assembled machine code\n')
+    location = 0
+    memory_space = 'ram'
+    programbytearray = bytearray()
+    try:
+        with open(inputfile, "rb") as f:
+            byte = f.read(1)
+            while byte:
+                programbytearray += byte
+                byte = f.read(1)
+                location = location + 1
+
+    except IOError:
+        print('Error While Opening the file!')
+
+    # Place program in memory
+    location = 0
+    memory_space = 'ram'
+
+    for i in programbytearray:
+        chip.PRAM[location] = i
+        location = location + 1
+
+    return memory_space
+
+
+def load_obj(inputfile: str, chip: Processor, quiet: bool) -> str:
+    """
+    Reload an already assembled object program.
+
+    Parameters
+    ----------
+    inputfile: str, mandatory
+        filename of an .obj file
+
+    chip : Processor, mandatory
+        The instance of the processor containing the registers, accumulator etc
+
+    quiet: bool, mandatory
+        If output should be output or not
+
+    Returns
+    -------
+    memory_space: str
+        rom or ram (depending on the target memory space)
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+
+    if not quiet:
+        print(' Filetype: Object module with label tables etc.\n')
+    with open(inputfile, "r", encoding='utf-8') as programfile:
+        data = json.load(programfile)
+
+    # Get data for memory load
+    memory_space = data['location']
+
+    # Place program in memory
+    location = 0
+
+    for i in data['memory']:
+        if memory_space == 'rom':
+            chip.ROM[location] = int(i, 16)
+        else:
+            chip.PRAM[location] = int(i, 16)
+        location = location + 1
+
+    return memory_space
+
+
 def reload(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
     """
     Reload an already assembled program and execute it.
@@ -41,51 +148,14 @@ def reload(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
 
     filetype = determine_filetype(inputfile)
 
-    location = 0
-    pc = location
     if filetype == 'OBJ':
-        if not quiet:
-            print(' Filetype: Object module with label tables etc.\n')
-        with open(inputfile, "r", encoding='utf-8') as programfile:
-            data = json.load(programfile)
-
-        # Get data for memory load
-        memory_space = data['location']
-
-        # Place program in memory
-        for i in data['memory']:
-            if memory_space == 'rom':
-                chip.ROM[location] = int(i, 16)
-            else:
-                chip.PRAM[location] = int(i, 16)
-            location = location + 1
+        memory_space = load_obj(inputfile, chip, quiet)
 
     if filetype == 'BIN':
-        if not quiet:
-            print(' Filetype: Binary assembled machine code\n')
-        location = 0
-        memory_space = 'ram'
-        programbytearray = bytearray()
-        try:
-            with open(inputfile, "rb") as f:
-                byte = f.read(1)
-                while byte:
-                    programbytearray += byte
-                    byte = f.read(1)
-                    location = location + 1
+        memory_space = load_bin(inputfile, chip, quiet)
 
-        except IOError:
-            print('Error While Opening the file!')
-
-        # Place program in memory
-        location = 0
-        memory_space = 'ram'
-
-        for i in programbytearray:
-            chip.PRAM[location] = i
-            location = location + 1
-
-    return memory_space, pc
+    # Always return zero as a program counter
+    return memory_space, 0
 
 
 def is_breakpoint(breakpoints: list, pc: int) -> bool:

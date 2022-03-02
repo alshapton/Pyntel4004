@@ -6,7 +6,7 @@ Overview of Pyntel4004
 
 Pyntel4004 consists of two components:
 
-- an Intel 4004 assembler
+- an Intel 4004 assembler/disassembler
 - an Intel 4004 emulator to run assembled code
 
 
@@ -32,23 +32,62 @@ prepared in i4004 assembly language.
         fim    2  254
         end
 
-This file should then be assembled (ie converted from the
-mnemonics into machine code) as follows:
+This file should then be assembled into 4004 machine code.
+
+In order to do this, the CLI package should be installed:
+
 ::
 
-    4004 -i program.asm -x
+pip install pyntel4004-CLI
 
-The **-i** option is mandatory and supplies the source file name.
+The full instructions for Pyntel4004-CLI should be read, however, a basic summary is below:
+### Basic Usage.
 
-The optional flag **-x** will start the program running in the correct memory space.
-By default the monitor will start, to enable debugging. The monitor can be switched off
-at any time.
+`4004 <command> <options> <arguments>`
 
-The optional flag **-o <output file>** will store the assembled program in a named output file.
+`<command>`
+- `asm`  Assemble the input file
+- `dis`  Disassemble the input file
+- `exe`  Execute the object file
 
-.. rubric:: TODO
+`<options>`
+- **-h**, **--help**: Show help.
+- **-v**, **--version**:  Show the version and exit.
 
-- More detailed instructions - directory structure
-- More background info
-- Add ability to load pre-assembled code and run
-- Add ability to turn the monitor off prior to running
+<br>
+<br>
+
+#### `asm` options.
+
+- **-i**, **--input** `<input file>`: assembly language source file [required].
+- **-o**, **--output** `<output file>`: object code output file.
+- **-e**, **--exec**: execute the assembled program if successful assembly.
+
+- **-q**, **--quiet**: Quiet mode on *
+- **-m**, **--monitor**: Start monitor*
+
+- **-h**, **--help**: Show help.
+
+*Mutually exclusive parameters
+
+<br>
+<br>
+
+#### `dis` options.
+
+- **-o**, **--object** `<object file>`: object code or binary input file. [required]
+- **-b**, **--byte**: number of bytes to disassemble (between 1 and 4096).
+
+    *It is the user's responsibility to understand that if a byte count causes the disassembler to end up midway through a 2-byte instruction, that last instruction will not be disassembled correctly.*
+
+- **-h**, **--help**: Show help.
+
+<br>
+<br>
+
+#### `exe` options.
+
+- **-o**, **--object** `<object file>`: object code or binary input file.[required].
+- **-q**, **--quiet**: Quiet mode on
+
+- **-h**, **--help**: Show help.

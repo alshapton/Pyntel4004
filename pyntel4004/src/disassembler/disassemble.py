@@ -25,7 +25,7 @@ from shared.shared import retrieve_program, translate_mnemonic  # noqa
 ###############################################################################################  # noqa
 
 
-def disassemble(chip: Processor, location: str, pc: int) -> None:
+def disassemble(chip: Processor, location: str, pc: int, byte: int) -> None:
     """
     Control the dissassembly of a previously assembled program.
 
@@ -40,6 +40,9 @@ def disassemble(chip: Processor, location: str, pc: int) -> None:
     pc : int, mandatory
         The program counter value to commence execution
 
+    byte: int, mandatory
+        Number of bytes to disassemble
+    
     Returns
     -------
     None        in all instances
@@ -57,9 +60,12 @@ def disassemble(chip: Processor, location: str, pc: int) -> None:
     chip.PROGRAM_COUNTER = pc
     opcode = 0
     _tps = retrieve_program(chip, location)
+    byte_count = 0
     # pseudo-opcode (directive) for "end"
     while (opcode != 256) or \
             (chip.PROGRAM_COUNTER <= chip.MEMORY_SIZE_PRAM - 1):
+        if byte_count >= byte:
+            return None
         if chip.PROGRAM_COUNTER == chip.MEMORY_SIZE_PRAM:
             return None
         if opcode == 256:
@@ -67,4 +73,5 @@ def disassemble(chip: Processor, location: str, pc: int) -> None:
         exe, opcode, words = disassemble_instruction(chip, _tps)
         # Translate and print instruction
         translate_mnemonic(chip, _tps, exe, opcode, 'D', words, False)
+        byte_count = byte_count + 1
     return None
