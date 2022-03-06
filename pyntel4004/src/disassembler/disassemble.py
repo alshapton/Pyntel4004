@@ -11,7 +11,7 @@ from hardware.processor import Processor  # noqa
 # Import supporting functions
 from disassembler.dis_supporting import disassemble_instruction  # noqa
 # Shared imports
-from shared.shared import retrieve_program, translate_mnemonic  # noqa
+from shared.shared import retrieve_program, translate_mnemonic , msg_labels # noqa
 
 
 ###############################################################################################  # noqa
@@ -25,7 +25,8 @@ from shared.shared import retrieve_program, translate_mnemonic  # noqa
 ###############################################################################################  # noqa
 
 
-def disassemble(chip: Processor, location: str, pc: int, byte: int) -> None:
+def disassemble(chip: Processor, location: str, pc: int, byte: int, 
+                show_lbls: bool, lbls: list) -> None:
     """
     Control the dissassembly of a previously assembled program.
 
@@ -42,7 +43,13 @@ def disassemble(chip: Processor, location: str, pc: int, byte: int) -> None:
 
     byte: int, mandatory
         Number of bytes to disassemble
-    
+
+    show_lbls : bool, mandatory
+        true/false - whether to show label table or not.
+
+    lbls: list, optional
+        any list of labels from the object module
+
     Returns
     -------
     None        in all instances
@@ -56,22 +63,24 @@ def disassemble(chip: Processor, location: str, pc: int, byte: int) -> None:
     N/A
 
     """
-
     chip.PROGRAM_COUNTER = pc
     opcode = 0
     _tps = retrieve_program(chip, location)
     byte_count = 0
+    finish = False
     # pseudo-opcode (directive) for "end"
-    while (opcode != 256) or \
-            (chip.PROGRAM_COUNTER <= chip.MEMORY_SIZE_PRAM - 1):
+    while finish is False:
         if byte_count >= byte:
-            return None
+            finish = True
         if chip.PROGRAM_COUNTER == chip.MEMORY_SIZE_PRAM:
-            return None
+            finish = True
         if opcode == 256:
-            return None
-        exe, opcode, words = disassemble_instruction(chip, _tps)
-        # Translate and print instruction
-        translate_mnemonic(chip, _tps, exe, opcode, 'D', words, False)
-        byte_count = byte_count + 1
+            finish = True
+        if not finish:
+            exe, opcode, words = disassemble_instruction(chip, _tps)
+            # Translate and print instruction
+            translate_mnemonic(chip, _tps, exe, opcode, 'D', words, False)
+            byte_count = byte_count + 1
+    if show_lbls:
+        msg_labels(lbls)
     return None

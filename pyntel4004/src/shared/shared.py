@@ -138,10 +138,11 @@ def msg_prog(param0: str) -> None:
 
 def msg_labels(param0: str) -> None:
     print()
-    print('Labels:')
-    print('Address   Label')
-    for _i in range(len(param0)):  # noqa
-        print('{:>5}     {}'.format(param0[_i]['address'], param0[_i]['label']))  # noqa
+    if len(param0) > 0:
+        print('Labels:')
+        print('Address   Label')
+        for _i in range(len(param0)):  # noqa
+            print('{:>5}     {}'.format(param0[_i]['address'], param0[_i]['label']))  # noqa
 
 
 def print_messages(quiet: bool, msgtype: str, chip: Processor,

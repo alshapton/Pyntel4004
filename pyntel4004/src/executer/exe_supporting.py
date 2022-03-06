@@ -2,6 +2,7 @@
 
 import json
 from typing import Tuple
+from xmlrpc.server import list_public_methods
 
 from hardware.processor import Processor
 from shared.shared import determine_filetype
@@ -63,7 +64,7 @@ def load_bin(inputfile: str, chip: Processor, quiet: bool) -> str:
     return memory_space
 
 
-def load_obj(inputfile: str, chip: Processor, quiet: bool) -> str:
+def load_obj(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, list]:
     """
     Reload an already assembled object program.
 
@@ -83,6 +84,9 @@ def load_obj(inputfile: str, chip: Processor, quiet: bool) -> str:
     memory_space: str
         rom or ram (depending on the target memory space)
 
+    labels: list
+        list of labels contained within the program's object module
+
     Raises
     ------
     N/A
@@ -101,6 +105,9 @@ def load_obj(inputfile: str, chip: Processor, quiet: bool) -> str:
     # Get data for memory load
     memory_space = data['location']
 
+    # Get labels
+    labels = data['labels']
+
     # Place program in memory
     location = 0
 
@@ -110,11 +117,11 @@ def load_obj(inputfile: str, chip: Processor, quiet: bool) -> str:
         else:
             chip.PRAM[location] = int(i, 16)
         location = location + 1
+    return memory_space, labels
 
-    return memory_space
 
-
-def reload(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
+def reload(inputfile: str, chip: Processor,
+           quiet: bool) -> Tuple[str, int, list]:
     """
     Reload an already assembled program and execute it.
 
@@ -136,6 +143,9 @@ def reload(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
     pc:  int
         location to commence execution of the assembled program
 
+    labels: list
+        list of labels from object module only
+
     Raises
     ------
     N/A
@@ -148,14 +158,17 @@ def reload(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
 
     filetype = determine_filetype(inputfile)
 
+    # Blank list of labels
+    labels = []
+
     if filetype == 'OBJ':
-        memory_space = load_obj(inputfile, chip, quiet)
+        memory_space, labels = load_obj(inputfile, chip, quiet)
 
     if filetype == 'BIN':
         memory_space = load_bin(inputfile, chip, quiet)
 
     # Always return zero as a program counter
-    return memory_space, 0
+    return memory_space, 0, labels
 
 
 def is_breakpoint(breakpoints: list, pc: int) -> bool:
@@ -364,7 +377,8 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
     return -1, '', '', 0
 
 
-def retrieve(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
+def retrieve(inputfile: str, chip: Processor,
+             quiet: bool) -> Tuple[str, int, list]:
     """
     Pass-thru function for the "reload" function.
 
@@ -387,6 +401,8 @@ def retrieve(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
     p: int
         location to commence execution of the assembled program
 
+    lbls: list
+        labels returned from an object module
     Raises
     ------
     N/A
@@ -396,5 +412,5 @@ def retrieve(inputfile: str, chip: Processor, quiet: bool) -> Tuple[str, int]:
     No added value in this function, simply a pass-thru.
 
     """
-    m, p = reload(inputfile, chip, quiet)
-    return m, p
+    m, p, lbls = reload(inputfile, chip, quiet)
+    return m, p, lbls

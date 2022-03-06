@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 
 ### Added
 - Switched to Sonarcloud.io code scanning
+- Added bytes to disassemble
+- Added quiet mode to all functions
+- Added a '--labels' option to dissassembly function
 ### Changed
 - 
 ### Deprecated
