@@ -830,7 +830,7 @@ def pass1(chip: Processor, program_name: str, _labels: list,
 
 
 def wrap_up(chip: Processor, location: str, tps: list, _labels: list,
-            object_file: str, quiet: bool) -> Processor:
+            object_file: str, quiet: bool, type: str) -> Processor:
     """
     Wrap up the assembly process.
 
@@ -853,6 +853,9 @@ def wrap_up(chip: Processor, location: str, tps: list, _labels: list,
 
     quiet: bool, mandatory
         Quiet mode on/off
+
+    type: str, mandatory
+        Determines the type of output file(s) to create.
 
     Returns
     -------
@@ -877,7 +880,7 @@ def wrap_up(chip: Processor, location: str, tps: list, _labels: list,
 
     print_messages(quiet, 'LABELS', chip, _labels)
 
-    write_program_to_file(tps, object_file, location, _labels)
+    write_program_to_file(tps, object_file, location, _labels, type)
     return chip
 
 
@@ -1664,7 +1667,8 @@ def work_with_a_line_of_asm(chip: Processor, line: str,
     return err, tfile, p_line, address, _labels
 
 
-def write_program_to_file(program, filename, memory_location, _labels) -> bool:
+def write_program_to_file(program, filename, memory_location,
+                          _labels, type) -> bool:
     """
     Take the assembled program and write to a given filename.
 
@@ -1681,6 +1685,9 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
 
     _labels: list, mandatory
         Label table
+
+    type: str, mandatory
+        Determines the type of output file(s) to create.
 
     Returns
     -------
@@ -1700,7 +1707,7 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
     program_name = '"program":"' + filename + '"'
     cd = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     m_location = '"location":"' + memory_location + '"'
-    compdate = '"compile_date":"' + cd + '"'
+    assembledate = '"assemble_date":"' + cd + '"'
     labels = '"labels":' + str(_labels).replace("'", '"')
     memorycontent = '"memory":['
     i = 0
@@ -1712,7 +1719,7 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
         i = i + 1
     memory_content = memorycontent[:-2] + ']'
 
-    # Strip out pseudo opcode "end"
+    # Strip out pseudo opcode "end".
     position = 0
     for i in program:
         if program[position] > 255:
@@ -1721,40 +1728,43 @@ def write_program_to_file(program, filename, memory_location, _labels) -> bool:
 
     json_doc = "{"
     json_doc = json_doc + program_name + ','
-    json_doc = json_doc + compdate + ','
+    json_doc = json_doc + assembledate + ','
     json_doc = json_doc + m_location + ','
     json_doc = json_doc + memory_content + ','
     json_doc = json_doc + labels
     json_doc = json_doc + '}'
-    with open(filename + '.obj', "w", encoding='utf-8') as output:
-        output.write(json_doc)
-    with open(filename + '.bin', "w+b") as binary:
-        binary.write(bytearray(program))
+    if type.upper() in (['ALL', 'OBJ']):
+        with open(filename + '.obj', "w", encoding='utf-8') as output:
+            output.write(json_doc)
+    if type.upper() in (['ALL', 'BIN']):
+        with open(filename + '.bin', "w+b") as binary:
+            binary.write(bytearray(program))
 
-    memorycontent = 'const unsigned char rom_bin[] = {  \n'
-    i = 0
-    for location in program:
-        content = str(hex(location)[2:]).upper()
-        if int(content, 16) < 10:
-            zerox = '0x0'
-        else:
-            zerox = "0x"
-        memorycontent = memorycontent + zerox + content + ', '
-        i = i + 1
-        if i == 16:
-            i = 0
-            memorycontent = memorycontent + '\n'
-    memory_content = memorycontent[:-3] + '};\n'
+    if type.upper() in (['ALL', 'H']):
+        memorycontent = 'const unsigned char rom_bin[] = {  \n'
+        i = 0
+        for location in program:
+            content = str(hex(location)[2:]).upper()
+            if int(content, 16) < 10:
+                zerox = '0x0'
+            else:
+                zerox = "0x"
+            memorycontent = memorycontent + zerox + content + ', '
+            i = i + 1
+            if i == 16:
+                i = 0
+                memorycontent = memorycontent + '\n'
+        memory_content = memorycontent[:-3] + '};\n'
 
-    with open(filename + "k4004.h", "w") as k4004:
-        k4004.write('////////////////////////////////////////////////////////////////////\n')  # noqa
-        k4004.write('// Program Name  : ' + filename + "\n")
-        k4004.write('// Assembly Date : ' + cd + "\n")
-        k4004.write('////////////////////////////////////////////////////////////////////\n')  # noqa
-        k4004.write('// Program produced in Retroshield Arduino 4004 format.\n')  # noqa
-        k4004.write('// by Pyntel4004 Assembler\n')
-        k4004.write('\n\n')
+        with open(filename + "k4004.h", "w") as k4004:
+            k4004.write('////////////////////////////////////////////////////////////////////\n')  # noqa
+            k4004.write('// Program Name  : ' + filename + "\n")
+            k4004.write('// Assembly Date : ' + cd + "\n")
+            k4004.write('////////////////////////////////////////////////////////////////////\n')  # noqa
+            k4004.write('// Program produced in Retroshield Arduino 4004 format.\n')  # noqa
+            k4004.write('// by Pyntel4004 Assembler\n')
+            k4004.write('\n\n')
 
-        k4004.write(memory_content + "\n")
+            k4004.write(memory_content + "\n")
 
     return True

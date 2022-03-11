@@ -57,6 +57,21 @@ The circled numbers relate to the pins as shown below:
    :scale: 50%
    :align: center
 
+Pins described as follows:
+
+.. csv-table::
+   :header: "Pin(s)", "Description"
+   :widths: 20,80
+
+   "D0 - D3","Bi-Directional Data Bus. |br| All address and data communication between the processor and |br| the RAM and ROM chips occurs on these 4 lines"
+   "V :subscript:`SS`","Most positive voltage"
+   "Reset","RESET input. |br| A logic '1' at this input clears all flags and status registers and resets |br| the program counter to zero. To completely clear all address and index |br| registers, RESET must be applied for 64 clock cycles (8 macxhine cycles)."
+   "Clk-Phase 1 |br| Clk-Phase 2","2 phase clock inputs"
+   "d","Stack (nesting up to 3 levels if possible)"
+   "e","Address incrementer"
+   "f","8-bit instruction register and decoder"
+   "g","Control logic"
+
 
 The CPU consists of the following components:
 

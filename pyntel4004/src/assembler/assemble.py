@@ -28,7 +28,7 @@ from shared.shared import get_opcodeinfo, print_messages  # noqa
 
 
 def assemble(program_name: str, object_file: str, chip: Processor,
-             quiet: bool) -> bool:
+             quiet: bool, type: str) -> bool:
     """
     Main two-pass assembler for i4004 code.
 
@@ -45,6 +45,9 @@ def assemble(program_name: str, object_file: str, chip: Processor,
 
     quiet: bool, mandatory
         Determines whether quiet mode is on i.e. no output.
+
+    type: str, mandatory
+        Determines the type of output file(s) to create.
 
     Returns
     -------
@@ -127,6 +130,6 @@ def assemble(program_name: str, object_file: str, chip: Processor,
     if err:
         print("Program Assembly halted")
         return False
-    # Wrap up assembly process and write to file if necessary
-    chip = wrap_up(chip, location, tps, _labels, object_file, quiet)
+    # Wrap up assembly process and write to file if necessary.
+    chip = wrap_up(chip, location, tps, _labels, object_file, quiet, type)
     return True

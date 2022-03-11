@@ -25,7 +25,7 @@ from shared.shared import retrieve_program, translate_mnemonic , msg_labels # no
 ###############################################################################################  # noqa
 
 
-def disassemble(chip: Processor, location: str, pc: int, byte: int, 
+def disassemble(chip: Processor, location: str, pc: int, byte: int,
                 show_lbls: bool, lbls: list) -> None:
     """
     Control the dissassembly of a previously assembled program.
