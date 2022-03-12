@@ -1668,7 +1668,7 @@ def work_with_a_line_of_asm(chip: Processor, line: str,
 
 
 def write_program_to_file(program, filename, memory_location,
-                          _labels, type) -> bool:
+                          _labels, output) -> bool:
     """
     Take the assembled program and write to a given filename.
 
@@ -1686,7 +1686,7 @@ def write_program_to_file(program, filename, memory_location,
     _labels: list, mandatory
         Label table
 
-    type: str, mandatory
+    output: str, mandatory
         Determines the type of output file(s) to create.
 
     Returns
@@ -1733,14 +1733,16 @@ def write_program_to_file(program, filename, memory_location,
     json_doc = json_doc + memory_content + ','
     json_doc = json_doc + labels
     json_doc = json_doc + '}'
-    if type.upper() in (['ALL', 'OBJ']):
+    types = output.upper()
+    if 'ALL' in types or 'OBJ' in types:
         with open(filename + '.obj', "w", encoding='utf-8') as output:
             output.write(json_doc)
-    if type.upper() in (['ALL', 'BIN']):
+
+    if 'ALL' in types or 'BIN' in types:
         with open(filename + '.bin', "w+b") as binary:
             binary.write(bytearray(program))
 
-    if type.upper() in (['ALL', 'H']):
+    if 'ALL' in types or 'H' in types:
         memorycontent = 'const unsigned char rom_bin[] = {  \n'
         i = 0
         for location in program:

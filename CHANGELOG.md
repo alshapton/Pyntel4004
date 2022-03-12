@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added bytes to disassemble
 - Added quiet mode to all functions
 - Added a '--labels' option to dissassembly function
+- Added ability to specify type of output file(s)
 ### Changed
 - 
 ### Deprecated
