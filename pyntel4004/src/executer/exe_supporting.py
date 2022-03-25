@@ -2,7 +2,6 @@
 
 import json
 from typing import Tuple
-from xmlrpc.server import list_public_methods
 
 from hardware.processor import Processor
 from shared.shared import determine_filetype

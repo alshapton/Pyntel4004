@@ -66,6 +66,11 @@ and the github issue tracker to raise any issues.
 
 ## Usage Instructions
 
+To use this software implementation of the Intel 4004 from the command line, you should install the [Pyntel4004-cli](https://pypi.org/project/Pyntel4004-cli/) using
+`
+pip install pyntel4004-cli
+`
+
 The user instructions can be found [here](https://pyntel4004.readthedocs.io/en/latest/intro/usage.html
 )
 
@@ -81,6 +86,7 @@ The user instructions can be found [here](https://pyntel4004.readthedocs.io/en/l
 
 ## Status
 
+20-MAR-2022:    Command Line functionality is now deprecated
 02-MAR-2022:    Finalised split - Pyntel4004 is now the core library
 21-FEB-2022:    Started to split into two - (chip, assembler, dissassembler) and CLI
 04-FEB-2022:    Cross-assemble to retroShield4004 for Arduino, completing documentation
