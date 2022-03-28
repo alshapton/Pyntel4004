@@ -65,13 +65,9 @@ def assemble(program_name: str, object_file: str, chip: Processor,
     """
 
     #     mccabe: MC0001 / assemble is too complex (44) - start
-    #     mccabe: MC0001 / assemble is too complex (35)
-    #     mccabe: MC0001 / assemble is too complex (30)
-    #     mccabe: MC0001 / assemble is too complex (25)
-    #     mccabe: MC0001 / assemble is too complex (21)
-    #     mccabe: MC0001 / assemble is too complex (18)
-    #     mccabe: MC0001 / assemble is too complex (13)
+    #     ...
     #     mccabe: MC0001 / assemble is too complex (10)
+    #     SonarLint: S3776: assemble is too complex (25) - start
 
     # Pass 0 - Initialise label tables, program storage etc
     _labels, tps, tfile = pass0(chip)
@@ -104,32 +100,31 @@ def assemble(program_name: str, object_file: str, chip: Processor,
         if line[0] == '/':
             asm_comment(label, count, line, quiet)
         else:
-            if len(line) > 0:
-                if x[0][-1] == ',':
-                    label = x[0]
-                    opcode = x[1]
-                    # Check to see if we are assembling a label
-                    if '0' <= str(x[1])[:1] <= '9':
-                        tps = asm_label(tps, address, x, count, label)
-                        break
-                else:
-                    opcode = x[0]
-
-                opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
-                chip, x, _labels, address, tps, opcodeinfo, label, count, \
-                    err, org_found, location = \
-                    asm_main(chip, x, _labels, address, tps, opcode,
-                             opcodeinfo, label, count, org_found,
-                             location, quiet)
-                if err:
-                    do_error(err)
+            opcode = x[0]
+            if x[0][-1] == ',':
+                label = x[0]
+                opcode = x[1]
+                # Check to see if we are assembling a label
+                if '0' <= str(opcode)[:1] <= '9':
+                    tps = asm_label(tps, address, x, count, label)
                     break
+
+            opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+            chip, x, _labels, address, tps, opcodeinfo, label, count, \
+                err, org_found, location = \
+                asm_main(chip, x, _labels, address, tps, opcode,
+                         opcodeinfo, label, count, org_found,
+                         location, quiet)
+        if err:
+            do_error(err)
+            break
 
         count = count + 1
 
     if err:
         print("Program Assembly halted")
         return False
+
     # Wrap up assembly process and write to file if necessary.
     chip = wrap_up(chip, location, tps, _labels, object_file, quiet, type)
     return True

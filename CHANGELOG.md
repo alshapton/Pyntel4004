@@ -4,7 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1-beta.5](https://pypi.org/project/Pyntel4004/0.0.1b5/) - 2022-03-25
+## [0.0.1-beta.6](https://pypi.org/project/Pyntel4004/0.0.1b6/) - 2022-XX-XX
+
+### Notes
+- 
+### Added
+- 
+### Changed
+- 
+### Deprecated
+-
+### Fixed
+- Fixed an issue where BIN file is used and there is no "end" mnemonic - did produce an error. Now doesnt.
+- Tidied up some code to make it less complex
+### Removed
+- "4004" command line facility. This is now part of the Pyntel4004-cli project
+### Security
+- N/A
+
+## [0.0.1-beta.5](https://pypi.org/project/Pyntel4004/0.0.1b5/) - 2022-01-20
 
 ### Notes
 - 

@@ -143,10 +143,14 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
                 break
 
     opcode = _tps[chip.PROGRAM_COUNTER]
-    if opcode == 256:  # pseudo-opcode (directive "end" - stop program)
+    # pseudo-opcode (directive "end" - stop program)
+    if opcode == 256:
         if not quiet:
             print('           end')
         result = None
+
+    if chip.PROGRAM_COUNTER == 4096:
+        result = False
 
     exe = get_opcodeinfobyopcode(chip, opcode)['mnemonic']
     if exe == '-':
@@ -202,9 +206,13 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
     _tps = retrieve_program(chip, location)
     while opcode != 256:  # pseudo-opcode (directive) for "end"
         monitor_command = 'none'
-        result, monitor_command, monitor, breakpoints, exe, opcode = \
-            process_instruction(chip, breakpoints, _tps, monitor,
-                                monitor_command, quiet)
+        if chip.PROGRAM_COUNTER != 4096:
+            result, monitor_command, monitor, breakpoints, exe, opcode = \
+                process_instruction(chip, breakpoints, _tps, monitor,
+                                    monitor_command, quiet)
+        else:
+            opcode = 256
+            
         if opcode == 256:
             break
 

@@ -8,8 +8,9 @@
 
 
 
-use of pre-commit 
+Use of pre-commit 
 
 Instructions:
 
 install pre-commit (pip install pre-commit)
+activate the pre-commits (pre-commit install)

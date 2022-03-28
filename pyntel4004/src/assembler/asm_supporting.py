@@ -629,7 +629,8 @@ def asm_main(chip: Processor, x: list, _labels: list, address: int, tps: list,
                            address, org_found, location, quiet)
             if err:
                 do_error(err)
-                return False
+                _ = ''
+                return _, _, _, _, _, _, _, _, False, _, _
         else:
             if org_found is True:
                 chip, x, _labels, address, tps, opcodeinfo, label, \
@@ -1526,43 +1527,21 @@ def print_ln(f0: str, f1: str, f2: str, f3: str, f4: str, f5: str, f6: str,
                      f9, f10, f11, f12, f13, f14, f15, f16))
 
 
-def validate_inc(parts: list, line: str) -> bool:
-    """
-    Validate the contents (i.e. the parameters) of an INC command.
-
-    Parameters
-    ----------
-    parts: list, mandatory
-        List of the parts of the line separated into elements of a list
-
-    line: str, mandatory
-        The mnemonic to locate
-
-    Returns
-    -------
-    False in all circumstances except when an error occurs,
-    in which case that error is printed during assembly and the
-    assembly process will cease.
-
-    Raises
-    ------
-    N/A
-
-    Notes
-    -----
-    N/A
-
-    """
-    if len(parts) == 1 and parts[0] == 'inc':
-        return do_error('No register value at line ' + str(line))
-    if len(parts) == 2:
-        if ((parts[1] == 'inc') and (parts[0][-1])):
-            return do_error('No register value at line ' + str(line))
-        if ((parts[0] == 'inc') and ((int(parts[1]) > 15) or
-           (int(parts[1]) < 0))):
-            return do_error('Invalid register value (' + parts[1] +
-                            ') at line ' + str(line))
-    return False
+def deal_with_custom_opcode(chip: Processor, parts: list,
+                            constant: bool, opcode: str,
+                            address: int, p_line: int) -> Tuple[str, int, int]:
+    err = False
+    if (parts[0][len(parts[0])-1] != ',' and not constant):
+        if (opcode == 'ld()' or opcode[:2] == 'ld'):
+            opcode = 'ld '
+        if opcode not in ('org', '/', 'end', 'pin', '='):
+            opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
+            if opcodeinfo == {'opcode': -1, 'mnemonic': 'N/A'}:
+                err = "FATAL: Pass 1:  Invalid mnemonic '" + \
+                    opcode + "' at line: " + str(p_line + 1)
+            else:
+                address = address + opcodeinfo['words']
+    return err, opcode, address
 
 
 def work_with_a_line_of_asm(chip: Processor, line: str,
@@ -1648,27 +1627,98 @@ def work_with_a_line_of_asm(chip: Processor, line: str,
     else:
         # Set opcode
         opcode = parts[0][:3]
-    if opcode[:3] == 'inc':
-        err = validate_inc(parts, p_line + 1)
-        return err, tfile, p_line, 0, _labels
-    # Custom opcodes
-    if (parts[0][len(parts[0])-1] != ',' and not constant):
-        if (opcode == 'ld()' or opcode[:2] == 'ld'):
-            opcode = 'ld '
-        if opcode not in ('org', '/', 'end', 'pin', '='):
-            opcodeinfo = get_opcodeinfo(chip, 'S', opcode)
-            if opcodeinfo == {'opcode': -1, 'mnemonic': 'N/A'}:
-                err = "FATAL: Pass 1:  Invalid mnemonic '" + \
-                    opcode + "' at line: " + str(p_line + 1)
-            else:
-                address = address + opcodeinfo['words']
+    # Deal with custom opcode
+    err, opcode, address = \
+        deal_with_custom_opcode(chip, parts, constant, opcode, address, p_line)
+
     tfile[p_line] = line.strip()
     p_line = p_line + 1
     return err, tfile, p_line, address, _labels
 
 
-def write_program_to_file(program, filename, memory_location,
-                          _labels, output) -> bool:
+def write_header_file(filename: str, cd: str, memory_content: list) -> bool:
+    """
+    Take the assembled program and write to a given filename
+    in .h (Retroshield) format
+
+    Parameters
+    ----------
+    filename: str, mandatory
+        The filename to write to
+
+    cd: str, mandatory
+        the assembly date of the program
+
+    memory_content: list, mandatory
+        List containing the assembled object code for writing to the file
+
+    Returns
+    -------
+    True
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    flowerbox = ''
+    for _ in range(68):
+        flowerbox = flowerbox + '/'
+    flowerbox = flowerbox + '\n'
+
+    with open(filename + ".h", "w") as k4004:
+        k4004.write(flowerbox)  # noqa
+        k4004.write('// Program Name  : ' + filename + "\n")
+        k4004.write('// Assembly Date : ' + cd + "\n")
+        k4004.write(flowerbox)  # noqa
+        k4004.write('// Program produced in Retroshield Arduino 4004 format.\n')  # noqa
+        k4004.write('// by Pyntel4004 Assembler\n')
+        k4004.write('\n\n')
+
+        k4004.write(memory_content + "\n")
+    return True
+
+
+def strip_end(program: list) -> list:
+    # Strip out pseudo opcode "end".
+    position = 0
+    for _ in program:
+        if program[position] > 255:
+            program[position] = 0
+        position = position + 1
+    return program
+
+
+def format_program(program: list, program_name: str, assembledate: str,
+                   m_location: str, labels: str):
+    program_out = []
+    memorycontent = '"memory":['
+    for location in program:
+        content = str(hex(location)[2:])
+        if int(content, 16) > 255:
+            program_out.append(0)
+        memorycontent = memorycontent + '"' + content + '", '
+    memory_content = memorycontent[:-2] + ']'
+
+    # Remove "end" pseudo instruction
+    program = strip_end(program)
+
+    json_doc = "{"
+    json_doc = json_doc + program_name + ','
+    json_doc = json_doc + assembledate + ','
+    json_doc = json_doc + m_location + ','
+    json_doc = json_doc + memory_content + ','
+    json_doc = json_doc + labels
+    json_doc = json_doc + '}'
+    return json_doc
+
+
+def write_program_to_file(program: list, filename: str, memory_location: str,
+                          _labels: list, output: str) -> bool:
     """
     Take the assembled program and write to a given filename.
 
@@ -1703,37 +1753,18 @@ def write_program_to_file(program, filename, memory_location,
 
     """
     from datetime import datetime  # noqa
-    program_out = []
+
     program_name = '"program":"' + filename + '"'
-    cd = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     m_location = '"location":"' + memory_location + '"'
-    assembledate = '"assemble_date":"' + cd + '"'
     labels = '"labels":' + str(_labels).replace("'", '"')
-    memorycontent = '"memory":['
-    i = 0
-    for location in program:
-        content = str(hex(location)[2:])
-        if int(content, 16) > 255:
-            program_out.append(0)
-        memorycontent = memorycontent + '"' + content + '", '
-        i = i + 1
-    memory_content = memorycontent[:-2] + ']'
+    cd = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    assembledate = '"assemble_date":"' + cd + '"'
 
-    # Strip out pseudo opcode "end".
-    position = 0
-    for i in program:
-        if program[position] > 255:
-            program[position] = 0
-        position = position + 1
-
-    json_doc = "{"
-    json_doc = json_doc + program_name + ','
-    json_doc = json_doc + assembledate + ','
-    json_doc = json_doc + m_location + ','
-    json_doc = json_doc + memory_content + ','
-    json_doc = json_doc + labels
-    json_doc = json_doc + '}'
     types = output.upper()
+
+    json_doc = format_program(program, program_name,
+                              assembledate, m_location, labels)
+
     if 'ALL' in types or 'OBJ' in types:
         with open(filename + '.obj', "w", encoding='utf-8') as output:
             output.write(json_doc)
@@ -1758,15 +1789,7 @@ def write_program_to_file(program, filename, memory_location,
                 memorycontent = memorycontent + '\n'
         memory_content = memorycontent[:-3] + '};\n'
 
-        with open(filename + "k4004.h", "w") as k4004:
-            k4004.write('////////////////////////////////////////////////////////////////////\n')  # noqa
-            k4004.write('// Program Name  : ' + filename + "\n")
-            k4004.write('// Assembly Date : ' + cd + "\n")
-            k4004.write('////////////////////////////////////////////////////////////////////\n')  # noqa
-            k4004.write('// Program produced in Retroshield Arduino 4004 format.\n')  # noqa
-            k4004.write('// by Pyntel4004 Assembler\n')
-            k4004.write('\n\n')
-
-            k4004.write(memory_content + "\n")
+        # Write to a .h file
+        write_header_file(filename, cd, memory_content)
 
     return True
