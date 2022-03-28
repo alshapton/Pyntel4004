@@ -5,7 +5,7 @@
 from hardware.processor import Processor  # noqa
 
 # Import typing library
-from typing import Any
+from typing import Any, Tuple
 
 
 def coredump(chip: Processor, filename: str) -> bool:
@@ -339,6 +339,18 @@ def retrieve_program(chip: Processor, location: str) -> list:
     return loc
 
 
+def custom_opcode_logic(custom_opcode: bool, cop: str, exe: str) \
+                        -> Tuple[str, str]:
+    op = ''
+    if custom_opcode:
+        custom_opcode = False
+        exe = cop
+        op = cop
+    else:
+        op = exe
+    return exe, op
+
+
 def translate_mnemonic(chip: Processor, _tps: list, exe: str,
                        opcode: str, task: str, words: int, quiet: bool) -> str:
     """
@@ -392,14 +404,14 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
 
     # Ensure that the correct arguments are passed to the operations
     if exe[:3] == 'fim':
-        value = str(_tps[chip.PROGRAM_COUNTER + 1])
-        exe = exe.replace('p', '').replace('data8)', '') + value + ')'
+        exe = exe.replace('p', '').replace('data8)', '') +\
+            str(_tps[chip.PROGRAM_COUNTER + 1]) + ')'
 
     if exe[:3] == 'isz':
         # Remove opcode from 1st byte to get register
-        register = bin(_tps[chip.PROGRAM_COUNTER] & 15)[2:].zfill(8)[4:]
-        address = str(_tps[chip.PROGRAM_COUNTER + 1])
-        exe = 'isz(' + str(int(register, 2)) + ',' + str(address) + ')'
+        exe = 'isz(' + str(int(bin(_tps[chip.PROGRAM_COUNTER]
+                           & 15)[2:].zfill(8)[4:], 2)) + ',' + \
+                           str(str(_tps[chip.PROGRAM_COUNTER + 1])) + ')'
 
     if exe[:4] == 'jcn(':
         custom_opcode = True
@@ -408,9 +420,6 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
         b10address = str(address)
         cop = exe.replace('address8', b10address)
         exe = exe[:4] + str(int(conditions, 2)) + ',' + b10address + ')'
-        if task == 'D':
-            opcode = str(_tps[chip.PROGRAM_COUNTER]) + ', ' \
-                + str(_tps[chip.PROGRAM_COUNTER + 1])
 
     if exe[:4] in ('jun(', 'jms('):
         custom_opcode = True
@@ -421,33 +430,23 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
         whole_value = str(int(hvalue + lvalue, 2))
         cop = exe.replace('address12', whole_value)
         exe = exe[:4] + whole_value + ')'
-        if task == 'D':
+
+    if task == 'D':
+        if exe[:4] in ('jun(', 'jms(', 'jcn('):
             opcode = str(_tps[chip.PROGRAM_COUNTER]) + ', ' + \
                 str(_tps[chip.PROGRAM_COUNTER + 1])
 
-    if task == 'D':
         if exe[:3] == 'end':  # pseudo-opcode (directive "end" - stop program)
-            opcode = ''
             custom_opcode = False
-        if custom_opcode:
-            custom_opcode = False
-            exe = cop
-            if not quiet:
-                print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, cop.replace('()', '')))  # noqa
-        else:
-            if not quiet:
-                print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, exe.replace('()', '')))  # noqa
+        exe, op = custom_opcode_logic(custom_opcode, cop, str)
+        if not quiet:
+            print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, op.replace('()', '')))  # noqa
 
         chip.PROGRAM_COUNTER = chip.PROGRAM_COUNTER + words
 
     if task == 'E':
-        if custom_opcode:
-            custom_opcode = False
-            exe = cop
-            if not quiet:
-                print('  {:>7}  {:<10}'.format(opcode, cop.replace('()', '')))  # noqa
-        else:
-            if not quiet:
-                print('  {:>7}  {:<10}'.format(opcode, exe.replace('()', '')))  # noqa
+        exe, op = custom_opcode_logic(custom_opcode, cop, str)
+        if not quiet:
+             print('  {:>7}  {:<10}'.format(opcode, op.replace('()', '')))  # noqa
 
     return exe

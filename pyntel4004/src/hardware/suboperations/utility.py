@@ -2,6 +2,8 @@
 # Import typing library
 from typing import Tuple
 
+from hardware.suboperations.constants import const_bits, const_value
+
 from hardware.exceptions import AddressOutOf8BitRange, \
     IncompatibleChunkBit, \
     InvalidBitValue, InvalidChunkValue, \
@@ -78,7 +80,7 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int,
     N/A
 
     """
-    bits_const = ' Bits: ' + str(bits)
+    bits_const = const_bits + str(bits)
     if (bits not in [2, 4, 8, 12]):
         raise InvalidBitValue(bits_const)
 
@@ -89,7 +91,7 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int,
         raise IncompatibleChunkBit(bits_const + ' Chunk: ' + str(chunk))
 
     if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) + bits_const)
+        raise ValueOutOfRangeForBits(const_value + str(decimal) + bits_const)
 
     binary = decimal_to_binary(bits, decimal)
     chunks = [binary[i:i+chunk] for i in range(0, len(binary), chunk)]
@@ -170,12 +172,12 @@ def decimal_to_binary(bits: int, decimal: int) -> str:
     N/A
 
     """
-    bits_const = ' Bits: ' + str(bits)
+    bits_const = const_bits + str(bits)
     if (bits not in [2, 4, 8, 12]):
         raise InvalidBitValue(bits_const)
 
     if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) + bits_const)
+        raise ValueOutOfRangeForBits(const_value + str(decimal) + bits_const)
 
     # Convert decimal to binary
     binary = bin(decimal)[2:].zfill(bits)
@@ -209,12 +211,12 @@ def ones_complement(value: str, bits: int) -> str:
     N/A
 
     """
-    bits_const = ' Bits: ' + str(bits)
+    bits_const = const_bits + str(bits)
     if (bits not in [2, 4, 8, 12]):
         raise InvalidBitValue(bits_const)
 
     if (int(value) > ((2 ** bits) - 1)) or (int(value) < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(value) + bits_const)
+        raise ValueOutOfRangeForBits(const_value + str(value) + bits_const)
 
     # Perform a one's complement
     # i.e. invert all the bits
