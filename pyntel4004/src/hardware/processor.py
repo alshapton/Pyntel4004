@@ -33,9 +33,6 @@ class Processor:
         read_acbr, read_accumulator, set_accumulator
     from hardware.suboperations.carry import read_carry, \
         read_complement_carry, reset_carry, set_carry
-    from hardware.suboperations.init import init_command_registers, \
-        init_pram, init_ram, init_registers, init_rom, init_stack, \
-        init_wpm_counter
     from hardware.suboperations.pc import inc_pc_by_page, increment_pc, \
         is_end_of_page, read_program_counter
     from hardware.suboperations.pin10 import read_pin10, write_pin10
@@ -82,19 +79,29 @@ class Processor:
     def __init__(self):
         """Initialise an instance of the processor."""
         # Set up all the internals of the processor
-        self.COMMAND_REGISTERS = []  # Command Register (Select Data RAM Bank)
+
+        # Command Register (Select Data RAM Bank)
+        self.COMMAND_REGISTERS = [0] * self.NO_COMMAND_REGISTERS
 
         # Set up RAM
-        self.RAM = []                            # RAM
+        # Initialise the RAM with zeroes in all locations.
+        self.RAM = [0] * self.MEMORY_SIZE_RAM
         self.RAM_PORT = [[0 for _ in range(4)]   # RAM Ports
                          for _ in range(8)]
         # Set up ROM
-        self.ROM = []                                           # ROM
+        # Initialise the ROM with zeroes in all locations.
+        self.ROM = [0] * self.MEMORY_SIZE_ROM    # ROM
         self.ROM_PORT = [0 for _ in range(self.NO_ROM_PORTS)]   # ROM ports
 
-        self.PRAM = []               # Program RAM
-        self.REGISTERS = []          # Registers (4-bit)
-        self.STACK = []              # The stack - 3 x 12-bit registers
+        # Set up Program RAM
+        # Initialise the Program RAM with zeroes in all locations.
+        self.PRAM = [0] * self.MEMORY_SIZE_PRAM  # PRAM
+
+        # Registers (4-bit)
+        self.REGISTERS = [0] * self.NO_REGISTERS
+
+        # Set up the stack
+        self.STACK = [0] * self.STACK_SIZE  # The stack - 3 x 12-bit registers
 
         self.COMMAND_REGISTER = 0
 
@@ -115,16 +122,12 @@ class Processor:
         self.ACBR = 0                # Accumulator Buffer Register
         self.STACK_POINTER = 2       # Stack Pointer
         self.PROGRAM_COUNTER = 0     # Program Counter - 12-bit value
-
-        self.init_stack()
-        self.init_command_registers()
-        self.init_registers()
-        self.init_pram()
-        self.init_ram()
-        self.init_rom()
         self.CURRENT_DRAM_BANK = 0   # Current Data RAM Bank
         self.CURRENT_RAM_BANK = 0    # Current Program RAM Bank
         self.reset_carry()           # Reset the carry bit
-        self.init_wpm_counter()      # WPM Counter (Left/Right flip)
+
+        # The WPM counter is required to allow WPM instructions to track which
+        # 4-bit portion of an 8-bit byte is being transferred.
+        self.WPM_COUNTER = 'LEFT'    # WPM Counter (Left/Right flip)
 
     #  END OF PROCESSOR DEFINITION

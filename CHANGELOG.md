@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added platform-aware code (to enable a central codebase of cpython and micropython supported platforms)
 ### Changed
-- 
+- Switched to more efficient memory-allocation method for ROM/RAM/PRAM etc...
 ### Deprecated
 -
 ### Fixed
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tidied up some code to make it less complex, and improve quality
 ### Removed
 - "4004" command line facility. This is now part of the Pyntel4004-cli project
+- `init.py` module - now all initialisation occurs efficiently inside the processor class
 ### Security
 - N/A
 
