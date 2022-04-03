@@ -10,6 +10,8 @@ from .exceptions import AddressOutOf8BitRange, \
     ValueOutOfRangeForStack, ValueTooLargeForAccumulator, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
+from hardware.suboperations.constants import const_bits, const_value
+
 
 def rdx(self, character):
     """
@@ -660,7 +662,7 @@ def write_to_stack(self, value: int):
     After 3 writes, address "a" is lost
     """
     if (value < 0 or value > 4095):
-        raise ValueOutOfRangeForStack(' Value: ' + str(value))
+        raise ValueOutOfRangeForStack(const_value + str(value))
 
     self.STACK[self.STACK_POINTER] = value
     self.STACK_POINTER = self.STACK_POINTER - 1
@@ -738,12 +740,12 @@ def ones_complement(value: str, bits: int):
     N/A
 
     """
-    bits_const = ' Bits: ' + str(bits)
+    bits_const = const_bits + str(bits)
     if (bits not in [2, 4, 8, 12]):
         raise InvalidBitValue(bits_const)
 
     if (value > ((2 ** bits) - 1)) or (value < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(value) + bits_const)
+        raise ValueOutOfRangeForBits(const_value + str(value) + bits_const)
 
     # Perform a one's complement
     # i.e. invert all the bits
@@ -806,7 +808,7 @@ def convert_decimal_to_n_bit_slices(bits: int, chunk: int, decimal: int, result:
         raise IncompatibleChunkBit(bits_const + ' Chunk: ' + str(chunk))
 
     if (decimal > ((2 ** bits) - 1)) or (decimal < 0):
-        raise ValueOutOfRangeForBits(' Value: ' + str(decimal) +
+        raise ValueOutOfRangeForBits(const_value + str(decimal) +
                                      bits_const)
 
     binary = decimal_to_binary(bits, decimal)

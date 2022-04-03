@@ -1,11 +1,15 @@
 
 """Shared operations (between assembly, disassembly and execution."""
 
+import os
+import sys
+sys.path.insert(1, '..' + os.sep + 'platforms')
+
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
 
 # Import typing library
-from typing import Any, Tuple
+from typing import Any, Tuple  # noqa
 
 
 def coredump(chip: Processor, filename: str) -> bool:
@@ -33,9 +37,10 @@ def coredump(chip: Processor, filename: str) -> bool:
     N/A
 
     """
-    from datetime import datetime
-    errordate = 'Date/Time:' + \
-        datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n\n'
+    # Import platform-specific code
+    from platforms.platforms import get_current_datetime  # noqa
+
+    errordate = 'Date/Time:' + get_current_datetime() + '\n\n'
     with open(filename + '.core', "w") as output:
         output.write('\n\n' + errordate)
         output.write('Processor Characteristics:\n\n')
@@ -438,14 +443,14 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
 
         if exe[:3] == 'end':  # pseudo-opcode (directive "end" - stop program)
             custom_opcode = False
-        exe, op = custom_opcode_logic(custom_opcode, cop, str)
+        exe, op = custom_opcode_logic(custom_opcode, cop, exe)
         if not quiet:
             print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, op.replace('()', '')))  # noqa
 
         chip.PROGRAM_COUNTER = chip.PROGRAM_COUNTER + words
 
     if task == 'E':
-        exe, op = custom_opcode_logic(custom_opcode, cop, str)
+        exe, op = custom_opcode_logic(custom_opcode, cop, exe)
         if not quiet:
              print('  {:>7}  {:<10}'.format(opcode, op.replace('()', '')))  # noqa
 

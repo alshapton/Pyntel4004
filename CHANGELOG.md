@@ -9,14 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - 
 ### Added
-- 
+- Added platform-aware code (to enable a central codebase of cpython and micropython supported platforms)
 ### Changed
 - 
 ### Deprecated
 -
 ### Fixed
 - Fixed an issue where BIN file is used and there is no "end" mnemonic - did produce an error. Now doesnt.
-- Tidied up some code to make it less complex
+- Tidied up some code to make it less complex, and improve quality
 ### Removed
 - "4004" command line facility. This is now part of the Pyntel4004-cli project
 ### Security

@@ -202,7 +202,6 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
     breakpoints = []  # noqa
     chip.PROGRAM_COUNTER = pc
     opcode = 0
-
     _tps = retrieve_program(chip, location)
     while opcode != 256:  # pseudo-opcode (directive) for "end"
         monitor_command = 'none'
@@ -212,7 +211,7 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
                                     monitor_command, quiet)
         else:
             opcode = 256
-            
+
         if opcode == 256:
             break
 

@@ -1,0 +1,32 @@
+
+
+Date/Time:Sun Apr  3 19:25:31 2022
+
+Processor Characteristics:
+
+MAX_4_BITS :           15			PAGE_SIZE :            256
+STACK_SIZE :           3			MSB :                  8
+MEMORY_SIZE_RAM :      4096			NO_REGISTERS :         16
+MEMORY_SIZE_ROM :      4096			NO_ROM_PORTS :         16
+MEMORY_SIZE_PRAM :     4096			NO_CHIPS_PER_BANK :    4
+RAM_BANK_SIZE :        256			RAM_CHIP_SIZE :        64
+RAM_REGISTER_SIZE :    16			NO_COMMAND_REGISTERS : 8
+NO_STATUS_REGISTERS :  4			NO_STATUS_CHARACTERS : 4
+
+
+Processor Status:
+
+PIN 10               : 0
+Program Counter      : 10
+Stack/Pointer        : (0, 0, 0) / 2
+ACBR                 : 0
+Carry                : 0
+DRAM Bank            : 0
+RAM Bank             : 0
+WPM Counter          : LEFT
+
+
+Registers:
+
+[ 0]	[ 1]	[ 2]	[ 3]	[ 4]	[ 5]	[ 6]	[ 7]	[ 8]	[ 9]	[10]	[11]	[12]	[13]	[14]	[15]	
+  0		  1		  0		  0		  0		  0		  0		  0		  0		  0		  0		  0		  0		  0		  0		  0		
