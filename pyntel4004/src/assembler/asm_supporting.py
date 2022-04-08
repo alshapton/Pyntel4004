@@ -7,7 +7,7 @@
 
 from typing import Tuple, Any
 from hardware.processor import Processor
-from hardware.suboperations.utility import split_address8
+from hardware.suboperations.utility import split_address8, zfl  # noqa
 from shared.shared import do_error, get_opcodeinfo, get_opcodeinfobyopcode, \
     print_messages  # noqa
 
@@ -1367,8 +1367,8 @@ def assemble_2(chip: Processor, x: list, opcode: str, address: int,
         f_opcode = opcode + '(address12)'
         opcodeinfo = get_opcodeinfo(chip, 'L', f_opcode)
         label_addr = get_label_addr(_labels, x[1])
-        label_addr12 = str(bin(decimal_code)[2:].zfill(8)[:4]) + \
-            str(bin(label_addr)[2:].zfill(12))
+        label_addr12 = zfl(str(bin(decimal_code)[2:], 8)[:4]) + \
+            zfl(str(bin(label_addr)[2:], 12))
         bit1 = label_addr12[:8]
         bit2 = label_addr12[8:]
         tps[address] = int(str(bit1), 2)

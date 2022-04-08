@@ -1,10 +1,13 @@
 """ Module for running accembled code. """
 
 # Import system modules
-import os
 import sys
 from typing import Tuple
-sys.path.insert(1, '..' + os.sep + 'src')
+sep = '/'  # Micropython
+sys.path.insert(1, '..' + sep + 'src')  # Micropython
+
+# Import platform detection
+from platforms.platforms import get_current_platform  # noqa
 
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
@@ -25,7 +28,7 @@ from shared.shared import coredump, do_error, get_opcodeinfobyopcode, retrieve_p
 ##############################################################################
 
 
-def process_coredump(chip: Processor, ex) -> None:
+def process_coredump(chip: Processor, ex: Exception) -> None:
     """
     Formulate the opcodes into mnemonics ready for execution.
 
@@ -143,14 +146,10 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
                 break
 
     opcode = _tps[chip.PROGRAM_COUNTER]
-    # pseudo-opcode (directive "end" - stop program)
-    if opcode == 256:
+    if opcode == 256:  # pseudo-opcode (directive "end" - stop program)
         if not quiet:
             print('           end')
         result = None
-
-    if chip.PROGRAM_COUNTER == 4096:
-        result = False
 
     exe = get_opcodeinfobyopcode(chip, opcode)['mnemonic']
     if exe == '-':
@@ -159,8 +158,32 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
     return result, monitor_command, monitor, breakpoints, exe, opcode
 
 
+def dispatch0(operations: list, command: str):
+    """
+    Dispatch command line action to proper
+    function with zero parameters
+    """
+    return operations[command]()
+
+
+def dispatch1(operations: list, command: str, p1: int):
+    """
+    Dispatch command line action to proper
+    function with 1 parameter
+    """
+    return operations[command](p1)
+
+
+def dispatch2(operations: list, command: str, p1: int, p2: int):
+    """
+    Dispatch command line action to proper
+    function with 2 parameters
+    """
+    return operations[command](p1, p2)
+
+
 def execute(chip: Processor, location: str, pc: int, monitor: bool,
-            quiet: bool) -> bool:
+            quiet: bool, operations: list) -> bool:
     """
     Control the execution of a previously assembled program.
 
@@ -181,6 +204,9 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
     quiet: bool, mandatory
         Whether or not quiet mode is on or off
 
+    operations: list, mandatory
+        List of functions i.e. instructions that are contained within the i4004
+
     Returns
     -------
     True        in all instances
@@ -199,32 +225,60 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
 #    mccabe: MC0001 / execute is too complex (11)
 #    mccabe: MC0001 / execute is too complex (5)
 
+    platform = get_current_platform()
     breakpoints = []  # noqa
     chip.PROGRAM_COUNTER = pc
     opcode = 0
+    const_chip = 'chip.'
     _tps = retrieve_program(chip, location)
-    while opcode != 256:  # pseudo-opcode (directive) for "end"
-        monitor_command = 'none'
-        if chip.PROGRAM_COUNTER != 4096:
+    try:
+        # pseudo-opcode (directive) for "end" or end of memory
+        while opcode != 256 and chip.PROGRAM_COUNTER < 4096:
+            monitor_command = 'none'
             result, monitor_command, monitor, breakpoints, exe, opcode = \
                 process_instruction(chip, breakpoints, _tps, monitor,
                                     monitor_command, quiet)
-        else:
-            opcode = 256
+            if opcode == 256:
+                break
 
-        if opcode == 256:
-            break
+            if chip.PROGRAM_COUNTER == 4096:
+                break
+            # Execute instruction
+            exe = const_chip + translate_mnemonic(chip, _tps, exe, opcode,
+                                                  'E', 0, quiet)
+            if platform == 'micropython':
+                # Micropython
+                command = exe.replace(const_chip, '')[:3]
+                params = exe.replace(const_chip, '')[3:].\
+                    replace('(', '').replace(')', '')
+                splitparams = params.split(',')
+                counter = 0
+                p1 = None
+                p2 = None
+                for i in splitparams:
+                    if counter == 0 and i is not None:
+                        p1 = i
+                    if counter == 1 and i is not None:
+                        p2 = i
+                    counter = counter + 1
 
-        # Execute instruction
-        exe = 'chip.' + translate_mnemonic(chip, _tps, exe, opcode,
-                                           'E', 0, quiet)
-        # Evaluate the command (some commands may change
-        # the PROGRAM_COUNTER here)
-        # Deliberately using eval here... skip checks in all code quality tools
-        # skipcq: PYL-PYL-W0123
-        try:
-            eval(exe)  # noqa
-        except Exception as ex:  # noqa
-            process_coredump(chip, ex)
-            return False
+                if splitparams == ['']:
+                    _ = dispatch0(operations, command)
+                elif p2 is None and p1 is not None:
+                    _ = dispatch1(operations, command, int(p1))
+                elif p2 is not None:
+                    _ = dispatch2(operations, command, int(p1), int(p2))
+            else:
+                # Other pythons - e.g. cython
+                # Evaluate the command (some commands may change
+                # the PROGRAM_COUNTER here)
+                # skipcq: PYL-PYL-W0123
+                try:
+                    eval(exe)  # noqa
+                except Exception as ex:  # noqa
+                    process_coredump(chip, ex)
+                    return False
+    except Exception as ex:
+        process_coredump(chip, ex)
+        return False
     return True

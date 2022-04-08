@@ -10,6 +10,13 @@ from hardware.exceptions import AddressOutOf8BitRange, \
     NotABinaryNumber, ValueOutOfRangeForBits  # noqa
 
 
+def zfl(s: str, width: int):
+    # Drop-in replacement in Micropython for zfill - used across all platforms
+    # Pads the provided string with leading 0's to suit the
+    # specified 'chrs' length. Force # characters, fill with leading 0's
+    return '{:0>{w}}'.format(s, w=width)
+
+
 def binary_to_decimal(binary: str) -> int:
     """
     Converts a string value(which must be in binary form) to a decimal value.
@@ -180,7 +187,7 @@ def decimal_to_binary(bits: int, decimal: int) -> str:
         raise ValueOutOfRangeForBits(const_value + str(decimal) + bits_const)
 
     # Convert decimal to binary
-    binary = bin(decimal)[2:].zfill(bits)
+    binary = zfl(bin(decimal)[2:], bits)
     return binary
 
 
@@ -260,6 +267,6 @@ def split_address8(address: int) -> Tuple[str, str]:
     if (address < 0) or (address > 255):
         raise AddressOutOf8BitRange('Address: ' + str(address))
 
-    address_left = bin(address)[2:].zfill(8)[:4]
-    address_right = bin(address)[2:].zfill(8)[4:]
+    address_left = zfl(bin(address)[2:], 8)[:4]
+    address_right = zfl(bin(address)[2:], 8)[4:]
     return address_left, address_right

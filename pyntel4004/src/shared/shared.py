@@ -7,6 +7,7 @@ sys.path.insert(1, '..' + os.sep + 'platforms')
 
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
+from hardware.suboperation import zfl  # noqa
 
 # Import typing library
 from typing import Any, Tuple  # noqa
@@ -86,6 +87,8 @@ def coredump(chip: Processor, filename: str) -> bool:
         output.write('Stack/Pointer        : (' + stack + ') / ' +
                      (str(chip.STACK_POINTER)) + '\n')
         output.write('ACBR                 : ' + str(chip.ACBR) + '\n')
+        acc = chip.read_accumulator()
+        output.write('Accumulator          : ' + str(acc) + '\n')
         output.write('Carry                : ' + str(chip.CARRY) + '\n')
         output.write('DRAM Bank            : ' + str(chip.CURRENT_DRAM_BANK) +
                      '\n')
@@ -414,14 +417,14 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
 
     if exe[:3] == 'isz':
         # Remove opcode from 1st byte to get register
-        exe = 'isz(' + str(int(bin(_tps[chip.PROGRAM_COUNTER]
-                           & 15)[2:].zfill(8)[4:], 2)) + ',' + \
-                           str(str(_tps[chip.PROGRAM_COUNTER + 1])) + ')'
+        first_byte = zfl(str(_tps[chip.PROGRAM_COUNTER] & 15), 4)
+        exe = 'isz(' + str(int(first_byte, 2))
+        exe = exe + ',' + str(_tps[chip.PROGRAM_COUNTER + 1]) + ')'
 
     if exe[:4] == 'jcn(':
         custom_opcode = True
         address = _tps[chip.PROGRAM_COUNTER + 1]
-        conditions = (bin(_tps[chip.PROGRAM_COUNTER])[2:].zfill(8)[4:])
+        conditions = zfl(str(bin(_tps[chip.PROGRAM_COUNTER])[2:], 8)[4:])
         b10address = str(address)
         cop = exe.replace('address8', b10address)
         exe = exe[:4] + str(int(conditions, 2)) + ',' + b10address + ')'
@@ -429,9 +432,9 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
     if exe[:4] in ('jun(', 'jms('):
         custom_opcode = True
         # Remove opcode from 1st byte
-        hvalue = bin(_tps[chip.PROGRAM_COUNTER] &
-                     0xffff0000)[2:].zfill(8)[:4]
-        lvalue = bin(_tps[chip.PROGRAM_COUNTER + 1])[2:].zfill(8)
+        hvalue = zfl(bin(_tps[chip.PROGRAM_COUNTER] &
+                     0xffff0000)[2:], 8)[:4]
+        lvalue = zfl(bin(_tps[chip.PROGRAM_COUNTER + 1])[2:], 8)
         whole_value = str(int(hvalue + lvalue, 2))
         cop = exe.replace('address12', whole_value)
         exe = exe[:4] + whole_value + ')'

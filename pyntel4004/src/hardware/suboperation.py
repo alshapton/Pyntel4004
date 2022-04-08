@@ -11,6 +11,7 @@ from .exceptions import AddressOutOf8BitRange, \
     ValueTooLargeForRegister, ValueTooLargeForRegisterPair  # noqa
 
 from hardware.suboperations.constants import const_bits, const_value
+from hardware.suboperations.utility import zfl
 
 
 def rdx(self, character):
@@ -175,8 +176,8 @@ def split_address8(address):
     if (address < 0) or (address > 255):
         raise AddressOutOf8BitRange('Address: ' + str(address))
 
-    address_left = bin(address)[2:].zfill(8)[:4]
-    address_right = bin(address)[2:].zfill(8)[4:]
+    address_left = zfl(bin(address)[2:], 8)[:4]
+    address_right = zfl(bin(address)[2:], 8)[4:]
     return address_left, address_right
 
 
@@ -750,7 +751,7 @@ def ones_complement(value: str, bits: int):
     # Perform a one's complement
     # i.e. invert all the bits
 
-    binary = bin(value)[2:].zfill(bits)
+    binary = zfl(bin(value)[2:], bits)
     ones = ''
     for x in range(bits):
         if binary[x] == '1':
@@ -856,7 +857,7 @@ def decimal_to_binary(bits: int, decimal: int):
         raise ValueOutOfRangeForBits(' Value: ' + str(decimal) + bits_const)
 
     # Convert decimal to binary
-    binary = bin(decimal)[2:].zfill(bits)
+    binary = zfl(bin(decimal)[2:], bits)
     return binary
 
 
