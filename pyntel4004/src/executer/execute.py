@@ -2,7 +2,6 @@
 
 # Import system modules
 import sys
-from typing import Tuple
 sep = '/'  # Micropython
 sys.path.insert(1, '..' + sep + 'src')  # Micropython
 
@@ -66,7 +65,7 @@ def process_coredump(chip: Processor, ex: Exception) -> None:
 
 def process_instruction(chip: Processor, breakpoints: list, _tps: list,
                         monitor: bool, monitor_command: str, quiet: bool
-                        ) -> Tuple[bool, str, bool, list, str, str]:
+                        ):
     """
     Process a single instruction.
 
@@ -225,7 +224,6 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
 #    mccabe: MC0001 / execute is too complex (11)
 #    mccabe: MC0001 / execute is too complex (5)
 
-    platform = get_current_platform()
     breakpoints = []  # noqa
     chip.PROGRAM_COUNTER = pc
     opcode = 0
@@ -238,46 +236,31 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
             result, monitor_command, monitor, breakpoints, exe, opcode = \
                 process_instruction(chip, breakpoints, _tps, monitor,
                                     monitor_command, quiet)
-            if opcode == 256:
+            if opcode == 256 or chip.PROGRAM_COUNTER == 4096:
                 break
 
-            if chip.PROGRAM_COUNTER == 4096:
-                break
             # Execute instruction
             exe = const_chip + translate_mnemonic(chip, _tps, exe, opcode,
                                                   'E', 0, quiet)
-            if platform == 'micropython':
-                # Micropython
-                command = exe.replace(const_chip, '')[:3]
-                params = exe.replace(const_chip, '')[3:].\
-                    replace('(', '').replace(')', '')
-                splitparams = params.split(',')
-                counter = 0
-                p1 = None
-                p2 = None
-                for i in splitparams:
-                    if counter == 0 and i is not None:
-                        p1 = i
-                    if counter == 1 and i is not None:
-                        p2 = i
-                    counter = counter + 1
-
-                if splitparams == ['']:
-                    _ = dispatch0(operations, command)
-                elif p2 is None and p1 is not None:
-                    _ = dispatch1(operations, command, int(p1))
-                elif p2 is not None:
-                    _ = dispatch2(operations, command, int(p1), int(p2))
-            else:
-                # Other pythons - e.g. cython
-                # Evaluate the command (some commands may change
-                # the PROGRAM_COUNTER here)
-                # skipcq: PYL-PYL-W0123
-                try:
-                    eval(exe)  # noqa
-                except Exception as ex:  # noqa
-                    process_coredump(chip, ex)
-                    return False
+            command = exe.replace(const_chip, '')[:3]
+            params = exe.replace(const_chip, '')[3:].\
+                replace('(', '').replace(')', '')
+            splitparams = params.split(',')
+            counter = 0
+            p1 = None
+            p2 = None
+            for i in splitparams:
+                if counter == 0 and i is not None:
+                    p1 = i
+                if counter == 1 and i is not None:
+                    p2 = i
+                counter = counter + 1
+            if splitparams == ['']:
+                _ = dispatch0(operations, command)
+            elif p2 is None and p1 is not None:
+                _ = dispatch1(operations, command, int(p1))
+            elif p2 is not None:
+                _ = dispatch2(operations, command, int(p1), int(p2))
     except Exception as ex:
         process_coredump(chip, ex)
         return False
