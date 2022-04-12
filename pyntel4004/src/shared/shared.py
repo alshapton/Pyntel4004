@@ -454,6 +454,8 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
 
     if task == 'E':
         exe, op = custom_opcode_logic(custom_opcode, cop, exe)
+        print('exe=',exe)
+
         if not quiet:
              print('  {:>7}  {:<10}'.format(opcode, op.replace('()', '')))  # noqa
 

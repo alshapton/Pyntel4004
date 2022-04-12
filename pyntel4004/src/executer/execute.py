@@ -181,6 +181,22 @@ def dispatch2(operations: list, command: str, p1: int, p2: int):
     return operations[command](p1, p2)
 
 
+def prep_single_instruction(exe: str, const_chip: str):
+    command = exe.replace(const_chip, '')[:3]
+    params = exe.replace(const_chip, '')[3:].replace('(', '').replace(')', '')
+    splitparams = params.split(',')
+    counter = 0
+    p1 = None
+    p2 = None
+    for i in splitparams:
+        if counter == 0 and i is not None:
+            p1 = i
+        if counter == 1 and i is not None:
+            p2 = i
+        counter = counter + 1
+    return command, splitparams, p1, p2
+
+
 def execute(chip: Processor, location: str, pc: int, monitor: bool,
             quiet: bool, operations: list) -> bool:
     """
@@ -242,19 +258,8 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
             # Execute instruction
             exe = const_chip + translate_mnemonic(chip, _tps, exe, opcode,
                                                   'E', 0, quiet)
-            command = exe.replace(const_chip, '')[:3]
-            params = exe.replace(const_chip, '')[3:].\
-                replace('(', '').replace(')', '')
-            splitparams = params.split(',')
-            counter = 0
-            p1 = None
-            p2 = None
-            for i in splitparams:
-                if counter == 0 and i is not None:
-                    p1 = i
-                if counter == 1 and i is not None:
-                    p2 = i
-                counter = counter + 1
+            command, splitparams, p1, p2 = \
+                prep_single_instruction(exe, const_chip)
             if splitparams == ['']:
                 _ = dispatch0(operations, command)
             elif p2 is None and p1 is not None:
