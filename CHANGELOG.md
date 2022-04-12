@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced inbuilt `zfill` with hand-written `zfl` function due to micropython not supporting zfill
 ### Changed
 - Switched to more efficient memory-allocation method for ROM/RAM/PRAM etc...
+- Moved operation vectors inside Processor class
 ### Deprecated
 -
 ### Fixed
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - "4004" command line facility. This is now part of the Pyntel4004-cli project
 - `init.py` module - now all initialisation occurs efficiently inside the processor class
+- now no "eval" function - removed dangerous code and replaced with instruction vectors (only now left in test support code)
 ### Security
 - N/A
 

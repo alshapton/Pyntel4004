@@ -19,7 +19,6 @@ from hardware.suboperations.registers import insert_register  # noqa
 def test_validate_instruction(register):
     """Ensure instruction's characteristics are valid."""
     chip_test = Processor()
-    print(register)
     # Validate the instruction's opcode and characteristics:
     op = chip_test.INSTRUCTIONS[96 + register]
     known = {"opcode": 96 + register, "mnemonic": "inc(" + str(register) + ")", "exe": 10.8, "bits": ["0110", decimal_to_binary(4, register)], "words": 1}  # noqa
