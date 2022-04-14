@@ -135,6 +135,7 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
                 monitor_command = input(prompt).lower()
             else:
                 monitor_command = ''
+
             result, monitor, monitor_command, opcode = \
                 deal_with_monitor_command(chip, monitor_command,
                                           breakpoints, monitor, opcode)
