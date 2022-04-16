@@ -5,6 +5,8 @@ import sys
 sep = '/'  # Micropython
 sys.path.insert(1, '..' + sep + 'src')  # Micropython
 
+from typing import Tuple  # noqa
+
 # Import platform detection
 from platforms.platforms import get_current_platform  # noqa
 
@@ -12,7 +14,7 @@ from platforms.platforms import get_current_platform  # noqa
 from hardware.processor import Processor  # noqa
 
 # Import executer and shared functions
-from executer.exe_supporting import deal_with_monitor_command, is_breakpoint  # noqa
+from executer.exe_supporting import deal_with_monitor_command, is_breakpoint , set_prompts # noqa
 from shared.shared import coredump, do_error, get_opcodeinfobyopcode, retrieve_program, \
     translate_mnemonic  # noqa
 
@@ -64,8 +66,9 @@ def process_coredump(chip: Processor, ex: Exception) -> None:
 
 
 def process_instruction(chip: Processor, breakpoints: list, _tps: list,
-                        monitor: bool, monitor_command: str, quiet: bool
-                        ):
+                        monitor: bool, monitor_command: str, quiet: bool,
+                        opcode: str
+                        ) -> Tuple[bool, str, bool, list, str, str]:
     """
     Process a single instruction.
 
@@ -89,6 +92,9 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
 
     quiet: bool, mandatory
         Whether quiet mode is on or off.
+
+    opcode: str
+        Opcode of the current instruction
 
     Returns
     -------
@@ -119,40 +125,31 @@ def process_instruction(chip: Processor, breakpoints: list, _tps: list,
     N/A
 
     """
-    classic_prompt = '>>> '
-    breakout_prompt = 'B>> '
-    prompt = classic_prompt
-    result = None
+
+    _, _, prompt, result = set_prompts('INITIAL')
     if is_breakpoint(breakpoints, chip.PROGRAM_COUNTER):
         monitor_command = 'none'
         monitor = True
-        prompt = breakout_prompt
+        _, _, prompt, result = set_prompts('BREAKOUT')
 
-    opcode = _tps[chip.PROGRAM_COUNTER]
     if monitor is True:
         while monitor_command != '':
+            monitor_command = ''
             if not quiet:
                 monitor_command = input(prompt).lower()
-            else:
-                monitor_command = ''
 
-            result, monitor, monitor_command, opcode = \
-                deal_with_monitor_command(chip, monitor_command,
-                                          breakpoints, monitor, opcode)
-            if result is False:
-                prompt = classic_prompt
-
+                result, monitor, monitor_command, opcode, prompt = \
+                    deal_with_monitor_command(chip, monitor_command,
+                                              breakpoints, monitor, opcode)
             if result is None:
                 break
 
-    opcode = _tps[chip.PROGRAM_COUNTER]
-    if opcode == 256:  # pseudo-opcode (directive "end" - stop program)
-        if not quiet:
-            print('           end')
-        result = None
+    # pseudo-opcode (directive "end" - stop program)
+    if opcode == 256 and not quiet:
+        print('           end')
 
     exe = get_opcodeinfobyopcode(chip, opcode)['mnemonic']
-    if exe == '-':
+    if exe == '-' or opcode == 256:
         result = None
 
     return result, monitor_command, monitor, breakpoints, exe, opcode
@@ -182,7 +179,8 @@ def dispatch2(operations: list, command: str, p1: int, p2: int):
     return operations[command](p1, p2)
 
 
-def prep_single_instruction(exe: str, const_chip: str):
+def prep_single_instruction(exe: str, const_chip: str) -> \
+        Tuple[str, list, str, str]:
     command = exe.replace(const_chip, '')[:3]
     params = exe.replace(const_chip, '')[3:].replace('(', '').replace(')', '')
     splitparams = params.split(',')
@@ -250,9 +248,10 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
         # pseudo-opcode (directive) for "end" or end of memory
         while opcode != 256 and chip.PROGRAM_COUNTER < 4096:
             monitor_command = 'none'
-            result, monitor_command, monitor, breakpoints, exe, opcode = \
+            _, monitor_command, monitor, breakpoints, exe, opcode = \
                 process_instruction(chip, breakpoints, _tps, monitor,
-                                    monitor_command, quiet)
+                                    monitor_command, quiet,
+                                    _tps[chip.PROGRAM_COUNTER])
             if opcode == 256 or chip.PROGRAM_COUNTER == 4096:
                 break
 

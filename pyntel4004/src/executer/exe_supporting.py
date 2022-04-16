@@ -170,6 +170,49 @@ def reload(inputfile: str, chip: Processor,
     return memory_space, 0, labels
 
 
+def set_prompts(req: str) -> Tuple[str, str, str, bool]:
+    """
+
+    Ensure prompts for the monitor are set correctly
+
+    Parameters
+    ----------
+    req : str, mandatory
+        The state that the monitor is in (drives the prompts)
+
+    Returns
+    -------
+    classic_prompt: str
+        "Normal" prompt
+
+    breakout_prompt: str
+        Prompt to use when the system is in breakpoint mode
+
+    prompt: str
+        Current prompt to use
+
+    result : bool
+        Always <None>
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
+    classic_prompt = '>>> '
+    breakout_prompt = 'B>> '
+    if req == 'INITIAL':
+        prompt = classic_prompt
+
+    if req == 'BREAKOUT':
+        prompt = breakout_prompt
+    return classic_prompt, breakout_prompt, prompt, None
+
+
 def is_breakpoint(breakpoints: list, pc: int) -> bool:
     """
     Determine if the current programme counter is at a breakpoint.
@@ -299,7 +342,7 @@ def process_simple_monitor_command(chip: Processor, monitor_command: str,
 
 def deal_with_monitor_command(chip: Processor, monitor_command: str,
                               breakpoints, monitor: bool, opcode: str) \
-        -> Tuple[bool, bool, str, str]:
+        -> Tuple[bool, bool, str, str, str]:
     """
     Take appropriate action depending on the command supplied.
 
@@ -334,6 +377,9 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
     opcode: str,
         Opcode of the current instruction
 
+    prompt: str,
+        Style of prompt to continue using (breakpoint or initial)
+
     Raises
     ------
     N/A
@@ -347,33 +393,38 @@ def deal_with_monitor_command(chip: Processor, monitor_command: str,
 #   mccabe: MC0001 / deal_with_monitor_command is too complex (16)
 #   mccabe: MC0001 / deal_with_monitor_command is too complex (5)
 
+    classic_prompt, breakout_prompt, prompt, _ = set_prompts('INITIAL')
     if monitor_command == '':
-        return True, monitor, monitor_command, opcode
+        return True, monitor, monitor_command, opcode, breakout_prompt
     if monitor_command == 'regs':
         print('0-> ' + str(chip.REGISTERS) + ' <-15')
-        return True, monitor, monitor_command, opcode
+        return True, monitor, monitor_command, opcode, breakout_prompt
     if monitor_command in (['stack', 'pc', 'carry', 'ram', 'pram',
                             'rom', 'acc', 'pin10', 'crb']):
         result, monitor, monitor_command, opcode = \
             process_simple_monitor_command(chip, monitor_command,
                                            monitor, opcode)
-        return result, monitor, monitor_command, opcode
+        if result is False:
+            fprompt = classic_prompt
+        else:
+            fprompt = breakout_prompt
+        return result, monitor, monitor_command, opcode, fprompt
     if monitor_command[:3] == 'reg':
         register = int(monitor_command[3:])
         print('REG[' + monitor_command[3:].strip()+'] = ' +
               str(chip.REGISTERS[register]))
-        return True, monitor, monitor_command, opcode
+        return True, monitor, monitor_command, opcode, breakout_prompt
     if monitor_command[:1] == 'b':
         bp = monitor_command.split()[1]
         breakpoints.append(bp)
         print('Breakpoint set at address ' + bp)
-        return True, monitor, monitor_command, opcode
+        return True, monitor, monitor_command, opcode, classic_prompt
     if monitor_command == 'off':
-        return False, False, '', opcode
+        return False, False, '', opcode, classic_prompt
     if monitor_command == 'q':
-        return None, False, monitor_command, 256
+        return None, False, monitor_command, 256, classic_prompt
 
-    return -1, '', '', 0
+    return -1, '', '', 0, None
 
 
 def retrieve(inputfile: str, chip: Processor,

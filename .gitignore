@@ -138,3 +138,5 @@ pyntel4004/docs/~$resources.pptx
 pyntel4004/.DS_Store
 
 .DS_Store
+
+*.core
