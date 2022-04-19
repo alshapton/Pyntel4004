@@ -447,14 +447,14 @@ def translate_mnemonic(chip: Processor, _tps: list, exe: str,
         if exe[:3] == 'end':  # pseudo-opcode (directive "end" - stop program)
             custom_opcode = False
         exe, op = custom_opcode_logic(custom_opcode, cop, exe)
-        if not quiet:
+        if quiet is False:
             print('{:4}  {:>8}  {:<10}'.format(chip.PROGRAM_COUNTER, opcode, op.replace('()', '')))  # noqa
 
         chip.PROGRAM_COUNTER = chip.PROGRAM_COUNTER + words
 
     if task == 'E':
         exe, op = custom_opcode_logic(custom_opcode, cop, exe)
-        if not quiet:
-             print('  {:>7}  {:<10}'.format(opcode, op.replace('()', '')))  # noqa
+        if quiet is False:
+            print('  {:>7}  {:<10}'.format(opcode, op.replace('()', '')))  # noqa
 
     return exe

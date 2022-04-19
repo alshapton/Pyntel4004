@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed an issue where BIN file is used and there is no "end" mnemonic - did produce an error. Now doesnt.
 - Tidied up some code to make it less complex, and improve quality
+- Fixed issue in quiet mode when executing a program - now doesnt print opcodes
 ### Removed
 - "4004" command line facility. This is now part of the Pyntel4004-cli project
 - `init.py` module - now all initialisation occurs efficiently inside the processor class
