@@ -54,7 +54,7 @@ class Processor:
     # i4004 Processor characteristics
     MAX_4_BITS = 15             # Maximum value 4 bits can hold
 
-    MEMORY_SIZE_RAM = 4096      # Number of 4-bit words in RAM
+    MEMORY_SIZE_RAM = 2048      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
     MEMORY_SIZE_PRAM = 4096     # Number of 4-bit words in PRAM
     PAGE_SIZE = 256             # Number of 4-bit words in a memory page

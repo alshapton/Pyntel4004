@@ -3,27 +3,178 @@
 
 import os
 import sys
+
+from jwt import InvalidKeyError
 sys.path.insert(1, '..' + os.sep + 'platforms')
 
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import zfl  # noqa
+from hardware.suboperations.utility import convert_to_absolute_address  # noqa
 
 # Import typing library
 from typing import Any, Tuple  # noqa
 
 
-def coredump(chip: Processor, filename: str) -> bool:
+def output_core_item(filename: str, item: str) -> None:
+    if filename == '':
+        print(item, end='')  # Ensure that no newline is printed
+    else:
+        with open(filename, "a") as output:
+            output.write(item)
+
+
+def output_register(filename: str, chip: Processor,
+                    tabs: str, rambank: int, ramchip: int,
+                    register: int):
+    for address in range(16):
+        a = address - chip.PAGE_SIZE  # address realignment
+        realaddress = convert_to_absolute_address(chip, rambank,
+                                                  ramchip, register, a)
+        output_core_item(filename, str(realaddress) + ':' +
+                         tabs[:1] + str(chip.RAM[realaddress])
+                         + '\n')
+
+    output_core_item(filename, '\n')
+
+
+def output_ramchip(filename: str, chip: Processor,
+                   tabs: str, rambank: int, ramchip: int):
+    output_core_item(filename, 'RAM Chip: ' + str(ramchip) + '\n')
+    for r in range(4):
+        output_core_item(filename, 'Register: ' +
+                         str(r) + '\t')
+    output_core_item(filename, '\n')
+
+    for address in range(16):
+        a = address - chip.PAGE_SIZE  # address realignment
+        for i in range(4):
+            realaddress = \
+                convert_to_absolute_address(chip, rambank,
+                                            ramchip, (i + 16),
+                                            a)
+            output_core_item(filename, str(realaddress) + ':' +
+                             tabs[:1] + str(chip.RAM[realaddress])
+                             + tabs[:1])
+        output_core_item(filename, '\n')
+    output_core_item(filename, '\n')
+
+
+def output_memory_bank(filename: str, chip: Processor,
+                       tabs: str, rambank: int):
+    output_core_item(filename, 'RAM Bank: ' + str(rambank) + '\n')
+    for ramchip in range(4):
+        output_ramchip(filename, chip,
+                       tabs, rambank, ramchip)
+    output_core_item(filename, '\n')
+
+
+def output_all_memory(filename: str, chip: Processor,
+                      tabs: str):
+    for rambank in range(8):
+        output_memory_bank(filename, chip,
+                           tabs, rambank)
+    output_core_item(filename, '\n')
+
+
+def output_registers(filename: str, chip: Processor,
+                     tabs: str) -> None:
+    output_core_item(filename, '\n\nRegisters:\n\n')
+
+    r = 0
+    for i in chip.REGISTERS:
+        if r < 10:
+            spaces = ' '
+        else:
+            spaces = ''
+        output_core_item(filename, '[' + spaces + str(r) + ']\t')
+        r = r + 1
+    output_core_item(filename, '\n')
+    spaces = '  '
+    for i in chip.REGISTERS:
+        output_core_item(filename, spaces + str(i) + '\t\t')
+
+
+def output_cpu_status(filename: str, chip: Processor,
+                      tabs: str) -> None:
+    output_core_item(filename, '\n\nProcessor Status:\n\n')
+    output_core_item(filename, 'PIN 10               : ' +
+                     str(chip.PIN_10_SIGNAL_TEST) + '\n')
+    output_core_item(filename, 'Program Counter      : ' +
+                     str(chip.PROGRAM_COUNTER) + '\n')
+    stack = ''
+    for i in chip.STACK:
+        stack = stack + str(chip.STACK[i]) + ', '
+    ln = len(stack) - 2
+    stack = stack[:ln]
+    output_core_item(filename,
+                     'Stack/Pointer        : (' + stack + ') / ' +
+                     (str(chip.STACK_POINTER)) + '\n')
+    output_core_item(filename, 'ACBR                 : ' +
+                     str(chip.ACBR) + '\n')
+    acc = chip.read_accumulator()
+    output_core_item(filename, 'Accumulator          : ' + str(acc) + '\n')
+    output_core_item(filename, 'Carry                : ' +
+                     str(chip.CARRY) + '\n')
+    output_core_item(filename, 'DRAM Bank            : ' +
+                     str(chip.CURRENT_DRAM_BANK) + '\n')
+    output_core_item(filename, 'RAM Bank             : ' +
+                     str(chip.CURRENT_RAM_BANK) + '\n')
+    output_core_item(filename, 'WPM Counter          : ' +
+                     str(chip.WPM_COUNTER) + '\n')
+
+
+def output_core_characteristics(filename: str, chip: Processor,
+                                tabs: str) -> None:
+    output_core_item(filename, 'Processor Characteristics:\n\n')
+    output_core_item(filename, 'MAX_4_BITS :           ' +
+                     str(chip.MAX_4_BITS) + tabs)
+    output_core_item(filename, 'PAGE_SIZE :            ' +
+                     str(chip.PAGE_SIZE) + '\n')
+    output_core_item(filename, 'STACK_SIZE :           ' +
+                     str(chip.STACK_SIZE) + tabs)
+    output_core_item(filename, 'MSB :                  ' +
+                     str(chip.MSB) + '\n')
+    output_core_item(filename, 'MEMORY_SIZE_RAM :      ' +
+                     str(chip.MEMORY_SIZE_RAM) + tabs)
+    output_core_item(filename, 'NO_REGISTERS :         ' +
+                     str(chip.NO_REGISTERS) + '\n')
+    output_core_item(filename, 'MEMORY_SIZE_ROM :      ' +
+                     str(chip.MEMORY_SIZE_ROM) + tabs)
+    output_core_item(filename, 'NO_ROM_PORTS :         ' +
+                     str(chip.NO_REGISTERS) + '\n')
+    output_core_item(filename, 'MEMORY_SIZE_PRAM :     ' +
+                     str(chip. MEMORY_SIZE_PRAM) + tabs)
+    output_core_item(filename, 'NO_CHIPS_PER_BANK :    ' +
+                     str(chip.NO_CHIPS_PER_BANK) + '\n')
+    output_core_item(filename, 'RAM_BANK_SIZE :        ' +
+                     str(chip.RAM_BANK_SIZE) + tabs)
+    output_core_item(filename, 'RAM_CHIP_SIZE :        ' +
+                     str(chip.RAM_CHIP_SIZE) + '\n')
+    output_core_item(filename, 'RAM_REGISTER_SIZE :    ' +
+                     str(chip.RAM_REGISTER_SIZE) + tabs)
+    output_core_item(filename, 'NO_COMMAND_REGISTERS : ' +
+                     str(chip.NO_COMMAND_REGISTERS) + '\n')
+    output_core_item(filename, 'NO_STATUS_REGISTERS :  ' +
+                     str(chip.NO_STATUS_REGISTERS) + tabs)
+    output_core_item(filename, 'NO_STATUS_CHARACTERS : ' +
+                     str(chip.NO_STATUS_CHARACTERS) + '\n')
+
+
+def coredump(chip: Processor, filename: str, outputs: str) -> bool:
     """
     Take the memory and write to a given filename.
 
     Parameters
     ----------
     chip : Processor
-        The chip targetted for the coredump
+        The chip targetted for the 3p
 
     filename: str, mandatory
         The filename to write to
+
+    outputs: str, mandatory
+        List of resuts to display as a string. A core dump is ALWAYS "ALL"
 
     Returns
     -------
@@ -41,75 +192,55 @@ def coredump(chip: Processor, filename: str) -> bool:
     # Import platform-specific code
     from platforms.platforms import get_current_datetime  # noqa
 
+    required = outputs.upper()
+    if 'ALL' in required and required != "['ALL']":
+        raise InvalidKeyError("Cannot use any other tokens with 'ALL'")
+
+    tabs = '\t\t\t'
     errordate = 'Date/Time:' + get_current_datetime() + '\n\n'
-    with open(filename + '.core', "w") as output:
-        output.write('\n\n' + errordate)
-        output.write('Processor Characteristics:\n\n')
-        output.write('MAX_4_BITS :           ' + str(chip.MAX_4_BITS) +
-                     '\t\t\t')
-        output.write('PAGE_SIZE :            ' + str(chip.PAGE_SIZE) + '\n')
-        output.write('STACK_SIZE :           ' + str(chip.STACK_SIZE) +
-                     '\t\t\t')
-        output.write('MSB :                  ' + str(chip.MSB) + '\n')
+    if len(filename) > 0:
+        filename = filename + '.core'
+        with open(filename, "w") as output:
+            output.write('')
 
-        output.write('MEMORY_SIZE_RAM :      ' + str(chip.MEMORY_SIZE_RAM) +
-                     '\t\t\t')
-        output.write('NO_REGISTERS :         ' + str(chip.NO_REGISTERS) + '\n')
-        output.write('MEMORY_SIZE_ROM :      ' + str(chip.MEMORY_SIZE_ROM) +
-                     '\t\t\t')
-        output.write('NO_ROM_PORTS :         ' + str(chip.NO_REGISTERS) + '\n')
-        output.write('MEMORY_SIZE_PRAM :     ' +
-                     str(chip. MEMORY_SIZE_PRAM) + '\t\t\t')
-        output.write('NO_CHIPS_PER_BANK :    ' +
-                     str(chip.NO_CHIPS_PER_BANK) + '\n')
-        output.write('RAM_BANK_SIZE :        ' + str(chip.RAM_BANK_SIZE) +
-                     '\t\t\t')
-        output.write('RAM_CHIP_SIZE :        ' + str(chip.RAM_CHIP_SIZE) +
-                     '\n')
-        output.write('RAM_REGISTER_SIZE :    ' +
-                     str(chip.RAM_REGISTER_SIZE) + '\t\t\t')
-        output.write('NO_COMMAND_REGISTERS : ' +
-                     str(chip.NO_COMMAND_REGISTERS) + '\n')
-        output.write('NO_STATUS_REGISTERS :  ' +
-                     str(chip.NO_STATUS_REGISTERS) + '\t\t\t')
-        output.write('NO_STATUS_CHARACTERS : ' +
-                     str(chip.NO_STATUS_CHARACTERS) + '\n')
-        output.write('\n\nProcessor Status:\n\n')
-        output.write('PIN 10               : ' + str(chip.PIN_10_SIGNAL_TEST)
-                     + '\n')
-        output.write('Program Counter      : ' + str(chip.PROGRAM_COUNTER) +
-                     '\n')
-        stack = ''
-        for i in chip.STACK:
-            stack = stack + str(chip.STACK[i]) + ', '
-        ln = len(stack)-2
-        stack = stack[:ln]
-        output.write('Stack/Pointer        : (' + stack + ') / ' +
-                     (str(chip.STACK_POINTER)) + '\n')
-        output.write('ACBR                 : ' + str(chip.ACBR) + '\n')
-        acc = chip.read_accumulator()
-        output.write('Accumulator          : ' + str(acc) + '\n')
-        output.write('Carry                : ' + str(chip.CARRY) + '\n')
-        output.write('DRAM Bank            : ' + str(chip.CURRENT_DRAM_BANK) +
-                     '\n')
-        output.write('RAM Bank             : ' + str(chip.CURRENT_RAM_BANK) +
-                     '\n')
-        output.write('WPM Counter          : ' + str(chip.WPM_COUNTER) + '\n')
-        output.write('\n\nRegisters:\n\n')
-        r = 0
-        for i in chip.REGISTERS:
-            if r < 10:
-                spaces = ' '
-            else:
-                spaces = ''
-            output.write('[' + spaces + str(r) + ']\t')
-            r = r + 1
-        output.write('\n')
-        spaces = '  '
-        for i in chip.REGISTERS:
-            output.write(spaces + str(i) + '\t\t')
+    # Heading
+    output_core_item(filename, '\n\n' + errordate)
 
-        return True
+    # Processor Characteristics
+    if 'ALL' in required or 'PC' in required:
+        output_core_characteristics(filename, chip, tabs)
+
+    # Processor Status
+    if 'ALL' in required or 'PS' in required:
+        output_cpu_status(filename, chip, tabs)
+
+    # Registers
+    if 'ALL' in required or 'REGS' in required:
+        output_registers(filename, chip, tabs)
+
+    # Memory
+    if 'ALL' in required or 'ALLMEM' in required:
+        output_core_item(filename, '\n')
+        output_all_memory(filename, chip, tabs)
+
+    # Indvidual Chip/Memory Bank/Memory Register
+    if 'CHIP' in required:
+        stripped = (required.replace('CHIP(', '').replace('[', '').
+                    replace(']', '').replace(')', '').
+                    replace("'", "").split(','))
+        items = len(stripped)
+        if items == 1:
+            output_memory_bank(filename, chip,
+                               tabs, int(stripped[0]))
+        if items == 2:
+            output_ramchip(filename, chip,
+                           tabs, int(stripped[0]), int(stripped[1]))
+        if items == 3:
+            output_register(filename, chip,
+                            tabs, int(stripped[0]),
+                            int(stripped[1]),
+                            int(stripped[2]))
+    return True
 
 
 def msg_exec() -> None:

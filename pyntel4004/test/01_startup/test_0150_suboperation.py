@@ -519,7 +519,7 @@ def test_suboperation_increment_pc_scenario2():
     # attempting to increment the Program Counter beyond the end of memory
     with pytest.raises(Exception) as e:
         assert Processor.increment_pc(chip_test, 2)
-    assert str(e.value) == "Program counter attempted to be set to 4097"
+    assert str(e.value) == "Program counter attempted to be set to 2049"
     assert e.type == ProgramCounterOutOfBounds
 
     # Make assertions that the base chip is now at the same state as
@@ -531,7 +531,7 @@ def test_suboperation_increment_pc_scenario2():
 ##############################################################################
 #                      Increment Program Counter by Page                     #
 ##############################################################################
-@pytest.mark.parametrize("pc", [45, 2045])  # noqa
+@pytest.mark.parametrize("pc", [45, 1202])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
     """Test Increment PC by page function."""
     chip_test = Processor()
@@ -555,7 +555,7 @@ def test_suboperation_increment_pc_counter_by_page_scenario1(pc):
     assert pickle.dumps(chip_test) == pickle.dumps(chip_base)
 
 
-@pytest.mark.parametrize("pc", [3841, 4090])  # noqa
+@pytest.mark.parametrize("pc", [2020, 4043])  # noqa
 def test_suboperation_increment_pc_counter_by_page_scenario2(pc):
     """Test Increment PC by page failure."""
     chip_test = Processor()

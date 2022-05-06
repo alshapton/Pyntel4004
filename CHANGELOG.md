@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 
 ### Added
 - Added platform-aware code (to enable a central codebase of cpython and micropython supported platforms)
-- Added accumulator to core dump
+- Added accumulator, registers and memory to core dump to core dump
 - Replaced inbuilt `zfill` with hand-written `zfl` function due to micropython not supporting zfill
 ### Changed
 - Switched to more efficient memory-allocation method for ROM/RAM/PRAM etc...

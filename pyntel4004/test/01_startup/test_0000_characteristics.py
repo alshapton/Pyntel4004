@@ -16,7 +16,7 @@ def test_chip_properties_max_4_bits():
 
 def test_chip_properties_memory_size_ram():
     """Ensure the chip has been set with the correct memory size for RAM."""
-    assert chip.MEMORY_SIZE_RAM == 4096
+    assert chip.MEMORY_SIZE_RAM == 2048
 
 
 def test_chip_properties_memory_size_rom():

@@ -62,7 +62,7 @@ def process_coredump(chip: Processor, ex: Exception) -> None:
     message = ex_type + ': ' + ex_args + ' at location ' + \
         str(chip.PROGRAM_COUNTER)
     do_error(message)
-    coredump(chip, 'core')
+    coredump(chip, 'core', str(['CHIP(1,3,0)']))
 
 
 def process_instruction(chip: Processor, breakpoints: list, _tps: list,
@@ -246,15 +246,14 @@ def execute(chip: Processor, location: str, pc: int, monitor: bool,
     _tps = retrieve_program(chip, location)
     try:
         # pseudo-opcode (directive) for "end" or end of memory
-        while opcode != 256 and chip.PROGRAM_COUNTER < 4096:
+        while opcode != 256 and chip.PROGRAM_COUNTER < chip.MEMORY_SIZE_RAM:
             monitor_command = 'none'
             _, monitor_command, monitor, breakpoints, exe, opcode = \
                 process_instruction(chip, breakpoints, _tps, monitor,
                                     monitor_command, quiet,
                                     _tps[chip.PROGRAM_COUNTER])
-            if opcode == 256 or chip.PROGRAM_COUNTER == 4096:
+            if opcode == 256 or chip.PROGRAM_COUNTER == chip.MEMORY_SIZE_RAM:
                 break
-
             # Execute instruction
             exe = const_chip + translate_mnemonic(chip, _tps, exe, opcode,
                                                   'E', 0, quiet)

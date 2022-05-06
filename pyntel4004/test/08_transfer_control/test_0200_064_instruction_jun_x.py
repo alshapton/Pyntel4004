@@ -27,7 +27,7 @@ def test_validate_instruction(value):
     assert op == known
 
 
-@pytest.mark.parametrize("address12", [0, 100, 99, 256, 512, 4095, 4094, 2048])
+@pytest.mark.parametrize("address12", [0, 100, 99, 256, 512, 2047])
 def test_scenario1(address12):
     """Test JUN instruction functionality."""
     chip_test = Processor()
