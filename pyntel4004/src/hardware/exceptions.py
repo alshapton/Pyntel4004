@@ -57,6 +57,11 @@ class InvalidRegisterPair(Exception):
     """Raised when an invalid register pair is supplied."""
 
 
+class InvalidToken(Exception):
+
+    """Raised when an invalid token in a configuration file."""
+
+
 class NotABinaryNumber(Exception):
 
     """Raised when a supplied binary number is NOT binary."""

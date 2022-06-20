@@ -4,13 +4,15 @@
 import os
 import sys
 
-from jwt import InvalidKeyError
 sys.path.insert(1, '..' + os.sep + 'platforms')
 
 # Import i4004 processor
 from hardware.processor import Processor  # noqa
 from hardware.suboperation import zfl  # noqa
 from hardware.suboperations.utility import convert_to_absolute_address  # noqa
+
+# Import exceptions
+from hardware.exceptions import InvalidToken  # noqa
 
 # Import typing library
 from typing import Any, Tuple  # noqa
@@ -27,6 +29,11 @@ def output_core_item(filename: str, item: str) -> None:
 def output_register(filename: str, chip: Processor,
                     tabs: str, rambank: int, ramchip: int,
                     register: int):
+    output_core_item(filename, '\n\nRam Bank: ' + str(rambank) + '\n')
+    output_core_item(filename, 'Ram Chip: ' + str(ramchip) + '\n')
+    output_core_item(filename, 'Register: ' + str(register) + '\n')
+    output_core_item(filename, 'Addr Value\n')
+
     for address in range(16):
         a = address - chip.PAGE_SIZE  # address realignment
         realaddress = convert_to_absolute_address(chip, rambank,
@@ -40,14 +47,20 @@ def output_register(filename: str, chip: Processor,
 
 def output_ramchip(filename: str, chip: Processor,
                    tabs: str, rambank: int, ramchip: int):
+    output_core_item(filename, '\n\nRAM Bank: ' + str(rambank) + '\n')
     output_core_item(filename, 'RAM Chip: ' + str(ramchip) + '\n')
     for r in range(4):
         output_core_item(filename, 'Register: ' +
                          str(r) + '\t')
     output_core_item(filename, '\n')
+    for _ in range(4):
+        output_core_item(filename, 'Addr Value' + tabs[:1])
+
+    output_core_item(filename, '\n')
 
     for address in range(16):
         a = address - chip.PAGE_SIZE  # address realignment
+
         for i in range(4):
             realaddress = \
                 convert_to_absolute_address(chip, rambank,
@@ -62,7 +75,6 @@ def output_ramchip(filename: str, chip: Processor,
 
 def output_memory_bank(filename: str, chip: Processor,
                        tabs: str, rambank: int):
-    output_core_item(filename, 'RAM Bank: ' + str(rambank) + '\n')
     for ramchip in range(4):
         output_ramchip(filename, chip,
                        tabs, rambank, ramchip)
@@ -79,20 +91,40 @@ def output_all_memory(filename: str, chip: Processor,
 
 def output_registers(filename: str, chip: Processor,
                      tabs: str) -> None:
+    topline = '+-------'
     output_core_item(filename, '\n\nRegisters:\n\n')
-
+    start = 0
+    end = (int((chip.NO_REGISTERS/2)))
     r = 0
-    for i in chip.REGISTERS:
-        if r < 10:
-            spaces = ' '
-        else:
-            spaces = ''
-        output_core_item(filename, '[' + spaces + str(r) + ']\t')
-        r = r + 1
-    output_core_item(filename, '\n')
-    spaces = '  '
-    for i in chip.REGISTERS:
-        output_core_item(filename, spaces + str(i) + '\t\t')
+    for _ in range(0, 2):
+        for i in range(start, end):
+            output_core_item(filename, topline)
+        output_core_item(filename, '+\n')
+
+        for i in range(start, end):
+            if r < 10:
+                spaces = ' '
+            else:
+                spaces = ''
+            output_core_item(filename, '| R ' + spaces + str(r) + '  ')
+            r = r + 1
+
+        output_core_item(filename, '|\n')
+        for i in range(start, end):
+            output_core_item(filename, topline)
+        output_core_item(filename, '+\n')
+
+        for i in range(start, end):
+            if i == 1 or i == 8:
+                spaces = '  '
+            output_core_item(filename, '|' + spaces +
+                             str(chip.REGISTERS[i]) + '    ')
+        output_core_item(filename, '|\n')
+        for i in range(start, end):
+            output_core_item(filename, topline)
+        output_core_item(filename, '+\n\n')
+        start = end
+        end = chip.NO_REGISTERS
 
 
 def output_cpu_status(filename: str, chip: Processor,
@@ -194,7 +226,7 @@ def coredump(chip: Processor, filename: str, outputs: str) -> bool:
 
     required = outputs.upper()
     if 'ALL' in required and required != "['ALL']":
-        raise InvalidKeyError("Cannot use any other tokens with 'ALL'")
+        raise InvalidToken("Cannot specify 'ALL' with any others")
 
     tabs = '\t\t\t'
     errordate = 'Date/Time:' + get_current_datetime() + '\n\n'
@@ -206,40 +238,43 @@ def coredump(chip: Processor, filename: str, outputs: str) -> bool:
     # Heading
     output_core_item(filename, '\n\n' + errordate)
 
-    # Processor Characteristics
-    if 'ALL' in required or 'PC' in required:
-        output_core_characteristics(filename, chip, tabs)
+    lreq = required.replace('[', '').split(',')
 
-    # Processor Status
-    if 'ALL' in required or 'PS' in required:
-        output_cpu_status(filename, chip, tabs)
+    for req in lreq:
+        # Processor Characteristics
+        if 'ALL' in req or 'PC' in req:
+            output_core_characteristics(filename, chip, tabs)
 
-    # Registers
-    if 'ALL' in required or 'REGS' in required:
-        output_registers(filename, chip, tabs)
+        # Processor Status
+        if 'ALL' in req or 'PS' in req:
+            output_cpu_status(filename, chip, tabs)
 
-    # Memory
-    if 'ALL' in required or 'ALLMEM' in required:
-        output_core_item(filename, '\n')
-        output_all_memory(filename, chip, tabs)
+        # Registers
+        if 'ALL' in req or 'REGS' in req:
+            output_registers(filename, chip, tabs)
 
-    # Indvidual Chip/Memory Bank/Memory Register
-    if 'CHIP' in required:
-        stripped = (required.replace('CHIP(', '').replace('[', '').
-                    replace(']', '').replace(')', '').
-                    replace("'", "").split(','))
-        items = len(stripped)
-        if items == 1:
-            output_memory_bank(filename, chip,
-                               tabs, int(stripped[0]))
-        if items == 2:
-            output_ramchip(filename, chip,
-                           tabs, int(stripped[0]), int(stripped[1]))
-        if items == 3:
-            output_register(filename, chip,
-                            tabs, int(stripped[0]),
-                            int(stripped[1]),
-                            int(stripped[2]))
+        # Memory
+        if 'ALL' in req or 'ALLMEM' in req:
+            output_core_item(filename, '\n')
+            output_all_memory(filename, chip, tabs)
+
+        # Indvidual Chip/Memory Bank/Memory Register
+        if 'CHIP' in req:
+            stripped = (req.replace('CHIP(', '').replace('[', '').
+                        replace(']', '').replace(')', '').
+                        replace("'", "").split(':'))
+            items = len(stripped)
+            if items == 1:
+                output_memory_bank(filename, chip,
+                                   tabs, int(stripped[0]))
+            if items == 2:
+                output_ramchip(filename, chip,
+                               tabs, int(stripped[0]), int(stripped[1]))
+            if items == 3:
+                output_register(filename, chip,
+                                tabs, int(stripped[0]),
+                                int(stripped[1]),
+                                int(stripped[2]))
     return True
 
 

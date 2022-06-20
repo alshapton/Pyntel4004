@@ -86,6 +86,7 @@ The user instructions can be found [here](https://pyntel4004.readthedocs.io/en/l
 
 ## Status
 
+22-MAY-2022     First release of configuration file support
 20-MAR-2022:    Command Line functionality is now deprecated
 02-MAR-2022:    Finalised split - Pyntel4004 is now the core library
 21-FEB-2022:    Started to split into two - (chip, assembler, dissassembler) and CLI

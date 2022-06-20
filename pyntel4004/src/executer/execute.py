@@ -31,7 +31,7 @@ from shared.shared import coredump, do_error, get_opcodeinfobyopcode, retrieve_p
 
 def process_coredump(chip: Processor, ex: Exception) -> None:
     """
-    Formulate the opcodes into mnemonics ready for execution.
+    Produce a complete core dump so that debugging can take place.
 
     Parameters
     ----------
@@ -62,7 +62,7 @@ def process_coredump(chip: Processor, ex: Exception) -> None:
     message = ex_type + ': ' + ex_args + ' at location ' + \
         str(chip.PROGRAM_COUNTER)
     do_error(message)
-    coredump(chip, 'core', str(['CHIP(1,3,0)']))
+    coredump(chip, 'core', str(['ALL']))
 
 
 def process_instruction(chip: Processor, breakpoints: list, _tps: list,
@@ -181,6 +181,40 @@ def dispatch2(operations: list, command: str, p1: int, p2: int):
 
 def prep_single_instruction(exe: str, const_chip: str) -> \
         Tuple[str, list, str, str]:
+    """
+    Prepare single instruction for dispatch.
+
+    Parameters
+    ----------
+    exe: str, mandatory
+        Instruction without the chip prefix.
+
+    const_chip : str, mandatory
+        The instruction to process (full)
+
+    Returns
+    -------
+    command: str
+        The sole command which will be used for dispatch
+
+    splitparams: list
+        List of parameters
+
+    p1: str
+        Parameter 1
+
+    p2: str
+        Parameter 2
+
+    Raises
+    ------
+    N/A
+
+    Notes
+    -----
+    N/A
+
+    """
     command = exe.replace(const_chip, '')[:3]
     params = exe.replace(const_chip, '')[3:].replace('(', '').replace(')', '')
     splitparams = params.split(',')
