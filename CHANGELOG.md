@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1-beta.6](https://pypi.org/project/Pyntel4004/0.0.1b6/) - 2022-XX-XX
+## 1.2 - (https://pypi.org/project/Pyntel4004/1.2/) 2022-07-08
+
+### Notes
+- Replacement release for 1.1.0
+
+## 1.1.0 - **Release Revoked** 2022-06-27
+
+### Notes
+- Release revoked, since extra code inadvertently made it into the relase, which would have 
+  broken the compatibility with Pyntel4004-cli
+### Fixed
+- Fixed documentation build issue
+
+## [1.0.0](https://pypi.org/project/Pyntel4004/1.0.0/) - 2022-06-27
 
 ### Notes
 - 

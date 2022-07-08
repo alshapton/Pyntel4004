@@ -52,7 +52,8 @@ class Processor:
     # Some used internally,
 
     # i4004 Processor characteristics
-    MAX_4_BITS = 15             # Maximum value 4 bits can hold
+    MAX_4_BITS = (2**4) - 1     # Maximum value 4 bits can hold
+    MAX_8_BITS = (2**8) - 1     # Maximim value 8 bits can hold
 
     MEMORY_SIZE_RAM = 2048      # Number of 4-bit words in RAM
     MEMORY_SIZE_ROM = 4096      # Number of 4-bit words in ROM
@@ -90,8 +91,8 @@ class Processor:
                          for _ in range(8)]
         # Set up ROM
         # Initialise the ROM with zeroes in all locations.
-        self.ROM = [0] * self.MEMORY_SIZE_ROM    # ROM
-        self.ROM_PORT = [0 for _ in range(self.NO_ROM_PORTS)]   # ROM ports
+        self.ROM = [0] * self.MEMORY_SIZE_ROM
+        self.ROM_PORT = [0 for _ in range(self.NO_ROM_PORTS)]  # ROM ports
 
         # Set up Program RAM
         # Initialise the Program RAM with zeroes in all locations.
